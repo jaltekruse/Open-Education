@@ -2,6 +2,14 @@ package expression;
 
 import java.util.Vector;
 
+/**
+ * A class representing a generic operator in an expression tree.
+ * All operators, such as addition, subtraction, etc. are instances 
+ * of this class.
+ * 
+ * @author Killian
+ *
+ */
 public abstract class Operator {
 
 	public abstract String getSymbol();
@@ -133,20 +141,77 @@ public abstract class Operator {
 		
 	}
 	
-	public static abstract class UnaryFunction extends Operator {
-
+	public static abstract class Function extends Operator {
+		public abstract int getArity();
+		
+		public abstract Number safeEval(Vector<Number> children);
+		
 		@Override
 		public Number evaluate(Vector<Number> children) {
-			if (children.size() != 1)
+			if (children.size() != getArity())
 				throwBadArguments();
-			return evaluate(children.get(0));
+			return safeEval(children);
+		}
+		
+		@Override
+		public String format(Vector<String> children) {
+			if (children.size() != getArity())
+				throwBadArguments();
+			String s = getSymbol() + "(";
+			for (int i = 0 ; i < children.size(); i++) {
+				s += children.get(i);
+				if (i != (children.size() - 1)) 
+					s += ", ";
+			}
+			s += ")";
+			return s;
+		}
+	}
+	
+	public static class LogBase extends Function {
+		@Override
+		public int getArity() {
+			return 2;
 		}
 
 		@Override
-		public String format(Vector<String> children) {
-			if (children.size() != 1)
-				throwBadArguments();
-			return getSymbol() + "(" + children.get(0) + ")";
+		public Number safeEval(Vector<Number> children) {
+			return Number.log(children.get(0), children.get(1));
+		}
+
+		@Override
+		public String getSymbol() {
+			return "log";
+		}
+	}
+	
+	public static class Root extends Function {
+		@Override
+		public int getArity() {
+			return 2;
+		}
+
+		@Override
+		public Number safeEval(Vector<Number> children) {
+			return Number.root(children.get(0), children.get(1));
+		}
+
+		@Override
+		public String getSymbol() {
+			return "root";
+		}
+	}
+	
+	public static abstract class UnaryFunction extends Function {
+
+		@Override
+		public int getArity() {
+			return 1;
+		}
+		
+		@Override
+		public Number safeEval(Vector<Number> children) {
+			return evaluate(children.firstElement());
 		}
 
 		public abstract Number evaluate(Number a);
@@ -162,6 +227,18 @@ public abstract class Operator {
 		@Override
 		public Number evaluate(Number a) {
 			return a.log();
+		}
+	}
+	
+	public static class NaturalLog extends UnaryFunction {
+		@Override
+		public String getSymbol() {
+			return "ln";
+		}
+
+		@Override
+		public Number evaluate(Number a) {
+			return a.ln();
 		}
 	}
 	
@@ -198,6 +275,30 @@ public abstract class Operator {
 		@Override
 		public Number evaluate(Number a) {
 			return a.tan();
+		}
+	}
+	
+	public static class SquareRoot extends UnaryFunction {
+		@Override
+		public String getSymbol() {
+			return "sqrt";
+		}
+		
+		@Override
+		public Number evaluate(Number a) {
+			return a.sqrt();
+		}
+	}
+	
+	public static class CubeRoot extends UnaryFunction {
+		@Override
+		public String getSymbol() {
+			return "cbrt";
+		}
+		
+		@Override
+		public Number evaluate(Number a) {
+			return a.cbrt();
 		}
 	}
 	

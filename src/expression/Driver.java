@@ -7,7 +7,8 @@ public class Driver {
 	 */
 	public static void main(String[] args) {
 		NodeParser parser = new NodeParser();
-		String p = "sin(10^3+9^3-12^3+x)";
+		parser.allowEmptyArguments(true);
+		String p = "log(2^3+4^5+e^x,)";
 		Node n = parser.parseNode(p);
 		System.out.println(n);
 		System.out.println(n.numericSimplify());

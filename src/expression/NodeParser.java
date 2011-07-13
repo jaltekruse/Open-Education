@@ -6,12 +6,23 @@ import java.util.Vector;
 
 public class NodeParser {
 	
+	//TODO add allowEmptyArguments option
+	
+	private boolean allowEmptyArguments = false;
+	
 	private boolean allowLongIdentifiers = false;
 	
-	private List<String> unaryFunctions =
-			Arrays.asList("log", "sin", "cos", "tan");
+	private List<String> functions =
+			Arrays.asList("log", "sin", "cos", "tan",
+					"sqrt", "cbrt", "root", "ln");
 	
-	private List<String> identifiers = unaryFunctions;
+	private List<String> nonFunctionalIdentifiers = 
+			Arrays.asList();
+	
+	private List<String> delimiters = 
+			Arrays.asList(",");
+	
+	private List<String> identifiers;
 	
 	private List<String> additionOps = 
 			Arrays.asList("+", "-");
@@ -26,7 +37,9 @@ public class NodeParser {
 			Arrays.asList("+", "*", "", "/", "^"); // no thought, just split at index
 	
 	private List<String> operatorStrings =
-			Arrays.asList("log", "sin", "cos", "tan", "+", "-", "*", "/", "-", "^");
+			Arrays.asList("+", "-", "*", "/", "-", "^");
+	
+	private List<String> unsplittableStrings;
 	
 	private int lowestPrecedence = 0;
 	private int highestPrecedence = 3;
@@ -42,7 +55,13 @@ public class NodeParser {
 	private String exEmptyString = "Empty string or missing argument";
 	
 	public NodeParser() {
+		identifiers = new Vector<String>();
+		identifiers.addAll(functions);
+		identifiers.addAll(nonFunctionalIdentifiers);
 		
+		unsplittableStrings = new Vector<String>();
+		unsplittableStrings.addAll(operatorStrings);
+		unsplittableStrings.addAll(delimiters);
 	}
 	
 	public boolean longIdentifiers() {
@@ -51,6 +70,14 @@ public class NodeParser {
 
 	public void setLongIdentifiers(boolean allowLongIdentifiers) {
 		this.allowLongIdentifiers = allowLongIdentifiers;
+	}
+	
+	public boolean emptyArguments() {
+		return allowEmptyArguments;
+	}
+
+	public void allowEmptyArguments(boolean allowEmptyArguments) {
+		this.allowEmptyArguments = allowEmptyArguments;
 	}
 
 	public List<String> getOperators(int level) {
@@ -62,7 +89,7 @@ public class NodeParser {
 			case 2:
 				return exponentOps;
 			case 3:
-				return unaryFunctions;
+				return functions;
 		}
 		return null;
 	}
@@ -73,12 +100,7 @@ public class NodeParser {
 	}
 	
 	private String format(String expression) {
-		String s = expression.replaceAll("\\s", "");
-		
-		if (expression.equals("")) // string is whitespace
-			throw new NodeException(exEmptyString);
-		
-		return s;
+		return expression.replaceAll("\\s", "");
 	}
 	
 	private Node parse(String expression) {
@@ -86,6 +108,20 @@ public class NodeParser {
 	}
 	
 	private Node parse(String expression, int initialPrecedence, int offset) {
+		try {
+			return rawParse(expression, initialPrecedence, offset);
+		} catch (NodeException e) {
+			if (e.getMessage().equals(exEmptyString) && allowEmptyArguments)
+				return new EmptyValue();
+			else
+				throw e;
+		}
+	}
+
+	private Node rawParse(String expression, int initialPrecedence, int offset) {
+		if (expression.equals("")) // string is whitespace
+			throw new NodeException(exEmptyString);
+		
 		if (openBrackets.contains(expression.charAt(0) + "") &&
 				closeBrackets.contains(expression.charAt(expression.length() - 1) + ""))
 			// expression is surrounded by parens
@@ -145,34 +181,61 @@ public class NodeParser {
 				return new Expression(o, children);
 			}
 			
-			if (unaryFunctions.contains(symbol)) {
+			if (functions.contains(symbol)) {
 				if (index == 0) {
-					Vector<Node> child = new Vector<Node>();
-					child.add(parse(expression.substring(symbol.length()+1, expression.length()-1)));
+					Vector<String> stringChildren = new Vector<String>();
+					String args = expression.substring(symbol.length() + 1, expression.length() - 1);
+					stringChildren.addAll(splitArgs(args, ","));
+					Vector<Node> children = new Vector<Node>();
+					for (String s : stringChildren)
+						children.add(parse(s));					
 					Operator o = null;
-					if (symbol.equals("log"))
-						o = new Operator.Logarithm();
+					if (symbol.equals("log")) {
+						if (children.size() == 1)
+							o = new Operator.Logarithm();
+						else
+							o = new Operator.LogBase();
+					}
+					if (symbol.equals("ln"))
+						o = new Operator.NaturalLog();
 					if (symbol.equals("sin"))
 						o = new Operator.Sine();
 					if (symbol.equals("cos"))
 						o = new Operator.Cosine();
 					if (symbol.equals("tan"))
 						o = new Operator.Tangent();
-					return new Expression(o, child);
+					if (symbol.equals("sqrt"))
+						o = new Operator.SquareRoot();
+					if (symbol.equals("cbrt"))
+						o = new Operator.CubeRoot();
+					if (symbol.equals("root"))
+						o = new Operator.Root();
+					return new Expression(o, children);
 				}
 			}
 			
 			if (symbol.equals("-")) {
 				if (operators == additionOps) {  // subtraction
+					boolean missingArg = false;
+					Vector<Node> children = null;
 					try {
-						Vector<Node> children = splitAtIndex(expression, index, symbol.length());
-						return new Expression(new Operator.Subtraction(), children);
-					} catch (NodeException e) {
-						if (e.getMessage().equals(exEmptyString)) {
-							return parse(expression, 1, index - 1);
+						children = splitAtIndex(expression, index, symbol.length());
+						for (Node c : children) {
+							if (c.isEmpty()) {
+								missingArg = true;
+								break;
+							}
 						}
+					} catch (NodeException e) {
+						if (e.getMessage().equals(exEmptyString))
+							missingArg = true;
 						else
 							throw e;
+					}
+					if (missingArg) {
+						return new Expression(new Operator.Subtraction(), children);
+					} else {
+						return parse(expression, 1, index - 1);
 					}
 				} else {								// negation
 					Vector<Node> child = new Vector<Node>();
@@ -185,12 +248,34 @@ public class NodeParser {
 		return Value.parseValue(expression);
 	}
 	
+	private Vector<String> splitArgs(String string, String delim) {
+		Vector<String> args = new Vector<String>();
+		int depth = 0;
+		int last = 0;
+		for (int i = 0 ; i <= string.length() - delim.length() ; i++) { 
+			// the equals sign in "i <= string.length()" took me half an hour to debug
+			if (openBrackets.contains(string.charAt(i) + ""))
+				depth++;
+			if (closeBrackets.contains(string.charAt(i) + ""))
+				depth--;
+			if (depth == 0) {
+				if (string.substring(i, i + delim.length()).equals(delim)) {
+					args.add(string.substring(last, i));
+					i += delim.length();
+					last = i;
+				}
+			}
+		}
+		args.add(string.substring(last));
+		return args;
+	}
+
 	private int seekFromLast(String expression, String symbol) {
 		return seekFromLast(expression, symbol, expression.length() - 1);
 	}
 
-	public int seekFromLast(String expression, String symbol, int endpoint) {
-		// no idea how this method works anymore (or if it even does)
+	private int seekFromLast(String expression, String symbol, int endpoint) {
+		// no idea how this method works anymore
 		int depth = 0;
 		boolean lastWasNumber = false;
 		boolean lastWasLetter = false;
@@ -220,18 +305,35 @@ public class NodeParser {
 						&& !(lastWasLetter && thisIsLetter && allowLongIdentifiers)) {
 					boolean inIdentifier = false;
 					for (String id : identifiers) {
-						if (!symbol.contains(id))
+						if (!symbol.contains(id)) {
 							inIdentifier = inIdentifier || indexIn(expression, i, id);
+							if (functions.contains(id)) {
+								int j = i - id.length();
+								if (j >= 0) {
+									inIdentifier = 
+											inIdentifier || 
+											expression.substring(j, j+id.length()).equals(id);
+								}
+							}
+						}
 						if (inIdentifier)
 							break;
 					}
-					for (String op: operatorStrings) {
+					for (String op: unsplittableStrings) {
 						if (!symbol.contains(op)) {
 							inIdentifier = inIdentifier || indexIn(expression, i, op);
 							int j = i - op.length();
 							if (j >= 0) {
 								inIdentifier = 
 										inIdentifier || expression.substring(j, j+op.length()).equals(op);
+							}
+							int end = i + op.length() + 1;
+							if (symbol.length() == 0)
+								end--;					// HACK
+							// also, this whole part may need to be deleted
+							if (end <= expression.length()) {
+								inIdentifier = 
+										inIdentifier || expression.substring(end - op.length(), end).equals(op);
 							}
 						}
 						if (inIdentifier)
@@ -259,7 +361,7 @@ public class NodeParser {
 		}
 		return false;
 	}
-
+	
 	private Vector<Node> splitAtIndex(String expression, int index, int symbolLength) {
 		Vector<Node> children = new Vector<Node>();
 		children.add(parseNode(expression.substring(0, index)));

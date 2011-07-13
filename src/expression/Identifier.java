@@ -1,5 +1,11 @@
 package expression;
 
+/**
+ * The class representing variable names.
+ * 
+ * @author Killian
+ *
+ */
 public class Identifier extends Value {
 
 	private String identifier;

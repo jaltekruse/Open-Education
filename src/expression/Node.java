@@ -39,4 +39,12 @@ public abstract class Node {
 		return defaultParser.parseNode(expression);
 	}
 
+	/**
+	 * @return Whether this {@code Node} is empty; that is,
+	 * if it does not contain any information and is just a placeholder.
+	 */
+	public boolean isEmpty() {
+		return (this instanceof EmptyValue);
+	}
+
 }

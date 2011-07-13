@@ -1,7 +1,7 @@
 package expression;
 
 /** A generic class representing literal numbers.
- * Currently represented by a {@code double} value.
+ * Currently represented internally by a {@code double} value.
  * 
  * @author Killian
  */
@@ -12,7 +12,7 @@ public class Number extends Value {
 	public Number(double value) {
 		if (Double.isInfinite(value) || Double.isNaN(value))
 			throw new NumericException("Invalid number format or operation");
-		this.value = value;
+		setValue(value);
 	}
 	
 	public boolean equals(Object other) {
@@ -20,7 +20,7 @@ public class Number extends Value {
 			return false;
 		if (!(other instanceof Number))
 			return false;
-		return (this.value == ((Number) other).value);
+		return (getValue() == ((Number) other).getValue());
 	}
 	
 	@Override
@@ -30,7 +30,7 @@ public class Number extends Value {
 
 	@Override
 	public String toString() {
-		return value + ""; // change this!!
+		return getValue() + ""; // change this!!
 	}
 
 	public Node replace(Identifier x, Node n) {
@@ -46,43 +46,64 @@ public class Number extends Value {
 	}
 
 	public Number add(Number o) {
-		return new Number(this.value + o.value);
+		return new Number(getValue() + o.getValue());
 	}
 	
 	public Number subtract(Number o) {
-		return new Number(this.value - o.value);
+		return new Number(getValue() - o.getValue());
 	}
 
 	public Number multiply(Number o) {
-		return new Number(this.value * o.value);
+		return new Number(getValue() * o.getValue());
 	}
 	
 	public Number divide(Number o) {
-		return new Number(this.value / o.value);
+		return new Number(getValue() / o.getValue());
 	}
 
 	public Number exponent(Number o) {
-		return new Number(Math.pow(this.value, o.value));
+		return new Number(Math.pow(getValue(), o.getValue()));
 	}
 
 	public Number negate() {
-		return new Number(- this.value);
+		return new Number(- getValue());
 	}
 	
 	public Number log() {
-		return new Number(Math.log10(this.value));
+		return new Number(Math.log10(getValue()));
+	}
+	
+	public Number ln() {
+		return new Number(Math.log(getValue()));
 	}
 	
 	public Number sin() {
-		return new Number(Math.sin(this.value));
+		return new Number(Math.sin(getValue()));
 	}
 	
 	public Number cos() {
-		return new Number(Math.sin(this.value));
+		return new Number(Math.sin(getValue()));
 	}
 	
 	public Number tan() {
-		return new Number(Math.tan(this.value));
+		return new Number(Math.tan(getValue()));
+	}
+	
+	public Number sqrt() {
+		return new Number(Math.sqrt(getValue()));
+	}
+	
+	public Number cbrt() {
+		return new Number(Math.cbrt(getValue()));
+	}
+	
+	public static Number root(Number radix, Number argument) {
+		return new Number(Math.pow(radix.getValue(), 1 / argument.getValue()));
+	}
+	
+	public static Number log(Number base, Number argument) {
+		return new Number(Math.log(argument.getValue()) 
+				/ Math.log(base.getValue()));
 	}
 
 	public static boolean isNumeric(char c) {
