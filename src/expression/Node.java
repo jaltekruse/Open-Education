@@ -37,6 +37,7 @@ public abstract class Node implements Cloneable {
 	/** Replaces all instances of {@code x} with {@code n}.
 	 * @param identifier The identifier to find.
 	 * @param node The node to replace the identifier with.
+	 * @return An altered {@code Node} with no references to the original.
 	 */
 	public abstract Node replace(Identifier identifier, Node node);
 	
@@ -44,6 +45,7 @@ public abstract class Node implements Cloneable {
 	
 	/** Simplifies all numeric calculations. 
 	 * Does not take advantage of numeric identities.
+	 * @return An altered {@code Node} with no references to the original.
 	 */
 	public abstract Node numericSimplify();
 
@@ -55,10 +57,18 @@ public abstract class Node implements Cloneable {
 		return (this instanceof EmptyValue);
 	}
 
+	/**
+	 * @return Whether this {@code Node} is currently
+	 * set to display parentheses. 
+	 */
 	public boolean displayParentheses() {
 		return displayParentheses;
 	}
 
+	/**
+	 * Sets the parentheses display setting for this node.
+	 * @param displayParentheses Whether to display parentheses.
+	 */
 	public void setDisplayParentheses(boolean displayParentheses) {
 		this.displayParentheses = displayParentheses;
 	}

@@ -13,13 +13,13 @@ public abstract class Value extends Node {
 	@Override
 	public Node collectLikeTerms() {
 		// this means nothing for pure Values
-		return this;
+		return this.clone();
 	}
 
 	@Override
 	public Node numericSimplify() {
 		// this means nothing for pure Values
-		return this;
+		return this.clone();
 	}
 
 	public static Value parseValue(String expression) {
