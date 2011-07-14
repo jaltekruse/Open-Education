@@ -1,5 +1,11 @@
 package expression;
 
+/**
+ * Represents errors encountered in {@code Node} operations.
+ * 
+ * @author Killian Kvalvik
+ *
+ */
 public class NodeException extends RuntimeException {
 
 	private static final long serialVersionUID = -4417281547925532699L;

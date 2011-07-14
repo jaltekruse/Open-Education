@@ -2,6 +2,14 @@ package expression;
 
 import java.util.Vector;
 
+/**
+ * The {@code Expression} class represents the combination
+ * of children {@code Node} objects with an {@code Operator} 
+ * to create a nontrivial expression.
+ * 
+ * @author Killian Kvalvik
+ *
+ */
 public class Expression extends Node {
 
 	private Operator o;
@@ -28,6 +36,14 @@ public class Expression extends Node {
 	@Override
 	public String toString() {
 		return parenthetize(o.toString(children));
+	}
+	
+	@Override
+	public Expression clone() {
+		Vector<Node> clone = new Vector<Node>();
+		for (Node child : children)
+			clone.add(child.clone());
+		return new Expression(o.clone(), clone);
 	}
 
 	@Override

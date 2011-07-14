@@ -1,5 +1,13 @@
 package expression;
 
+/**
+ * Instances of this class are {@code Node} objects that
+ * do not contain other {@code Node} objects; leaves on the
+ * expression tree.
+ * 
+ * @author Killian Kvalvik
+ *
+ */
 public abstract class Value extends Node {
 	
 	@Override

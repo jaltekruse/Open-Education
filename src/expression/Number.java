@@ -3,7 +3,7 @@ package expression;
 /** A generic class representing literal numbers.
  * Currently represented internally by a {@code double} value.
  * 
- * @author Killian
+ * @author Killian Kvalvik
  */
 public class Number extends Value {
 	
@@ -26,6 +26,11 @@ public class Number extends Value {
 	@Override
 	public int hashCode() {
 		return Double.valueOf(value).hashCode();
+	}
+
+	@Override
+	public Number clone() {
+		return new Number(getValue());
 	}
 
 	@Override

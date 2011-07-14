@@ -1,5 +1,11 @@
 package expression;
 
+/**
+ * Represents an empty or incomplete node.
+ * 
+ * @author Killian Kvalvik
+ *
+ */
 public class EmptyValue extends Value {
 
 	@Override
@@ -20,6 +26,11 @@ public class EmptyValue extends Value {
 	@Override
 	public Node replace(Identifier identifier, Node node) {
 		return this;
+	}
+
+	@Override
+	public EmptyValue clone() {
+		return new EmptyValue();
 	}
 
 }

@@ -7,25 +7,43 @@ import java.util.Vector;
  * All operators, such as addition, subtraction, etc. are instances 
  * of this class.
  * 
- * @author Killian
+ * @author Killian Kvalvik
  *
  */
 public abstract class Operator {
 
-	public abstract String getSymbol();
+	//TODO rearrange members
+	
+	public static interface DisplayFormat {
+		
+	}
 	
 	@Override
 	public boolean equals(Object o) {
-		if (o == null)
+		if (! (o instanceof Operator))
 			return false;
-		return this.getClass() == o.getClass();
+		return ((this.getClass() == o.getClass()) &&
+				(this.getFormat() == ((Operator) o).getFormat()));
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return 17;
 	}
+
+	@Override
+	public abstract Operator clone();
+
+	public abstract String getSymbol();
 	
+	public abstract Number evaluate(Vector<Number> children);
+
+	public abstract String format(Vector<String> children);
+
+	public DisplayFormat getFormat() {
+		return null;
+	}
+
 	public String toString(Vector<Node> children) {
 		Vector<String> stringChildren = new Vector<String>();
 		for (Node c : children)
@@ -33,10 +51,34 @@ public abstract class Operator {
 		return format(stringChildren);
 	}
 	
-	public abstract Number evaluate(Vector<Number> children);
+	public static class Negation extends Operator {
 	
-	public abstract String format(Vector<String> children);
+		@Override
+		public String getSymbol() {
+			return "-";
+		}
 	
+		@Override
+		public Number evaluate(Vector<Number> children) {
+			if (children.size() != 1)
+				throwBadArguments();
+			return children.get(0).negate();
+		}
+	
+		@Override
+		public String format(Vector<String> children) {
+			if (children.size() != 1)
+				throwBadArguments();
+			return getSymbol() + children.get(0);
+		}
+	
+		@Override
+		public Operator clone() {
+			return new Negation();
+		}
+		
+	}
+
 	public static abstract class BinaryOperator extends Operator {
 		@Override
 		public String format(Vector<String> children) {
@@ -65,6 +107,11 @@ public abstract class Operator {
 		public Number evaluate(Number a, Number b) {
 			return a.add(b);
 		}
+
+		@Override
+		public Operator clone() {
+			return new Addition();
+		}
 	}
 	
 	public static class Subtraction extends BinaryOperator {
@@ -77,27 +124,36 @@ public abstract class Operator {
 		public Number evaluate(Number a, Number b) {
 			return a.subtract(b);
 		}
+
+		@Override
+		public Operator clone() {
+			return new Subtraction();
+		}
 	}
 	
 	public static class Multiplication extends BinaryOperator {
-		private boolean implicit;
-
-		public Multiplication(boolean implicit) {
-			this.implicit = implicit;
+		
+		public enum Format implements DisplayFormat {
+			ASTERISK, DOT, IMPLICIT, X;
 		}
 		
+		private Format format;
+		
+		public Multiplication() {
+			this(Format.ASTERISK);
+		}
+		
+		public Multiplication(Format format) {
+			setFormat(format);
+		}
+
 		@Override
-		public boolean equals(Object o) {
-			return super.equals(o) && 
-					(this.implicit == ((Multiplication) o).implicit);
-		}
-		
-		public boolean isImplicit() {
-			return implicit;
+		public Format getFormat() {
+			return format;
 		}
 
-		public void setImplicit(boolean implicit) {
-			this.implicit = implicit;
+		public void setFormat(Format format) {
+			this.format = format;
 		}
 
 		@Override
@@ -107,27 +163,82 @@ public abstract class Operator {
 
 		@Override
 		public String getSymbol() {
-			if (isImplicit())
+			if (format == Format.IMPLICIT)
 				return "";
 			else
 				return "*";
 		}
+
+		@Override
+		public Operator clone() {
+			return new Multiplication(getFormat());
+		}
 	}
 	
-	public static class Division extends BinaryOperator { @Override
-		public String getSymbol() {
-			return "/";
+	public static class Division extends BinaryOperator {
+		
+		public enum Format implements DisplayFormat {
+			COLON, DIAGONAL_BAR, HORIZONTAL_BAR, OBELUS;
+		}
+		
+		private Format format;
+		
+		public Division() {
+			this(Format.HORIZONTAL_BAR);
+		}
+		
+		public Division(Format format) {
+			setFormat(format);
 		}
 
-	// add formatting if necessary!
+		public Format getFormat() {
+			return format;
+		}
+
+		public void setFormat(Format format) {
+			this.format = format;
+		}
 
 		@Override
 		public Number evaluate(Number a, Number b) {
 			return a.divide(b);
 		}
+
+		@Override
+		public String getSymbol() {
+			return "/";
+		}
+
+		@Override
+		public Operator clone() {
+			return new Division(getFormat());
+		}
 	}
 	
 	public static class Exponent extends BinaryOperator { // add formatting if necessary
+
+		public enum Format implements DisplayFormat {
+			CARET, SUPERSCRIPT;
+		}
+		
+		private Format format = Format.SUPERSCRIPT;
+		
+		public Exponent() {
+			this(Format.SUPERSCRIPT);
+		}
+		
+		public Exponent(Format format) {
+			setFormat(format);
+		}
+
+		@Override
+		public Format getFormat() {
+			return format;
+		}
+
+		public void setFormat(Format format) {
+			this.format = format;
+		}
 
 		@Override
 		public Number evaluate(Number a, Number b) {
@@ -137,6 +248,11 @@ public abstract class Operator {
 		@Override
 		public String getSymbol() {
 			return "^";
+		}
+
+		@Override
+		public Operator clone() {
+			return new Exponent(getFormat());
 		}
 		
 	}
@@ -183,6 +299,11 @@ public abstract class Operator {
 		public String getSymbol() {
 			return "log";
 		}
+
+		@Override
+		public Operator clone() {
+			return new LogBase();
+		}
 	}
 	
 	public static class Root extends Function {
@@ -199,6 +320,11 @@ public abstract class Operator {
 		@Override
 		public String getSymbol() {
 			return "root";
+		}
+
+		@Override
+		public Operator clone() {
+			return new Root();
 		}
 	}
 	
@@ -228,6 +354,11 @@ public abstract class Operator {
 		public Number evaluate(Number a) {
 			return a.log();
 		}
+
+		@Override
+		public Operator clone() {
+			return new Logarithm();
+		}
 	}
 	
 	public static class NaturalLog extends UnaryFunction {
@@ -239,6 +370,11 @@ public abstract class Operator {
 		@Override
 		public Number evaluate(Number a) {
 			return a.ln();
+		}
+
+		@Override
+		public Operator clone() {
+			return new NaturalLog();
 		}
 	}
 	
@@ -252,6 +388,11 @@ public abstract class Operator {
 		public Number evaluate(Number a) {
 			return a.sin();
 		}
+
+		@Override
+		public Operator clone() {
+			return new Sine();
+		}
 	}
 	
 	public static class Cosine extends UnaryFunction {
@@ -263,6 +404,11 @@ public abstract class Operator {
 		@Override
 		public Number evaluate(Number a) {
 			return a.cos();
+		}
+
+		@Override
+		public Operator clone() {
+			return new Cosine();
 		}
 	}
 	
@@ -276,6 +422,11 @@ public abstract class Operator {
 		public Number evaluate(Number a) {
 			return a.tan();
 		}
+
+		@Override
+		public Operator clone() {
+			return new Tangent();
+		}
 	}
 	
 	public static class SquareRoot extends UnaryFunction {
@@ -287,6 +438,11 @@ public abstract class Operator {
 		@Override
 		public Number evaluate(Number a) {
 			return a.sqrt();
+		}
+
+		@Override
+		public Operator clone() {
+			return new SquareRoot();
 		}
 	}
 	
@@ -300,29 +456,11 @@ public abstract class Operator {
 		public Number evaluate(Number a) {
 			return a.cbrt();
 		}
-	}
-	
-	public static class Negation extends Operator {
 
 		@Override
-		public String getSymbol() {
-			return "-";
+		public Operator clone() {
+			return new CubeRoot();
 		}
-
-		@Override
-		public Number evaluate(Vector<Number> children) {
-			if (children.size() != 1)
-				throwBadArguments();
-			return children.get(0).negate();
-		}
-
-		@Override
-		public String format(Vector<String> children) {
-			if (children.size() != 1)
-				throwBadArguments();
-			return getSymbol() + children.get(0);
-		}
-		
 	}
 	
 	public static void throwBadArguments() {

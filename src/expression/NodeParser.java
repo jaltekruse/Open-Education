@@ -4,9 +4,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
+/**
+ * Instances of this class parse {@code String} objects
+ * into {@code Node} objects using the {@code parseNode(String)} 
+ * method. They hold settings for specific methods of doing so.
+ * 
+ * @author Killian Kvalvik
+ *
+ */
 public class NodeParser {
-	
-	//TODO add allowEmptyArguments option
 	
 	private boolean allowEmptyArguments = false;
 	
@@ -68,7 +74,7 @@ public class NodeParser {
 		return allowLongIdentifiers;
 	}
 
-	public void setLongIdentifiers(boolean allowLongIdentifiers) {
+	public void allowLongIdentifiers(boolean allowLongIdentifiers) {
 		this.allowLongIdentifiers = allowLongIdentifiers;
 	}
 	
@@ -169,10 +175,14 @@ public class NodeParser {
 				Operator o = null;
 				if (symbol.equals("+"))
 					o = new Operator.Addition();
-				if (symbol.equals("*"))
-					o = new Operator.Multiplication(false);
-				if (symbol.equals(""))
-					o = new Operator.Multiplication(true);
+				if (symbol.equals("*")) {
+					o = new Operator.Multiplication
+					(Operator.Multiplication.Format.ASTERISK);
+				}
+				if (symbol.equals("")) {
+					o = new Operator.Multiplication
+					(Operator.Multiplication.Format.IMPLICIT);
+				}
 				if (symbol.equals("/"))
 					o = new Operator.Division();
 				if (symbol.equals("^"))

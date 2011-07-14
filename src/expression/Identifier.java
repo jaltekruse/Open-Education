@@ -3,7 +3,7 @@ package expression;
 /**
  * The class representing variable names.
  * 
- * @author Killian
+ * @author Killian Kvalvik
  *
  */
 public class Identifier extends Value {
@@ -11,14 +11,14 @@ public class Identifier extends Value {
 	private String identifier;
 	
 	public Identifier(String identifier) {
-		this.identifier = identifier;
+		setIdentifier(identifier);
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (o == null)
 			return false;
-		if (!(o instanceof Identifier))
+		if (this.getClass() != o.getClass())
 			return false;
 		return this.identifier
 				.equals(((Identifier) o).identifier);
@@ -32,6 +32,11 @@ public class Identifier extends Value {
 	@Override
 	public String toString() {
 		return getIdentifier();
+	}
+	
+	@Override
+	public Identifier clone() {
+		return new Identifier(identifier);
 	}
 
 	@Override
@@ -47,6 +52,10 @@ public class Identifier extends Value {
 	}
 	
 	public void setIdentifier(String identifier) {
+		for (int i = 0 ; i < identifier.length(); i++) {
+			if (!isValidChar(identifier.charAt(i)))
+				throw new NodeException("Invalid identifier: " + identifier);
+		}
 		this.identifier = identifier;
 	}
 
