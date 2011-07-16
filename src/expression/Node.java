@@ -1,5 +1,7 @@
 package expression;
 
+import java.util.Vector;
+
 /** {@code Node} is the root class for an expression tree and 
  * values in that tree.
  * @author Killian Kvalvik
@@ -48,7 +50,26 @@ public abstract class Node implements Cloneable {
 	 * @return An altered {@code Node} with no references to the original.
 	 */
 	public abstract Node numericSimplify();
+	
+	public Node smartNumericSimplify() {
+		return numericSimplify();
+	}
+	
+	public Node simplify() {
+		Node simplified = this;
+		Node last;
+		do {
+			last = simplified;
+			simplified = last.smartNumericSimplify().collectLikeTerms();
+		} while (!last.equals(simplified));
+		
+		return simplified;
+	}
 
+	public abstract Vector<Node> splitOnAddition();
+	
+	public abstract Vector<Node> splitOnMultiplication();
+	
 	/**
 	 * @return Whether this {@code Node} is empty; that is,
 	 * if it does not contain any information and is just a placeholder.
@@ -56,6 +77,8 @@ public abstract class Node implements Cloneable {
 	public boolean isEmpty() {
 		return (this instanceof EmptyValue);
 	}
+	
+	public abstract boolean containsIdentifier();
 
 	/**
 	 * @return Whether this {@code Node} is currently

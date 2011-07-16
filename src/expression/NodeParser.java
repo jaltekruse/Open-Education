@@ -243,9 +243,9 @@ public class NodeParser {
 							throw e;
 					}
 					if (missingArg) {
-						return new Expression(new Operator.Subtraction(), children);
-					} else {
 						return parse(expression, 1, index - 1);
+					} else {
+						return new Expression(new Operator.Subtraction(), children);
 					}
 				} else {								// negation
 					Vector<Node> child = new Vector<Node>();

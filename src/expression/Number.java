@@ -122,4 +122,8 @@ public class Number extends Value {
 			throw new NumericException(e);
 		}
 	}
+
+	public boolean isNegative() {
+		return (value < 0);
+	}
 }
