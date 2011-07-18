@@ -8,7 +8,7 @@ public class Driver {
 	public static void main(String[] args) {
 		NodeParser parser = new NodeParser();
 		parser.allowEmptyArguments(true);
-		String p = "1+log(y+2+3)+ log(y+5) -0x^2+53-27";
+		String p = "x^(y^(z^0-1+w-w)-1)-1";
 		Node n = parser.parseNode(p);
 		Node simplified = n.numericSimplify();
 		Node smartSimplified = n.smartNumericSimplify();

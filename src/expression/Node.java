@@ -60,7 +60,8 @@ public abstract class Node implements Cloneable {
 		Node last;
 		do {
 			last = simplified;
-			simplified = last.smartNumericSimplify().collectLikeTerms();
+			simplified = last.smartNumericSimplify();
+			simplified = simplified.collectLikeTerms();
 		} while (!last.equals(simplified));
 		
 		return simplified;

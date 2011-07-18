@@ -101,7 +101,8 @@ public class Expression extends Node {
 					simplified.remove(i);
 				}
 			}
-			simplified.add(staggerAddition(numbers).numericSimplify());
+			if (numbers.size() > 0)
+				simplified.add(staggerAddition(numbers).numericSimplify());
 			if (simplified.contains(new Number(0))) {
 				simplified.remove(new Number(0));
 				return staggerAddition(simplified).smartNumericSimplify();
@@ -173,14 +174,16 @@ public class Expression extends Node {
 	public Node collectLikeTerms() {
 		Vector<Node> split = splitOnAddition();
 		Vector<Node> terms = new Vector<Node>();
-		for (Node n : split)
-			terms.add(n.clone());
-		if (terms.size() == 1) {
+		if (split.size() == 1) {
 			Vector<Node> args = new Vector<Node>();
 			for (Node c : children)
 				args.add(c.collectLikeTerms());
 			return new Expression(o.clone(), args);
 		}
+		
+		for (Node n : split)
+			terms.add(n.collectLikeTerms());  // THIS is the recursion part
+		
 		Vector<Vector<Node>> expandedTerms = new Vector<Vector<Node>>();
 		Vector<Node> factors;
 		Vector<Node> collectedFactors;
@@ -188,10 +191,10 @@ public class Expression extends Node {
 			factors = term.splitOnMultiplication();
 			collectedFactors = new Vector<Node>();
 			for (Node f : factors) {
-				collectedFactors.add(f.collectLikeTerms());
+				collectedFactors.add(f.clone());
 			}
 			expandedTerms.add(collectedFactors);
-		} // that was the recursion part
+		}
 		
 		Vector<Node> additionChildren = new Vector<Node>();
 		
