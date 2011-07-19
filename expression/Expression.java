@@ -125,6 +125,9 @@ public class Expression extends Node {
 		}
 		
 		Vector<Node> factors = splitOnMultiplication();
+		Number one = new Number(1);
+		while (factors.contains(one))
+			factors.remove(one);
 		if (factors.size() > 1) {
 			Vector<Node> simplified = new Vector<Node>();
 			for (Node factor : factors) {
@@ -167,7 +170,7 @@ public class Expression extends Node {
 		Vector<Node> simplifiedChildren = new Vector<Node>();
 		for (Node child : children)
 			simplifiedChildren.add(child.smartNumericSimplify());
-		return new Expression(o.clone(), simplifiedChildren);
+		return (new Expression(o.clone(), simplifiedChildren)).numericSimplify();
 	}
 
 	@Override

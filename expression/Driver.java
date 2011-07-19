@@ -8,7 +8,8 @@ public class Driver {
 	public static void main(String[] args) {
 		NodeParser parser = new NodeParser();
 		parser.allowEmptyArguments(true);
-		String p = "x^(y^(z^0-1+w-w)-1)-1";
+		String p;
+		p = "-x^(y+2z-5w*200000-3+5-z2+7/(sqrt(4)+cbrt(a^(2b-2b^0+7))+2+3+sin(0)*(57)))";
 		Node n = parser.parseNode(p);
 		Node simplified = n.numericSimplify();
 		Node smartSimplified = n.smartNumericSimplify();
@@ -19,5 +20,6 @@ public class Driver {
 		System.out.println(smartSimplified);
 		System.out.println(likeTerms);
 		System.out.println(s);
+		System.out.println(n.replace(new Identifier("b"), new Number(2)).simplify());
 	}
 }

@@ -243,7 +243,7 @@ public class NodeParser {
 							throw e;
 					}
 					if (missingArg) {
-						return parse(expression, 1, index - 1);
+						return parse(expression, lowestPrecedence, index - 1);
 					} else {
 						return new Expression(new Operator.Subtraction(), children);
 					}
