@@ -33,4 +33,9 @@ public class EmptyValue extends Value {
 		return new EmptyValue();
 	}
 
+	@Override
+	protected int standardCompare(Node other) {
+		return 0;
+	}
+
 }

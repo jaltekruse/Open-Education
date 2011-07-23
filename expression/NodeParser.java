@@ -34,7 +34,7 @@ public class NodeParser {
 			Arrays.asList("+", "-");
 	
 	private List<String> multiplicationOps =
-			Arrays.asList("*", "/", "", "-"); // unary negation
+			Arrays.asList("*", "/", "", "-"); // unary negation taken out
 	
 	private List<String> exponentOps =
 			Arrays.asList("^");
@@ -243,14 +243,19 @@ public class NodeParser {
 							throw e;
 					}
 					if (missingArg) {
-						return parse(expression, lowestPrecedence, index - 1);
+						return parse(expression, precedence, index - 1);
 					} else {
 						return new Expression(new Operator.Subtraction(), children);
 					}
-				} else {								// negation
-					Vector<Node> child = new Vector<Node>();
-					child.add(parse(expression.substring(1)));
-					return new Expression(new Operator.Negation(), child);
+				} else {	// negation
+					if (index != 0) {
+						return parse(expression, precedence, index - 1);
+					}
+					try {
+						return Value.parseValue(expression);
+					} catch (NodeException e) {
+						return new Expression(new Operator.Negation(), parse(expression.substring(1)));
+					}
 				}
 			}
 		}
@@ -329,25 +334,27 @@ public class NodeParser {
 						if (inIdentifier)
 							break;
 					}
-					for (String op: unsplittableStrings) {
-						if (!symbol.contains(op)) {
-							inIdentifier = inIdentifier || indexIn(expression, i, op);
-							int j = i - op.length();
-							if (j >= 0) {
-								inIdentifier = 
-										inIdentifier || expression.substring(j, j+op.length()).equals(op);
+					if (symbol.length() == 0) {
+						for (String op: unsplittableStrings) {
+							if (!symbol.contains(op)) {
+								inIdentifier = inIdentifier || indexIn(expression, i, op);
+								int j = i - op.length();
+								if (j >= 0) {
+									inIdentifier = 
+											inIdentifier || expression.substring(j, j+op.length()).equals(op);
+								}
+								int end = i + op.length() + 1;
+								if (symbol.length() == 0)
+									end--;					// HACK
+								// also, this whole part may need to be deleted
+								if (end <= expression.length()) {
+									inIdentifier = 
+											inIdentifier || expression.substring(end - op.length(), end).equals(op);
+								}
 							}
-							int end = i + op.length() + 1;
-							if (symbol.length() == 0)
-								end--;					// HACK
-							// also, this whole part may need to be deleted
-							if (end <= expression.length()) {
-								inIdentifier = 
-										inIdentifier || expression.substring(end - op.length(), end).equals(op);
-							}
+							if (inIdentifier)
+								break;
 						}
-						if (inIdentifier)
-							break;
 					}
 					if (!inIdentifier) {
 						if (symbol.equals(expression.substring(i, i + symbol.length())))

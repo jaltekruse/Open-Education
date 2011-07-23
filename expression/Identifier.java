@@ -62,4 +62,14 @@ public class Identifier extends Value {
 	public static boolean isValidChar(char c) {
 		return Character.isLetter(c);
 	}
+
+	@Override
+	protected int standardCompare(Node other) {
+		if (other instanceof Number) {
+			return 1;
+		} else if (!(other instanceof Identifier)) {
+			return -1;
+		}
+		return identifier.compareTo(((Identifier) other).getIdentifier());
+	}
 }

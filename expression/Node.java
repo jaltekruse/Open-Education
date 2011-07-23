@@ -1,5 +1,6 @@
 package expression;
 
+import java.util.Comparator;
 import java.util.Vector;
 
 /** {@code Node} is the root class for an expression tree and 
@@ -8,6 +9,14 @@ import java.util.Vector;
  */
 public abstract class Node implements Cloneable {
 	
+	private static final Comparator<Node> standardComparator = 
+		new Comparator<Node>() {
+			@Override
+			public int compare(Node a, Node b) {
+					return a.standardCompare(b);
+			}
+		};
+		
 	private static final NodeParser defaultParser = new NodeParser();
 	
 	private boolean displayParentheses = false;
@@ -51,9 +60,7 @@ public abstract class Node implements Cloneable {
 	 */
 	public abstract Node numericSimplify();
 	
-	public Node smartNumericSimplify() {
-		return numericSimplify();
-	}
+	public abstract Node smartNumericSimplify();
 	
 	public Node simplify() {
 		Node simplified = this;
@@ -62,6 +69,7 @@ public abstract class Node implements Cloneable {
 			last = simplified;
 			simplified = last.smartNumericSimplify();
 			simplified = simplified.collectLikeTerms();
+			simplified = simplified.standardFormat();
 		} while (!last.equals(simplified));
 		
 		return simplified;
@@ -70,6 +78,10 @@ public abstract class Node implements Cloneable {
 	public abstract Vector<Node> splitOnAddition();
 	
 	public abstract Vector<Node> splitOnMultiplication();
+	
+	public abstract Node standardFormat();
+	
+	protected abstract int standardCompare(Node other);
 	
 	/**
 	 * @return Whether this {@code Node} is empty; that is,
@@ -102,5 +114,8 @@ public abstract class Node implements Cloneable {
 	public static Node parseNode(String expression) {
 		return defaultParser.parseNode(expression);
 	}
-
+	
+	public static Comparator<Node> getStandardComparator() {
+		return standardComparator;
+	}
 }

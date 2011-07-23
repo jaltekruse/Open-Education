@@ -19,8 +19,18 @@ public abstract class Value extends Node {
 	}
 
 	@Override
+	public Node smartNumericSimplify() {
+		return numericSimplify();
+	}
+	
+	@Override
 	public Node numericSimplify() {
 		// this means nothing for pure Values
+		return this.clone();
+	}
+	
+	@Override
+	public Node standardFormat() {
 		return this.clone();
 	}
 	

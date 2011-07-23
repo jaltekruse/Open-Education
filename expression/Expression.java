@@ -1,5 +1,8 @@
 package expression;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -266,6 +269,183 @@ public class Expression extends Node {
 		return null;
 	}
 	
+	@Override
+	public Node standardFormat() {
+		Vector<Node> terms = splitOnAddition();
+		
+		if (terms.size() > 1) {
+			Vector<Node> formattedTerms = new Vector<Node>();
+			for (Node term : terms) {
+				formattedTerms.add(term.standardFormat());
+			}
+			Vector<Vector<Node>> expandedTerms = new Vector<Vector<Node>>();
+			for (Node term : formattedTerms) {
+				expandedTerms.add(term.splitOnMultiplication());
+			}
+			
+//			Vector<Vector<Node>> expandedTerms = new Vector<Vector<Node>>();
+//			for (Node term : terms) {
+//				expandedTerms.add(term.splitOnMultiplication());
+//			}
+			
+			boolean[] subtraction = new boolean[terms.size()];
+			for (int i = 0 ; i < expandedTerms.size() ; i++) {
+				Vector<Node> expandedTerm = expandedTerms.get(i);
+				if (expandedTerm.contains(new Number(-1))) {
+					expandedTerm.remove(new Number(-1));
+					formattedTerms.set(i, staggerMultiplication(expandedTerm).standardFormat());
+					subtraction[i] = true;
+				} else {
+					subtraction[i] = false;
+				}
+			}
+			
+//			
+//			Vector<Node> formattedTerms = new Vector<Node>();
+//			for (Vector<Node> expandedTerm : expandedTerms) {
+//				formattedTerms.add(staggerMultiplication(expandedTerm).standardFormat());
+//				// this is where the recursion is for addition
+//			}
+			
+			Vector<Integer> indices = sortIntegersAs(formattedTerms, Node.getStandardComparator());
+			
+			Vector<Node> sortedTerms = new Vector<Node>();
+			boolean[] sortedSubtraction = new boolean[subtraction.length];
+			
+			for (int i = 0 ; i < indices.size() ; i++) {
+				sortedTerms.add(formattedTerms.get(indices.get(i)));
+				sortedSubtraction[i] = subtraction[indices.get(i)];
+			}
+			
+			Node sum = null;
+			for (int i = 0 ; i < sortedTerms.size() ; i++) {
+				boolean sub = sortedSubtraction[i];
+				Node term = sortedTerms.get(i);
+				if (i == 0) {
+					if (sub) {
+						sum = new Expression(new Operator.Negation(), term);
+					} else {
+						sum = term;
+					}
+				} else {
+					sum = new Expression((sub ? new Operator.Subtraction() : new Operator.Addition()),
+							sum, term);
+				}
+			}
+			
+			return sum;
+		}
+		
+		Vector<Node> factors = splitOnMultiplication();
+
+		while (factors.contains(new Number(1)) && (factors.size()  > 1)) {
+			factors.remove(new Number(1));
+		}
+		
+		if (factors.size() > 1) {
+			for (int i = 0 ; i < factors.size(); i++) {
+				Node f = factors.get(i);
+				if (f instanceof Number) {
+					Number n = (Number) f;
+					if (n.isNegative() && !n.equals(new Number(-1))) {
+						factors.set(i, n.negate());
+						factors.add(new Number(-1));
+					}
+				}
+			}
+			if (factors.remove(new Number(-1))) {
+				return new Expression(new Operator.Negation(), 
+						staggerMultiplication(factors).standardFormat());
+			}
+			for (int i = 0 ; i < factors.size() ; i++) {
+				factors.set(i, factors.get(i).standardFormat());
+			}
+			Collections.sort(factors, Node.getStandardComparator());
+			Node product = null;
+			for (int i = 0 ; i < factors.size() ; i++) {
+				Node factor = factors.get(i);
+				if (i == 0) {
+					product = factor;
+				} else {
+					Operator mult;
+					if (factor.containsIdentifier()) {
+						mult = new Operator.Multiplication(Operator.Multiplication.Format.IMPLICIT);
+					} else {
+						mult = new Operator.Multiplication(Operator.Multiplication.Format.DOT);
+					}
+					
+					product = new Expression(mult, product, factor);
+				}
+			}
+			return product;
+		}
+		
+		Vector<Node> formattedChildren = new Vector<Node>();
+		for (Node child : children) {
+			formattedChildren.add(child.standardFormat());
+		}
+		return new Expression(o.clone(), formattedChildren);
+	}
+	
+	@Override
+	public int standardCompare(Node other) {
+		if (this.equals(other))
+			return 0;
+		
+		if (!(other instanceof Expression)) {
+			return -other.standardCompare(this);
+		}
+		Expression ex = (Expression) other;
+		
+		int c = o.getClass().getCanonicalName().compareTo(
+				ex.getOperator().getClass().getCanonicalName());
+		// operator compare hack
+		if (c != 0) {
+			return c;
+		}
+		
+		int argnum = children.size() - ex.getChildren().size();
+		if (argnum < 0)
+			return -1;
+		if (argnum > 0)
+			return 1;
+		
+		int compare = 0;
+		for (int i = 0 ; i < children.size() ; i++) {
+			compare = children.get(i).standardCompare(ex.getChildren().get(i));
+			if (compare != 0)
+				return compare;
+		}
+		
+		return 0;
+	}
+	
+	private static <E> Vector<Integer> sortIntegersAs(List<E> list, Comparator<E> comparator) {
+		Vector<Integer> indices = new Vector<Integer>();
+		for (int i = 0 ; i < list.size() ; i++) {
+			indices.add(i);
+		}
+		
+		class IntegerComparator implements Comparator<Integer> {
+			private List<E> terms;
+			private Comparator<E> comparator;
+			
+			public IntegerComparator(List<E> terms, Comparator<E> comparator) {
+				this.terms = terms;
+				this.comparator = comparator;
+			}
+			
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				return comparator.compare(terms.get(o1), terms.get(o2));
+			}
+		}
+		
+		Collections.sort(indices, new IntegerComparator(list, comparator));
+		
+		return indices;
+	}
+	
 	private static Node staggerAddition(Vector<Node> addends) {
 		if (addends.isEmpty())
 			return new Number(0);
@@ -340,7 +520,7 @@ public class Expression extends Node {
 			factors.addAll(reciprocalFactors);
 		} else if (o instanceof Operator.Negation) {
 			factors.add(new Number(-1));
-			factors.add(children.get(0));
+			factors.addAll(children.get(0).splitOnMultiplication());
 		} else {
 			factors.add(this);
 		}

@@ -5,7 +5,7 @@ package expression;
  * 
  * @author Killian Kvalvik
  */
-public class Number extends Value {
+public class Number extends Value implements Comparable<Number> {
 	
 	private double value;
 	
@@ -125,5 +125,23 @@ public class Number extends Value {
 
 	public boolean isNegative() {
 		return (value < 0);
+	}
+
+	@Override
+	public int compareTo(Number arg0) {
+		double diff = value - arg0.value;
+		if (diff > 0)
+			return 1;
+		if (diff < 0)
+			return -1;
+		return 0;
+	}
+	
+	@Override
+	protected int standardCompare(Node other) {
+		if (!(other instanceof Number)) {
+			return -1;
+		}
+		return this.compareTo((Number) other);
 	}
 }
