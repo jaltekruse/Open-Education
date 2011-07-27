@@ -23,10 +23,12 @@ public abstract class PolygonObject extends MathObject {
 	
 	protected static final String ROTATE_CLOCKWISE_90 = "rotate clockwise (90)";
 	
+	private Vector<GridPoint> points;
+	
 	public PolygonObject(Page p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h);
 		numPoints = 0;
-		addDefaultAttributes();
+		points = new Vector<GridPoint>();
 		addAttribute(new IntegerAttribute("thickness", 1, 20));
 		getAttributeWithName("thickness").setValue(t);
 	}
@@ -34,7 +36,7 @@ public abstract class PolygonObject extends MathObject {
 	public PolygonObject(Page p){
 		super(p);
 		numPoints = 0;
-		addDefaultAttributes();
+		points = new Vector<GridPoint>();
 		addAttribute(new IntegerAttribute("thickness", 1, 20));
 		getAttributeWithName("thickness").setValue(1);
 	}
@@ -55,6 +57,7 @@ public abstract class PolygonObject extends MathObject {
 		
 		for (MathObjectAttribute mAtt : getAttributes()){
 			if (mAtt instanceof GridPointAttribute){
+//			for (GridPoint p : points){
 				p = ((GridPointAttribute)mAtt).getValue();
 				if (p.getx() < .5){
 					p.setx(p.getx() + 2 * (.5 - p.getx()));
@@ -71,9 +74,10 @@ public abstract class PolygonObject extends MathObject {
 	
 	protected void flipVertically(){
 		GridPoint p;
-		
+//		
 		for (MathObjectAttribute mAtt : getAttributes()){
 			if (mAtt instanceof GridPointAttribute){
+//		for (GridPoint p : points){
 				p = ((GridPointAttribute)mAtt).getValue();
 				if (p.gety() < .5){
 					p.sety(p.gety() + 2 * (.5 - p.gety()));
@@ -96,9 +100,11 @@ public abstract class PolygonObject extends MathObject {
 			}
 		}
 		return pts;
+//		return points;
 	}
 	
 	public void addVertex(GridPoint p){
+//		points.add(p);
 		int index = countVertices() + 1;
 		String name = "point" + index;
 		addAttribute(new GridPointAttribute(name, 0.0, 1.0, 0.0, 1.0));
@@ -117,6 +123,7 @@ public abstract class PolygonObject extends MathObject {
 			}
 		}
 		return n;
+//		return points.size();
 	}
 	
 	public void setThickness(int t) {

@@ -18,7 +18,7 @@ public class TextObject extends MathObject {
 		super(p);
 		getAttributeWithName("fontSize").setValue(12);
 		getAttributeWithName("text").setValue("");
-		getAttributeWithName("showBox").setValue(false);
+		getAttributeWithName("showBox").setValue(true);
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -26,7 +26,7 @@ public class TextObject extends MathObject {
 		super(p, x, y, width, height);
 		getAttributeWithName("fontSize").setValue(fontSize);
 		getAttributeWithName("text").setValue(s);
-		getAttributeWithName("showBox").setValue(false);
+		getAttributeWithName("showBox").setValue(true);
 	}
 	
 	@Override

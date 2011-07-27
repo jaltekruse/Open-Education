@@ -34,8 +34,7 @@ public class DocMouseListener implements MouseInputListener{
 	}
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
-//		System.out.println("xClick: " + e.getX() + " yClick: " + e.getY());
+		System.out.println("xClick: " + e.getX() + " yClick: " + e.getY());
 		boolean requiresRedraw = false;
 		boolean clickHandled = false;
 		
@@ -43,28 +42,25 @@ public class DocMouseListener implements MouseInputListener{
 		
 		if ( ! clickedPt.isOutSidePage()){
 			try {
+				System.out.println("in page");
 				
-				//check if focused object was contacted, prevents excessive checking entire object list
-				// interacting with objects will happen more often than focusing different objects
 				Rectangle objRect;
 				
-				if (placingObject)
-				{// placement of an object requires a mouse drag
-					setPlacingObject(false);
-					return;
-				}
-				
 				if(!clickHandled){
+					//gives extra space around object to allow selection,
+					//most useful for when objects are very thin
+					int clickBuffer = 3;
 					Vector<MathObject> currPageObjects =
 						docPanel.getDoc().getPage(clickedPt.getPage()).getObjects();
 					MathObject mObj;
 					for ( int i = (currPageObjects.size() - 1); i >= 0; i--)
 					{//cycle through all of the objects on the page that was clicked
 						mObj = docPanel.getDoc().getPage(clickedPt.getPage()).getObjects().get(i);
-						objRect = new Rectangle(mObj.getxPos(), mObj.getyPos(),
-								mObj.getWidth(), mObj.getHeight());
-						if (objRect.contains(new Point(clickedPt.getxPos(), clickedPt.getyPos())))
-						{//check if the click occurred within an object
+						objRect = new Rectangle(mObj.getxPos() - clickBuffer, mObj.getyPos() - clickBuffer,
+								mObj.getWidth() + 2 * clickBuffer, mObj.getHeight() + 2 * clickBuffer);
+						if (objRect.contains(new Point(clickedPt.getxPos(), clickedPt.getyPos())) &&
+								mObj != docPanel.getFocusedObject())
+						{// the click occurred within an object, that was not already selected
 							docPanel.setFocusedObject(mObj);
 							requiresRedraw = true;
 							clickHandled = true;
@@ -72,18 +68,48 @@ public class DocMouseListener implements MouseInputListener{
 						}
 					}
 				}
+				
 			} catch (DocumentException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
+		else
+		{//click was outside of page
+			System.out.println("outside page");
+			docPanel.setSelectedPage(null);
+			docPanel.repaintDoc();
+			return;
+		}
 		
-		if (docPanel.getFocusedObject() != null){
-			Rectangle focusedRect = new Rectangle(docPanel.getFocusedObject().getxPos(),
-					docPanel.getFocusedObject().getyPos(),
-					docPanel.getFocusedObject().getWidth(), docPanel.getFocusedObject().getHeight());
-			focusedRect.contains(new Point(e.getX(), e.getY()));
+		//objects can be off of the page, so this check must happen out here
+		if (docPanel.getFocusedObject() != null && ! clickHandled){
+			System.out.println("check for sending into obj");
+			Point objPos = null;
+			try {
+				objPos = docPanel.getObjectPos(docPanel.getFocusedObject());
+			} catch (DocumentException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			Rectangle focusedRect = new Rectangle( objPos.x, objPos.y,
+					(int) (docPanel.getFocusedObject().getWidth() * docPanel.getZoomLevel()),
+					(int) (docPanel.getFocusedObject().getHeight() * docPanel.getZoomLevel()));
+			if (focusedRect.contains(new Point(e.getX(), e.getY()))){
+				docPanel.getPageGUI().handleMouseAction(docPanel.getFocusedObject(),
+						(int) (e.getX() - objPos.getX()), (int) (e.getY() - objPos.getY()), 0);
+				clickHandled = true;
+				requiresRedraw = true;
+			}
 			//throw click down to focused object
+		}
+		
+		if ( ! clickHandled && ! clickedPt.isOutSidePage()){
+			//the click hit a page, but missed all of its objects, select the page
+			docPanel.setSelectedPage(clickedPt.getPage());
+			System.out.println("set selected page");
+			clickHandled = true;
+			requiresRedraw = true;
 		}
 		
 		if (!clickHandled)
@@ -114,6 +140,7 @@ public class DocMouseListener implements MouseInputListener{
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 		draggingDot = false;
+		System.out.println("pressed");
 		try {
 		
 			PointInDocument clickedPt = docPanel.panelPt2DocPt(e.getX(), e.getY());
@@ -162,7 +189,10 @@ public class DocMouseListener implements MouseInputListener{
 					boolean b = MathObjectGUI.detectBorderCollision(new Point(e.getX(), e.getY()),
 							docPanel.getFocusedObject(), docPanel.getPageOrigin(
 									docPanel.getFocusedObject().getParentPage()), docPanel.getZoomLevel());
-//					System.out.println(b);
+//					boolean b = MathObjectGUI.detectObjectCollision(new Point(e.getX(), e.getY()),
+//					docPanel.getFocusedObject(), docPanel.getPageOrigin(
+//							docPanel.getFocusedObject().getParentPage()), docPanel.getZoomLevel());
+					
 					if (b){
 						draggingObject = true;
 						xBoxOffset = (int) ( (e.getX() - docPanel.getPageOrigin(
@@ -185,6 +215,15 @@ public class DocMouseListener implements MouseInputListener{
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
+		
+		if (objPlacementRequiresMouseDrag)
+		{// the mouse was pressed, but not dragged to set an objects size
+			//set a default size
+			objToPlace.setWidth(50);
+			objToPlace.setHeight(50);
+			objPlacementRequiresMouseDrag = false;
+		}
+		docPanel.updateObjectToolFrame();
 		draggingDot = false;
 		draggingObject = false;
 		placingObject = false;

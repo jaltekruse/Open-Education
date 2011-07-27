@@ -43,6 +43,8 @@ import gui.TopLevelContainerOld;
 
 public class OpenNotebook extends JApplet{
 	
+	private static boolean inStudentMode;
+	
 	public OpenNotebook(){
 		//create background resources here
 		//GUI elements will be created in NotebookInterface
@@ -69,7 +71,21 @@ public class OpenNotebook extends JApplet{
 		Dimension frameDim = new Dimension(1000, 600);
 		application.setPreferredSize(frameDim);
 		application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		//Custom button text
+		Object[] options = {"Student", "Teacher"};
+		int n = JOptionPane.showOptionDialog(application,
+		    "Which mode would you like to run?",
+		    "Mode Seletion",
+		    JOptionPane.YES_NO_CANCEL_OPTION,
+		    JOptionPane.QUESTION_MESSAGE,
+		    null,
+		    options,
+		    options[1]);
 
+		if (n == 0){
+			setInStudentMode(true);
+		}
 		OpenNotebook notebook = new OpenNotebook();
 		addContents(application.getContentPane(), notebook);
 		
@@ -94,5 +110,13 @@ public class OpenNotebook extends JApplet{
 				createAndShowGUI();
 			}
 		});
+	}
+
+	public static void setInStudentMode(boolean b) {
+		inStudentMode = b;
+	}
+
+	public boolean isInStudentMode() {
+		return inStudentMode;
 	}
 }

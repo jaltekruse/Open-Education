@@ -45,6 +45,10 @@ public class MathObjectGUI{
 		System.out.println("empty defualt mathObject renderer");
 	};
 	
+	public void drawInteractiveComponents(MathObject object, Graphics g, Point pageOrigin, float zoomLevel){
+		System.out.println("empty defualt mathObject interactive components renderer");
+	};
+	
 	public static void drawResizingDots(MathObject object, Graphics g, Point pageOrigin, float zoomLevel){
 		
 		Point p;
@@ -96,7 +100,7 @@ public class MathObjectGUI{
 	
 	public static int detectResizeDotCollision(Point clickPos, MathObject object,
 			Point pageOrigin, float zoomLevel){
-		int extraBuffer = 2;
+		int extraBuffer = 0;
 		Point p;
 		for (int i = NORTHWEST_DOT; i <= WEST_DOT; i++){
 			p = getPosResizeDot(object, pageOrigin, zoomLevel, i);
@@ -108,6 +112,28 @@ public class MathObjectGUI{
 			}
 		}
 		return Integer.MAX_VALUE;
+	}
+	
+	public static boolean detectObjectCollision(Point clickPos, MathObject object,
+			Point pageOrigin, float zoomLevel){
+		//(x0,y0)----(x1,y0)
+		//  |           |
+		//  |           |
+		//(x0,y1)----(x1,y1)
+		int x0 = (int) (object.getxPos() * zoomLevel + pageOrigin.getX());
+		int x1 = (int) ((object.getxPos() + object.getWidth()) * zoomLevel + pageOrigin.getX());
+		int y0 = (int) (object.getyPos() * zoomLevel + pageOrigin.getY());
+		int y1 = (int) ((object.getyPos() + object.getHeight()) * zoomLevel + pageOrigin.getY());
+		int x =  (int) clickPos.getX();
+		int y = (int) clickPos.getY();
+		
+		Rectangle bigRect = new Rectangle(x0 - resizeDotDiameter, y0 - resizeDotDiameter,
+				x1 - x0 + 2 * resizeDotDiameter, y1 - y0 + 2 * resizeDotDiameter);
+		
+		if (bigRect.contains(x,y)){
+			return true;
+		}
+		return false;
 	}
 	
 	public static boolean detectBorderCollision(Point clickPos, MathObject object,

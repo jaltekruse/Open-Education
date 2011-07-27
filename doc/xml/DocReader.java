@@ -24,6 +24,7 @@ import com.sun.org.apache.bcel.internal.classfile.Attribute;
 
 import doc.Document;
 import doc.Page;
+import doc.mathobjects.AnswerBoxObject;
 import doc.mathobjects.AttributeException;
 import doc.mathobjects.BooleanAttribute;
 import doc.mathobjects.CubeObject;
@@ -161,6 +162,11 @@ public class DocReader extends DefaultHandler {
 						return;
 					}
 				}
+				
+				if (qName.equals(MathObject.ANSWER_BOX)){
+					mObj = new AnswerBoxObject(page);
+					justAddedObject = true;
+				}
 				if (qName.equals(MathObject.CUBE_OBJECT)){
 					mObj = new CubeObject(page);
 					justAddedObject = true;
@@ -225,7 +231,8 @@ public class DocReader extends DefaultHandler {
 				qName.equals(MathObject.TRAPEZOID_OBJECT) ||
 				qName.equals(MathObject.TRIANGLE_OBJECT) ||
 				qName.equals(MathObject.CUBE_OBJECT) ||
-				qName.equals(MathObject.PARALLELOGRAM_OBJECT)
+				qName.equals(MathObject.PARALLELOGRAM_OBJECT) ||
+				qName.equals(MathObject.ANSWER_BOX)
 				)
 		{
 			mObj = null;

@@ -150,7 +150,7 @@ public class MainApplet extends JApplet implements TopLevelContainerOld{
 		
 		//have been working a lot with the rendering system, so it is set
 		//to be the default tab
-		graphTabs.setSelectedIndex(3);
+		graphTabs.setSelectedIndex(2);
 
 		graphTabs.addChangeListener(graphTabsListener());
 

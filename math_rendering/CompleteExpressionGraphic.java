@@ -35,6 +35,7 @@ public class CompleteExpressionGraphic{
 	private Cursor cursor;
 	private ValueGraphic firstSel;
 	public int xPos, yPos, bigFontSize;
+	public static final int defaultBigFontSize = 12;
 
 	public float DOC_ZOOM_LEVEL;
 	
@@ -48,8 +49,12 @@ public class CompleteExpressionGraphic{
 	public CompleteExpressionGraphic(Expression v){
 		this.v = v;
 		cursor = new Cursor();
-		bigFont =  new Font("SansSerif", 0, 12);
-		smallFont = new Font("SansSerif", 0, 10);
+		bigFont =  new Font("SansSerif", 0, defaultBigFontSize);
+		smallFont = new Font("SansSerif", 0, (int) (defaultBigFontSize * (4.0/5)) );
+	}
+	
+	public float getSizeAdjustment(){
+		return (bigFontSize + 0.0f )/ defaultBigFontSize;
 	}
 	
 	public void draw(){

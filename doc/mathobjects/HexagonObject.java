@@ -15,13 +15,11 @@ public class HexagonObject extends PolygonObject {
 	
 	public HexagonObject(Page p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h, t);
-		addDefaultAttributes();
 		addInitialPoints();
 	}
 	
 	public HexagonObject(Page p){
 		super(p);
-		addDefaultAttributes();
 		addInitialPoints();
 
 	}

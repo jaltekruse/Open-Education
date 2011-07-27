@@ -1,14 +1,5 @@
-/*
- * This file is part of an application developed by Open Education Inc.
- * The source code of the entire project is the exclusive property of
- * Open Education Inc. If you have received this file in error please
- * inform the project leader at altekrusejason@gmail.com to report where
- * the file was found and delete it immediately. 
- */
-
 package doc.mathobjects;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -16,20 +7,17 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
-import java.util.TreeMap;
 
-public class TextObjectGUI extends MathObjectGUI{
+public class AnswerBoxGUI extends MathObjectGUI {
 
-
-	public void drawMathObject(TextObject object, Graphics g, Point pageOrigin,
+	
+	public void drawMathObject(AnswerBoxObject object, Graphics g, Point pageOrigin,
 			float zoomLevel) {
 		
 		int xOrigin = (int) (pageOrigin.getX() + object.getxPos() * zoomLevel);
@@ -39,6 +27,9 @@ public class TextObjectGUI extends MathObjectGUI{
 		
 		if ( ! object.getText().equals("")){
 			Font f = g.getFont();
+			
+			g.setColor(new Color(180, 255, 100));
+			g.fillRect(xOrigin, yOrigin, width, height);
 	
 			float fontSize = object.getFontSize() * zoomLevel;
 			
@@ -70,44 +61,11 @@ public class TextObjectGUI extends MathObjectGUI{
 
 			g.setFont(f);
 		}
-		if ( ((BooleanAttribute)object.getAttributeWithName("showBox")).getValue()){
-			g.setColor(Color.GRAY);
-			g.drawRect(xOrigin, yOrigin, width, height);
+		else{
+			g.setColor(new Color(230, 230, 255));
+			g.fillRect(xOrigin, yOrigin, width, height);
 		}
+		g.setColor(Color.GRAY);
+		g.drawRect(xOrigin, yOrigin, width, height);
 	}
-	
-
-//	public void drawMathObject(TextObject object, Graphics g, Point pageOrigin,
-//			float zoomLevel) {
-//		// TODO Auto-generated method stub
-//		
-//		
-////		System.out.println("draw text");
-//		Font f = g.getFont();
-//		
-//		g.setColor(Color.BLACK);
-//		int xOrigin = (int) (pageOrigin.getX() + object.getxPos() * zoomLevel);
-//		int yOrigin = (int) (pageOrigin.getY() + object.getyPos() * zoomLevel);
-//		int width = (int) (object.getWidth() * zoomLevel);
-//		int height = (int) (object.getHeight() * zoomLevel);
-//		int fontSize = (int) (object.getFontSize() * zoomLevel);
-//		
-//		Graphics2D g2d = (Graphics2D)g;
-//		g2d.setFont(new Font("SansSerif", 0, fontSize));
-//		//draw lines of text with loop
-//		
-//		int textyPos = yOrigin + g.getFontMetrics().getHeight() + (int) (3 * zoomLevel);
-//		int textxPos = xOrigin + (int) (3 * zoomLevel);
-//		String s = object.getText();
-//		g.drawString(s, textxPos, textyPos);
-//		textyPos += g.getFontMetrics().getHeight();
-//		
-//		if ( ((BooleanAttribute)object.getAttributeWithName("showBox")).getValue()){
-//			g.setColor(Color.BLUE);
-//			g.drawRect(xOrigin, yOrigin, width, height);
-//		}
-//
-//		g.setFont(f);
-//	}
-
 }

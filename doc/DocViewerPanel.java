@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
@@ -60,9 +61,11 @@ public class DocViewerPanel extends JDesktopPane{
 	
 	private DocViewerPanel thisPanel;
 	
-	private ObjectPropertiesFrame toolFrame;
+	private ObjectPropertiesFrame objPropsFrame;
 	
 	private JInternalFrame docPropsFrame;
+	
+	private Page selectedPage;
 	
 	/**
 	 * The minimum space allowed around any side of the document. Given as an
@@ -75,7 +78,7 @@ public class DocViewerPanel extends JDesktopPane{
 	
 	private MathObject focusedObject;
 	
-	private PageGUI pageRenderer;
+	private PageGUI pageGUI;
 	
 	private JPanel docPanel;
 	
@@ -85,15 +88,17 @@ public class DocViewerPanel extends JDesktopPane{
 	//scroll wheel is moved quickly
 	private int scrollCounter;
 	
+	private boolean isInStudentMode;
 	
-	public DocViewerPanel(Document d, TopLevelContainerOld t){
+	public DocViewerPanel(Document d, TopLevelContainerOld t, boolean b){
 		doc = d;
 		
+		isInStudentMode = b;
 		thisPanel = this;
 
 		scrollCounter = 0;
 		
-		pageRenderer = new PageGUI(this);
+		setPageGUI(new PageGUI(this));
 		
 		zoomLevel = 1;
 		currentPage = 1;
@@ -110,61 +115,12 @@ public class DocViewerPanel extends JDesktopPane{
 //		docPanel.addMouseWheelListener(makeMouseWheelListener());
 		
 		docScrollPane = new JScrollPane(docPanel);
-		docScrollPane.setWheelScrollingEnabled(false);
+		docScrollPane.setWheelScrollingEnabled(true);
+		docScrollPane.getVerticalScrollBar().setUnitIncrement(12);
+		docScrollPane.getHorizontalScrollBar().setUnitIncrement(12);
 		
-		docScrollPane.addMouseWheelListener(new MouseWheelListener(){
-
-			@Override
-			public void mouseWheelMoved(final MouseWheelEvent e) {
-				// TODO Auto-generated method stub
-				if (e.getWheelRotation() < 0)
-				{// the wheel movement was negative
-					if (scrollCounter > 0)
-					{//the last wheel movement was in the positive direction
-						scrollCounter++;
-						if (scrollCounter > 3 && docScrollPane.getViewport().getViewPosition().getY() > 0)
-						{//there has been three consecutive positive wheel movements
-							//and the view is not at the end of the doc
-							docScrollPane.getViewport().setViewPosition(new Point(
-									(int)docScrollPane.getViewport().getViewPosition().getX(), 
-									(int) docScrollPane.getViewport().getViewPosition().getY()
-									+ e.getWheelRotation() * 25 * 3));
-							scrollCounter = 0;
-						}
-					}
-					else
-					{//the last motion was negative, start counting up positive movements
-						scrollCounter = 1;
-					}
-				}
-				
-				if (e.getWheelRotation() > 0)
-				{// the wheel movement was negative
-					if (scrollCounter < 0)
-					{//the last wheel movement was in the negative direction
-						scrollCounter--;
-						if (scrollCounter < -3 && docScrollPane.getViewport().getViewPosition().getY()
-								+ docScrollPane.getViewport().getHeight() < docPanel.getHeight())
-						{//there has been three consecutive positive wheel movements
-							//and the view is not at the end of the doc
-							docScrollPane.getViewport().setViewPosition(new Point(
-									(int)docScrollPane.getViewport().getViewPosition().getX(), 
-									(int) docScrollPane.getViewport().getViewPosition().getY()
-									+ e.getWheelRotation() * 25 * 3));
-							scrollCounter = 0;
-						}
-					}
-					else
-					{//the last motion was positive, start counting up negative movements
-						scrollCounter = -1;
-					}
-				}
-			}
-			
-		});
-		
-		toolFrame = new ObjectPropertiesFrame(this);
-		this.add(toolFrame);
+		objPropsFrame = new ObjectPropertiesFrame(this);
+		this.add(objPropsFrame);
 		//do not show yet, only appears when MathObject is selected
 		
 		docPropsFrame = new JInternalFrame("Document",
@@ -224,6 +180,7 @@ public class DocViewerPanel extends JDesktopPane{
 			
 //				System.out.println("repaint");
 				//set the graphics object to render text and shapes with smooth lines
+				
 				Graphics2D g2d = (Graphics2D)g;
 //				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 				
@@ -282,7 +239,7 @@ public class DocViewerPanel extends JDesktopPane{
 						}
 						
 						try {
-							pageRenderer.drawPageWithDecorations(g, doc.getPage(i), new Point(
+							pageGUI.drawPageWithDecorations(g, doc.getPage(i), new Point(
 									(int) pageOrigin.getX(), (int) pageOrigin.getY()),
 									new Rectangle(xShowing, yShowing, 10, 0), zoomLevel);
 						} catch (DocumentException e) {
@@ -291,13 +248,28 @@ public class DocViewerPanel extends JDesktopPane{
 						}
 					}
 				}
+				
+				
+//				//testing the scaling of fonts, this code block should not end up in release
+//				
+//				String s = "This is a random message";
+//				Font font = g.getFont();
+//				float fontSize = 12;
+//				Font f = font.deriveFont(fontSize);
+//				for (int  i = 0; i < 10; i++){
+//					f = font.deriveFont(fontSize);
+//					g.setFont(f);
+//					System.out.println("length at" + fontSize +  "pt: " + g.getFontMetrics().stringWidth(s));
+//					fontSize += .1;
+//				}
+				
 				g.dispose();
 			}
 		};
 	}
 	
 	public void toggleDocPropsFrame(){
-		docPropsFrame.getContentPane().add(toolFrame.generatePanel(getDoc(), this));
+		docPropsFrame.getContentPane().add(objPropsFrame.generatePanel(getDoc(), this));
 		docPropsFrame.setVisible( ! docPropsFrame.isVisible());
 	}
 	
@@ -332,9 +304,12 @@ public class DocViewerPanel extends JDesktopPane{
 			   public void run() {
 					docPanel.repaint();
 					docPanel.revalidate();
-					toolFrame.update();
 			   }
 		});
+	}
+	
+	public void updateObjectToolFrame(){
+		objPropsFrame.update();
 	}
 	
 	public Document getDoc(){
@@ -387,17 +362,50 @@ public class DocViewerPanel extends JDesktopPane{
 		docMouse.setPlacingObject(true);
 		docMouse.setObjToPlace(mObj);
 	}
-
-	public void setFocusedObject(MathObject focusedObject) {
-		this.focusedObject = focusedObject;
-		if (focusedObject != null){
-			toolFrame.generatePanel(focusedObject);
-			toolFrame.setVisible(true);
-			toolFrame.setBounds(docScrollPane.getWidth() - 230,
-					docScrollPane.getHeight()/2 - 150, 200, 350);
+	
+	public void setSelectedPage(int i){
+		try {
+			setSelectedPage(doc.getPage(i));
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void setSelectedPage(Page p){
+		if (doc.getPages().contains(p) && ! isInStudentMode()){
+			selectedPage = p;
+			setFocusedObject(null);
 		}
 		else{
-			toolFrame.setVisible(false);
+			if (p == null)
+			{//to indicate that no page is currently selected
+				selectedPage = null;
+			}
+			else{
+				System.out.println("page is not in the document associated with this DocViewerPanel");
+			}
+		}
+	}
+
+	public Page getSelectedPage(){
+		return selectedPage;
+	}
+	
+	public void setFocusedObject(MathObject focusedObject) {
+		if (focusedObject != null){
+			if ( ! isInStudentMode() || (isInStudentMode() && focusedObject.isStudentSelectable())){
+			this.focusedObject = focusedObject;
+				objPropsFrame.generatePanel(focusedObject);
+				objPropsFrame.setVisible(true);
+				objPropsFrame.setBounds(docScrollPane.getWidth() - 230,
+						docScrollPane.getHeight()/2 - 150, 200, 350);
+				setSelectedPage(null);
+			}
+		}
+		else{
+			this.focusedObject = focusedObject;
+			objPropsFrame.setVisible(false);
 		}
 	}
 
@@ -465,7 +473,12 @@ public class DocViewerPanel extends JDesktopPane{
 		
 		return new Point((docPanel.getWidth() - pageXSize)/2,
 				adjustedBufferSpace + (pageIndex - 1) * (pageYSize + adjustedBufferSpace));
-		
+	}
+	
+	public Point getObjectPos(MathObject mObj) throws DocumentException{
+		Point pageOrigin = getPageOrigin(mObj.getParentPage());
+		return new Point( (int) (pageOrigin.getX() + mObj.getxPos() * zoomLevel)
+				, (int) (pageOrigin.getY() + mObj.getyPos() * zoomLevel));
 	}
 	
 	public Point getPageOrigin(Page p) throws DocumentException{
@@ -482,5 +495,21 @@ public class DocViewerPanel extends JDesktopPane{
 	
 	public float getZoomLevel(){
 		return zoomLevel;
+	}
+
+	public void setInStudentMode(boolean isInStudentMode) {
+		this.isInStudentMode = isInStudentMode;
+	}
+
+	public boolean isInStudentMode() {
+		return isInStudentMode;
+	}
+
+	public void setPageGUI(PageGUI pageRenderer) {
+		this.pageGUI = pageRenderer;
+	}
+
+	public PageGUI getPageGUI() {
+		return pageGUI;
 	}
 }

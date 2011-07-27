@@ -34,6 +34,7 @@ import javax.swing.JToolBar;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import doc.mathobjects.AnswerBoxObject;
 import doc.mathobjects.CubeObject;
 import doc.mathobjects.ExpressionObject;
 import doc.mathobjects.GraphObject;
@@ -96,7 +97,7 @@ public class NotebookPanel extends SubPanel {
 		this.add(docTabs, bCon);
 		
 		openDocs = new Vector<DocViewerPanel>();
-		openDocs.add(new DocViewerPanel(doc, getTopLevelContainer()));
+		openDocs.add(new DocViewerPanel(doc, getTopLevelContainer(), openNotebook.isInStudentMode()));
 		docTabs.add(openDocs.get(0), openDocs.get(0).getDoc().getName());
 		
 	}
@@ -118,19 +119,88 @@ public class NotebookPanel extends SubPanel {
 		
 		add(docTabs);
 		
-		JToolBar fileActions = new JToolBar("file actions");
-		JToolBar objectActions = new JToolBar("object actions");
-		JToolBar objectToolbar = new JToolBar("objects");
-		
 		JPanel topToolBars = new JPanel();
 		FlowLayout layout = new FlowLayout();
 		layout.setAlignment(FlowLayout.LEFT);
 		topToolBars.setLayout(layout);
+		
+		JToolBar fileActions = new JToolBar("file actions");
 		topToolBars.add(fileActions);
-		topToolBars.add(objectActions);
+		
+		if ( ! openNotebook.isInStudentMode()){
+			JToolBar objectActions = new JToolBar("object actions");
+			topToolBars.add(objectActions);
+			ImageIcon deleteIcon = getIcon("img/delete.png");
+			
+			OCButton deleteButton = new OCButton(deleteIcon, "Delete", 1, 1, 3, 0, objectActions, null){
+				
+				//allow this button to also delete page, need to add code to allow page to be
+				//selected and have visual feedback (a border) to indicate selection
+				public void associatedAction(){
+					if (getCurrentDocViewer().getFocusedObject() != null){
+						MathObject mObj = openDocs.get(docTabs.getSelectedIndex()).getFocusedObject();
+						mObj.getParentPage().removeObject(mObj);
+						openDocs.get(docTabs.getSelectedIndex()).setFocusedObject(null);
+						openDocs.get(docTabs.getSelectedIndex()).repaintDoc();
+					}
+				}
+			};
+			
+			ImageIcon bringToFrontIcon = getIcon("img/bringToFront.png");
+			
+			OCButton bringToFrontButton = new OCButton(bringToFrontIcon, "Bring to Front", 1, 1, 3, 0, objectActions, null){
+				
+				public void associatedAction(){
+					MathObject mObj = getCurrentDocViewer().getFocusedObject();
+					if (mObj!= null){
+						mObj.getParentPage().bringObjectToFront(mObj);
+						getCurrentDocViewer().repaintDoc();
+					}
+				}
+			};
+			
+			ImageIcon sendForwardIcon = getIcon("img/sendForward.png");
+			
+			OCButton sendForwardButton = new OCButton(sendForwardIcon, "Send Forward", 1, 1, 3, 0, objectActions, null){
+				
+				public void associatedAction(){
+					MathObject mObj = getCurrentDocViewer().getFocusedObject();
+					if (mObj!= null){
+						mObj.getParentPage().sendObjectForward(mObj);
+						getCurrentDocViewer().repaintDoc();
+					}
+				}
+			};
+			ImageIcon bringToBackIcon = getIcon("img/bringToBack.png");
+			
+			OCButton bringToBackButton = new OCButton(bringToBackIcon, "Bring to Back", 1, 1, 3, 0, objectActions, null){
+	
+				public void associatedAction(){
+					MathObject mObj = getCurrentDocViewer().getFocusedObject();
+					if (mObj!= null){
+						mObj.getParentPage().bringObjectToBack(mObj);
+						openDocs.get(docTabs.getSelectedIndex()).repaintDoc();
+					}
+				}
+			};
+			ImageIcon sendBackwardIcon = getIcon("img/sendBackward.png");
+			
+			OCButton sendBackwardButton = new OCButton(sendBackwardIcon, "Send Backward", 1, 1, 3, 0, objectActions, null){
+				
+				//allow this button to also delete page, need to add code to allow page to be
+				//selected and have visual feedback (a border) to indicagte selection
+				public void associatedAction(){
+					MathObject mObj = getCurrentDocViewer().getFocusedObject();
+					if (mObj!= null){
+						mObj.getParentPage().sendObjectBackward(mObj);
+						getCurrentDocViewer().repaintDoc();
+					}
+				}
+			};
+		}
 		
 		add(topToolBars, BorderLayout.NORTH);
-		add(objectToolbar, BorderLayout.SOUTH);
+
 		
 		Icon saveIcon = getIcon("img/save.png");
 		
@@ -180,24 +250,36 @@ public class NotebookPanel extends SubPanel {
 			}
 		};
 		
-		ImageIcon newPageIcon = getIcon("img/newPage.png");
-		
-		OCButton newPageButton = new OCButton(newPageIcon, "Add Page", 1, 1, 2, 0, fileActions, null){
+		if ( ! openNotebook.isInStudentMode()){
+			ImageIcon newPageIcon = getIcon("img/newPage.png");
 			
-			public void associatedAction(){
-				getCurrentDocViewer().getDoc().addBlankPage();
-				getCurrentDocViewer().resizeViewWindow();
-			}
-		};
-		
-		ImageIcon pagePropsIcon = getIcon("img/pageProperties.png");
-		
-		OCButton pagePropsButton = new OCButton(pagePropsIcon, "Doc Properties", 1, 1, 2, 0, fileActions, null){
+			OCButton newPageButton = new OCButton(newPageIcon, "Add Page", 1, 1, 2, 0, fileActions, null){
+				
+				public void associatedAction(){
+					getCurrentDocViewer().getDoc().addBlankPage();
+					getCurrentDocViewer().resizeViewWindow();
+				}
+			};
 			
-			public void associatedAction(){
-				getCurrentDocViewer().toggleDocPropsFrame();
-			}
-		};
+			ImageIcon deletePageIcon = getIcon("img/deletePage.png");
+			
+			OCButton deletePageButton = new OCButton(deletePageIcon, "Delete Page", 1, 1, 2, 0, fileActions, null){
+				
+				public void associatedAction(){
+					getCurrentDocViewer().getDoc().removePage(getCurrentDocViewer().getSelectedPage());
+					getCurrentDocViewer().resizeViewWindow();
+				}
+			};
+			
+			ImageIcon pagePropsIcon = getIcon("img/pageProperties.png");
+			
+			OCButton pagePropsButton = new OCButton(pagePropsIcon, "Doc Properties", 1, 1, 2, 0, fileActions, null){
+				
+				public void associatedAction(){
+					getCurrentDocViewer().toggleDocPropsFrame();
+				}
+			};
+		}
 		
 		ImageIcon zoomInIcon = getIcon("img/zoomIn.png");
 		
@@ -216,22 +298,23 @@ public class NotebookPanel extends SubPanel {
 				openDocs.get(docTabs.getSelectedIndex()).zoomOut();
 			}
 		};
-		
-		ImageIcon undoIcon = getIcon("img/undo.png");
-		
-		OCButton undoButton = new OCButton(undoIcon, "Undo", 1, 1, 3, 0, fileActions, null){
+		if ( ! openNotebook.isInStudentMode()){
+			ImageIcon undoIcon = getIcon("img/undo.png");
 			
-			public void associatedAction(){
-			}
-		};
-		
-		ImageIcon redoIcon = getIcon("img/redo.png");
-		
-		OCButton redoButton = new OCButton(redoIcon, "Redo", 1, 1, 3, 0, fileActions, null){
+			OCButton undoButton = new OCButton(undoIcon, "Undo", 1, 1, 3, 0, fileActions, null){
+				
+				public void associatedAction(){
+				}
+			};
 			
-			public void associatedAction(){
-			}
-		};
+			ImageIcon redoIcon = getIcon("img/redo.png");
+			
+			OCButton redoButton = new OCButton(redoIcon, "Redo", 1, 1, 3, 0, fileActions, null){
+				
+				public void associatedAction(){
+				}
+			};
+		}
 		
 		ImageIcon printIcon = getIcon("img/print.png");
 		
@@ -262,79 +345,59 @@ public class NotebookPanel extends SubPanel {
 						/* The job did not successfully complete */
 					}
 				}
+			}
+		};
+		
+		if ( ! openNotebook.isInStudentMode()){
+			createObjectToolbar();
+		}
+		
+		openDocs = new Vector<DocViewerPanel>();
+		Document newDoc = new Document("Untitled Document");
+		newDoc.addBlankPage();
+		openDocs.add(new DocViewerPanel(newDoc, getTopLevelContainer(), openNotebook.isInStudentMode()));
+		
+		//change the value passed in to randomly add objects onto the screen
+		randomlyAddObjects(0);
+		
+		int tabIndex = 0;
+		for (DocViewerPanel d : openDocs){
+			docTabs.addTab(d.getDoc().getName(), d);
+			docTabs.setTabComponentAt(tabIndex, new DocTabClosePanel(this, d));
+			tabIndex++;
+		}
+		
+		docTabs.add(new JPanel(), "+");
+		
+		docTabs.addChangeListener( new ChangeListener(){
+			public void stateChanged(ChangeEvent arg0) {
+				int selected = 	docTabs.getSelectedIndex();
+				String nameSelected = docTabs.getTitleAt(selected);
+				if (nameSelected.equals("+"))
+				{//add a new untitled document
+					if (justClosedTab == false){
+						Document tempDoc = new Document("Untitled Document");
+						tempDoc.addBlankPage();
+						addDoc(tempDoc);
+					}
+					else
+					{// the last tab in the list was closed, set selected tab to new last tab
+						docTabs.setSelectedIndex(docTabs.getTabCount() - 2);
+					}
+				}
+			}
+		});
+		
+	}
 	
-			}
-		};
+	private void createObjectActionsBar(){
 		
+	}
+	
+	private void createObjectToolbar(){
+		JToolBar objectToolbar = new JToolBar("objects");
+		add(objectToolbar, BorderLayout.SOUTH);
 		
-		ImageIcon deleteIcon = getIcon("img/delete.png");
-		
-		OCButton deleteButton = new OCButton(deleteIcon, "Delete", 1, 1, 3, 0, objectActions, null){
-			
-			//allow this button to also delete page, need to add code to allow page to be
-			//selected and have visual feedback (a border) to indicate selection
-			public void associatedAction(){
-				if (getCurrentDocViewer().getFocusedObject() != null){
-					MathObject mObj = openDocs.get(docTabs.getSelectedIndex()).getFocusedObject();
-					mObj.getParentPage().removeObject(mObj);
-					openDocs.get(docTabs.getSelectedIndex()).setFocusedObject(null);
-					openDocs.get(docTabs.getSelectedIndex()).repaintDoc();
-				}
-			}
-		};
-		
-		ImageIcon bringToFrontIcon = getIcon("img/bringToFront.png");
-		
-		OCButton bringToFrontButton = new OCButton(bringToFrontIcon, "Bring to Front", 1, 1, 3, 0, objectActions, null){
-			
-			public void associatedAction(){
-				MathObject mObj = getCurrentDocViewer().getFocusedObject();
-				if (mObj!= null){
-					mObj.getParentPage().bringObjectToFront(mObj);
-					getCurrentDocViewer().repaintDoc();
-				}
-			}
-		};
-		
-		ImageIcon sendForwardIcon = getIcon("img/sendForward.png");
-		
-		OCButton sendForwardButton = new OCButton(sendForwardIcon, "Send Forward", 1, 1, 3, 0, objectActions, null){
-			
-			public void associatedAction(){
-				MathObject mObj = getCurrentDocViewer().getFocusedObject();
-				if (mObj!= null){
-					mObj.getParentPage().sendObjectForward(mObj);
-					getCurrentDocViewer().repaintDoc();
-				}
-			}
-		};
-		ImageIcon bringToBackIcon = getIcon("img/bringToBack.png");
-		
-		OCButton bringToBackButton = new OCButton(bringToBackIcon, "Bring to Back", 1, 1, 3, 0, objectActions, null){
-
-			public void associatedAction(){
-				MathObject mObj = getCurrentDocViewer().getFocusedObject();
-				if (mObj!= null){
-					mObj.getParentPage().bringObjectToBack(mObj);
-					openDocs.get(docTabs.getSelectedIndex()).repaintDoc();
-				}
-			}
-		};
-		ImageIcon sendBackwardIcon = getIcon("img/sendBackward.png");
-		
-		OCButton sendBackwardButton = new OCButton(sendBackwardIcon, "Send Backward", 1, 1, 3, 0, objectActions, null){
-			
-			//allow this button to also delete page, need to add code to allow page to be
-			//selected and have visual feedback (a border) to indicagte selection
-			public void associatedAction(){
-				MathObject mObj = getCurrentDocViewer().getFocusedObject();
-				if (mObj!= null){
-					mObj.getParentPage().sendObjectBackward(mObj);
-					getCurrentDocViewer().repaintDoc();
-				}
-			}
-		};
-
 		ImageIcon rectIcon = getIcon("img/rectangle.png");
 		
 		OCButton rectButton = new OCButton(rectIcon, "Add Rectangle", 1, 1, 0, 0, objectToolbar, null){
@@ -457,47 +520,19 @@ public class NotebookPanel extends SubPanel {
 			}
 		};
 		
-		openDocs = new Vector<DocViewerPanel>();
-		Document newDoc = new Document("Untitled Document");
-		newDoc.addBlankPage();
-		openDocs.add(new DocViewerPanel(newDoc, getTopLevelContainer()));
-		
-		//change the value passed in to randomly add objects onto the screen
-		randomlyAddObjects(0);
-		
-		int tabIndex = 0;
-		for (DocViewerPanel d : openDocs){
-			docTabs.addTab(d.getDoc().getName(), d);
-			docTabs.setTabComponentAt(tabIndex, new DocTabClosePanel(this, d));
-			tabIndex++;
-		}
-		
-		docTabs.add(new JPanel(), "+");
-		
-		docTabs.addChangeListener( new ChangeListener(){
-			public void stateChanged(ChangeEvent arg0) {
-				int selected = 	docTabs.getSelectedIndex();
-				String nameSelected = docTabs.getTitleAt(selected);
-				if (nameSelected.equals("+"))
-				{//add a new untitled document
-					if (justClosedTab == false){
-						Document tempDoc = new Document("Untitled Document");
-						tempDoc.addBlankPage();
-						addDoc(tempDoc);
-					}
-					else
-					{// the last tab in the list was closed, set selected tab to new last tab
-						docTabs.setSelectedIndex(docTabs.getTabCount() - 2);
-					}
-				}
+		OCButton answerBoxButton = new OCButton("answer box", "Add Answer Box", 1, 1, 6, 0, objectToolbar, null){
+			
+			public void associatedAction(){
+				//pass even down to current doc window for placing a mathObj
+				
+				getCurrentDocViewer().createMathObject(new AnswerBoxObject(new Page(new Document("temp"))));
 			}
-		});
-		
+		};
 	}
 	
 	public void addDoc(Document doc){
 		int numTabs = docTabs.getTabCount();
-		openDocs.add(new DocViewerPanel(doc, getTopLevelContainer()));
+		openDocs.add(new DocViewerPanel(doc, getTopLevelContainer(), openNotebook.isInStudentMode()));
 		
 		//remove the old adding new doc tab
 		docTabs.remove(numTabs - 1);

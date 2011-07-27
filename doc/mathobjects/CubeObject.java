@@ -5,6 +5,8 @@ import doc.Page;
 
 public class CubeObject extends PolygonObject{
 	
+	
+	
 	public CubeObject(Page p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h, t);
 		addInitialPoints();

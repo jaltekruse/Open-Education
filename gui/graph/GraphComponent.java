@@ -36,6 +36,7 @@ public abstract class GraphComponent {
 	protected double screenyToGrid(int y){
 		return y * graph.Y_PIXEL + graph.Y_MIN;
 	}
+	
 	protected int gridyToScreen(double y){
 		return (graph.Y_SIZE) - (int) ((y - graph.Y_MIN) / graph.Y_PIXEL)
 				+ graph.Y_PIC_ORIGIN;

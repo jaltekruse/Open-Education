@@ -36,23 +36,27 @@ public class NotebookFrame extends OCFrame implements TopLevelContainerOld{
 	public NotebookFrame(String s) {
 		super(s);
 		menuBar = new JMenuBar();
-		help = new JMenu("Help");
+		help = new JMenu("Mode");
 		menuBar.add(help);
 		UIManager.put("swing.boldMetal", Boolean.FALSE);
 //		clipboard = new OCclipboard();
 
-		JMenuItem tutorial = new JMenuItem("Tutorial");
+		JMenuItem tutorial = new JMenuItem("Teacher");
 		tutorial.addActionListener(new ActionListener(){
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {}
+			public void actionPerformed(ActionEvent arg0) {
+				OpenNotebook.setInStudentMode(false);
+			}
 		});
 
-		JMenuItem license = new JMenuItem("License");
+		JMenuItem license = new JMenuItem("Student");
 		license.addActionListener(new ActionListener(){
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {}
+			public void actionPerformed(ActionEvent arg0) {
+				OpenNotebook.setInStudentMode(true);
+			}
 		});
 
 		help.add(tutorial);

@@ -18,6 +18,7 @@ public abstract class MathObject {
 	
 	private Vector<MathObjectAttribute> attributes;
 	
+	public static final String ANSWER_BOX = "AnswerBox";
 	public static final String EXPRESSION_OBJECT = "ExpressionObject";
 	public static final String GRAPH_OBJECT = "GraphObject";
 	public static final String HEXAGON_OBJECT = "HexagonObject";
@@ -35,12 +36,15 @@ public abstract class MathObject {
 	//written in the performFunction method
 	private Vector<String> actions;
 	
+	private boolean studentSelectable;
+	
 	public MathObject(Page p){
 		setParentPage(p);
 		attributes = new Vector<MathObjectAttribute>();
 		actions = new Vector<String>();
 		addDefaultAttributes();
 		addGenericDefaultAttributes();
+		studentSelectable = false;
 	}
 	
 	public MathObject(Page p, int x, int y, int w, int h){
@@ -53,6 +57,7 @@ public abstract class MathObject {
 		getAttributeWithName("yPos").setValue(y);
 		getAttributeWithName("width").setValue(w);
 		getAttributeWithName("height").setValue(h);
+		studentSelectable = false;
 	}
 	
 	public void addGenericDefaultAttributes(){
@@ -161,5 +166,13 @@ public abstract class MathObject {
 			return true;
 		}
 		return false;
+	}
+
+	public void setStudentSelectable(boolean studentSelectable) {
+		this.studentSelectable = studentSelectable;
+	}
+
+	public boolean isStudentSelectable() {
+		return studentSelectable;
 	}
 }

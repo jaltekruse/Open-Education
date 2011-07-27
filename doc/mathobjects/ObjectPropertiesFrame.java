@@ -38,15 +38,16 @@ import doc.Document;
 public class ObjectPropertiesFrame extends JInternalFrame {
 	
 	private JPanel panel;
-	private DocViewerPanel docPanel;
+	private DocViewerPanel docPanel; 
 	private Vector<AdjustmentPanel> adjusters;
 	private MathObject object;
 	private ObjectPropertiesFrame thisFrame;
+	private MathObjectGUI objectGUI;
 	
 	public ObjectPropertiesFrame(DocViewerPanel dvp){
 		super("tools",
 				true, //resizable
-				false, //closable
+				true, //closable
 				false, //maximizable
 				false);//iconifiable
 		docPanel = dvp;
@@ -68,16 +69,21 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 			con.gridx = 0;
 			con.gridy = 0;
 			for (MathObjectAttribute mAtt : doc.getAttributes()){
-				if (mAtt instanceof BooleanAttribute){
-					panel.add(new BooleanAdjustmentPanel((BooleanAttribute)mAtt, docPanel), con);
+				if ( docPanel.isInStudentMode() && mAtt.isStudentEditable() ||
+						! docPanel.isInStudentMode())
+				{// only show editing dialog if in teacher mode (not student)
+					//or if the attribute has been left student editable
+					if (mAtt instanceof BooleanAttribute){
+						panel.add(new BooleanAdjustmentPanel((BooleanAttribute)mAtt, docPanel), con);
+					}
+					else if (mAtt instanceof StringAttribute){
+						panel.add(new StringAdjustmentPanel((StringAttribute)mAtt, docPanel), con);
+					}
+					else{
+						panel.add(new GenericAdjustmentPanel(mAtt, docPanel), con);
+					}
+					con.gridy++;
 				}
-				else if (mAtt instanceof StringAttribute){
-					panel.add(new StringAdjustmentPanel((StringAttribute)mAtt, docPanel), con);
-				}
-				else{
-					panel.add(new GenericAdjustmentPanel(mAtt, docPanel), con);
-				}
-				con.gridy++;
 			}
 		}
 		return panel;
@@ -95,34 +101,41 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 			con.weighty = 1;
 			con.gridx = 0;
 			con.gridy = 0;
-			for (final String s : o.getActions()){
-				JButton button = new JButton(s);
-				panel.add(button, con);
-				button.addActionListener(new ActionListener(){
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						// TODO Auto-generated method stub
-						object.performAction(s);
-						thisFrame.update();
-						docPanel.repaint();
-					}
-					
-				});
-				con.gridy++;
+			if ( ! docPanel.isInStudentMode()){
+				for (final String s : o.getActions()){
+					JButton button = new JButton(s);
+					panel.add(button, con);
+					button.addActionListener(new ActionListener(){
+	
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							// TODO Auto-generated method stub
+							object.performAction(s);
+							thisFrame.update();
+							docPanel.repaint();
+						}
+						
+					});
+					con.gridy++;
+				}
 			}
 			for (MathObjectAttribute mAtt : o.getAttributes()){
-				if (mAtt instanceof BooleanAttribute){
-					adjusters.add(new BooleanAdjustmentPanel((BooleanAttribute)mAtt, docPanel));
+				if ( docPanel.isInStudentMode() && mAtt.isStudentEditable() ||
+						! docPanel.isInStudentMode())
+				{// only show editing dialog if in teacher mode (not student)
+					//or if the attribute has been left student editable
+					if (mAtt instanceof BooleanAttribute){
+						adjusters.add(new BooleanAdjustmentPanel((BooleanAttribute)mAtt, docPanel));
+					}
+					else if (mAtt instanceof StringAttribute){
+						adjusters.add(new StringAdjustmentPanel(mAtt, docPanel));
+					}
+					else{
+						adjusters.add(new GenericAdjustmentPanel(mAtt, docPanel));
+					}
+					panel.add(adjusters.get(adjusters.size() - 1), con);
+					con.gridy++;
 				}
-				else if (mAtt instanceof StringAttribute){
-					adjusters.add(new StringAdjustmentPanel(mAtt, docPanel));
-				}
-				else{
-					adjusters.add(new GenericAdjustmentPanel(mAtt, docPanel));
-				}
-				panel.add(adjusters.get(adjusters.size() - 1), con);
-				con.gridy++;
 			}
 		}
 	}
@@ -297,6 +310,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 
 		@Override
 		public void updateData() {
+			System.out.println(mAtt.getName());
 			textArea.setText(mAtt.getValue().toString());
 		}
 		

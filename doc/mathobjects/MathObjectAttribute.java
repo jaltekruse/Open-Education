@@ -37,10 +37,13 @@ public abstract class MathObjectAttribute<K> {
 	
 	private K value;
 	
+	private boolean studentEditable;
+	
 	private boolean showingDialog;
 
 	public MathObjectAttribute(String n){
 		name = n;
+		setStudentEditable(false);
 	}
 	
 	public void setName(String name) {
@@ -126,5 +129,13 @@ public abstract class MathObjectAttribute<K> {
 			
 		});
 		return temp;
+	}
+
+	public void setStudentEditable(boolean studentEditable) {
+		this.studentEditable = studentEditable;
+	}
+
+	public boolean isStudentEditable() {
+		return studentEditable;
 	}
 }

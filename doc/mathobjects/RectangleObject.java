@@ -49,6 +49,6 @@ public class RectangleObject extends PolygonObject {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return TRAPEZOID_OBJECT;
+		return RECTANGLE_OBJECT;
 	}
 }

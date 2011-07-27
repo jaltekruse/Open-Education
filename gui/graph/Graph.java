@@ -16,6 +16,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.Vector;
 
+import doc.GridPoint;
 import doc.mathobjects.BooleanAttribute;
 import doc.mathobjects.DoubleAttribute;
 import doc.mathobjects.GraphObject;
@@ -39,6 +40,7 @@ public class Graph {
 	public VarStorage varList;
 //	private BufferedImage graphPic;
 	private Vector<SingleGraph> singleGraphs;
+	private Vector<PointOnGrid> freePoints;
 	private CartAxis cartAxis;
 	private SelectionGraphic selectionGraphic;
 	private DragDisk dragDisk;
@@ -46,6 +48,7 @@ public class Graph {
 	private GraphCalculationGraphics graphCalcGraphics;
 	
 	public Graph(){
+		freePoints = new Vector<PointOnGrid>();
 		varList = new VarStorage(new ExpressionParser());
 		cartAxis = new CartAxis(this);
 		graphCalcGraphics = new GraphCalculationGraphics(this);
@@ -56,6 +59,7 @@ public class Graph {
 	public Graph(GraphWindow window, MainApplet app){
 		mainApp = app;
 		graphWindow = window;
+		freePoints = new Vector<PointOnGrid>();
 		varList = mainApp.getParser().getVarList();
 		X_SIZE = graphWindow.getWidth();
 		Y_SIZE = graphWindow.getHeight();
@@ -95,6 +99,22 @@ public class Graph {
 		repaint(g, xSize, ySize, 1, 0, 0, null);
 	}
 	
+	public void syncWithGraphObject(GraphObject gObj){
+		X_MIN = ((DoubleAttribute)gObj.getAttributeWithName("xMin")).getValue();
+		X_MAX = ((DoubleAttribute)gObj.getAttributeWithName("xMax")).getValue();
+		Y_MIN = ((DoubleAttribute)gObj.getAttributeWithName("yMin")).getValue();
+		Y_MAX = ((DoubleAttribute)gObj.getAttributeWithName("yMax")).getValue();
+		X_STEP = ((DoubleAttribute)gObj.getAttributeWithName("xStep")).getValue();
+		Y_STEP = ((DoubleAttribute)gObj.getAttributeWithName("yStep")).getValue();
+		FONT_SIZE = ((IntegerAttribute)gObj.getAttributeWithName("fontSize")).getValue();
+		SHOW_AXIS = ((BooleanAttribute)gObj.getAttributeWithName("showAxis")).getValue();
+		SHOW_GRID = ((BooleanAttribute)gObj.getAttributeWithName("showGrid")).getValue();
+		SHOW_NUMBERS = ((BooleanAttribute)gObj.getAttributeWithName("showNumbers")).getValue();
+		X_PIXEL = (X_MAX - X_MIN) / X_SIZE;
+		Y_PIXEL = (Y_MAX - Y_MIN) / Y_SIZE;
+		NUM_FREQ = 2;
+	}
+	
 	public void repaint(Graphics g, int xSize, int ySize, float docZoomLevel,
 			int xPicOrigin, int yPicOrigin, GraphObject gObj){
 		
@@ -111,7 +131,8 @@ public class Graph {
 			if (Y_SIZE == 0){
 				Y_SIZE = 1;
 			}
-			if (gObj != null){
+			if (gObj != null)
+			{//there is an associated GraphObject, so the graph is being used in OpenNotebook
 				X_MIN = ((DoubleAttribute)gObj.getAttributeWithName("xMin")).getValue();
 				X_MAX = ((DoubleAttribute)gObj.getAttributeWithName("xMax")).getValue();
 				Y_MIN = ((DoubleAttribute)gObj.getAttributeWithName("yMin")).getValue();
@@ -176,6 +197,17 @@ public class Graph {
 		if (dragDisk != null){
 			dragDisk.draw(g);
 		}
+		for (PointOnGrid p : freePoints){
+			try {
+				p.draw(g);
+			} catch (EvalException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		graphCalcGraphics.drawInfoBoxes(g);
 		
 		g.setColor(Color.BLACK);
@@ -186,6 +218,14 @@ public class Graph {
 		
 //		g.dispose();
 		//graphCompPic.flush();
+	}
+	
+	public void addPoint(double x, double y){
+		freePoints.add(new PointOnGrid(this, x, y));
+	}
+	
+	public void addPointAtScreenPt(int x, int y){
+		addPoint(x * X_PIXEL + X_MIN, -y * Y_PIXEL + Y_MAX);
 	}
 	
 	public ExpressionParser getParser(){

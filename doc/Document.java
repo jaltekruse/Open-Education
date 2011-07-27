@@ -127,7 +127,7 @@ public class Document {
 	public String exportToXML(){
 		String output = "";
 //		output += "<?XML version=\"1.0\" encoding=\"\"?>\n";
-		output += "<OpenNotebookDoc " + FILENAME + "=\"" + getName() + "\" " + AUTHOR + "=\"" + getAuthor() +
+		output += "<OpenNotebookDoc " + "version=\"0.1\" " + FILENAME + "=\"" + getName() + "\" " + AUTHOR + "=\"" + getAuthor() +
 				"\" " + HEADER + "=\"" + getHeader() + "\" " + FOOTER + "=\"" + getFooter() + "\" "
 				+ DATE + "=\"" + getDate() + "\">\n";
 		for (String s : subjectsCovered){
@@ -165,6 +165,15 @@ public class Document {
 		}
 		else{
 			System.out.println("Page is already contained in specified document");
+		}
+	}
+	
+	public void removePage(Page p){
+		if ( pages.contains(p)){
+			pages.remove(p);
+		}
+		else{
+			System.out.println("Page is not contained in specified document");
 		}
 	}
 	

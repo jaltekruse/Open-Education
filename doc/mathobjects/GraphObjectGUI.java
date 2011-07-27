@@ -43,7 +43,12 @@ public class GraphObjectGUI extends MathObjectGUI {
 		
 		graph.repaint(g, width , height, zoomLevel, xOrigin, yOrigin, object);
 		
-		
 	}
 	
+	public void mouseClicked(GraphObject gObj, int x , int y){
+		//add a point to the graph
+		graph.syncWithGraphObject(gObj);
+		graph.addPointAtScreenPt(x, y);
+		
+	}
 }
