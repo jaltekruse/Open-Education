@@ -106,8 +106,8 @@ public class Expression extends Node {
 			}
 			if (numbers.size() > 0)
 				simplified.add(staggerAddition(numbers).numericSimplify());
-			if (simplified.contains(new Number(0))) {
-				simplified.remove(new Number(0));
+			if (simplified.contains(Number.get(0))) {
+				simplified.remove(Number.get(0));
 				return staggerAddition(simplified).smartNumericSimplify();
 			}
 			Node finalNode = staggerAddition(simplified);
@@ -128,7 +128,7 @@ public class Expression extends Node {
 		}
 		
 		Vector<Node> factors = splitOnMultiplication();
-		Number one = new Number(1);
+		Number one = Number.get(1);
 		while (factors.contains(one))
 			factors.remove(one);
 		if (factors.size() > 1) {
@@ -146,11 +146,11 @@ public class Expression extends Node {
 				}
 			}
 			simplified.add(staggerMultiplication(numbers).numericSimplify());
-			if (simplified.contains(new Number(0))) {
-				return new Number(0);
+			if (simplified.contains(Number.get(0))) {
+				return Number.get(0);
 			}
-			if (simplified.contains(new Number(1))) {
-				simplified.remove(new Number(1));
+			if (simplified.contains(Number.get(1))) {
+				simplified.remove(Number.get(1));
 				return staggerMultiplication(simplified).smartNumericSimplify();
 			}
 			return staggerMultiplication(simplified);
@@ -159,14 +159,14 @@ public class Expression extends Node {
 		if (o instanceof Operator.Exponent) {
 			Node exponent = children.get(1).smartNumericSimplify();
 			Node base = children.get(0).smartNumericSimplify();
-			if (exponent.equals(new Number(0)))
-				return new Number(1);
-			if (exponent.equals(new Number(1)))
+			if (exponent.equals(Number.get(0)))
+				return Number.get(1);
+			if (exponent.equals(Number.get(1)))
 				return base;
-			if (base.equals(new Number(0)))
-				return new Number(0);
-			if (base.equals(new Number(1)))
-				return new Number(1);
+			if (base.equals(Number.get(0)))
+				return Number.get(0);
+			if (base.equals(Number.get(1)))
+				return Number.get(1);
 			return new Expression(new Operator.Exponent(), base, exponent);
 		}
 		
@@ -291,8 +291,8 @@ public class Expression extends Node {
 			boolean[] subtraction = new boolean[terms.size()];
 			for (int i = 0 ; i < expandedTerms.size() ; i++) {
 				Vector<Node> expandedTerm = expandedTerms.get(i);
-				if (expandedTerm.contains(new Number(-1))) {
-					expandedTerm.remove(new Number(-1));
+				if (expandedTerm.contains(Number.get(-1))) {
+					expandedTerm.remove(Number.get(-1));
 					formattedTerms.set(i, staggerMultiplication(expandedTerm).standardFormat());
 					subtraction[i] = true;
 				} else {
@@ -338,8 +338,8 @@ public class Expression extends Node {
 		
 		Vector<Node> factors = splitOnMultiplication();
 
-		while (factors.contains(new Number(1)) && (factors.size()  > 1)) {
-			factors.remove(new Number(1));
+		while (factors.contains(Number.get(1)) && (factors.size()  > 1)) {
+			factors.remove(Number.get(1));
 		}
 		
 		if (factors.size() > 1) {
@@ -347,13 +347,13 @@ public class Expression extends Node {
 				Node f = factors.get(i);
 				if (f instanceof Number) {
 					Number n = (Number) f;
-					if (n.isNegative() && !n.equals(new Number(-1))) {
+					if (n.isNegative() && !n.equals(Number.get(-1))) {
 						factors.set(i, n.negate());
-						factors.add(new Number(-1));
+						factors.add(Number.get(-1));
 					}
 				}
 			}
-			if (factors.remove(new Number(-1))) {
+			if (factors.remove(Number.get(-1))) {
 				return new Expression(new Operator.Negation(), 
 						staggerMultiplication(factors).standardFormat());
 			}
@@ -448,13 +448,13 @@ public class Expression extends Node {
 	
 	private static Node staggerAddition(Vector<Node> addends) {
 		if (addends.isEmpty())
-			return new Number(0);
+			return Number.get(0);
 		return stagger(addends, new Operator.Addition());
 	}
 	
 	private static Node staggerMultiplication(Vector<Node> factors) {
 		if (factors.isEmpty())
-			return new Number(1);
+			return Number.get(1);
 		return stagger(factors, new Operator.Multiplication());
 	}
 	
@@ -515,11 +515,11 @@ public class Expression extends Node {
 			Vector<Node> divided = children.get(1).splitOnMultiplication();
 			Vector<Node> reciprocalFactors = new Vector<Node>();
 			for (Node d : divided) {
-				reciprocalFactors.add(new Expression(new Operator.Division(), new Number(1), d));
+				reciprocalFactors.add(new Expression(new Operator.Division(), Number.get(1), d));
 			}
 			factors.addAll(reciprocalFactors);
 		} else if (o instanceof Operator.Negation) {
-			factors.add(new Number(-1));
+			factors.add(Number.get(-1));
 			factors.addAll(children.get(0).splitOnMultiplication());
 		} else {
 			factors.add(this);

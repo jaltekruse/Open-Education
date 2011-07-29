@@ -52,6 +52,10 @@ public abstract class Node implements Cloneable {
 	 */
 	public abstract Node replace(Identifier identifier, Node node);
 	
+	public Node replace(String id, Node node) {
+		return replace(new Identifier(id), node);
+	}
+	
 	public abstract Node collectLikeTerms();
 	
 	/** Simplifies all numeric calculations. 

@@ -15,6 +15,10 @@ public class Number extends Value implements Comparable<Number> {
 		setValue(value);
 	}
 	
+	public static Number get(double value) {
+		return new Number(value);
+	}
+	
 	public boolean equals(Object other) {
 		if (other == null)
 			return false;

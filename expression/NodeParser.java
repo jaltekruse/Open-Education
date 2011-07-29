@@ -18,6 +18,8 @@ public class NodeParser {
 	
 	private boolean allowLongIdentifiers = false;
 	
+	private boolean identifiersAsVariables = false;
+	
 	private List<String> functions =
 			Arrays.asList("log", "sin", "cos", "tan",
 					"sqrt", "cbrt", "root", "ln");
@@ -84,6 +86,14 @@ public class NodeParser {
 
 	public void allowEmptyArguments(boolean allowEmptyArguments) {
 		this.allowEmptyArguments = allowEmptyArguments;
+	}
+	
+	public boolean identifiersAsVariables() {
+		return identifiersAsVariables();
+	}
+	
+	public void treatIdentifiersAsVariables(boolean b) {
+		identifiersAsVariables = b;
 	}
 
 	public List<String> getOperators(int level) {
@@ -252,7 +262,7 @@ public class NodeParser {
 						return parse(expression, precedence, index - 1);
 					}
 					try {
-						return Value.parseValue(expression);
+						return parseValue(expression);
 					} catch (NodeException e) {
 						return new Expression(new Operator.Negation(), parse(expression.substring(1)));
 					}
@@ -260,7 +270,15 @@ public class NodeParser {
 			}
 		}
 		
-		return Value.parseValue(expression);
+		return parseValue(expression);
+	}
+	
+	private Value parseValue(String expression) {
+		Value v = Value.parseValue(expression);
+		if ((v instanceof Identifier) && identifiersAsVariables) {
+			v = new Variable(expression);
+		}
+		return v;
 	}
 	
 	private Vector<String> splitArgs(String string, String delim) {
