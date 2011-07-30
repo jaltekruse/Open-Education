@@ -98,7 +98,7 @@ public class NumberLine {
 					}
 				}
 				
-				else if((graph.X_MAX-graph.X_MIN)/graph.X_STEP <= 5){
+				else if((graph.X_MAX-graph.X_MIN)/graph.X_STEP < 3){
 					if ((graph.X_MAX-graph.X_MIN)/10 > 1)
 					{
 						graph.varList.setVarVal("xStep", new Decimal((int)(graph.X_MAX-graph.X_MIN)/10));

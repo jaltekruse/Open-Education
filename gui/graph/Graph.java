@@ -99,7 +99,15 @@ public class Graph {
 		repaint(g, xSize, ySize, 1, 0, 0, null);
 	}
 	
-	public void syncWithGraphObject(GraphObject gObj){
+	public void syncWithGraphObject(GraphObject gObj, int xSize, int ySize){
+		X_SIZE = xSize;
+		if (X_SIZE == 0){
+			X_SIZE = 1;
+		}
+		Y_SIZE = ySize;
+		if (Y_SIZE == 0){
+			Y_SIZE = 1;
+		}
 		X_MIN = ((DoubleAttribute)gObj.getAttributeWithName("xMin")).getValue();
 		X_MAX = ((DoubleAttribute)gObj.getAttributeWithName("xMax")).getValue();
 		Y_MIN = ((DoubleAttribute)gObj.getAttributeWithName("yMin")).getValue();

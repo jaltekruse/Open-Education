@@ -47,7 +47,9 @@ import javax.swing.JScrollPane;
 
 import doc.mathobjects.MathObject;
 import doc.mathobjects.MathObjectAttribute;
+import doc.mathobjects.ObjectGroup;
 import doc.mathobjects.ObjectPropertiesFrame;
+import doc.mathobjects.RectangleObject;
 
 public class DocViewerPanel extends JDesktopPane{
 	
@@ -84,9 +86,10 @@ public class DocViewerPanel extends JDesktopPane{
 	
 	private DocMouseListener docMouse;
 	
-	//keeps track number of successive scroll events, prevents excessive redrawing when
-	//scroll wheel is moved quickly
-	private int scrollCounter;
+	private RectangleObject selectionRect;
+	
+	//used for creating a group while the selection rectangle is being drawn
+	private ObjectGroup tempGroup;
 	
 	private boolean isInStudentMode;
 	
@@ -95,9 +98,8 @@ public class DocViewerPanel extends JDesktopPane{
 		
 		isInStudentMode = b;
 		thisPanel = this;
-
-		scrollCounter = 0;
 		
+		tempGroup = new ObjectGroup(new Page(doc));
 		setPageGUI(new PageGUI(this));
 		
 		zoomLevel = 1;
@@ -249,6 +251,15 @@ public class DocViewerPanel extends JDesktopPane{
 					}
 				}
 				
+				if (selectionRect != null){
+					try {
+						pageGUI.rectangleGUI.drawMathObject(selectionRect, g2d,
+								getPageOrigin(selectionRect.getParentPage()), zoomLevel);
+					} catch (DocumentException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 				
 //				//testing the scaling of fonts, this code block should not end up in release
 //				
@@ -511,5 +522,21 @@ public class DocViewerPanel extends JDesktopPane{
 
 	public PageGUI getPageGUI() {
 		return pageGUI;
+	}
+
+	public void setSelectionRect(RectangleObject selectionRect) {
+		this.selectionRect = selectionRect;
+	}
+
+	public RectangleObject getSelectionRect() {
+		return selectionRect;
+	}
+
+	public void setTempGroup(ObjectGroup tempGroup) {
+		this.tempGroup = tempGroup;
+	}
+
+	public ObjectGroup getTempGroup() {
+		return tempGroup;
 	}
 }

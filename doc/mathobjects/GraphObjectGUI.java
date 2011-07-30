@@ -45,9 +45,10 @@ public class GraphObjectGUI extends MathObjectGUI {
 		
 	}
 	
-	public void mouseClicked(GraphObject gObj, int x , int y){
+	public void mouseClicked(GraphObject gObj, int x , int y, float zoomLevel){
 		//add a point to the graph
-		graph.syncWithGraphObject(gObj);
+		graph.syncWithGraphObject(gObj, (int) (gObj.getWidth() * zoomLevel),
+				(int) (gObj.getHeight() * zoomLevel) );
 		graph.addPointAtScreenPt(x, y);
 		
 	}

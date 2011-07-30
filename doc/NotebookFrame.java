@@ -32,9 +32,11 @@ public class NotebookFrame extends OCFrame implements TopLevelContainerOld{
 
 	JMenuBar menuBar;
 	JMenu help;
+	OpenNotebook openBook;
 	
-	public NotebookFrame(String s) {
+	public NotebookFrame(String s, OpenNotebook book) {
 		super(s);
+		openBook = book;
 		menuBar = new JMenuBar();
 		help = new JMenu("Mode");
 		menuBar.add(help);
@@ -46,7 +48,7 @@ public class NotebookFrame extends OCFrame implements TopLevelContainerOld{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				OpenNotebook.setInStudentMode(false);
+				openBook.setInStudentMode(false);
 			}
 		});
 
@@ -55,7 +57,7 @@ public class NotebookFrame extends OCFrame implements TopLevelContainerOld{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				OpenNotebook.setInStudentMode(true);
+				openBook.setInStudentMode(true);
 			}
 		});
 

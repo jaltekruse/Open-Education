@@ -92,6 +92,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 	public void generatePanel(MathObject o){
 		object = o;
 		panel.removeAll();
+		adjusters.removeAllElements();
 		this.setTitle(o.getClass().getSimpleName());
 		if (o != null){
 			panel.setLayout(new GridBagLayout());
@@ -360,6 +361,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 	
 	public void update(){
 		for (AdjustmentPanel a : adjusters){
+			System.out.println("adjuster updating");
 			a.updateData();
 		}
 	}

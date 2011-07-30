@@ -43,7 +43,9 @@ import gui.TopLevelContainerOld;
 
 public class OpenNotebook extends JApplet{
 	
-	private static boolean inStudentMode;
+	private boolean inStudentMode;
+	private static OCFrame application;
+	private static OpenNotebook notebook;
 	
 	public OpenNotebook(){
 		//create background resources here
@@ -67,7 +69,8 @@ public class OpenNotebook extends JApplet{
 	
 	private static void createAndShowGUI() {
 
-		OCFrame application = new NotebookFrame("OpenNotebook");
+		OpenNotebook notebook = new OpenNotebook();
+		application = new NotebookFrame("OpenNotebook", notebook);
 		Dimension frameDim = new Dimension(1000, 600);
 		application.setPreferredSize(frameDim);
 		application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -84,16 +87,15 @@ public class OpenNotebook extends JApplet{
 		    options[1]);
 
 		if (n == 0){
-			setInStudentMode(true);
+			notebook.setInStudentMode(true);
 		}
-		OpenNotebook notebook = new OpenNotebook();
-		addContents(application.getContentPane(), notebook);
+		notebook.addContents(application.getContentPane(), notebook);
 		
 		application.pack();
 		application.setVisible(true);
 	}
 	
-	private static void addContents(Container c, OpenNotebook book){
+	private void addContents(Container c, OpenNotebook book){
 		NotebookPanel notebookPanel = new NotebookPanel(book);
 		
 		c.setLayout(new GridBagLayout());
@@ -112,8 +114,16 @@ public class OpenNotebook extends JApplet{
 		});
 	}
 
-	public static void setInStudentMode(boolean b) {
+	public void setInStudentMode(boolean b) {
 		inStudentMode = b;
+		if (application == null){
+			notebook.getContentPane().removeAll();
+			notebook.addContents(notebook.getContentPane(), notebook);
+		}
+		else{
+			application.getContentPane().removeAll();
+			this.addContents(application.getContentPane(), this);
+		}
 	}
 
 	public boolean isInStudentMode() {

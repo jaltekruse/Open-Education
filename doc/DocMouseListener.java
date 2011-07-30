@@ -17,12 +17,15 @@ import javax.swing.event.MouseInputListener;
 
 import doc.mathobjects.MathObject;
 import doc.mathobjects.MathObjectGUI;
+import doc.mathobjects.ObjectGroup;
+import doc.mathobjects.RectangleObject;
 
 public class DocMouseListener implements MouseInputListener{
 	
 	private DocViewerPanel docPanel;
 	
-	private boolean draggingDot, draggingObject, placingObject, objPlacementRequiresMouseDrag;
+	private boolean draggingDot, draggingObject, placingObject, objPlacementRequiresMouseDrag,
+					selectionRectRequiresMouseDrag, selectionRectBeingResized;
 	
 	private MathObject objToPlace;
 	
@@ -32,12 +35,19 @@ public class DocMouseListener implements MouseInputListener{
 		this.docPanel = docPanel;
 		draggingDot = false;
 	}
+	
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		System.out.println("xClick: " + e.getX() + " yClick: " + e.getY());
 		boolean requiresRedraw = false;
 		boolean clickHandled = false;
 		
+		if (selectionRectRequiresMouseDrag || selectionRectBeingResized){
+			System.out.println("remove select rect when clicked");
+			selectionRectRequiresMouseDrag = false;
+			selectionRectBeingResized = false;
+			docPanel.setSelectionRect(null);
+		}
 		PointInDocument clickedPt = docPanel.panelPt2DocPt(e.getX(), e.getY());
 		
 		if ( ! clickedPt.isOutSidePage()){
@@ -143,38 +153,8 @@ public class DocMouseListener implements MouseInputListener{
 		System.out.println("pressed");
 		try {
 		
-			PointInDocument clickedPt = docPanel.panelPt2DocPt(e.getX(), e.getY());
-			
-			if ( ! clickedPt.isOutSidePage()){
-				
-				if (placingObject){
-//					System.out.println("placing obj");
-					objToPlace.setxPos(clickedPt.getxPos());
-					objToPlace.setyPos(clickedPt.getyPos());
-					objToPlace.setWidth(1);
-					objToPlace.setHeight(1);
-					objToPlace.setParentPage(docPanel.getDoc().getPage(clickedPt.getPage()));
-					objToPlace.getParentPage().addMathObject(objToPlace);
-					docPanel.repaintDoc();
-					objPlacementRequiresMouseDrag = true;
-					setPlacingObject(false);
-					docPanel.setFocusedObject(objToPlace);
-					return;
-				}
-				else
-				{//check for focusing an object that was clicked
-					
-				}
-			}
-			else
-			{//click was outside of page
-				if (placingObject){
-					setPlacingObject(false);
-				}
-			}
-			
 			if (docPanel.getFocusedObject() != null){
-					
+				
 				int dot = MathObjectGUI.detectResizeDotCollision(new Point(e.getX(), e.getY()),
 						docPanel.getFocusedObject(), docPanel.getPageOrigin(
 								docPanel.getFocusedObject().getParentPage()), docPanel.getZoomLevel());
@@ -203,18 +183,58 @@ public class DocMouseListener implements MouseInputListener{
 								docPanel.getFocusedObject().getParentPage()).getY()
 								- docPanel.getFocusedObject().getyPos() * docPanel.getZoomLevel()) 
 								 /docPanel.getZoomLevel() );
-						}
+						return;
 					}
 				}
-			} catch (DocumentException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
 			}
+			
+			PointInDocument clickedPt = docPanel.panelPt2DocPt(e.getX(), e.getY());
+			
+			if ( ! clickedPt.isOutSidePage()){
+				
+				if (placingObject){
+//					System.out.println("placing obj");
+					objToPlace.setxPos(clickedPt.getxPos());
+					objToPlace.setyPos(clickedPt.getyPos());
+					objToPlace.setWidth(1);
+					objToPlace.setHeight(1);
+					objToPlace.setParentPage(docPanel.getDoc().getPage(clickedPt.getPage()));
+					objToPlace.getParentPage().addMathObject(objToPlace);
+					docPanel.repaintDoc();
+					objPlacementRequiresMouseDrag = true;
+					setPlacingObject(false);
+					docPanel.setFocusedObject(objToPlace);
+					return;
+				}
+				else
+				{//create a box to select multiple objects
+					RectangleObject rect = new RectangleObject(docPanel.getDoc().getPage(clickedPt.getPage()));
+					rect.setxPos(clickedPt.getxPos());
+					rect.setyPos(clickedPt.getyPos());
+					rect.setWidth(1);
+					rect.setHeight(1);
+					docPanel.setSelectionRect(rect);
+					selectionRectRequiresMouseDrag = true;
+				}
+			}
+			else
+			{//click was outside of page
+				if (placingObject){
+					setPlacingObject(false);
+				}
+			}
+			
+		} catch (DocumentException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
+		
+		System.out.println("released");
 		
 		if (objPlacementRequiresMouseDrag)
 		{// the mouse was pressed, but not dragged to set an objects size
@@ -223,7 +243,20 @@ public class DocMouseListener implements MouseInputListener{
 			objToPlace.setHeight(50);
 			objPlacementRequiresMouseDrag = false;
 		}
+		if (selectionRectBeingResized || selectionRectRequiresMouseDrag){
+			selectionRectBeingResized = false;
+			selectionRectRequiresMouseDrag = false;
+			docPanel.setFocusedObject(null);
+			docPanel.setSelectionRect(null);
+			System.out.println("before draw");
+			docPanel.repaintDoc();
+			System.out.println("after draw");
+		}
+		selectionRectRequiresMouseDrag = false;
+		selectionRectBeingResized = false;
+		System.out.println("before frame update");
 		docPanel.updateObjectToolFrame();
+		System.out.println("after frame update");
 		draggingDot = false;
 		draggingObject = false;
 		placingObject = false;
@@ -233,9 +266,17 @@ public class DocMouseListener implements MouseInputListener{
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		// TODO Auto-generated method stub
+		System.out.println("mouse dragged");
 		PointInDocument docPt = docPanel.panelPt2DocPt(e.getX(), e.getY());
 		
-		if (objPlacementRequiresMouseDrag()){
+		if (objPlacementRequiresMouseDrag() || selectionRectRequiresMouseDrag){
+			if (selectionRectRequiresMouseDrag)
+			{//swap in the selection rectangle, allows reuse of code for the addition of a
+				//rectangle to select objects
+				objToPlace = docPanel.getSelectionRect();
+				docPanel.setFocusedObject(objToPlace);
+				selectionRectBeingResized = true;
+			}
 			if (docPt.isOutSidePage()){
 				objToPlace.getParentPage().removeObject(objToPlace);
 				docPanel.setFocusedObject(null);
@@ -271,13 +312,18 @@ public class DocMouseListener implements MouseInputListener{
 						currentDragDot = MathObjectGUI.SOUTHEAST_DOT;
 					}
 				}
+				if (selectionRectRequiresMouseDrag){
+					selectionRectRequiresMouseDrag = false;
+					docPanel.setFocusedObject(null);
+				}
 				setObjPlacementRequiresMouseDrag(false);
 				docPanel.repaintDoc();
 				return;
 			}
 		}
 		
-		if (draggingObject){
+		if (draggingObject)
+		{// A mathobject on the document is being shifted to a new location
 //			System.out.println("xOff: " + xBoxOffset + " yOff:  " + yBoxOffset);
 			try {
 				MathObjectGUI.moveBoxToPoint(new Point (e.getX(), e.getY()),
@@ -292,13 +338,49 @@ public class DocMouseListener implements MouseInputListener{
 				e1.printStackTrace();
 			}
 		}
-		if (draggingDot){
+		if (draggingDot || selectionRectBeingResized)
+		{// one of the dots of an object is being moved to make it larger or smaller
 			try {
-				if ( ! docPt.isOutSidePage() && docPanel.getFocusedObject().getParentPage()
-						== docPanel.getDoc().getPage(docPt.getPage())){
+				if (selectionRectBeingResized){
+					System.out.println("being resized");
+					docPanel.setFocusedObject(docPanel.getSelectionRect());
+				}
+				
+				Page p = docPanel.getFocusedObject().getParentPage();
+				if ( ! docPt.isOutSidePage() && p == docPanel.getDoc().getPage(docPt.getPage())){
 					MathObjectGUI.moveResizeDot(docPanel.getFocusedObject(), currentDragDot,
 							docPt, this);
+					if (selectionRectBeingResized)
+					{//a special object that does note exist in the document was resized, it is used
+						//to select multiple objects at once and create groups
+						System.out.println("being resized");
+						docPanel.setSelectionRect((RectangleObject)docPanel.getFocusedObject());
+						docPanel.setFocusedObject(null);
+						Rectangle selectRect = docPanel.getSelectionRect().getBounds();
+						ObjectGroup tempGroup = docPanel.getTempGroup();
+						tempGroup.setParentPage(docPanel.getSelectionRect().getParentPage());
+						Vector<MathObject> pageObjects = docPanel.getSelectionRect().getParentPage().getObjects();
+						System.out.println("num objects " + pageObjects.size());
+						for (MathObject mObj : pageObjects){
+							System.out.println("check obj");
+							if (selectRect.intersects(mObj.getBounds()) &&
+									! (mObj instanceof ObjectGroup) &&
+									! tempGroup.getObjects().contains(mObj)){
+								System.out.println("intesects with selection");
+								tempGroup.addObject(mObj);
+							}
+						}
+						if (tempGroup.getObjects().size() > 0)
+						{//an object was added
+							docPanel.getSelectionRect().getParentPage().addMathObject(tempGroup);
+						}
+						for (MathObject mObj : tempGroup.getObjects()){
+							mObj.getParentPage().removeObject(mObj);
+						}
+						
+					}
 					docPanel.repaintDoc();
+					
 					return;
 				}
 				else{
@@ -312,8 +394,8 @@ public class DocMouseListener implements MouseInputListener{
 						xMouseRequest = 0;
 					}
 					else if ( e.getX() >= pageOrigin.getX() + 
-							(int) (Page.DEFAULT_PAGE_WIDTH * docPanel.getZoomLevel())){
-						xMouseRequest = Page.DEFAULT_PAGE_WIDTH;
+							(int) (p.getPageWidth() * docPanel.getZoomLevel())){
+						xMouseRequest = p.getPageWidth();
 					}
 					
 					if (e.getY() <= pageOrigin.getY()){
@@ -321,8 +403,8 @@ public class DocMouseListener implements MouseInputListener{
 					}
 					
 					else if (e.getY() >= pageOrigin.getY() +
-							(int) (Page.DEFAULT_PAGE_HEIGHT * docPanel.getZoomLevel())){
-						yMouseRequest = Page.DEFAULT_PAGE_HEIGHT;
+							(int) (p.getPageHeight() * docPanel.getZoomLevel())){
+						yMouseRequest = p.getPageHeight();
 					}
 					
 					if (yMouseRequest == Integer.MAX_VALUE){
@@ -333,6 +415,34 @@ public class DocMouseListener implements MouseInputListener{
 					}
 					MathObjectGUI.moveResizeDot(docPanel.getFocusedObject(), currentDragDot,
 							new PointInDocument (1, xMouseRequest, yMouseRequest), this);
+					
+					if (selectionRectBeingResized)
+					{//a special object that does note exist in the document was resized, it is used
+						//to select multiple objects at once and create groups
+						System.out.println("being resized");
+						docPanel.setSelectionRect((RectangleObject)docPanel.getFocusedObject());
+						docPanel.setFocusedObject(null);
+						Rectangle selectRect = docPanel.getSelectionRect().getBounds();
+						ObjectGroup tempGroup = docPanel.getTempGroup();
+						tempGroup.setParentPage(docPanel.getSelectionRect().getParentPage());
+						Vector<MathObject> pageObjects = docPanel.getSelectionRect().getParentPage().getObjects();
+						for (MathObject mObj : pageObjects){
+							System.out.println("check obj");
+							if (selectRect.intersects(mObj.getBounds()) &&
+									! (mObj instanceof ObjectGroup) ){
+								System.out.println("intesects with selection");
+								tempGroup.addObject(mObj);
+							}
+						}
+						if (tempGroup.getObjects().size() > 0)
+						{//an object was added
+							docPanel.getSelectionRect().getParentPage().addMathObject(tempGroup);
+						}
+						for (MathObject mObj : tempGroup.getObjects()){
+							mObj.getParentPage().removeObject(mObj);
+						}
+						
+					}
 					docPanel.repaintDoc();
 				}
 						

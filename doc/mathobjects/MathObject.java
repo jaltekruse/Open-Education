@@ -8,6 +8,7 @@
 
 package doc.mathobjects;
 
+import java.awt.Rectangle;
 import java.util.Vector;
 
 import doc.Page;
@@ -106,6 +107,9 @@ public abstract class MathObject {
 		}
 	}
 	
+	public Rectangle getBounds(){
+		return new Rectangle(getxPos(), getyPos(), getWidth(), getHeight());
+	}
 	
 	public void setWidth(int width) {
 		getAttributeWithName("width").setValue(width);

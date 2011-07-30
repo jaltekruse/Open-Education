@@ -83,8 +83,9 @@ public class Page {
 //			objects.add(mObj);
 //			return true;
 //		}
-		objects.add(mObj);
-		
+		if ( ! objects.contains(mObj)){
+			objects.add(mObj);
+		}
 		return true;
 		//throw error? the object would not fit within the printable page with the current position and dimensions
 	}

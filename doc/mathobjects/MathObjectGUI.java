@@ -23,7 +23,7 @@ public class MathObjectGUI{
 	
 	private static int resizeDotDiameter = 10;
 	
-	private static int resizeDotRadius = resizeDotDiameter/2;
+	private static int resizeDotRadius = 5;
 	
 	private int currResizeDot;
 	
