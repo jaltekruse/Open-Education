@@ -9,6 +9,8 @@
 package doc.mathobjects;
 
 import doc.Page;
+import doc_gui.attributes.DoubleAttribute;
+import doc_gui.attributes.IntegerAttribute;
 
 
 public class NumberLineObject extends MathObject {
@@ -23,6 +25,13 @@ public class NumberLineObject extends MathObject {
 	
 	public NumberLineObject(Page p){
 		super(p);
+		getAttributeWithName("min").setValue(-5.0);
+		getAttributeWithName("max").setValue(5.0);
+		getAttributeWithName("step").setValue(1.0);
+		getAttributeWithName("fontSize").setValue(8);
+	}
+
+	public NumberLineObject() {
 		getAttributeWithName("min").setValue(-5.0);
 		getAttributeWithName("max").setValue(5.0);
 		getAttributeWithName("step").setValue(1.0);

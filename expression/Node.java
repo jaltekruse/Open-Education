@@ -33,17 +33,17 @@ public abstract class Node implements Cloneable {
 	public abstract int hashCode();
 
 	/**  Returns a {@code String} representation 
-	 * of this expression tree. */
-	@Override
-	public abstract String toString();
+	 * of this expression tree. 
+	 * @throws NodeException */
+	public abstract String toStringRepresentation() throws NodeException;
 
 
 	/**
 	 * Returns a deep copy of this {@code Node}; 
 	 * i.e. clones all sub-nodes.
+	 * @throws NodeException 
 	 */
-	@Override
-	public abstract Node clone();
+	public abstract Node cloneNode() throws NodeException;
 	
 	/** Replaces all instances of {@code x} with {@code n}.
 	 * @param identifier The identifier to find.
@@ -52,21 +52,22 @@ public abstract class Node implements Cloneable {
 	 */
 	public abstract Node replace(Identifier identifier, Node node);
 	
-	public Node replace(String id, Node node) {
+	public Node replace(String id, Node node) throws NodeException {
 		return replace(new Identifier(id), node);
 	}
 	
-	public abstract Node collectLikeTerms();
+	public abstract Node collectLikeTerms() throws NodeException;
 	
 	/** Simplifies all numeric calculations. 
 	 * Does not take advantage of numeric identities.
 	 * @return An altered {@code Node} with no references to the original.
+	 * @throws NodeException 
 	 */
-	public abstract Node numericSimplify();
+	public abstract Node numericSimplify() throws NodeException;
 	
-	public abstract Node smartNumericSimplify();
+	public abstract Node smartNumericSimplify() throws NodeException;
 	
-	public Node simplify() {
+	public Node simplify() throws NodeException {
 		Node simplified = this;
 		Node last;
 		do {
@@ -83,7 +84,7 @@ public abstract class Node implements Cloneable {
 	
 	public abstract Vector<Node> splitOnMultiplication();
 	
-	public abstract Node standardFormat();
+	public abstract Node standardFormat() throws NodeException;
 	
 	protected abstract int standardCompare(Node other);
 	
@@ -114,8 +115,9 @@ public abstract class Node implements Cloneable {
 	}
 
 	/** Parses {@code expression} to {@code Node} form with the default settings.
+	 * @throws NodeException 
 	 */
-	public static Node parseNode(String expression) {
+	public static Node parseNode(String expression) throws NodeException {
 		return defaultParser.parseNode(expression);
 	}
 	

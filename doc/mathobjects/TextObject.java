@@ -11,6 +11,9 @@ package doc.mathobjects;
 import java.util.Vector;
 
 import doc.Page;
+import doc_gui.attributes.BooleanAttribute;
+import doc_gui.attributes.IntegerAttribute;
+import doc_gui.attributes.StringAttribute;
 
 public class TextObject extends MathObject {
 	
@@ -19,7 +22,6 @@ public class TextObject extends MathObject {
 		getAttributeWithName("fontSize").setValue(12);
 		getAttributeWithName("text").setValue("");
 		getAttributeWithName("showBox").setValue(true);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public TextObject(Page p, int x, int y, int width, int height, int fontSize, String s){
@@ -28,7 +30,13 @@ public class TextObject extends MathObject {
 		getAttributeWithName("text").setValue(s);
 		getAttributeWithName("showBox").setValue(true);
 	}
-	
+
+	public TextObject() {
+		getAttributeWithName("fontSize").setValue(12);
+		getAttributeWithName("text").setValue("");
+		getAttributeWithName("showBox").setValue(true);
+	}
+
 	@Override
 	public void addDefaultAttributes() {
 		addAttribute(new StringAttribute("text"));

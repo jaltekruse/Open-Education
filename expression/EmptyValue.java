@@ -19,7 +19,7 @@ public class EmptyValue extends Value {
 	}
 
 	@Override
-	public String toString() {
+	public String toStringRepresentation() {
 		return "?";
 	}
 
@@ -29,7 +29,7 @@ public class EmptyValue extends Value {
 	}
 
 	@Override
-	public EmptyValue clone() {
+	public EmptyValue cloneNode() {
 		return new EmptyValue();
 	}
 

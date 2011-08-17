@@ -1,5 +1,7 @@
 package doc.mathobjects;
 
+import doc_gui.attributes.MathObjectAttribute;
+
 public class ListOfGridPoints extends MathObjectAttribute {
 
 	public ListOfGridPoints(String n) {

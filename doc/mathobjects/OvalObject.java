@@ -8,7 +8,11 @@
 
 package doc.mathobjects;
 
+import java.awt.Color;
+
 import doc.Page;
+import doc_gui.attributes.ColorAttribute;
+import doc_gui.attributes.IntegerAttribute;
 
 public class OvalObject extends MathObject {
 	
@@ -23,6 +27,11 @@ public class OvalObject extends MathObject {
 		// TODO Auto-generated constructor stub
 	}
 
+	public OvalObject() {
+		// TODO Auto-generated constructor stub
+		getAttributeWithName("thickness").setValue(1);
+	}
+
 	public void setThickness(int t) {
 		getAttributeWithName("thickness").setValue(t);
 	}
@@ -34,6 +43,11 @@ public class OvalObject extends MathObject {
 	@Override
 	public void addDefaultAttributes() {
 		addAttribute(new IntegerAttribute("thickness", 1, 20));
+		addAttribute(new ColorAttribute("fill color"));
+	}
+	
+	public Color getColor(){
+		return ((ColorAttribute)getAttributeWithName("fill color")).getValue();
 	}
 
 	@Override

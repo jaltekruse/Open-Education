@@ -17,10 +17,10 @@ import java.awt.Graphics2D;
 import java.util.Vector;
 
 import doc.GridPoint;
-import doc.mathobjects.BooleanAttribute;
-import doc.mathobjects.DoubleAttribute;
 import doc.mathobjects.GraphObject;
-import doc.mathobjects.IntegerAttribute;
+import doc_gui.attributes.BooleanAttribute;
+import doc_gui.attributes.DoubleAttribute;
+import doc_gui.attributes.IntegerAttribute;
 
 import tree.EvalException;
 import tree.ExpressionParser;

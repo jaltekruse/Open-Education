@@ -22,17 +22,15 @@ public class TriangleObject extends PolygonObject {
 		
 	public TriangleObject(Page p){
 		super(p);
-		addDefaultAttributes();
 		addInitialPoints();
 		addAction(PolygonObject.FLIP_VERTICALLY);
 		addAction(PolygonObject.FLIP_HORIZONTALLY);
 		addAction(MAKE_RIGHT_TRIANGLE);
 		addAction(MAKE_ISOSCELES_TRIANGLE);
 	}
-	//isosoles sadfs
+	
 	public TriangleObject(Page p, int x, int y, int w, int h, int thickness) {
 		super(p, x, y, w, h, thickness);
-		addDefaultAttributes();
 		addInitialPoints();
 		addAction(PolygonObject.FLIP_VERTICALLY);
 		addAction(PolygonObject.FLIP_HORIZONTALLY);
@@ -40,6 +38,14 @@ public class TriangleObject extends PolygonObject {
 		addAction(MAKE_ISOSCELES_TRIANGLE);
 	}
 
+	public TriangleObject() {
+		addInitialPoints();
+		addAction(PolygonObject.FLIP_VERTICALLY);
+		addAction(PolygonObject.FLIP_HORIZONTALLY);
+		addAction(MAKE_RIGHT_TRIANGLE);
+		addAction(MAKE_ISOSCELES_TRIANGLE);
+	}
+	
 	@Override
 	public void addInitialPoints() {
 		// TODO Auto-generated method stub
@@ -53,7 +59,7 @@ public class TriangleObject extends PolygonObject {
 		
 	}
 	
-	public void performAction(String s){
+	public void performSpecialObjectAction(String s){
 		if (s.equals(FLIP_HORIZONTALLY)){
 			flipHorizontally();
 		}

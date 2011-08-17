@@ -10,7 +10,7 @@ public class Identifier extends Value {
 
 	private String identifier;
 	
-	public Identifier(String identifier) {
+	public Identifier(String identifier) throws NodeException {
 		setIdentifier(identifier);
 	}
 
@@ -30,19 +30,23 @@ public class Identifier extends Value {
 	}
 
 	@Override
-	public String toString() {
+	public String toStringRepresentation() {
 		return getIdentifier();
 	}
 	
 	@Override
-	public Identifier clone() {
+	public Identifier cloneNode() throws NodeException {
 		return new Identifier(identifier);
 	}
 
 	@Override
 	public Node replace(Identifier identifier, Node node) {
-		if (this.equals(identifier))
+		System.out.println("this identifer:" + this.identifier);
+		System.out.println("to replace with:" + identifier.identifier);
+		if (this.equals(identifier)){
+			System.out.println("replacing");
 			return node;
+		}
 		else
 			return this;
 	}
@@ -51,7 +55,7 @@ public class Identifier extends Value {
 		return identifier;
 	}
 	
-	public void setIdentifier(String identifier) {
+	public void setIdentifier(String identifier) throws NodeException {
 		for (int i = 0 ; i < identifier.length(); i++) {
 			if (!isValidChar(identifier.charAt(i)))
 				throw new NodeException("Invalid identifier: " + identifier);

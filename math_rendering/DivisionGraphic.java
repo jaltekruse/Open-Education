@@ -14,13 +14,8 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 
-import tree.BinExpression;
-import tree.Constant;
-import tree.Fraction;
-import tree.Operator;
-import tree.Expression;
-import tree.Var;
-
+import expression.Expression;
+import expression.Node;
 public class DivisionGraphic extends BinExpressionGraphic {
 
 	public static enum Style{
@@ -34,7 +29,7 @@ public class DivisionGraphic extends BinExpressionGraphic {
 	private Style style;
 	private int heightNumer, heightDenom;
 	
-	public DivisionGraphic(BinExpression b, CompleteExpressionGraphic gr) {
+	public DivisionGraphic(Expression b, RootNodeGraphic gr) {
 		super(b, gr);
 		style = Style.HORIZONTAL;
 		// TODO Auto-generated constructor stub
@@ -48,21 +43,21 @@ public class DivisionGraphic extends BinExpressionGraphic {
 			if (isSelected()){
 
 			}
-			super.getCompExGraphic().getGraphics().drawString(getValue().getOp().getSymbol(),
+			super.getRootNodeGraphic().getGraphics().drawString(getValue().getOperator().getSymbol(),
 					symbolX1, symbolY2);
 		}
 		else if (style == Style.HORIZONTAL){
 			if (isSelected()){
-				super.getCompExGraphic().getGraphics().setColor(getSelectedColor());
-				super.getCompExGraphic().getGraphics().fillRect(symbolX1, 
+				super.getRootNodeGraphic().getGraphics().setColor(getSelectedColor());
+				super.getRootNodeGraphic().getGraphics().fillRect(symbolX1, 
 						symbolY1, symbolX2 - symbolX1, symbolY2 - symbolY1);
-				super.getCompExGraphic().getGraphics().setColor(Color.black);
+				super.getRootNodeGraphic().getGraphics().setColor(Color.black);
 			}
-			super.getCompExGraphic().getGraphics().setStroke(new BasicStroke(
-					(int) (1 * super.getCompExGraphic().DOC_ZOOM_LEVEL)));
-			super.getCompExGraphic().getGraphics().drawLine(symbolX1, symbolY1 + spaceAroundBar + 1, symbolX2, 
+			super.getRootNodeGraphic().getGraphics().setStroke(new BasicStroke(
+					(int) (1 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL)));
+			super.getRootNodeGraphic().getGraphics().drawLine(symbolX1, symbolY1 + spaceAroundBar + 1, symbolX2, 
 					symbolY1 + spaceAroundBar + 1); 
-			super.getCompExGraphic().getGraphics().setStroke(new BasicStroke());
+			super.getRootNodeGraphic().getGraphics().setStroke(new BasicStroke());
 		}
 	}
 	
@@ -71,8 +66,8 @@ public class DivisionGraphic extends BinExpressionGraphic {
 		
 		int xPos = findCursorXPos();
 		
-		super.getCompExGraphic().getGraphics().setColor(Color.BLACK);
-		super.getCompExGraphic().getGraphics().fillRect(xPos, getY1() - 3, 2, getY2() - getY1()+ 5);
+		super.getRootNodeGraphic().getGraphics().setColor(Color.BLACK);
+		super.getRootNodeGraphic().getGraphics().fillRect(xPos, getY1() - 3, 2, getY2() - getY1()+ 5);
 		
 	}
 	
@@ -82,10 +77,10 @@ public class DivisionGraphic extends BinExpressionGraphic {
 	}
 	
 	public void moveCursorWest(){
-		if (super.getCompExGraphic().getCursor().getPos() == 1){
-			super.getCompExGraphic().getCursor().setValueGraphic(
+		if (super.getRootNodeGraphic().getCursor().getPos() == 1){
+			super.getRootNodeGraphic().getCursor().setValueGraphic(
 					getLeftGraphic().getMostInnerEast());
-			super.getCompExGraphic().getCursor().setPos(
+			super.getRootNodeGraphic().getCursor().setPos(
 					getLeftGraphic().getMostInnerEast().getMaxCursorPos());
 		}
 		else{
@@ -102,10 +97,10 @@ public class DivisionGraphic extends BinExpressionGraphic {
 	}
 	
 	public void moveCursorEast(){
-		if (super.getCompExGraphic().getCursor().getPos() == 0){
-			super.getCompExGraphic().getCursor().setValueGraphic(
+		if (super.getRootNodeGraphic().getCursor().getPos() == 0){
+			super.getRootNodeGraphic().getCursor().setValueGraphic(
 					getLeftGraphic().getMostInnerWest());
-			super.getCompExGraphic().getCursor().setPos(0); 
+			super.getRootNodeGraphic().getCursor().setPos(0); 
 		}
 		else{
 			if (getEast() == null)
@@ -135,7 +130,7 @@ public class DivisionGraphic extends BinExpressionGraphic {
 	
 	private int findCursorXPos() {
 		// TODO Auto-generated method stub
-		return getX1() + super.getCompExGraphic().getCursor().getPos() * (getX2() - getX1()); 
+		return getX1() + super.getRootNodeGraphic().getCursor().getPos() * (getX2() - getX1()); 
 	}
 
 	public void moveCursorSouth(){
@@ -151,40 +146,40 @@ public class DivisionGraphic extends BinExpressionGraphic {
 		}
 	}
 	
-	public void sendCursorInFromEast(int yPos, ValueGraphic vg)
+	public void sendCursorInFromEast(int yPos, NodeGraphic vg)
 	{
 		if (super.containedBelow(vg)){
 			System.out.println("move into division from east, containedbelow");
-			super.getCompExGraphic().getCursor().setValueGraphic(this);
-			super.getCompExGraphic().getCursor().setPos(0);
+			super.getRootNodeGraphic().getCursor().setValueGraphic(this);
+			super.getRootNodeGraphic().getCursor().setPos(0);
 		}
 		else{
-			super.getCompExGraphic().getCursor().setValueGraphic(getLeftGraphic().getMostInnerEast());
-			super.getCompExGraphic().getCursor().setPos(getLeftGraphic().getMostInnerEast().getMaxCursorPos());
+			super.getRootNodeGraphic().getCursor().setValueGraphic(getLeftGraphic().getMostInnerEast());
+			super.getRootNodeGraphic().getCursor().setPos(getLeftGraphic().getMostInnerEast().getMaxCursorPos());
 		}
 //		getLeftGraphic().sendCursorInFromEast(yPos);
 	}
 	
-	public void sendCursorInFromWest(int yPos, ValueGraphic vg)
+	public void sendCursorInFromWest(int yPos, NodeGraphic vg)
 	{
 		if (super.containedBelow(vg)){
 			System.out.println("move into division from west, containedbelow");
-			super.getCompExGraphic().getCursor().setValueGraphic(this);
-			super.getCompExGraphic().getCursor().setPos(getMaxCursorPos());
+			super.getRootNodeGraphic().getCursor().setValueGraphic(this);
+			super.getRootNodeGraphic().getCursor().setPos(getMaxCursorPos());
 		}
 		else{
-			super.getCompExGraphic().getCursor().setValueGraphic(getLeftGraphic().getMostInnerWest());
-			super.getCompExGraphic().getCursor().setPos(0);
+			super.getRootNodeGraphic().getCursor().setValueGraphic(getLeftGraphic().getMostInnerWest());
+			super.getRootNodeGraphic().getCursor().setPos(0);
 		}
 //		getLeftGraphic().sendCursorInFromWest(yPos);
 	}
 	
-	public void sendCursorInFromNorth(int xPos, ValueGraphic vg){
+	public void sendCursorInFromNorth(int xPos, NodeGraphic vg){
 		System.out.println("Division send in from north, xPos: " + xPos);
 		getRightGraphic().getMostInnerNorth().sendCursorInFromNorth(xPos, this);
 	}
 	
-	public void sendCursorInFromSouth(int xPos, ValueGraphic vg){
+	public void sendCursorInFromSouth(int xPos, NodeGraphic vg){
 		System.out.println("division send from south");
 		getLeftGraphic().getMostInnerSouth().sendCursorInFromSouth(xPos, this);
 	}
@@ -203,13 +198,13 @@ public class DivisionGraphic extends BinExpressionGraphic {
 		g.setFont(f);
 		setFont(f);
 		
-		sizeOverhang = (int) (3 * getCompExGraphic().DOC_ZOOM_LEVEL);
-		spaceAroundBar = (int) (5 * getCompExGraphic().DOC_ZOOM_LEVEL);
+		sizeOverhang = (int) (3 * getRootNodeGraphic().DOC_ZOOM_LEVEL);
+		spaceAroundBar = (int) (5 * getRootNodeGraphic().DOC_ZOOM_LEVEL);
 		
-		Expression tempLeft = ((BinExpression)super.getValue()).getLeftChild();
-		Expression tempRight = ((BinExpression)super.getValue()).getRightChild();
-		ValueGraphic leftValGraphic = null;
-		ValueGraphic rightValGraphic = null; 
+		Node tempLeft = ((Expression)super.getValue()).getChild(0);
+		Node tempRight = ((Expression)super.getValue()).getChild(1);
+		NodeGraphic leftValGraphic = null;
+		NodeGraphic rightValGraphic = null; 
 		int[] rightSize = {0,0};
 		int[] leftSize = {0, 0};
 		int[] symbolSize = {0, 0};
@@ -220,10 +215,10 @@ public class DivisionGraphic extends BinExpressionGraphic {
 			
 			leftValGraphic = makeValueGraphic(tempLeft);
 			
-			super.getCompExGraphic().getComponents().add(leftValGraphic);
+			super.getRootNodeGraphic().getComponents().add(leftValGraphic);
 			leftSize = leftValGraphic.requestSize(g, f, x1, y1);
-			symbolSize[0] = getCompExGraphic().getStringWidth(getValue().getOp().getSymbol(), f);
-			symbolSize[1] = getCompExGraphic().getFontHeight(f);
+			symbolSize[0] = getRootNodeGraphic().getStringWidth(getValue().getOperator().getSymbol(), f);
+			symbolSize[1] = getRootNodeGraphic().getFontHeight(f);
 			symbolX1 = x1 + leftSize[0];
 			System.out.println(leftSize[1]/2.0);
 			symbolY1 = y1 + ((int)Math.round(leftSize[1]/2.0) - (int) (Math.round(symbolSize[1])/2.0));
@@ -233,7 +228,7 @@ public class DivisionGraphic extends BinExpressionGraphic {
 			rightValGraphic = makeValueGraphic(tempRight);
 			
 			rightSize = rightValGraphic.requestSize(g, f, symbolX2, y1);
-			super.getCompExGraphic().getComponents().add(rightValGraphic);
+			super.getRootNodeGraphic().getComponents().add(rightValGraphic);
 			
 			//set the west and east fields for inside an outside of the expression
 			setMostInnerWest(leftValGraphic.getMostInnerWest());
@@ -262,14 +257,14 @@ public class DivisionGraphic extends BinExpressionGraphic {
 			leftValGraphic = makeValueGraphic(tempLeft);
 			
 			leftSize = leftValGraphic.requestSize(g, f, x1, y1);
-			super.getCompExGraphic().getComponents().add(leftValGraphic);
+			super.getRootNodeGraphic().getComponents().add(leftValGraphic);
 			
 			//other if statements for checking the left, decimal, imaginary, other val types
 			
 			rightValGraphic = makeValueGraphic(tempRight);
 			
 			rightSize = rightValGraphic.requestSize(g, f, symbolX2, y1);
-			super.getCompExGraphic().getComponents().add(rightValGraphic);
+			super.getRootNodeGraphic().getComponents().add(rightValGraphic);
 			setHeightNumer(leftSize[1]);
 			setHeightDenom(rightSize[1]);
 			

@@ -8,14 +8,18 @@
 
 package doc.mathobjects;
 
+import java.awt.Color;
 import java.util.Vector;
 
 import doc.GridPoint;
 import doc.Page;
+import doc_gui.attributes.ColorAttribute;
+import doc_gui.attributes.GridPointAttribute;
+import doc_gui.attributes.IntegerAttribute;
+import doc_gui.attributes.MathObjectAttribute;
 
 public abstract class PolygonObject extends MathObject {
 	
-	private int numPoints;
 	
 	protected static final String FLIP_HORIZONTALLY = "flip horizontally";
 	
@@ -23,27 +27,33 @@ public abstract class PolygonObject extends MathObject {
 	
 	protected static final String ROTATE_CLOCKWISE_90 = "rotate clockwise (90)";
 	
-	private Vector<GridPoint> points;
-	
 	public PolygonObject(Page p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h);
-		numPoints = 0;
-		points = new Vector<GridPoint>();
 		addAttribute(new IntegerAttribute("thickness", 1, 20));
+		addAttribute(new ColorAttribute("fill color"));
 		getAttributeWithName("thickness").setValue(t);
 	}
 	
 	public PolygonObject(Page p){
 		super(p);
-		numPoints = 0;
-		points = new Vector<GridPoint>();
 		addAttribute(new IntegerAttribute("thickness", 1, 20));
+		addAttribute(new ColorAttribute("fill color"));
+		getAttributeWithName("thickness").setValue(1);
+	}
+	
+	public PolygonObject(){
+		addAttribute(new IntegerAttribute("thickness", 1, 20));
+		addAttribute(new ColorAttribute("fill color"));
 		getAttributeWithName("thickness").setValue(1);
 	}
 	
 	public abstract void addInitialPoints();
 	
-	public void performAction(String s){
+	public Color getColor(){
+		return ((ColorAttribute)getAttributeWithName("fill color")).getValue();
+	}
+	
+	public void performSpecialObjectAction(String s){
 		if (s.equals(FLIP_HORIZONTALLY)){
 			flipHorizontally();
 		}

@@ -21,18 +21,18 @@ import tree.Expression;
 
 public class CompleteProblem {
 
-	Vector<CompleteExpressionGraphic> expressions;
+	Vector<RootNodeGraphic> expressions;
 	Vector<ExpressionModification> steps;
-	CompleteExpressionGraphic currentCEG;
-	Vector<ValueGraphic> selectedTerms;
+	RootNodeGraphic currentCEG;
+	Vector<NodeGraphic> selectedTerms;
 	private int xPos, yPos;
 	private Graphics2D graphics;
 	private int space = 10;
 	
-	public CompleteProblem(CompleteExpressionGraphic ceg, int x, int y){
-		expressions = new Vector<CompleteExpressionGraphic>();
+	public CompleteProblem(RootNodeGraphic ceg, int x, int y){
+		expressions = new Vector<RootNodeGraphic>();
 		steps = new Vector<ExpressionModification>();
-		selectedTerms = new Vector<ValueGraphic>();
+		selectedTerms = new Vector<NodeGraphic>();
 		expressions.add(ceg);
 		currentCEG = ceg;
 		xPos = x;
@@ -44,7 +44,7 @@ public class CompleteProblem {
 	}
 	
 	public void draw(){
-		for (CompleteExpressionGraphic ceg : expressions){
+		for (RootNodeGraphic ceg : expressions){
 			ceg.setGraphics(graphics);
 			ceg.draw();
 		}
@@ -55,9 +55,9 @@ public class CompleteProblem {
 	}
 	
 	public void selectTerm(int mouseX, int mouseY){
-		Vector<ValueGraphic> temp = new Vector<ValueGraphic>();
-		ValueGraphic smallest = null;
-		for (ValueGraphic vg : currentCEG.getComponents()){
+		Vector<NodeGraphic> temp = new Vector<NodeGraphic>();
+		NodeGraphic smallest = null;
+		for (NodeGraphic vg : currentCEG.getComponents()){
 			if (mouseX >= vg.getX1() && mouseX <= vg.getX2() && mouseY >= vg.getY1() && mouseY <= vg.getY2())
 			{
 				temp.add(vg);
@@ -78,7 +78,7 @@ public class CompleteProblem {
 		{
 			smallest = currentCEG.getComponents().get(0);
 		}
-		for (ValueGraphic vg : temp){
+		for (NodeGraphic vg : temp){
 			if (smallest.containedBelow(vg)){
 				smallest = vg;
 			}
@@ -95,7 +95,7 @@ public class CompleteProblem {
 				
 			}
 			else{
-				ValueGraphic term = currentCEG.getRoot().findValueGraphic(
+				NodeGraphic term = currentCEG.getRoot().findValueGraphic(
 						smallest.getValue().findParentTermRoot());
 				if (selectedTerms.contains(term)){
 					term.setSelectAllBelow(false);
@@ -109,7 +109,7 @@ public class CompleteProblem {
 		}
 		else if (smallVal != null){
 			System.out.println("rootTerm	dsafadf:" + smallest.getValue().findParentTermRoot());
-			ValueGraphic term = currentCEG.getRoot().findValueGraphic(
+			NodeGraphic term = currentCEG.getRoot().findValueGraphic(
 					smallest.getValue().findParentTermRoot());
 			if (selectedTerms.contains(term)){
 				term.setSelectAllBelow(false);
@@ -122,14 +122,14 @@ public class CompleteProblem {
 		}
 	}
 	
-	public CompleteExpressionGraphic getCurrentCEG(){
+	public RootNodeGraphic getCurrentCEG(){
 		return currentCEG;
 	}
 	
 	public void applyUnarytoBothSides(UnaryExpression uEx){
 		Expression rootVal = currentCEG.getRoot().getValue();
 		int height = 0;
-		for (CompleteExpressionGraphic ceg : expressions){
+		for (RootNodeGraphic ceg : expressions){
 			height += ceg.getRoot().getHeight();
 			height += space;
 		}
@@ -145,7 +145,7 @@ public class CompleteProblem {
 				UnaryExpression uEx2 = new UnaryExpression(uEx.getOp());
 				uEx2.setChild(((BinExpression)rootVal).getRightChild());
 				((BinExpression)rootVal).setRightChild(uEx2);
-				setCurrentCEG(new CompleteExpressionGraphic(rootVal));
+				setCurrentCEG(new RootNodeGraphic(rootVal));
 				expressions.add(currentCEG);
 				try {
 					currentCEG.generateExpressionGraphic(graphics, xPos, yPos + height + space);
@@ -157,16 +157,16 @@ public class CompleteProblem {
 		}
 	}
 	
-	private void setCurrentCEG(CompleteExpressionGraphic ceg){
+	private void setCurrentCEG(RootNodeGraphic ceg){
 		currentCEG.getRoot().setSelectAllBelow(false);
-		selectedTerms = new Vector<ValueGraphic>();
+		selectedTerms = new Vector<NodeGraphic>();
 		currentCEG = ceg;
 	}
 	
 	public void MoveTermToOtherSide(){
 		if (selectedTerms.size() == 1){
 			Expression selectedTerm = selectedTerms.get(0).getValue();
-			ValueGraphic currVG = currentCEG.getRoot().findValueGraphic(selectedTerm);
+			NodeGraphic currVG = currentCEG.getRoot().findValueGraphic(selectedTerm);
 			System.out.println(selectedTerm.getClass());
 			Expression selectedTermParent = selectedTerm.getParent();
 			String exString = null;
@@ -176,7 +176,7 @@ public class CompleteProblem {
 			Expression rootVal = currentCEG.getRoot().getValue();
 			int height = 0;
 			int vg2XPos = xPos;
-			for (CompleteExpressionGraphic ceg : expressions){
+			for (RootNodeGraphic ceg : expressions){
 				height += ceg.getRoot().getHeight();
 				height += space;
 			}
@@ -289,12 +289,12 @@ public class CompleteProblem {
 					}
 					try {
 						System.out.println("modified ex:" + exString);
-						ValueGraphic nothing = new NothingGraphic(new MissingValue(), currentCEG);
+						NodeGraphic nothing = new NothingGraphic(new MissingValue(), currentCEG);
 						if (opString.equals("-")){
 							selectedTerm = currentCEG.getRoot().getValue().getParser().ParseExpression("-" + selectedTerm.toString());
 						}
-						ValueGraphic vg = nothing.makeValueGraphic(selectedTerm);
-						ValueGraphic vg2 = nothing.makeValueGraphic(selectedTerm);
+						NodeGraphic vg = nothing.makeValueGraphic(selectedTerm);
+						NodeGraphic vg2 = nothing.makeValueGraphic(selectedTerm);
 						
 						
 						int vgXPos = currVG.getX1();
@@ -307,7 +307,7 @@ public class CompleteProblem {
 						em.addVG(vg);
 						em.addVG(vg2);
 						steps.add(em);
-						setCurrentCEG(new CompleteExpressionGraphic(
+						setCurrentCEG(new RootNodeGraphic(
 								currentCEG.getRoot().getValue().getParser().ParseExpression(exString)));
 						currentCEG.generateExpressionGraphic(graphics, xPos, yPos + height);
 						expressions.add(currentCEG);

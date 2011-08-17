@@ -19,7 +19,32 @@ public class Driver {
 		
 //		ProblemGenerator g = new ProblemGenerator();
 //		System.out.println(g.generateLinear());
-		
-		Node.parseNode("3sqrt(4)");
+		Node node = null;
+		try {
+			node = Node.parseNode("log(2,10)");
+
+			for (int i = 0; i < 300 ; i ++){
+				System.out.println(node.numericSimplify().toStringRepresentation());
+			}
+		}catch (NodeException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		Node ex = null;
+		try {
+			ex = Node.parseNode("((3x)+(2x))");
+			System.out.println(ex.replace("x", new Number(7)).toStringRepresentation());
+		} catch (NodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		for (Node n : ex.splitOnAddition()){
+			try {
+				System.out.println(n.toStringRepresentation());
+			} catch (NodeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 }

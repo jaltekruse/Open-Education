@@ -22,7 +22,7 @@ public class ParenGraphic extends UnaryExpressionGraphic {
 	private int overhang;
 	private int widthParens;
 	
-	public ParenGraphic(UnaryExpression v, CompleteExpressionGraphic compExGraphic) {
+	public ParenGraphic(UnaryExpression v, RootNodeGraphic compExGraphic) {
 		super(v, compExGraphic);
 		// TODO Auto-generated constructor stub
 	}
@@ -31,33 +31,33 @@ public class ParenGraphic extends UnaryExpressionGraphic {
 	public void draw() {
 		// TODO Auto-generated method stub
 		if (isSelected()){
-			super.getCompExGraphic().getGraphics().setColor(getSelectedColor());
-			super.getCompExGraphic().getGraphics().fillRect(symbolX1, symbolY1, symbolX2 - symbolX1, symbolY2 - symbolY1);
-			super.getCompExGraphic().getGraphics().setColor(Color.black);
+			super.getRootNodeGraphic().getGraphics().setColor(getSelectedColor());
+			super.getRootNodeGraphic().getGraphics().fillRect(symbolX1, symbolY1, symbolX2 - symbolX1, symbolY2 - symbolY1);
+			super.getRootNodeGraphic().getGraphics().setColor(Color.black);
 		}
 		
-		super.getCompExGraphic().getGraphics().setStroke(new BasicStroke(
-				(int) (1 * super.getCompExGraphic().DOC_ZOOM_LEVEL)));
-		super.getCompExGraphic().getGraphics().drawArc(getX1(), getY1(),
+		super.getRootNodeGraphic().getGraphics().setStroke(new BasicStroke(
+				(int) (1 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL)));
+		super.getRootNodeGraphic().getGraphics().drawArc(getX1(), getY1(),
 				widthParens * 2, getY2() - getY1(), 90, 180);
-		super.getCompExGraphic().getGraphics().drawArc(getX2() - widthParens * 2,
+		super.getRootNodeGraphic().getGraphics().drawArc(getX2() - widthParens * 2,
 				getY1(), widthParens * 2, getY2() - getY1(), 270, 180);
-		super.getCompExGraphic().getGraphics().setStroke(new BasicStroke());
+		super.getRootNodeGraphic().getGraphics().setStroke(new BasicStroke());
 	}
 
 	public void drawCursor(){
-		int cursorPos = super.getCompExGraphic().getCursor().getPos();
+		int cursorPos = super.getRootNodeGraphic().getCursor().getPos();
 		
-		super.getCompExGraphic().getGraphics().setColor(Color.BLACK);
-		super.getCompExGraphic().getGraphics().fillRect(findCursorXPos(), getY1() - 3, 2,
+		super.getRootNodeGraphic().getGraphics().setColor(Color.BLACK);
+		super.getRootNodeGraphic().getGraphics().fillRect(findCursorXPos(), getY1() - 3, 2,
 				getY2() - getY1()+ 5);
 		return;
 		
 	}
 	
 	public int findCursorXPos(){
-		super.getCompExGraphic().getGraphics().setFont(getFont());
-		int cursorPos = super.getCompExGraphic().getCursor().getPos();
+		super.getRootNodeGraphic().getGraphics().setFont(getFont());
+		int cursorPos = super.getRootNodeGraphic().getCursor().getPos();
 		
 		if (cursorPos == 0){
 			return getX1();
@@ -88,26 +88,26 @@ public class ParenGraphic extends UnaryExpressionGraphic {
 		
 		if (xPixelPos < getX1() + widthParens + space){
 			if (xPixelPos < getX1() + widthParens/2){
-				super.getCompExGraphic().getCursor().setPos(0);
-				super.getCompExGraphic().getCursor().setValueGraphic(this);
+				super.getRootNodeGraphic().getCursor().setPos(0);
+				super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 				return;
 			}
 			else{
-				super.getCompExGraphic().getCursor().setPos(1);
-				super.getCompExGraphic().getCursor().setValueGraphic(this);
+				super.getRootNodeGraphic().getCursor().setPos(1);
+				super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 				return;
 			}
 		}
 		else{
 			if (xPixelPos > getX2() - widthParens - space){
 				if (xPixelPos < getX2() - widthParens/2){
-					super.getCompExGraphic().getCursor().setPos(2);
-					super.getCompExGraphic().getCursor().setValueGraphic(this);
+					super.getRootNodeGraphic().getCursor().setPos(2);
+					super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 					return;
 				}
 				else{
-					super.getCompExGraphic().getCursor().setPos(3);
-					super.getCompExGraphic().getCursor().setValueGraphic(this);
+					super.getRootNodeGraphic().getCursor().setPos(3);
+					super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 					return;
 				}
 			}
@@ -119,9 +119,9 @@ public class ParenGraphic extends UnaryExpressionGraphic {
 	}
 	
 	public void moveCursorWest(){
-		int cursorPos = getCompExGraphic().getCursor().getPos();
+		int cursorPos = getRootNodeGraphic().getCursor().getPos();
 		if (cursorPos == 3 || cursorPos == 1){
-			super.getCompExGraphic().getCursor().setPos( cursorPos - 1); 
+			super.getRootNodeGraphic().getCursor().setPos( cursorPos - 1); 
 		}
 		else if (cursorPos == 0){
 			if (getWest() != null){
@@ -136,9 +136,9 @@ public class ParenGraphic extends UnaryExpressionGraphic {
 	}
 	
 	public void moveCursorEast(){
-		int cursorPos = getCompExGraphic().getCursor().getPos();
+		int cursorPos = getRootNodeGraphic().getCursor().getPos();
 		if (cursorPos == 2 || cursorPos == 0){
-			super.getCompExGraphic().getCursor().setPos( cursorPos + 1); 
+			super.getRootNodeGraphic().getCursor().setPos( cursorPos + 1); 
 		}
 		else if (cursorPos == 3){
 			if (getEast() != null){
@@ -178,35 +178,35 @@ public class ParenGraphic extends UnaryExpressionGraphic {
 		}
 	}
 	
-	public void sendCursorInFromEast(int yPos, ValueGraphic vg){
+	public void sendCursorInFromEast(int yPos, NodeGraphic vg){
 		if (super.containedBelow(vg)){
 			System.out.println("move into division from east, containedbelow");
-			super.getCompExGraphic().getCursor().setValueGraphic(this);
-			super.getCompExGraphic().getCursor().setPos(0);
+			super.getRootNodeGraphic().getCursor().setValueGraphic(this);
+			super.getRootNodeGraphic().getCursor().setPos(0);
 		}
 		else{
-			super.getCompExGraphic().getCursor().setValueGraphic(getChildGraphic().getMostInnerEast());
-			super.getCompExGraphic().getCursor().setPos(getChildGraphic().getMostInnerEast().getMaxCursorPos());
+			super.getRootNodeGraphic().getCursor().setValueGraphic(getChildGraphic().getMostInnerEast());
+			super.getRootNodeGraphic().getCursor().setPos(getChildGraphic().getMostInnerEast().getMaxCursorPos());
 		}
 	}
 	
-	public void sendCursorInFromWest(int yPos, ValueGraphic vg){
+	public void sendCursorInFromWest(int yPos, NodeGraphic vg){
 		if (super.containedBelow(vg)){
 			System.out.println("move into division from west, containedbelow");
-			super.getCompExGraphic().getCursor().setValueGraphic(this);
-			super.getCompExGraphic().getCursor().setPos(getMaxCursorPos());
+			super.getRootNodeGraphic().getCursor().setValueGraphic(this);
+			super.getRootNodeGraphic().getCursor().setPos(getMaxCursorPos());
 		}
 		else{
-			super.getCompExGraphic().getCursor().setValueGraphic(getChildGraphic().getMostInnerWest());
-			super.getCompExGraphic().getCursor().setPos(0);
+			super.getRootNodeGraphic().getCursor().setValueGraphic(getChildGraphic().getMostInnerWest());
+			super.getRootNodeGraphic().getCursor().setPos(0);
 		}
 	}
 	
-	public void sendCursorInFromNorth(int xPos, ValueGraphic vg){
+	public void sendCursorInFromNorth(int xPos, NodeGraphic vg){
 		setCursorPos(xPos);
 	}
 	
-	public void sendCursorInFromSouth(int xPos, ValueGraphic vg){
+	public void sendCursorInFromSouth(int xPos, NodeGraphic vg){
 		setCursorPos(xPos);
 	}
 	
@@ -225,15 +225,15 @@ public class ParenGraphic extends UnaryExpressionGraphic {
 		//to draw this element later, the font must be the same, so its stored in this object
 		setFont(f);
 		
-		space = (int) (2 * super.getCompExGraphic().DOC_ZOOM_LEVEL);
-		overhang = (int) (3 * super.getCompExGraphic().DOC_ZOOM_LEVEL);
+		space = (int) (2 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
+		overhang = (int) (3 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
 		widthParens = 3;
 		
 		// The call to getChild() skips the first paren inside of the operator, the parens are needed to have
 		// an expression inside of a UnaryOp, but they are not usually displayed
 		// if a user wants to show parens, the can use  two pairs of parens: sqrt((5/6))
 		Expression tempChild = ((UnaryExpression)super.getValue()).getChild();
-		ValueGraphic childValGraphic = null;
+		NodeGraphic childValGraphic = null;
 		
 		
 		int[] childSize = {0,0};
@@ -251,7 +251,7 @@ public class ParenGraphic extends UnaryExpressionGraphic {
 		childValGraphic.getMostInnerWest().setWest(this);
 		
 		setChildGraphic(childValGraphic);
-		super.getCompExGraphic().getComponents().add(childValGraphic);
+		super.getRootNodeGraphic().getComponents().add(childValGraphic);
 		
 		widthParens += (int) Math.round(childSize[1]/14.0);
 		childValGraphic.shiftToX1(x1 + widthParens + space);

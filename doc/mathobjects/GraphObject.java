@@ -9,6 +9,10 @@
 package doc.mathobjects;
 
 import doc.Page;
+import doc_gui.attributes.BooleanAttribute;
+import doc_gui.attributes.DoubleAttribute;
+import doc_gui.attributes.IntegerAttribute;
+import doc_gui.attributes.StringAttribute;
 
 public class GraphObject extends MathObject {
 	
@@ -19,6 +23,7 @@ public class GraphObject extends MathObject {
 		setDefaults();
 		getAttributeWithName("y=").setValue("");
 		addAction(DEFAULT_GRID);
+		addStudentAction("Graph point");
 	}
 	
 	public GraphObject(Page p){
@@ -26,9 +31,17 @@ public class GraphObject extends MathObject {
 		setDefaults();
 		getAttributeWithName("y=").setValue("");
 		addAction(DEFAULT_GRID);
+		addStudentAction("Graph point");
 	}
 	
-	public void performAction(String s){
+	public GraphObject() {
+		setDefaults();
+		getAttributeWithName("y=").setValue("");
+		addAction(DEFAULT_GRID);
+		addStudentAction("Graph point");
+	}
+
+	public void performSpecialObjectAction(String s){
 		if (s.equals(DEFAULT_GRID)){
 			setDefaults();
 		}

@@ -33,7 +33,7 @@ public class Equation {
 		return lhs.toString() + equals + rhs.toString();
 	}
 	
-	public Equation apply(Function f) {
+	public Equation apply(Function f) throws NodeException {
 		return new Equation(f.apply(lhs), f.apply(rhs));
 	}
 	

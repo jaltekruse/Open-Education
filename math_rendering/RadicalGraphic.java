@@ -25,7 +25,7 @@ public class RadicalGraphic extends UnaryExpressionGraphic {
 	private int heightLeadingTail;
 	private int lengthLittleTail;
 	
-	public RadicalGraphic(UnaryExpression v, CompleteExpressionGraphic compExGraphic) {
+	public RadicalGraphic(UnaryExpression v, RootNodeGraphic compExGraphic) {
 		super(v, compExGraphic);
 		if (v.getChild() instanceof UnaryExpression){
 			if (((UnaryExpression)v.getChild()).getOp() == Operator.PAREN)
@@ -43,22 +43,22 @@ public class RadicalGraphic extends UnaryExpressionGraphic {
 		
 		
 		if (isSelected()){
-			super.getCompExGraphic().getGraphics().setColor(getSelectedColor());
-			super.getCompExGraphic().getGraphics().fillRect(symbolX1, symbolY1, symbolX2 - symbolX1, symbolY2 - symbolY1);
-			super.getCompExGraphic().getGraphics().setColor(Color.black);
+			super.getRootNodeGraphic().getGraphics().setColor(getSelectedColor());
+			super.getRootNodeGraphic().getGraphics().fillRect(symbolX1, symbolY1, symbolX2 - symbolX1, symbolY2 - symbolY1);
+			super.getRootNodeGraphic().getGraphics().setColor(Color.black);
 		}
-		super.getCompExGraphic().getGraphics().setStroke(new BasicStroke(
-				(int) (1 * super.getCompExGraphic().DOC_ZOOM_LEVEL)));
-		super.getCompExGraphic().getGraphics().drawLine(symbolX1, symbolY2 - heightLeadingTail + lengthLittleTail,
+		super.getRootNodeGraphic().getGraphics().setStroke(new BasicStroke(
+				(int) (1 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL)));
+		super.getRootNodeGraphic().getGraphics().drawLine(symbolX1, symbolY2 - heightLeadingTail + lengthLittleTail,
 				symbolX1 + 3, symbolY2 - heightLeadingTail);
-		super.getCompExGraphic().getGraphics().drawLine(symbolX1 + 3, symbolY2 - heightLeadingTail,
+		super.getRootNodeGraphic().getGraphics().drawLine(symbolX1 + 3, symbolY2 - heightLeadingTail,
 				symbolX1 + (int) Math.round(0.5 * widthFront), symbolY2);
-		super.getCompExGraphic().getGraphics().drawLine(symbolX1 + (int) Math.round(0.5 * widthFront),
+		super.getRootNodeGraphic().getGraphics().drawLine(symbolX1 + (int) Math.round(0.5 * widthFront),
 				symbolY2, symbolX1 + widthFront, symbolY1);
-		super.getCompExGraphic().getGraphics().drawLine(symbolX1 + widthFront, symbolY1, 
+		super.getRootNodeGraphic().getGraphics().drawLine(symbolX1 + widthFront, symbolY1, 
 				symbolX2, symbolY1);
-		super.getCompExGraphic().getGraphics().drawLine(symbolX2, symbolY1, symbolX2, symbolY1 + 5);
-		super.getCompExGraphic().getGraphics().setStroke(new BasicStroke());
+		super.getRootNodeGraphic().getGraphics().drawLine(symbolX2, symbolY1, symbolX2, symbolY1 + 5);
+		super.getRootNodeGraphic().getGraphics().setStroke(new BasicStroke());
 	}
 	
 	public void drawCursor(int pos){
@@ -77,13 +77,13 @@ public class RadicalGraphic extends UnaryExpressionGraphic {
 		g.setFont(f);
 		setFont(f);
 		
-		space = (int) (4 * super.getCompExGraphic().DOC_ZOOM_LEVEL);
-		widthFront = (int) (8 * super.getCompExGraphic().DOC_ZOOM_LEVEL);
-		heightLeadingTail = (int) (8 * super.getCompExGraphic().DOC_ZOOM_LEVEL);
-		lengthLittleTail = (int) (3 * super.getCompExGraphic().DOC_ZOOM_LEVEL);
+		space = (int) (4 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
+		widthFront = (int) (8 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
+		heightLeadingTail = (int) (8 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
+		lengthLittleTail = (int) (3 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
 		
 		Expression tempChild = ((UnaryExpression)super.getValue()).getChild();
-		ValueGraphic childValGraphic = null;
+		NodeGraphic childValGraphic = null;
 		int[] childSize = {0,0};
 		int[] symbolSize = {0, 0};
 		int[] totalSize = {0, 0};
@@ -98,7 +98,7 @@ public class RadicalGraphic extends UnaryExpressionGraphic {
 		setMostInnerEast(childValGraphic.getMostInnerEast());
 		
 		setChildGraphic(childValGraphic);
-		super.getCompExGraphic().getComponents().add(childValGraphic);
+		super.getRootNodeGraphic().getComponents().add(childValGraphic);
 		
 		widthFront += (int) Math.round(childSize[1]/14.0);
 		

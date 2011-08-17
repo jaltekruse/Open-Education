@@ -33,6 +33,10 @@ public class RectangleObject extends PolygonObject {
 		addInitialPoints();
 	}
 
+	public RectangleObject() {
+		addInitialPoints();
+	}
+
 	@Override
 	public void addInitialPoints() {
 		addVertex(new GridPoint(0, 0));

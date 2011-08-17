@@ -1,6 +1,8 @@
 package doc.mathobjects;
 
 import doc.Page;
+import doc_gui.attributes.IntegerAttribute;
+import doc_gui.attributes.StringAttribute;
 
 public class AnswerBoxObject extends MathObject {
 
@@ -11,6 +13,10 @@ public class AnswerBoxObject extends MathObject {
 	
 	public AnswerBoxObject(Page p){
 		super(p);
+		this.setStudentSelectable(true);
+	}
+
+	public AnswerBoxObject() {
 		this.setStudentSelectable(true);
 	}
 

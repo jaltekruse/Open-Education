@@ -6,7 +6,7 @@ package expression;
  * @author Killian Kvalvik
  *
  */
-public class NodeException extends RuntimeException {
+public class NodeException extends Exception {
 
 	private static final long serialVersionUID = -4417281547925532699L;
 

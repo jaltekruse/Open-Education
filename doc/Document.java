@@ -10,8 +10,11 @@ package doc;
 
 import java.util.Vector;
 
-import doc.mathobjects.MathObjectAttribute;
-import doc.mathobjects.StringAttribute;
+
+import doc_gui.DocViewerPanel;
+import doc_gui.DocumentException;
+import doc_gui.attributes.MathObjectAttribute;
+import doc_gui.attributes.StringAttribute;
 
 public class Document {
 	
@@ -28,14 +31,26 @@ public class Document {
 	public static final String AUTHOR = "author";
 	public static final String DATE = "date";
 	public static final String AUTHOR_ID = "authorID";
+	public static final String INCLUDE_NAME_FIELD = "include name field";
 	
 	private Vector<Page> pages;
+	
+	//this should not be exported to files, it is a bridge between the front end and back end
+	public DocViewerPanel docPanel;
 	
 	//stores all of the data for the document, allows for easy creation of a
 	//panel for setting document properties, just like the MathObject properties panel
 	private Vector<MathObjectAttribute> attributes;
 	
 	public Document(String name){
+		attributes = new Vector<MathObjectAttribute>();
+		addAttributes();
+		pages = new Vector<Page>();
+		subjectsCovered = new Vector<String>();
+		getAttributeWithName(FILENAME).setValue(name);
+	}
+	
+	public Document(String name, DocViewerPanel docPanel){
 		attributes = new Vector<MathObjectAttribute>();
 		addAttributes();
 		pages = new Vector<Page>();

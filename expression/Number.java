@@ -27,19 +27,28 @@ public class Number extends Value implements Comparable<Number> {
 		return (getValue() == ((Number) other).getValue());
 	}
 	
+	public boolean isInteger(){
+		return (value % 1 == 0);
+	}
+	
 	@Override
 	public int hashCode() {
 		return Double.valueOf(value).hashCode();
 	}
 
 	@Override
-	public Number clone() {
+	public Number cloneNode() {
 		return new Number(getValue());
 	}
 
 	@Override
-	public String toString() {
-		return getValue() + ""; // change this!!
+	public String toStringRepresentation() {
+		if (isInteger()){
+			return (int) value + "";
+		}
+		else{
+			return getValue() + ""; // change this!!
+		}
 	}
 
 	public Node replace(Identifier x, Node n) {
@@ -148,4 +157,5 @@ public class Number extends Value implements Comparable<Number> {
 		}
 		return this.compareTo((Number) other);
 	}
+
 }

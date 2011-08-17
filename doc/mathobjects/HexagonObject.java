@@ -24,6 +24,10 @@ public class HexagonObject extends PolygonObject {
 
 	}
 	
+	public HexagonObject() {
+		addInitialPoints();
+	}
+
 	@Override
 	public void addDefaultAttributes() {
 		

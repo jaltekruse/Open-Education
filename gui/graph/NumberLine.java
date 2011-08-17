@@ -11,9 +11,9 @@ import tree.Decimal;
 import tree.EvalException;
 import tree.ParseException;
 
-import doc.mathobjects.DoubleAttribute;
-import doc.mathobjects.IntegerAttribute;
 import doc.mathobjects.NumberLineObject;
+import doc_gui.attributes.DoubleAttribute;
+import doc_gui.attributes.IntegerAttribute;
 
 public class NumberLine {
 	
@@ -131,7 +131,10 @@ public class NumberLine {
 
 			int tempWidth = g.getFontMetrics().stringWidth(Double.toString(tempX));
 			if(tempWidth > (int) ((graph.X_MAX-graph.X_MIN)/(graph.X_STEP * graph.NUM_FREQ))){
-				graph.NUM_FREQ = (int) (((graph.X_MAX-graph.X_MIN)/(graph.X_STEP))/((graph.X_SIZE)/tempWidth)) + 1;
+				graph.NUM_FREQ = (int) (((graph.X_MAX-graph.X_MIN)/(graph.X_STEP))/((graph.X_SIZE)/tempWidth));
+				if (graph.NUM_FREQ == 0){
+					graph.NUM_FREQ = 1;
+				}
 			}
 			
 			while (tempX <= graph.X_MAX) {
@@ -146,7 +149,10 @@ public class NumberLine {
 				}
 				tempWidth = g.getFontMetrics().stringWidth(ptText);
 				if(tempWidth > (int) ((graph.X_MAX-graph.X_MIN)/(graph.X_STEP * graph.NUM_FREQ))){
-					tempFreq = (int) (((graph.X_MAX-graph.X_MIN)/(graph.X_STEP))/((graph.X_SIZE)/tempWidth)) + 1;
+					tempFreq = (int) (((graph.X_MAX-graph.X_MIN)/(graph.X_STEP))/((graph.X_SIZE)/tempWidth));
+					if (tempFreq == 0){
+						tempFreq = 1;
+					}
 					if (tempFreq > graph.NUM_FREQ){
 						graph.NUM_FREQ = tempFreq;
 					}

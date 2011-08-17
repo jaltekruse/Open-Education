@@ -25,6 +25,11 @@ public class TrapezoidObject extends PolygonObject {
 		addAction(PolygonObject.FLIP_VERTICALLY);
 	}
 
+	public TrapezoidObject() {
+		addInitialPoints();
+		addAction(PolygonObject.FLIP_VERTICALLY);
+	}
+
 	@Override
 	public void addInitialPoints() {
 		addVertex(new GridPoint(.25, 0));

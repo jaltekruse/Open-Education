@@ -13,16 +13,16 @@ import java.util.Vector;
 
 import doc.mathobjects.MathObject;
 
-public class Page {
+public class Page implements MathObjectContainer{
 	
 	/**
-	 * The standard 8.5 inch page width. Given as an integer, 637, in the standard
+	 * The standard 8.5 inch page width. Given as an integer, 612, in the standard
 	 * user space 72 dpi.
 	 */
 	public static final int DEFAULT_PAGE_WIDTH = 612;
 	
 	/**
-	 * The standard 11 inch page height. Given as an integer, 825, in the standard
+	 * The standard 11 inch page height. Given as an integer, 792, in the standard
 	 * user space 72 dpi.
 	 */
 	public static final int DEFAULT_PAGE_HEIGHT = 792;
@@ -47,7 +47,7 @@ public class Page {
 	
 	public Page(Document doc){
 		setObjects(new Vector<MathObject>());
-		parentDoc = doc;
+		setParentDoc(doc);
 		xMargin = DEFAULT_MARGIN;
 		yMargin = DEFAULT_MARGIN;
 		pageWidth = DEFAULT_PAGE_WIDTH;
@@ -71,12 +71,12 @@ public class Page {
 	 * @param mObj - object to add
 	 * @return true if add was successful, if object did not fit in printable area it is not added
 	 */
-	public boolean addMathObject(MathObject mObj){
+	public boolean addObject(MathObject mObj){
 		
 		//check to make sure the object will fit on the page, inside of the margins
 		
-		Rectangle printablePage = new Rectangle(0, 0, getPageWidth(),
-				getPageHeight());
+		Rectangle printablePage = new Rectangle(0, 0, getWidth(),
+				getHeight());
 		
 //		Rectangle objRect = new Rectangle(mObj.getxPos(), mObj.getyPos(), mObj.getWidth(), mObj.getHeight());
 //		if (printablePage.contains(objRect)){
@@ -136,27 +136,27 @@ public class Page {
 		//should store page width and height at document level
 		//do not need to allow teachers to mix page orientations
 		String output = "";
-		output += "<Page>";
+		output += "<Page>\n";
 		for (MathObject mObj : objects){
 			output += mObj.exportToXML();
 		}
-		output += "</Page>";
+		output += "</Page>\n";
 		return output;
 	}
 
-	public void setPageWidth(int pageWidth) {
+	public void setWidth(int pageWidth) {
 		this.pageWidth = pageWidth;
 	}
 
-	public int getPageWidth() {
+	public int getWidth() {
 		return pageWidth;
 	}
 
-	public void setPageHeight(int pageHeight) {
+	public void setHeight(int pageHeight) {
 		this.pageHeight = pageHeight;
 	}
 
-	public int getPageHeight() {
+	public int getHeight() {
 		return pageHeight;
 	}
 
@@ -174,6 +174,32 @@ public class Page {
 
 	public int getyMargin() {
 		return yMargin;
+	}
+
+	public void setParentDoc(Document parentDoc) {
+		this.parentDoc = parentDoc;
+	}
+
+	public Document getParentDoc() {
+		return parentDoc;
+	}
+
+	@Override
+	public boolean childObjectsFocusable() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isResizable() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean removeAllObjects() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 }

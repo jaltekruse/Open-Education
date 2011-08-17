@@ -33,11 +33,11 @@ public class Function {
 		this.variables = variables;
 	}
 
-	public Node apply(Node... arguments) {
+	public Node apply(Node... arguments) throws NodeException {
 		return apply(Arrays.asList(arguments));
 	}
 	
-	public Node apply(List<Node> arguments) {
+	public Node apply(List<Node> arguments) throws NodeException {
 		if (arguments.size() > variables.size()) {
 			throw new NodeException("Too many arguments");
 		}

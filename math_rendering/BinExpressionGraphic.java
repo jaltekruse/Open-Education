@@ -15,57 +15,53 @@ import java.awt.Graphics;
 import java.awt.RenderingHints;
 import java.util.Vector;
 
-import tree.BinExpression;
-import tree.Operator;
-import tree.Expression;
-import tree.Var;
-import tree.Constant;
-import tree.Fraction;
+import expression.Expression;
+import expression.Node;
 
 public class BinExpressionGraphic extends ExpressionGraphic{
 
 	private int space;
-	private ValueGraphic leftChild, rightChild;
+	private NodeGraphic leftChild, rightChild;
 	
-	public BinExpressionGraphic(BinExpression b, CompleteExpressionGraphic gr) {
-		super(b, gr);
+	public BinExpressionGraphic(Expression e, RootNodeGraphic gr) {
+		super(e, gr);
 	}
 
 	@Override
 	public void draw() {
 		
 		if (isSelected()){
-			super.getCompExGraphic().getGraphics().setColor(getSelectedColor());
-			super.getCompExGraphic().getGraphics().fillRect(symbolX1, symbolY1 - 2,
+			super.getRootNodeGraphic().getGraphics().setColor(getSelectedColor());
+			super.getRootNodeGraphic().getGraphics().fillRect(symbolX1, symbolY1 - 2,
 					symbolX2 - symbolX1, symbolY2 - symbolY1 + 4);
-			super.getCompExGraphic().getGraphics().setColor(Color.black);
+			super.getRootNodeGraphic().getGraphics().setColor(Color.black);
 		}
-		getCompExGraphic().getGraphics().setFont(getFont());
-		getCompExGraphic().getGraphics().drawString(getValue().getOp().getSymbol(),
+		getRootNodeGraphic().getGraphics().setFont(getFont());
+		getRootNodeGraphic().getGraphics().drawString(getValue().getOperator().getSymbol(),
 				symbolX1 + space, symbolY2);
 	}
 	
 	public void drawCursor(){
-		String opString = getValue().getOp().getSymbol();
+		String opString = getValue().getOperator().getSymbol();
 		
-		int xPos = symbolX1 + super.getCompExGraphic().getGraphics().getFontMetrics().stringWidth(
-				opString.substring(0, super.getCompExGraphic().getCursor().getPos()));
+		int xPos = symbolX1 + super.getRootNodeGraphic().getGraphics().getFontMetrics().stringWidth(
+				opString.substring(0, super.getRootNodeGraphic().getCursor().getPos()));
 		
-		if ( super.getCompExGraphic().getCursor().getPos() == getMaxCursorPos()){
+		if ( super.getRootNodeGraphic().getCursor().getPos() == getMaxCursorPos()){
 			xPos += 2 * space;
 		}
-		super.getCompExGraphic().getGraphics().setColor(Color.BLACK);
-		super.getCompExGraphic().getGraphics().fillRect(xPos, super.symbolY1 - 3, 2, super.symbolY2 - super.symbolY1 + 5);
+		super.getRootNodeGraphic().getGraphics().setColor(Color.BLACK);
+		super.getRootNodeGraphic().getGraphics().fillRect(xPos, super.symbolY1 - 3, 2, super.symbolY2 - super.symbolY1 + 5);
 		
 	}
 	
 	public int getMaxCursorPos(){
-		return getValue().getOp().getSymbol().length();
+		return getValue().getOperator().getSymbol().length();
 	}
 	
 	public void setCursorPos(int xPixelPos){
 		
-		String numberString = getValue().getOp().getSymbol();
+		String numberString = getValue().getOperator().getSymbol();
 		
 		if (xPixelPos < super.symbolX1){
 			getLeftGraphic().setCursorPos(xPixelPos);
@@ -79,9 +75,9 @@ public class BinExpressionGraphic extends ExpressionGraphic{
 		
 		int startX, endX, xWidth;
 		
-		startX = super.getCompExGraphic().getGraphics().getFontMetrics().stringWidth(
+		startX = super.getRootNodeGraphic().getGraphics().getFontMetrics().stringWidth(
 				numberString.substring(0, 0)) + symbolX1 - space;
-		endX = super.getCompExGraphic().getGraphics().getFontMetrics().stringWidth(
+		endX = super.getRootNodeGraphic().getGraphics().getFontMetrics().stringWidth(
 				numberString.substring(0, 1)) + symbolX1 + space;
 		xWidth = endX - startX;
 		
@@ -89,19 +85,19 @@ public class BinExpressionGraphic extends ExpressionGraphic{
 		{//if the x position is inside of a character, check if it is on the first or second
 			//half of the character and set the cursor accordingly
 			if (endX - xPixelPos > xWidth/2){
-				super.getCompExGraphic().getCursor().setPos( 0 );
+				super.getRootNodeGraphic().getCursor().setPos( 0 );
 			}
 			else{
-				super.getCompExGraphic().getCursor().setPos( 1 );
+				super.getRootNodeGraphic().getCursor().setPos( 1 );
 			}
-			super.getCompExGraphic().getCursor().setValueGraphic(this);
+			super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 			return;
 		}
 	}
 	
 	public void moveCursorWest(){
-		if (super.getCompExGraphic().getCursor().getPos() > 0){
-			super.getCompExGraphic().getCursor().setPos( super.getCompExGraphic().getCursor().getPos() - 1); 
+		if (super.getRootNodeGraphic().getCursor().getPos() > 0){
+			super.getRootNodeGraphic().getCursor().setPos( super.getRootNodeGraphic().getCursor().getPos() - 1); 
 		}
 		else{
 			if (getWest() == null)
@@ -117,8 +113,8 @@ public class BinExpressionGraphic extends ExpressionGraphic{
 	}
 	
 	public void moveCursorEast(){
-		if (super.getCompExGraphic().getCursor().getPos() < getMaxCursorPos()){
-			super.getCompExGraphic().getCursor().setPos( super.getCompExGraphic().getCursor().getPos() + 1); 
+		if (super.getRootNodeGraphic().getCursor().getPos() < getMaxCursorPos()){
+			super.getRootNodeGraphic().getCursor().setPos( super.getRootNodeGraphic().getCursor().getPos() + 1); 
 		}
 		else{
 			if (getEast() == null)
@@ -133,14 +129,14 @@ public class BinExpressionGraphic extends ExpressionGraphic{
 		}
 	}
 	
-	public void sendCursorInFromEast(int yPos, ValueGraphic vg){
-		super.getCompExGraphic().getCursor().setValueGraphic(this);
-		super.getCompExGraphic().getCursor().setPos(getMaxCursorPos() - 1);
+	public void sendCursorInFromEast(int yPos, NodeGraphic vg){
+		super.getRootNodeGraphic().getCursor().setValueGraphic(this);
+		super.getRootNodeGraphic().getCursor().setPos(getMaxCursorPos() - 1);
 	}
 	
-	public void sendCursorInFromWest(int yPos, ValueGraphic vg){
-		super.getCompExGraphic().getCursor().setValueGraphic(this);
-		super.getCompExGraphic().getCursor().setPos(1);
+	public void sendCursorInFromWest(int yPos, NodeGraphic vg){
+		super.getRootNodeGraphic().getCursor().setValueGraphic(this);
+		super.getRootNodeGraphic().getCursor().setPos(1);
 	}
 
 	@Override
@@ -150,12 +146,12 @@ public class BinExpressionGraphic extends ExpressionGraphic{
 		g.setFont(f);
 		setFont(f);
 		
-		space = (int) (4 * getCompExGraphic().DOC_ZOOM_LEVEL);
+		space = (int) (4 * getRootNodeGraphic().getSizeAdjustment());
 		
-		Expression tempLeft = ((BinExpression)super.getValue()).getLeftChild();
-		Expression tempRight = ((BinExpression)super.getValue()).getRightChild();
-		ValueGraphic leftValGraphic = null;
-		ValueGraphic rightValGraphic = null; 
+		Node tempLeft = ((Expression)super.getValue()).getChild(0);
+		Node tempRight = ((Expression)super.getValue()).getChild(1);
+		NodeGraphic leftValGraphic = null;
+		NodeGraphic rightValGraphic = null; 
 		int[] rightSize = {0,0};
 		int[] leftSize = {0, 0};
 		int[] symbolSize = {0, 0};
@@ -163,13 +159,13 @@ public class BinExpressionGraphic extends ExpressionGraphic{
 		
 		leftValGraphic = makeValueGraphic(tempLeft);
 		
-		super.getCompExGraphic().getComponents().add(leftValGraphic);
+		super.getRootNodeGraphic().getComponents().add(leftValGraphic);
 		leftSize = leftValGraphic.requestSize(g, f, x1, y1);
 		
 		rightValGraphic = makeValueGraphic(tempRight);
 		
 		rightSize = rightValGraphic.requestSize(g, f, x1, y1);
-		super.getCompExGraphic().getComponents().add(rightValGraphic);
+		super.getRootNodeGraphic().getComponents().add(rightValGraphic);
 		
 		//set the west and east fields for inside an outside of the expression
 		setMostInnerWest(leftValGraphic.getMostInnerWest());
@@ -181,8 +177,8 @@ public class BinExpressionGraphic extends ExpressionGraphic{
 		rightValGraphic.getMostInnerWest().setWest(this);
 		this.setEast(rightValGraphic.getMostInnerWest());
 		
-		symbolSize[0] = getCompExGraphic().getStringWidth(getValue().getOp().getSymbol(), f) + 2 * space;
-		symbolSize[1] = getCompExGraphic().getFontHeight(f);
+		symbolSize[0] = getRootNodeGraphic().getStringWidth(getValue().getOperator().getSymbol(), f) + 2 * space;
+		symbolSize[1] = getRootNodeGraphic().getFontHeight(f);
 		rightValGraphic.shiftToX1(leftSize[0] + symbolSize[0] + x1);
 		
 		int height = 0;
@@ -232,26 +228,26 @@ public class BinExpressionGraphic extends ExpressionGraphic{
 		return null;
 	}
 	
-	protected void setLeftGraphic(ValueGraphic vg){
+	protected void setLeftGraphic(NodeGraphic vg){
 		leftChild = vg;
 	}
 	
-	public ValueGraphic getLeftGraphic(){
+	public NodeGraphic getLeftGraphic(){
 		return leftChild;
 	}
 
-	protected void setRightGraphic(ValueGraphic vg){
+	protected void setRightGraphic(NodeGraphic vg){
 		rightChild = vg;
 	}
 	
-	public ValueGraphic getRightGraphic(){
+	public NodeGraphic getRightGraphic(){
 		return rightChild;
 	}
 	
 	@Override
-	public Vector<ValueGraphic> getComponents() {
+	public Vector<NodeGraphic> getComponents() {
 		// TODO Auto-generated method stub
-		Vector<ValueGraphic> children = new Vector<ValueGraphic>();
+		Vector<NodeGraphic> children = new Vector<NodeGraphic>();
 		children.add(leftChild);
 		children.add(rightChild);
 		return children;

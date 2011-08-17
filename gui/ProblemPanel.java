@@ -51,9 +51,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import math_rendering.CompleteExpressionGraphic;
+import math_rendering.RootNodeGraphic;
 import math_rendering.CompleteProblem;
-import math_rendering.ValueGraphic;
+import math_rendering.NodeGraphic;
 
 import tree.*;
 
@@ -342,7 +342,7 @@ public class ProblemPanel extends SubPanel {
 	public void render(Graphics2D g) throws ParseException, Exception{
 		if (justParsed)
 		{
-			CompleteExpressionGraphic ceg = new CompleteExpressionGraphic(
+			RootNodeGraphic ceg = new RootNodeGraphic(
 					parser.ParseExpression(entryLeft.getField().getText() + "="
 					+ entryRight.getField().getText()));
 			ceg.generateExpressionGraphic((Graphics2D) g, 30, 40);

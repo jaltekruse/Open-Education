@@ -22,7 +22,7 @@ public class NodeParser {
 	
 	private List<String> functions =
 			Arrays.asList("log", "sin", "cos", "tan",
-					"sqrt", "cbrt", "root", "ln");
+					"sqrt", "cbrt", "root", "ln", "random", "randomInt");
 	
 	private List<String> nonFunctionalIdentifiers = 
 			Arrays.asList();
@@ -31,6 +31,9 @@ public class NodeParser {
 			Arrays.asList(",");
 	
 	private List<String> identifiers;
+	
+	private List<String> equalityOps = 
+		Arrays.asList("=");
 	
 	private List<String> additionOps = 
 			Arrays.asList("+", "-");
@@ -50,7 +53,7 @@ public class NodeParser {
 	private List<String> unsplittableStrings;
 	
 	private int lowestPrecedence = 0;
-	private int highestPrecedence = 3;
+	private int highestPrecedence = 4;
 	
 	/** List of open brackets. */
 	private List<String> openBrackets =
@@ -99,18 +102,21 @@ public class NodeParser {
 	public List<String> getOperators(int level) {
 		switch (level) {
 			case 0:
-				return additionOps;
+				return equalityOps;
 			case 1:
-				return multiplicationOps;
+				return additionOps;
 			case 2:
-				return exponentOps;
+				return multiplicationOps;
 			case 3:
+				return exponentOps;
+			case 4:
 				return functions;
+			
 		}
 		return null;
 	}
 	
-	public Node parseNode(String expression) {
+	public Node parseNode(String expression) throws NodeException {
 		expression = format(expression);
 		return parse(expression);
 	}
@@ -119,11 +125,11 @@ public class NodeParser {
 		return expression.replaceAll("\\s", "");
 	}
 	
-	private Node parse(String expression) {
+	private Node parse(String expression) throws NodeException {
 		return parse(expression, lowestPrecedence, expression.length() - 1);
 	}
 	
-	private Node parse(String expression, int initialPrecedence, int offset) {
+	private Node parse(String expression, int initialPrecedence, int offset) throws NodeException{
 		try {
 			return rawParse(expression, initialPrecedence, offset);
 		} catch (NodeException e) {
@@ -134,7 +140,7 @@ public class NodeParser {
 		}
 	}
 
-	private Node rawParse(String expression, int initialPrecedence, int offset) {
+	private Node rawParse(String expression, int initialPrecedence, int offset) throws NodeException {
 		if (expression.equals("")) // string is whitespace
 			throw new NodeException(exEmptyString);
 		
@@ -180,6 +186,14 @@ public class NodeParser {
 			String symbol = operators.get(max);
 			int index = maxPos;
 			
+			if (equalityOps.contains(symbol)){
+				Vector<Node> children = splitAtIndex(expression, index, symbol.length());
+				Operator o = null;
+				if (symbol.equals("="))
+					o = new Operator.Equals();
+				return new Expression(o, children);
+			}
+			
 			if (binaryOps.contains(symbol)) {
 				Vector<Node> children = splitAtIndex(expression, index, symbol.length());
 				Operator o = null;
@@ -210,25 +224,32 @@ public class NodeParser {
 					for (String s : stringChildren)
 						children.add(parse(s));					
 					Operator o = null;
+					
 					if (symbol.equals("log")) {
 						if (children.size() == 1)
 							o = new Operator.Logarithm();
 						else
 							o = new Operator.LogBase();
 					}
-					if (symbol.equals("ln"))
+					else if (symbol.equals("random")){
+						o = new Operator.RandomGenerator();
+					}
+					else if (symbol.equals("randomInt")){
+						o = new Operator.RandomIntGenerator();
+					}
+					else if (symbol.equals("ln"))
 						o = new Operator.NaturalLog();
-					if (symbol.equals("sin"))
+					else if (symbol.equals("sin"))
 						o = new Operator.Sine();
-					if (symbol.equals("cos"))
+					else if (symbol.equals("cos"))
 						o = new Operator.Cosine();
-					if (symbol.equals("tan"))
+					else if (symbol.equals("tan"))
 						o = new Operator.Tangent();
-					if (symbol.equals("sqrt"))
+					else if (symbol.equals("sqrt"))
 						o = new Operator.SquareRoot();
-					if (symbol.equals("cbrt"))
+					else if (symbol.equals("cbrt"))
 						o = new Operator.CubeRoot();
-					if (symbol.equals("root"))
+					else if (symbol.equals("root"))
 						o = new Operator.Root();
 					return new Expression(o, children);
 				}
@@ -261,11 +282,7 @@ public class NodeParser {
 					if (index != 0) {
 						return parse(expression, precedence, index - 1);
 					}
-					try {
-						return parseValue(expression);
-					} catch (NodeException e) {
-						return new Expression(new Operator.Negation(), parse(expression.substring(1)));
-					}
+					return parseValue(expression);
 				}
 			}
 		}
@@ -273,7 +290,7 @@ public class NodeParser {
 		return parseValue(expression);
 	}
 	
-	private Value parseValue(String expression) {
+	private Value parseValue(String expression) throws NodeException {
 		Value v = Value.parseValue(expression);
 		if ((v instanceof Identifier) && identifiersAsVariables) {
 			v = new Variable(expression);
@@ -397,7 +414,7 @@ public class NodeParser {
 		return false;
 	}
 	
-	private Vector<Node> splitAtIndex(String expression, int index, int symbolLength) {
+	private Vector<Node> splitAtIndex(String expression, int index, int symbolLength) throws NodeException {
 		Vector<Node> children = new Vector<Node>();
 		children.add(parseNode(expression.substring(0, index)));
 		children.add(parseNode(expression.substring(index + symbolLength)));
