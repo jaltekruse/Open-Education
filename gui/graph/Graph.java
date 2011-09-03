@@ -8,7 +8,6 @@
 
 package gui.graph;
 
-import gui.MainApplet;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -35,8 +34,6 @@ public class Graph {
 	public float DOC_ZOOM_LEVEL;
 	public boolean SHOW_GRID, SHOW_AXIS, SHOW_NUMBERS;
 	public int X_SIZE, Y_SIZE, LINE_SIZE, LINE_SIZE_DEFAULT = 2, NUM_FREQ, X_PIC_ORIGIN, Y_PIC_ORIGIN, FONT_SIZE;
-	private GraphWindow graphWindow;
-	private MainApplet mainApp;
 	public VarStorage varList;
 //	private BufferedImage graphPic;
 	private Vector<SingleGraph> singleGraphs;
@@ -54,29 +51,6 @@ public class Graph {
 		graphCalcGraphics = new GraphCalculationGraphics(this);
 		singleGraphs = new Vector<SingleGraph>();
 		parser = new ExpressionParser();
-	}
-	
-	public Graph(GraphWindow window, MainApplet app){
-		mainApp = app;
-		graphWindow = window;
-		freePoints = new Vector<PointOnGrid>();
-		varList = mainApp.getParser().getVarList();
-		X_SIZE = graphWindow.getWidth();
-		Y_SIZE = graphWindow.getHeight();
-		//graphPic = new BufferedImage(X_SIZE, Y_SIZE, BufferedImage.TYPE_4BYTE_ABGR);
-		cartAxis = new CartAxis(this);
-		dragDisk = new DragDisk(this, Color.gray);
-		graphCalcGraphics = new GraphCalculationGraphics(this);
-		singleGraphs = new Vector<SingleGraph>();
-		
-		singleGraphs.add(new GraphedCartFunction("y = x +5 - 6x^4 + 3x^2", 
-				mainApp.getParser(), this, Color.GREEN));
-		singleGraphs.add(new GraphedCartFunction("y = x^4", 
-				mainApp.getParser(), this, Color.BLUE));
-		singleGraphs.add(new GraphedCartFunction("y = 1/x", 
-				mainApp.getParser(), this, Color.MAGENTA));
-		singleGraphs.add(new GraphedCartFunction("y = sin(x)", 
-				mainApp.getParser(), this, Color.RED));
 	}
 	
 	public void repaint(Graphics g, int xSize, int ySize){
@@ -249,7 +223,6 @@ public class Graph {
 		} catch (Exception ex){
 			;
 		}
-		graphWindow.repaint();
 	}
 	
 	public void removeSingleGraph(SingleGraph s){
@@ -284,8 +257,6 @@ public class Graph {
 		varList.updateVarVal("xMax", (X_MAX-X_MIN)*(100-rate)/100);
 		varList.updateVarVal("yMin", -1 * (Y_MAX-Y_MIN)*(100-rate)/100);
 		varList.updateVarVal("yMax", (Y_MAX-Y_MIN)*(100-rate)/100);
-		
-		graphWindow.repaint();
 	}
 	
 	public void zoomMouseRelative(double rate, int mouseX, int mouseY) throws EvalException{
@@ -309,8 +280,6 @@ public class Graph {
 		varList.updateVarVal("xMax", (X_MAX-X_MIN)*(100-rate)/100);
 		varList.updateVarVal("yMin", -1 * (Y_MAX-Y_MIN)*(100-rate)/100);
 		varList.updateVarVal("yMax", (Y_MAX-Y_MIN)*(100-rate)/100);
-		
-		graphWindow.repaint();
 	}
 	
 	public void setLineSize(int sizeInPixels) {
@@ -343,9 +312,5 @@ public class Graph {
 
 	public GraphCalculationGraphics getGraphCalcGraphics() {
 		return graphCalcGraphics;
-	}
-	
-	public MainApplet getMainApplet(){
-		return mainApp;
 	}
 }

@@ -29,16 +29,17 @@ public class ParallelogramObject extends PolygonObject {
 		addVertex(new GridPoint(.75, 1));
 		addVertex(new GridPoint(0, 1));
 	}
-	
-	@Override
-	public void addDefaultAttributes() {
-		
-	}
 
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
 		return PARALLELOGRAM_OBJECT;
+	}
+
+	@Override
+	public void addDefaultAttributes() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

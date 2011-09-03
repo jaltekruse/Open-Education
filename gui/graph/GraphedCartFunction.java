@@ -8,8 +8,6 @@
 
 package gui.graph;
 
-import gui.MainApplet;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -25,7 +23,6 @@ import tree.Expression;
 
 public class GraphedCartFunction extends GraphWithExpression {
 
-	MainApplet mainApp;
 
 	/**
 	 * The default constructor, set the equation equal to an empty string,

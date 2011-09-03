@@ -166,7 +166,7 @@ public class NegationGraphic extends UnaryExpressionGraphic {
 		
 		symbolSize[0] = (int)Math.round(super.getRootNodeGraphic().getStringWidth("-", f) * .3) + space;
 		symbolSize[1] = super.getRootNodeGraphic().getFontHeight(f);
-		childValGraphic = makeValueGraphic(tempChild);
+		childValGraphic = makeNodeGraphic(tempChild);
 		
 		setChildGraphic(childValGraphic);
 		super.getRootNodeGraphic().getComponents().add(childValGraphic);

@@ -22,6 +22,7 @@ import doc.mathobjects.*;
 import doc_gui.DocViewerPanel;
 import doc_gui.mathobject_gui.AnswerBoxGUI;
 import doc_gui.mathobject_gui.CubeObjectGUI;
+import doc_gui.mathobject_gui.CylinderObjectGUI;
 import doc_gui.mathobject_gui.ExpressionObjectGUI;
 import doc_gui.mathobject_gui.GraphObjectGUI;
 import doc_gui.mathobject_gui.HexagonObjectGUI;
@@ -48,6 +49,7 @@ public class PageGUI {
 	public NumberLineObjectGUI numLineGUI;
 	public AnswerBoxGUI answerBoxGUI;
 	public CubeObjectGUI cubeGUI;
+	public CylinderObjectGUI cylinderGUI;
 	
 	public static final int MOUSE_LEFT_CLICK = 0;
 	public static final int MOUSE_MIDDLE_CLICK = 1;
@@ -80,6 +82,7 @@ public class PageGUI {
 		numLineGUI = new NumberLineObjectGUI();
 		answerBoxGUI = new AnswerBoxGUI();
 		cubeGUI = new CubeObjectGUI();
+		cylinderGUI = new CylinderObjectGUI();
 	}
 	
 	
@@ -97,6 +100,7 @@ public class PageGUI {
 		numLineGUI = new NumberLineObjectGUI();
 		answerBoxGUI = new AnswerBoxGUI();
 		cubeGUI = new CubeObjectGUI();
+		cylinderGUI = new CylinderObjectGUI();
 	}
 	
 	public void handleMouseAction(MathObject mObj, int x, int y, int mouseActionCode){
@@ -110,8 +114,8 @@ public class PageGUI {
 	
 		}
 		else if (mObj instanceof GraphObject){
-			graphGUI.mouseClicked((GraphObject)mObj, x, y, docPanel.getZoomLevel());
-			docPanel.repaintDoc();
+//			graphGUI.mouseClicked((GraphObject)mObj, x, y, docPanel.getZoomLevel());
+//			docPanel.repaintDoc();
 		}
 		else if (mObj instanceof PolygonObject){
 			if (mObj instanceof TriangleObject){
@@ -149,7 +153,6 @@ public class PageGUI {
 		//used to detect collisions with the rectangles that contain mathObjects
 		
 		for (MathObject mObj : p.getObjects()){
-			System.out.println("draw " + mObj);
 			drawObject(mObj, g, p, pageOrigin, visiblePageSection, zoomLevel);
 		}
 
@@ -177,7 +180,7 @@ public class PageGUI {
 				mathObj.setWidth((int) Math.round(mathObj.getWidth()/1000.0 * group.getWidth()) );
 				mathObj.setHeight((int) Math.round(mathObj.getHeight()/1000.0 * group.getHeight()) );
 				drawObject(mathObj, g, p, pageOrigin, visiblePageSection, zoomLevel);
-				if (group == docPanel.getFocusedObject()){
+				if (docPanel != null && group == docPanel.getFocusedObject()){
 					g.setColor(Color.BLUE);
 					((Graphics2D)g).setStroke(new BasicStroke(2));
 					g.drawRect((int) (pageOrigin.getX() + mathObj.getxPos() * zoomLevel) - 3, 
@@ -266,7 +269,15 @@ public class PageGUI {
 			answerBoxGUI.drawMathObject((AnswerBoxObject)mObj, g,
 					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			if (docPanel != null && docPanel.getFocusedObject() == mObj){
-				numLineGUI.drawInteractiveComponents((AnswerBoxObject)mObj, g,
+				answerBoxGUI.drawInteractiveComponents((AnswerBoxObject)mObj, g,
+					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
+			}
+		}
+		else if (mObj instanceof CylinderObject){
+			cylinderGUI.drawMathObject((CylinderObject)mObj, g,
+					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
+			if (docPanel != null && docPanel.getFocusedObject() == mObj){
+				cylinderGUI.drawInteractiveComponents((CylinderObject)mObj, g,
 					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			}
 		}
@@ -283,8 +294,6 @@ public class PageGUI {
 		int pageXOrigin = (int) pageOrigin.getX();
 		int pageYOrigin = (int) pageOrigin.getY();
 		
-		System.out.println("xOrig:" + pageXOrigin + " yOrign:" + pageYOrigin);
-		//draw page
 		if (docPanel.getSelectedPage() == p){
 			g.setColor(new Color(230,240, 255));
 		}
@@ -317,14 +326,22 @@ public class PageGUI {
 		
 		if (docPanel.getFocusedObject() != null){
 			if (docPanel.getFocusedObject().getParentPage() == p
-					&& p.getObjects().contains(docPanel.getFocusedObject()) &&
-					! (docPanel.getFocusedObject() instanceof ExpressionObject ) )
+					&& p.getObjects().contains(docPanel.getFocusedObject()) )
 			{//the focused object is on this page, print the resize dots
 				//the temporary rectangle used for selecting a group of objects is
 				//created using a RectangleObject, but it is not added to its parent page
 				//in that case the dots are not drawn
-				MathObjectGUI.drawResizingDots(docPanel.getFocusedObject(), g,
-						new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
+				if (docPanel.getFocusedObject() instanceof ExpressionObject){
+					MathObject mObj = docPanel.getFocusedObject();
+					if( mObj instanceof ExpressionObject){
+							expressionGUI.drawInteractiveComponents((ExpressionObject)mObj, g,
+								new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
+						}
+					}
+				else{
+					MathObjectGUI.drawResizingDots(docPanel.getFocusedObject(), g,
+							new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
+				}	
 			}
 		}	
 	}

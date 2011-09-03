@@ -52,12 +52,6 @@ public class VarStorage extends ValueStorage {
 		if (findIfStored(s) != null)
 			return (Var) findIfStored(s);
 		Var newVar = (Var) storeInGroup("user", new Var(s, v));
-		try{
-			getStorageGUI().refreshButtons();
-		}
-		catch(Exception e){
-			System.out.println("error");
-		}
 		return newVar;
 	}
 
@@ -65,12 +59,6 @@ public class VarStorage extends ValueStorage {
 		if (findIfStored(s) != null)
 			return (Var) findIfStored(s);
 		Var newVar = (Var) storeInGroup("user", new Var(s, new Decimal(0)));
-		try{
-			getStorageGUI().refreshButtons();
-		}
-		catch(Exception e){
-			System.out.println("error");
-		}
 		return newVar;
 	}
 	
@@ -111,10 +99,6 @@ public class VarStorage extends ValueStorage {
 		if (tempElm instanceof Var){
 			((Var) tempElm).setValue( (Number)
 					((Var) tempElm).getValue().add(new Decimal(val)));
-		}
-		if(isInGroup("graph", s) && parser.getGUI() != null
-				&& parser.getGUI().getGridProps() != null){
-			parser.getGUI().getGridProps().refreshAttributes();
 		}
 	}
 }

@@ -151,12 +151,12 @@ public class ImpliedMultGraphic extends BinExpressionGraphic {
 		int[] symbolSize = {0, 0};
 		int[] totalSize = {0, 0};
 		
-		leftValGraphic = makeValueGraphic(tempLeft);
+		leftValGraphic = makeNodeGraphic(tempLeft);
 		
 		super.getRootNodeGraphic().getComponents().add(leftValGraphic);
 		leftSize = leftValGraphic.requestSize(g, f, x1, y1);
 		
-		rightValGraphic = makeValueGraphic(tempRight);
+		rightValGraphic = makeNodeGraphic(tempRight);
 		
 		rightSize = rightValGraphic.requestSize(g, f, x1, y1);
 		super.getRootNodeGraphic().getComponents().add(rightValGraphic);
@@ -178,6 +178,8 @@ public class ImpliedMultGraphic extends BinExpressionGraphic {
 		int height = 0;
 		
 		if (leftValGraphic.getUpperHeight() > rightValGraphic.getUpperHeight()){
+			System.out.println("left has higher upper height " + leftValGraphic.getUpperHeight() + " "
+					+ rightValGraphic.getUpperHeight());
 			height = leftValGraphic.getUpperHeight();
 			symbolY1 = leftValGraphic.getUpperHeight() + y1 - (int) (Math.round((symbolSize[1]/2.0)));
 			symbolY2 = symbolY1 + symbolSize[1];
@@ -196,7 +198,7 @@ public class ImpliedMultGraphic extends BinExpressionGraphic {
 			height += leftValGraphic.getLowerHeight();
 			setLowerHeight(leftValGraphic.getLowerHeight());
 		}
-		else
+		else if (leftValGraphic.getLowerHeight() < rightValGraphic.getLowerHeight())
 		{
 			height += rightValGraphic.getLowerHeight();
 			setLowerHeight(rightValGraphic.getLowerHeight());

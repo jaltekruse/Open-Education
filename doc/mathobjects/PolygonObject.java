@@ -21,11 +21,11 @@ import doc_gui.attributes.MathObjectAttribute;
 public abstract class PolygonObject extends MathObject {
 	
 	
-	protected static final String FLIP_HORIZONTALLY = "flip horizontally";
+	public static final String FLIP_HORIZONTALLY = "flip horizontally";
 	
-	protected static final String FLIP_VERTICALLY = "flip vertically";
+	public static final String FLIP_VERTICALLY = "flip vertically";
 	
-	protected static final String ROTATE_CLOCKWISE_90 = "rotate clockwise (90)";
+	public static final String ROTATE_CLOCKWISE_90 = "rotate clockwise (90)";
 	
 	public PolygonObject(Page p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h);
@@ -96,7 +96,7 @@ public abstract class PolygonObject extends MathObject {
 					p.sety(p.gety() + 2 * (.5 - p.gety()));
 				}
 				else{
-					//x is .5, should not be shifted
+					//y is .5, should not be shifted
 				}
 			}
 		}
@@ -113,11 +113,25 @@ public abstract class PolygonObject extends MathObject {
 //		return points;
 	}
 	
+	public void removeAllVertices(){
+		System.out.println("num verticies: " + getVertices().size());
+		for (int i = 0; i < getAttributes().size(); i++){
+			MathObjectAttribute mAtt = getAttributes().get(i);
+			if (mAtt instanceof GridPointAttribute){
+				System.out.println("remove vertex");
+				removeAttribute(mAtt);
+				i--;
+			}
+		}
+	}
+	
 	public void addVertex(GridPoint p){
 //		points.add(p);
 		int index = countVertices() + 1;
 		String name = "point" + index;
-		addAttribute(new GridPointAttribute(name, 0.0, 1.0, 0.0, 1.0));
+		GridPointAttribute point = new GridPointAttribute(name, 0.0, 1.0, 0.0, 1.0);
+		point.setUserEditable(false);
+		addAttribute(point);
 		getAttributeWithName(name).setValue(p);
 	}
 	

@@ -202,12 +202,12 @@ public class ExponentGraphic extends BinExpressionGraphic {
 		}
 		else if (style == Style.SUPERSCRIPT){
 
-			leftValGraphic = makeValueGraphic(tempLeft);
+			leftValGraphic = makeNodeGraphic(tempLeft);
 			
 			leftSize = leftValGraphic.requestSize(g, f, x1, y1);
 			super.getRootNodeGraphic().getComponents().add(leftValGraphic);
 			
-			rightValGraphic = makeValueGraphic(tempRight);
+			rightValGraphic = makeNodeGraphic(tempRight);
 			
 			rightSize = rightValGraphic.requestSize(g, getRootNodeGraphic().getSmallFont(), x1, y1);
 			super.getRootNodeGraphic().getComponents().add(rightValGraphic);

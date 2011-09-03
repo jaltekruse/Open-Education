@@ -36,7 +36,12 @@ public class Identifier extends Value {
 	
 	@Override
 	public Identifier cloneNode() throws NodeException {
-		return new Identifier(identifier);
+		try {
+			return new Identifier(identifier);
+		} catch (NodeException e) {
+			System.err.println("random stupid error, in class Identifier");
+			return null;
+		}
 	}
 
 	@Override

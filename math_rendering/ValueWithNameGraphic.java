@@ -206,8 +206,8 @@ public void drawCursor(){
 		String s = getValue().toStringRepresentation();
 		int[] size = new int[2];
 		size[0] = fm.stringWidth(s);
-		size[1] = fm.getHeight() - 9;
-		setUpperHeight((int) Math.round(size[1]/2.0));
+		size[1] = getRootNodeGraphic().getFontHeight(f);
+		setUpperHeight(size[1]/2);
 		setLowerHeight(getUpperHeight());
 		super.setX1(x1);
 		super.setY1(y1);

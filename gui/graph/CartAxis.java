@@ -33,11 +33,11 @@ public class CartAxis extends GraphComponent{
 		
 		try {
 			//these four statements are for resizing the grid after zooming
-			if((graph.X_MAX-graph.X_MIN)/graph.X_STEP >= 24)
+			if((graph.X_MAX-graph.X_MIN)/graph.X_STEP >= 16)
 			{
-				if ((graph.X_MAX-graph.X_MIN)/20 > 1)
+				if ((graph.X_MAX-graph.X_MIN)/14 > 1)
 				{
-					graph.varList.setVarVal("xStep", new Decimal((int)(graph.X_MAX-graph.X_MIN)/20));
+					graph.varList.setVarVal("xStep", new Decimal((int)(graph.X_MAX-graph.X_MIN)/14));
 					graph.X_STEP = graph.varList.getVarVal("xStep").toDec().getValue();
 				}
 				else
@@ -68,11 +68,11 @@ public class CartAxis extends GraphComponent{
 				}
 			}
 			
-			if((graph.Y_MAX-graph.Y_MIN)/graph.Y_STEP >= 24)
+			if((graph.Y_MAX-graph.Y_MIN)/graph.Y_STEP >= 16)
 			{
-				if ((graph.Y_MAX-graph.Y_MIN)/20 > 1)
+				if ((graph.Y_MAX-graph.Y_MIN)/14 > 1)
 				{
-					graph.varList.setVarVal("yStep", new Decimal((int)(graph.Y_MAX-graph.Y_MIN)/20));
+					graph.varList.setVarVal("yStep", new Decimal((int)(graph.Y_MAX-graph.Y_MIN)/14));
 					graph.Y_STEP = graph.varList.getVarVal("yStep").toDec().getValue();
 				}
 				else

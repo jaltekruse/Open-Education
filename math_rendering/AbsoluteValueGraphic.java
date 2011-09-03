@@ -13,9 +13,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
-import tree.Operator;
-import tree.UnaryExpression;
-import tree.Expression;
+import expression.Expression;
+import expression.Node;
 
 public class AbsoluteValueGraphic extends UnaryExpressionGraphic {
 
@@ -26,15 +25,10 @@ public class AbsoluteValueGraphic extends UnaryExpressionGraphic {
 	//including space on the inside of the line
 	private int widthSpaceAndLine;
 	
-	public AbsoluteValueGraphic(UnaryExpression v, RootNodeGraphic compExGraphic) {
+	public AbsoluteValueGraphic(Expression v, RootNodeGraphic compExGraphic) {
 		super(v, compExGraphic);
 		setMostInnerNorth(this);
 		setMostInnerSouth(this);
-		if (v.getChild() instanceof UnaryExpression){
-			if (((UnaryExpression)v.getChild()).getOp() == Operator.PAREN){
-				v.setChild(((UnaryExpression)v.getChild()).getChild());
-			}
-		}
 		// TODO Auto-generated constructor stub
 	}
 
@@ -97,7 +91,7 @@ public class AbsoluteValueGraphic extends UnaryExpressionGraphic {
 	
 	public void setCursorPos(int xPixelPos){
 		
-		String valueString = getValue().getOp().getSymbol();
+		String valueString = getValue().getOperator().getSymbol();
 		System.out.println("set paren Cursor pos");
 		
 		if (xPixelPos < getX1() + widthSpaceAndLine + space){
@@ -250,9 +244,9 @@ public class AbsoluteValueGraphic extends UnaryExpressionGraphic {
 		// The call to getChild() skips the first paren inside of the operator, the parens are needed to have
 		// an expression inside of a UnaryOp, but they are not usually displayed
 		// if a user wants to show parens, the can use  two pairs of parens: abs((5/6))
-		Expression tempChild = ((UnaryExpression)super.getValue()).getChild();
+		Node tempChild = ((Expression)super.getValue()).getChild(0);
 		
-		NodeGraphic childValGraphic = makeValueGraphic(tempChild);
+		NodeGraphic childValGraphic = makeNodeGraphic(tempChild);
 		childSize = childValGraphic.requestSize(g, f, x1 + widthSpaceAndLine + space, y1 + overhang);
 		
 		//set the west and east fields for inside an outside of the expression

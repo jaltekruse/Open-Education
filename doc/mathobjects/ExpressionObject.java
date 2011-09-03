@@ -30,18 +30,27 @@ public class ExpressionObject extends MathObject {
 	public static String SUBTRACT_FROM_BOTH_SIDES = "Subtract from both sides";
 	public static String MULTIPLY_BOTH_SIDES = "Multiply both sides";
 	public static String DIVIDE_BOTH_SIDES = "Divide both sides";
+	public static String UNDO_STEP = "Undo Step";
+	public static String MANUALLY_TYPE_STEP = "Manually type step";
+	public static String APPLY_OTHER_OPERATION = "Apply other operation";
 
 	public ExpressionObject(Page p, int x, int y, int w, int h) {
 		super(p, x, y, w, h);
 		setStudentSelectable(true);
 		addList(new ListAttribute<String>("steps"));
+		removeAction(MAKE_SQUARE);
+		addAction(MathObject.MAKE_INTO_PROBLEM);
 		addStudentAction(COMBINE_LIKE_TERMS);
 		addStudentAction(SIMPLIFY);
 		addStudentAction(ADD_TO_BOTH_SIDES);
 		addStudentAction(SUBTRACT_FROM_BOTH_SIDES);
 		addStudentAction(MULTIPLY_BOTH_SIDES);
 		addStudentAction(DIVIDE_BOTH_SIDES);
+		addStudentAction(APPLY_OTHER_OPERATION);
+		addStudentAction(MANUALLY_TYPE_STEP);
+		addStudentAction(UNDO_STEP);
 		getAttributeWithName("expression").setValue("");
+		getAttributeWithName("steps").setValue("");
 		getAttributeWithName("fontSize").setValue(12);
 	}
 
@@ -49,37 +58,53 @@ public class ExpressionObject extends MathObject {
 		super(p);
 		setStudentSelectable(true);
 		addList(new ListAttribute<String>("steps"));
+		removeAction(MAKE_SQUARE);
+		addAction(MathObject.MAKE_INTO_PROBLEM);
 		addStudentAction(COMBINE_LIKE_TERMS);
 		addStudentAction(SIMPLIFY);
 		addStudentAction(ADD_TO_BOTH_SIDES);
 		addStudentAction(SUBTRACT_FROM_BOTH_SIDES);
 		addStudentAction(MULTIPLY_BOTH_SIDES);
 		addStudentAction(DIVIDE_BOTH_SIDES);
+		addStudentAction(APPLY_OTHER_OPERATION);
+		addStudentAction(MANUALLY_TYPE_STEP);
+		addStudentAction(UNDO_STEP);
 		getAttributeWithName("expression").setValue("");
+		getAttributeWithName("steps").setValue("");
 		getAttributeWithName("fontSize").setValue(12);
 	}
 
 	public ExpressionObject() {
 		setStudentSelectable(true);
 		addList(new ListAttribute<String>("steps"));
+		removeAction(MAKE_SQUARE);
+		addAction(MathObject.MAKE_INTO_PROBLEM);
 		addStudentAction(COMBINE_LIKE_TERMS);
 		addStudentAction(SIMPLIFY);
 		addStudentAction(ADD_TO_BOTH_SIDES);
 		addStudentAction(SUBTRACT_FROM_BOTH_SIDES);
 		addStudentAction(MULTIPLY_BOTH_SIDES);
 		addStudentAction(DIVIDE_BOTH_SIDES);
+		addStudentAction(APPLY_OTHER_OPERATION);
+		addStudentAction(MANUALLY_TYPE_STEP);
+		addStudentAction(UNDO_STEP);
 		getAttributeWithName("expression").setValue("");
+		getAttributeWithName("steps").setValue("");
 		getAttributeWithName("fontSize").setValue(12);
 	}
 
 	@Override
 	public void addDefaultAttributes() {
 		addAttribute(new StringAttribute("expression"));
+		StringAttribute steps = new StringAttribute("steps");
+		steps.setUserEditable(false);
+		addAttribute(steps);
 		addAttribute(new IntegerAttribute("fontSize", 1, 50));
 	}
 	
 	public void setAttributeValue(String n, Object o) throws AttributeException{
 		if (n.equals("expression")){
+			getAttributeWithName("steps").setValue("");
 			getListWithName("steps").removeAll();
 			getListWithName("steps").addValue(n.toString());
 		}
@@ -87,16 +112,87 @@ public class ExpressionObject extends MathObject {
 	}
 
 	public void performSpecialObjectAction(String s){
-		if (s.equals(COMBINE_LIKE_TERMS)){
-			Node n;
+		if (s.equals(UNDO_STEP)){
+			if ( ! ((StringAttribute)getAttributeWithName("steps")).getValue().equals("")){
+				String stepsString = getAttributeWithName("steps").getValue().toString();
+				System.out.println(stepsString);
+				Vector<String> steps = new Vector<String>();
+				int lastEnd = 0;
+				for (int i = 0; i < stepsString.length(); i++){
+					if (stepsString.charAt(i) == ';'){
+						steps.add(stepsString.substring(lastEnd, i));
+						lastEnd = i + 1;
+					}
+					else if ( i == stepsString.length() - 1){
+						steps.add(stepsString.substring(lastEnd, i + 1));
+					}
+				}
+				String newSteps = "";
+				for (int i = 0; i < steps.size() - 1; i++){
+					newSteps += steps.get(i) + ";";
+				}
+				getAttributeWithName("steps").setValue(newSteps);
+			}
+			else{
+				JOptionPane.showMessageDialog(null,
+						"No steps to undo.",
+						"Warning",
+						JOptionPane.WARNING_MESSAGE);
+			}
+			return;
+		}
+		if (s.equals(MANUALLY_TYPE_STEP)){
+			String child1 = (String)JOptionPane.showInputDialog(
+					null,
+					"Type the entire next line",
+					"Type the entire next line.",
+					JOptionPane.PLAIN_MESSAGE,
+					null,
+					null,
+					null);
+			if (child1.equals("")){
+				return;
+			}
+			Node newNode = null;
 			try {
-				n = Node.parseNode( ((StringAttribute)getAttributeWithName("expression")).getValue());
+				newNode = Node.parseNode(child1);
+				getAttributeWithName("steps").setValue(
+						getAttributeWithName("steps").getValue().toString()
+						+ newNode.toStringRepresentation() + ";");
+			} catch (NodeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return;
+		}
+
+		if (s.equals(COMBINE_LIKE_TERMS)){
+			Node n = null;
+			try {
+				if (((StringAttribute)getAttributeWithName("steps")).getValue().equals("")){
+					n = Node.parseNode( ((StringAttribute)getAttributeWithName("expression")).getValue());
+				}
+				else{
+					String stepsString = getAttributeWithName("steps").getValue().toString();
+					System.out.println(stepsString);
+					Vector<String> steps = new Vector<String>();
+					int lastEnd = 0;
+					for (int i = 0; i < stepsString.length(); i++){
+						if (stepsString.charAt(i) == ';'){
+							steps.add(stepsString.substring(lastEnd, i));
+							lastEnd = i + 1;
+						}
+						else if ( i == stepsString.length() - 1){
+							steps.add(stepsString.substring(lastEnd, i + 1));
+						}
+					}
+					n = Node.parseNode(steps.get(steps.size() - 1));
+				}
 				n = n.collectLikeTerms();
 				n = n.numericSimplify();
-				ExpressionObject exObj = new ExpressionObject(getParentPage(), getxPos(),
-						getyPos() + getHeight(), this.getWidth() + 30, 30);
-				exObj.getAttributeWithName("expression").setValue(n.toStringRepresentation());
-				getParentPage().addObject(exObj);
+				getAttributeWithName("steps").setValue(
+						getAttributeWithName("steps").getValue().toString()
+						+ n.toStringRepresentation() + ";");
 			} catch (NodeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -107,13 +203,29 @@ public class ExpressionObject extends MathObject {
 		if (s.equals(SIMPLIFY)){
 			Node n = null;
 			try {
-				n = Node.parseNode( ((StringAttribute)getAttributeWithName("expression")).getValue());
+				if ( ((StringAttribute)getAttributeWithName("steps")).getValue().equals("")){
+					n = Node.parseNode( ((StringAttribute)getAttributeWithName("expression")).getValue());
+				}
+				else{
+					String stepsString = getAttributeWithName("steps").getValue().toString();
+					Vector<String> steps = new Vector<String>();
+					int lastEnd = 0;
+					for (int i = 0; i < stepsString.length(); i++){
+						if (stepsString.charAt(i) == ';'){
+							steps.add(stepsString.substring(lastEnd, i));
+							lastEnd = i + 1;
+						}
+						else if ( i == stepsString.length() - 1){
+							steps.add(stepsString.substring(lastEnd, i + 1));
+						}
+					}
+					n = Node.parseNode(steps.get(steps.size() - 1));
+				}
 				n = n.simplify();
 
-				ExpressionObject exObj = new ExpressionObject(getParentPage(), getxPos(),
-						getyPos() + getHeight(), this.getWidth() + 30, 30);
-				exObj.getAttributeWithName("expression").setValue(n.toStringRepresentation());
-				getParentPage().addObject(exObj);
+				getAttributeWithName("steps").setValue(
+						getAttributeWithName("steps").getValue().toString()
+						 + n.toStringRepresentation()+ ";");
 			}catch (NodeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -126,7 +238,24 @@ public class ExpressionObject extends MathObject {
 		try{
 			String expression = ((StringAttribute)getAttributeWithName("expression")).getValue();
 			if ( ! expression.equals("")){
-				n = Node.parseNode( ((StringAttribute)getAttributeWithName("expression")).getValue());
+				if ( ((StringAttribute)getAttributeWithName("steps")).getValue().equals("")){
+					n = Node.parseNode( ((StringAttribute)getAttributeWithName("expression")).getValue());
+				}
+				else{
+					String stepsString = getAttributeWithName("steps").getValue().toString();
+					Vector<String> steps = new Vector<String>();
+					int lastEnd = 0;
+					for (int i = 0; i < stepsString.length(); i++){
+						if (stepsString.charAt(i) == ';'){
+							steps.add(stepsString.substring(lastEnd, i));
+							lastEnd = i + 1;
+						}
+						else if ( i == stepsString.length() - 1){
+							steps.add(stepsString.substring(lastEnd, i + 1));
+						}
+					}
+					n = Node.parseNode(steps.get(steps.size() - 1));
+				}
 			}
 		} catch (Exception e){
 			System.out.println("problem with parse");
@@ -141,6 +270,56 @@ public class ExpressionObject extends MathObject {
 			return;
 		}
 		Expression ex = (Expression) n;
+		if (s.equals(APPLY_OTHER_OPERATION)){
+			Object[] operations = {"sqrt", "sin", "cos", "tan"};
+			String op = (String)JOptionPane.showInputDialog(
+			                    null,
+			                    "Choose an operation to apply to both sides",
+			                    "Operation Selection",
+			                    JOptionPane.PLAIN_MESSAGE,
+			                    null,
+			                    operations,
+			                    "sqrt");
+
+			Operator o = null;
+			if (op.equals("sqrt")){
+				o = new Operator.SquareRoot();
+			}
+			else if (op.equals("sin")){
+				o = new Operator.Sine();
+			}
+			else if (op.equals("cos")){
+				o = new Operator.Cosine();
+			}
+			else if (op.equals("tan")){
+				o = new Operator.Tangent();
+			}
+			
+			Expression newLeft = new Expression(o);
+			Vector<Node> left = new Vector<Node>();
+			left.add(ex.getChild(0));
+			newLeft.setChildren(left);
+			
+			Expression newRight = new Expression(o);
+			Vector<Node> right = new Vector<Node>();
+			right.add(ex.getChild(1));
+			newRight.setChildren(right);
+			
+			Vector<Node> exChildren = new Vector<Node>();
+			exChildren.add(newLeft);
+			exChildren.add(newRight);
+			ex.setChildren(exChildren);
+			
+			try {
+				getAttributeWithName("steps").setValue(
+						getAttributeWithName("steps").getValue().toString()
+						 + ex.toStringRepresentation()+ ";");
+			} catch (NodeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return;
+		}
 		try{
 			if (s.equals(ADD_TO_BOTH_SIDES)){
 				applyOpToBothSides(ex, new Operator.Addition(), "Add to both sides");
@@ -163,7 +342,6 @@ public class ExpressionObject extends MathObject {
 	}
 	
 	public void multiplyOrDivideBothSides(Expression ex, Operator newOp, String message) throws NodeException{
-		System.out.println("mult or divide both sides ( printed in expressionObject)");
 		String child1 = (String)JOptionPane.showInputDialog(
 				null,
 				message,
@@ -212,10 +390,9 @@ public class ExpressionObject extends MathObject {
 		exChildren.add(newRight);
 		ex.setChildren(exChildren);
 
-		ExpressionObject exObj = new ExpressionObject(getParentPage(), getxPos(),
-				getyPos() + getHeight(), this.getWidth() + 30, 30);
-		exObj.getAttributeWithName("expression").setValue(ex.toStringRepresentation());
-		getParentPage().addObject(exObj);
+		getAttributeWithName("steps").setValue(
+				getAttributeWithName("steps").getValue().toString()
+				 + ex.toStringRepresentation()+ ";");
 		
 	}
 
@@ -260,10 +437,9 @@ public class ExpressionObject extends MathObject {
 			e.printStackTrace();
 		}
 
-		ExpressionObject exObj = new ExpressionObject(getParentPage(), getxPos(),
-				getyPos() + getHeight(), this.getWidth() + 30, 30);
-		exObj.getAttributeWithName("expression").setValue(ex.toStringRepresentation());
-		getParentPage().addObject(exObj);
+		getAttributeWithName("steps").setValue(
+				getAttributeWithName("steps").getValue().toString()
+				 + ex.toStringRepresentation()+ ";");
 
 	}
 

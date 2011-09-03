@@ -8,8 +8,6 @@
 
 package tree;
 
-import gui.ValStoragePanel;
-
 import java.util.ArrayList;
 
 
@@ -25,7 +23,6 @@ import java.util.ArrayList;
 
 public abstract class ValueStorage {
 	
-	private ValStoragePanel storageGUI;
 	ArrayList<ValStorageGroup> groups;
 	//typeStorage:  1- Var     2-Const
 	int firstIndexWithElm, numGroupsRemaining, typeStorage;
@@ -78,10 +75,6 @@ public abstract class ValueStorage {
 		ValueWithName val = null;
 		if (index != Integer.MAX_VALUE){
 			val =  groups.get(index).storeElm(n);
-			if (getStorageGUI() != null)
-			{
-				getStorageGUI().refreshButtons();
-			}
 		}
 		return val;
 	}
@@ -237,13 +230,5 @@ public abstract class ValueStorage {
 	 */
 	public void setTypeStorage(int i){
 		typeStorage = i;
-	}
-	
-	public void setStorageGUI(ValStoragePanel storageGUI) {
-		this.storageGUI = storageGUI;
-	}
-
-	public ValStoragePanel getStorageGUI() {
-		return storageGUI;
 	}
 }

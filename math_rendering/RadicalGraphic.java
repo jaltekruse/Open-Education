@@ -13,10 +13,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
-import tree.Expression;
-import tree.Operator;
-import tree.UnaryExpression;
-import tree.Expression;
+import expression.Expression;
+import expression.Node;
 
 public class RadicalGraphic extends UnaryExpressionGraphic {
 
@@ -25,14 +23,8 @@ public class RadicalGraphic extends UnaryExpressionGraphic {
 	private int heightLeadingTail;
 	private int lengthLittleTail;
 	
-	public RadicalGraphic(UnaryExpression v, RootNodeGraphic compExGraphic) {
+	public RadicalGraphic(Expression v, RootNodeGraphic compExGraphic) {
 		super(v, compExGraphic);
-		if (v.getChild() instanceof UnaryExpression){
-			if (((UnaryExpression)v.getChild()).getOp() == Operator.PAREN)
-			{//if there is a set of parenthesis inside, remove them
-				v.setChild(((UnaryExpression)v.getChild()).getChild());
-			}
-		}
 		setMostInnerSouth(this);
 		setMostInnerNorth(this);
 		// TODO Auto-generated constructor stub
@@ -82,13 +74,13 @@ public class RadicalGraphic extends UnaryExpressionGraphic {
 		heightLeadingTail = (int) (8 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
 		lengthLittleTail = (int) (3 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
 		
-		Expression tempChild = ((UnaryExpression)super.getValue()).getChild();
+		Node tempChild = super.getValue().getChild(0);
 		NodeGraphic childValGraphic = null;
 		int[] childSize = {0,0};
 		int[] symbolSize = {0, 0};
 		int[] totalSize = {0, 0};
 		
-		childValGraphic = makeValueGraphic(tempChild);
+		childValGraphic = makeNodeGraphic(tempChild);
 		childSize = childValGraphic.requestSize(g, f, x1 + widthFront + space, y1 + space);
 		
 		//set the west and east fields for inside an outside of the expression

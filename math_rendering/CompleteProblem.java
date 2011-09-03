@@ -293,8 +293,8 @@ public class CompleteProblem {
 						if (opString.equals("-")){
 							selectedTerm = currentCEG.getRoot().getValue().getParser().ParseExpression("-" + selectedTerm.toString());
 						}
-						NodeGraphic vg = nothing.makeValueGraphic(selectedTerm);
-						NodeGraphic vg2 = nothing.makeValueGraphic(selectedTerm);
+						NodeGraphic vg = nothing.makeNodeGraphic(selectedTerm);
+						NodeGraphic vg2 = nothing.makeNodeGraphic(selectedTerm);
 						
 						
 						int vgXPos = currVG.getX1();

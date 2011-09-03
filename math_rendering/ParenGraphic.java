@@ -240,7 +240,7 @@ public class ParenGraphic extends UnaryExpressionGraphic {
 		int[] symbolSize = {0, 0};
 		int[] totalSize = {0, 0};
 		
-		childValGraphic = makeValueGraphic(tempChild);
+		childValGraphic = makeNodeGraphic(tempChild);
 		childSize = childValGraphic.requestSize(g, f, x1 + widthParens + space, y1 + overhang);
 		
 		//set the west and east fields for inside an outside of the expression

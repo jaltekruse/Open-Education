@@ -10,8 +10,6 @@ package tree;
 
 import java.util.*;
 
-import gui.MainApplet;
-
 public class ExpressionParser {
 	
 	//an expression to keep track of the current position in the tree
@@ -32,8 +30,6 @@ public class ExpressionParser {
 	//counter for the number of parenthesis found, if ( found add one, if ) found xubtract one
 	private int matchedParens;
 	
-	//the root GUI, used to influence other parts of the application
-	private MainApplet GUI;
 	
 	//used to keep track of the units for angle measures, impacts the trig function evaluation
 	private int angleUnits;
@@ -62,28 +58,6 @@ public class ExpressionParser {
 		//associates this object with all of the Decimal objects, so they can
 		//find the current angleUnits
 		Decimal staticDec = new Decimal(this);
-	}
-
-	public ExpressionParser(MainApplet mainApplet) {
-		// TODO Auto-generated constructor stub
-		lengthLast = 0;
-		vals = new ArrayList<Expression>();
-		VARLIST = new VarStorage(this);
-		CONSTLIST = new ConstantStorage();
-		GUI = mainApplet;
-		angleUnits = 1;
-		
-		//associates this object with all of the Decimal objects, so they can
-		//find the current angleUnits
-		Decimal staticDec = new Decimal(this);
-	}
-	
-	public MainApplet getGUI(){
-		return GUI;
-	}
-	
-	public boolean hasGUI(){
-		return (GUI != null);
 	}
 
 	public String getDateModified(){

@@ -84,10 +84,12 @@ public class Expression extends Node {
 				totallyNumeric = false;
 			}
 		}
-		if (totallyNumeric)
+		if (totallyNumeric && ! ( o instanceof Operator.Equals ) ){
 			return o.evaluate(numbers);
-		else
+		}
+		else{
 			return new Expression(o.clone(), simplifiedChildren);
+		}
 	}
 	
 	@Override

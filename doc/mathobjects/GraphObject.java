@@ -8,6 +8,7 @@
 
 package doc.mathobjects;
 
+import tree.EvalException;
 import doc.Page;
 import doc_gui.attributes.BooleanAttribute;
 import doc_gui.attributes.DoubleAttribute;
@@ -16,14 +17,18 @@ import doc_gui.attributes.StringAttribute;
 
 public class GraphObject extends MathObject {
 	
-	private static final String DEFAULT_GRID = "default grid";
+	public static final String DEFAULT_GRID = "default grid";
+	public static final String ZOOM_IN = "zoom in";
+	public static final String ZOOM_OUT = "zoom out";
 	
 	public GraphObject(Page p, int x, int y, int width, int height) {
 		super(p, x, y, width, height);
 		setDefaults();
 		getAttributeWithName("y=").setValue("");
 		addAction(DEFAULT_GRID);
-		addStudentAction("Graph point");
+		addAction(ZOOM_IN);
+		addAction(ZOOM_OUT);
+//		addStudentAction("Graph point");
 	}
 	
 	public GraphObject(Page p){
@@ -31,21 +36,88 @@ public class GraphObject extends MathObject {
 		setDefaults();
 		getAttributeWithName("y=").setValue("");
 		addAction(DEFAULT_GRID);
-		addStudentAction("Graph point");
+		addAction(ZOOM_IN);
+		addAction(ZOOM_OUT);
+//		addStudentAction("Graph point");
 	}
 	
 	public GraphObject() {
 		setDefaults();
 		getAttributeWithName("y=").setValue("");
 		addAction(DEFAULT_GRID);
-		addStudentAction("Graph point");
+		addAction(ZOOM_IN);
+		addAction(ZOOM_OUT);
+//		addStudentAction("Graph point");
 	}
 
 	public void performSpecialObjectAction(String s){
 		if (s.equals(DEFAULT_GRID)){
 			setDefaults();
 		}
+		else if (s.equals(ZOOM_IN)){
+			zoom(110);
+		}
+		else if (s.equals(ZOOM_OUT)){
+			zoom(90);
+		}
 	}
+	
+	public void zoom(double rate){
+		double xMin = getxMin(), yMin = getyMin(), xMax = getxMax(), yMax = getyMax();
+		
+		//hacked solution to prevent drawing the grid, the auto-rescaling of the 
+		//grid stops working after the numbers get too big
+		if (xMin < -7E8 || xMax > 7E8 || yMin < -7E8 || yMax > 7E8){
+			if (rate < 100)
+			{//if the user is trying to zoom out farther, do nothing
+				return;
+			}
+		}
+		
+		try {
+			setxMin( xMin + (-1 * (xMax-xMin)*(100-rate)/100) );
+			setxMax( xMax + ( (xMax-xMin)*(100-rate)/100) );
+			setyMin( yMin + (-1 * (yMax-yMin)*(100-rate)/100) );
+			setyMax( yMax + ((yMax-yMin)*(100-rate)/100) );
+		} catch (AttributeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public double getxMin(){
+		return ((DoubleAttribute) getAttributeWithName("xMin")).getValue();
+	}
+	
+	public double getyMin(){
+		return ((DoubleAttribute) getAttributeWithName("yMin")).getValue();
+	}
+	
+	public double getxMax(){
+		return ((DoubleAttribute) getAttributeWithName("xMax")).getValue();
+	}
+	
+	public double getyMax(){
+		return ((DoubleAttribute) getAttributeWithName("yMax")).getValue();
+	}
+	
+	public void setxMin(double d) throws AttributeException{
+		setAttributeValue("xMin", d);
+	}
+	
+	public void setyMin(double d) throws AttributeException{
+		setAttributeValue("yMin", d);
+	}
+	
+	public void setxMax(double d) throws AttributeException{
+		setAttributeValue("xMax", d);
+	}
+	
+	public void setyMax(double d) throws AttributeException{
+		setAttributeValue("yMax", d);
+	}
+
 
 	public void setDefaults(){
 		try{

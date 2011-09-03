@@ -157,12 +157,12 @@ public class BinExpressionGraphic extends ExpressionGraphic{
 		int[] symbolSize = {0, 0};
 		int[] totalSize = {0, 0};
 		
-		leftValGraphic = makeValueGraphic(tempLeft);
+		leftValGraphic = makeNodeGraphic(tempLeft);
 		
 		super.getRootNodeGraphic().getComponents().add(leftValGraphic);
 		leftSize = leftValGraphic.requestSize(g, f, x1, y1);
 		
-		rightValGraphic = makeValueGraphic(tempRight);
+		rightValGraphic = makeNodeGraphic(tempRight);
 		
 		rightSize = rightValGraphic.requestSize(g, f, x1, y1);
 		super.getRootNodeGraphic().getComponents().add(rightValGraphic);

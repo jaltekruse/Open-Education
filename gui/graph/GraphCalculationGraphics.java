@@ -135,7 +135,7 @@ public class GraphCalculationGraphics extends GraphComponent {
 						g.setColor(Color.black);
 						d.getSelection();
 						d.getSelection().getStart();
-						graph.getMainApplet().getParser().getVarList().setVarVal(((GraphedCartFunction)sg)
+						graph.getParser().getVarList().setVarVal(((GraphedCartFunction)sg)
 								.getIndependentVar().getName(), new Decimal(d.getSelection().getStart()));
 //						System.out.println();
 //						System.out.println("class GraphCalculationGraphics:");

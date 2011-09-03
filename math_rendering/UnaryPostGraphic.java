@@ -64,7 +64,7 @@ private int space;
 		int[] symbolSize = {0, 0};
 		int[] totalSize = {0, 0};
 		
-		childValGraphic = makeValueGraphic(tempChild);
+		childValGraphic = makeNodeGraphic(tempChild);
 		
 		setChildGraphic(childValGraphic);
 		super.getRootNodeGraphic().getComponents().add(childValGraphic);

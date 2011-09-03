@@ -48,15 +48,16 @@ public class Document {
 		pages = new Vector<Page>();
 		subjectsCovered = new Vector<String>();
 		getAttributeWithName(FILENAME).setValue(name);
+		System.out.println(getAttributeWithName(FILENAME).getValue());
 	}
 	
-	public Document(String name, DocViewerPanel docPanel){
-		attributes = new Vector<MathObjectAttribute>();
-		addAttributes();
-		pages = new Vector<Page>();
-		subjectsCovered = new Vector<String>();
-		getAttributeWithName(FILENAME).setValue(name);
-	}
+//	public Document(String name){
+//		attributes = new Vector<MathObjectAttribute>();
+//		addAttributes();
+//		pages = new Vector<Page>();
+//		subjectsCovered = new Vector<String>();
+//		getAttributeWithName(FILENAME).setValue(name);
+//	}
 	
 	private void addAttributes(){
 		addAttribute(new StringAttribute(FILENAME));

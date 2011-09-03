@@ -198,8 +198,8 @@ public class DivisionGraphic extends BinExpressionGraphic {
 		g.setFont(f);
 		setFont(f);
 		
-		sizeOverhang = (int) (3 * getRootNodeGraphic().DOC_ZOOM_LEVEL);
-		spaceAroundBar = (int) (5 * getRootNodeGraphic().DOC_ZOOM_LEVEL);
+		sizeOverhang = (int) (3 * getRootNodeGraphic().getSizeAdjustment());
+		spaceAroundBar = (int) (5 * getRootNodeGraphic().getSizeAdjustment());
 		
 		Node tempLeft = ((Expression)super.getValue()).getChild(0);
 		Node tempRight = ((Expression)super.getValue()).getChild(1);
@@ -213,7 +213,7 @@ public class DivisionGraphic extends BinExpressionGraphic {
 		if (style == Style.SLASH)
 		{
 			
-			leftValGraphic = makeValueGraphic(tempLeft);
+			leftValGraphic = makeNodeGraphic(tempLeft);
 			
 			super.getRootNodeGraphic().getComponents().add(leftValGraphic);
 			leftSize = leftValGraphic.requestSize(g, f, x1, y1);
@@ -225,7 +225,7 @@ public class DivisionGraphic extends BinExpressionGraphic {
 			symbolX2 = x1 + leftSize[0] + symbolSize[0];
 			symbolY2 = symbolSize[1] + symbolY1;
 			
-			rightValGraphic = makeValueGraphic(tempRight);
+			rightValGraphic = makeNodeGraphic(tempRight);
 			
 			rightSize = rightValGraphic.requestSize(g, f, symbolX2, y1);
 			super.getRootNodeGraphic().getComponents().add(rightValGraphic);
@@ -254,14 +254,14 @@ public class DivisionGraphic extends BinExpressionGraphic {
 		}
 		else if (style == Style.HORIZONTAL){
 			
-			leftValGraphic = makeValueGraphic(tempLeft);
+			leftValGraphic = makeNodeGraphic(tempLeft);
 			
 			leftSize = leftValGraphic.requestSize(g, f, x1, y1);
 			super.getRootNodeGraphic().getComponents().add(leftValGraphic);
 			
 			//other if statements for checking the left, decimal, imaginary, other val types
 			
-			rightValGraphic = makeValueGraphic(tempRight);
+			rightValGraphic = makeNodeGraphic(tempRight);
 			
 			rightSize = rightValGraphic.requestSize(g, f, symbolX2, y1);
 			super.getRootNodeGraphic().getComponents().add(rightValGraphic);

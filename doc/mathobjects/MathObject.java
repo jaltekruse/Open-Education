@@ -41,6 +41,8 @@ public abstract class MathObject {
 	public static final String GROUPING = "Grouping";
 	public static final String PROBLEM_OBJECT = "Problem";
 	public static final String CYLINDER_OBJECT = "Cylinder";
+	public static final String CONE_OBJECT = "Cone";
+	public static final String REGULAR_POLYGON_OBJECT = "RegularPolygon";
 	public static final String ARROW_OBJECT = "Arrow";
 	public static final String PYRAMID_OBJECT = "Pyramid";
 	
@@ -62,7 +64,6 @@ public abstract class MathObject {
 		actions = new Vector<String>();
 		lists = new Vector<ListAttribute>();
 		studentActions = new Vector<String>();
-		addAction(MAKE_INTO_PROBLEM);
 		addAction(MAKE_SQUARE);
 		addDefaultAttributes();
 		addGenericDefaultAttributes();
@@ -75,7 +76,6 @@ public abstract class MathObject {
 		actions = new Vector<String>();
 		lists = new Vector<ListAttribute>();
 		studentActions = new Vector<String>();
-		addAction(MAKE_INTO_PROBLEM);
 		addAction(MAKE_SQUARE);
 		addDefaultAttributes();
 		addGenericDefaultAttributes();
@@ -88,7 +88,6 @@ public abstract class MathObject {
 		actions = new Vector<String>();
 		lists = new Vector<ListAttribute>();
 		studentActions = new Vector<String>();
-		addAction(MAKE_INTO_PROBLEM);
 		addDefaultAttributes();
 		addGenericDefaultAttributes();
 		getAttributeWithName("xPos").setValue(x);
@@ -176,6 +175,15 @@ public abstract class MathObject {
 		}
 		else if (this instanceof AnswerBoxObject){
 			o = new AnswerBoxObject(getParentPage());
+		}
+		else if (this instanceof CylinderObject){
+			o = new CylinderObject(getParentPage());
+		}
+		else if (this instanceof RegularPolygonObject){
+			o = new RegularPolygonObject(getParentPage());
+		}
+		else if (this instanceof ArrowObject){
+			o = new ArrowObject(getParentPage());
 		}
 		else if (this instanceof Grouping){
 			if (this instanceof ProblemObject){
@@ -321,6 +329,10 @@ public abstract class MathObject {
 		return null;
 	}
 	
+	public void setAttributeValueWithString(String s, String val) throws AttributeException{
+		setAttributeValue(s, getAttributeWithName(s).readValueFromString(val));
+	}
+	
 	public void setAttributeValue(String n, Object o) throws AttributeException{
 		getAttributeWithName(n).setValue(o);
 	}
@@ -328,9 +340,14 @@ public abstract class MathObject {
 	public boolean addAttribute(MathObjectAttribute a){
 		if (getAttributeWithName(a.getName()) == null){
 			attributes.add(a);
+			a.setParentObject(this);
 			return true;
 		}
 		return false;
+	}
+	
+	public void removeAttribute(MathObjectAttribute a){
+		attributes.remove(a);
 	}
 
 	public void setStudentSelectable(boolean studentSelectable) {

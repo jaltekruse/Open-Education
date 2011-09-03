@@ -14,16 +14,15 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import tree.BinExpression;
-import tree.UnaryExpression;
-import tree.Expression;
+import expression.Expression;
+import expression.Node;
 
 public class UnaryExpressionGraphic extends ExpressionGraphic {
 
 	private int space;
 	private NodeGraphic childGraphic;
 	
-	public UnaryExpressionGraphic(UnaryExpression v,
+	public UnaryExpressionGraphic(Expression v,
 			RootNodeGraphic compExGraphic) {
 		super(v, compExGraphic);
 		setMostInnerNorth(this);
@@ -38,12 +37,12 @@ public class UnaryExpressionGraphic extends ExpressionGraphic {
 			getRootNodeGraphic().getGraphics().setColor(Color.black);
 		}
 		getRootNodeGraphic().getGraphics().setFont(getFont());
-		getRootNodeGraphic().getGraphics().drawString(getValue().getOp().getSymbol(),
+		getRootNodeGraphic().getGraphics().drawString(getValue().getOperator().getSymbol(),
 				symbolX1, symbolY2);
 	}
 	
 	public void drawCursor(){
-		String opString = getValue().getOp().getSymbol();
+		String opString = getValue().getOperator().getSymbol();
 		
 		int xPos = symbolX1 + super.getRootNodeGraphic().getGraphics().getFontMetrics().stringWidth(
 				opString.substring(0, super.getRootNodeGraphic().getCursor().getPos()));
@@ -64,12 +63,12 @@ public class UnaryExpressionGraphic extends ExpressionGraphic {
 	}
 	
 	public int getMaxCursorPos(){
-		return getValue().getOp().getSymbol().length();
+		return getValue().getOperator().getSymbol().length();
 	}
 	
 	public void setCursorPos(int xPixelPos){
 		
-		String valueString = getValue().getOp().getSymbol();
+		String valueString = getValue().getOperator().getSymbol();
 		System.out.println("set Unary Cursor pos");
 		
 		if (xPixelPos < super.symbolX1){
@@ -199,16 +198,16 @@ public class UnaryExpressionGraphic extends ExpressionGraphic {
 		setFont(f);
 		
 		space = (int) (2 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
-		Expression tempChild = ((UnaryExpression)super.getValue()).getChild();
+		Node tempChild = super.getValue().getChild(0);
 		NodeGraphic childValGraphic = null;
 		int[] childSize = {0,0};
 		int[] symbolSize = {0, 0};
 		int[] totalSize = {0, 0};
 		
 		System.out.println("UnaryValue: " + value.toString());
-		symbolSize[0] = super.getRootNodeGraphic().getStringWidth(value.getOp().getSymbol(), f) + space;
+		symbolSize[0] = super.getRootNodeGraphic().getStringWidth(value.getOperator().getSymbol(), f) + space;
 		symbolSize[1] = super.getRootNodeGraphic().getFontHeight(f);
-		childValGraphic = makeValueGraphic(tempChild);
+		childValGraphic = makeNodeGraphic(tempChild);
 		
 		setChildGraphic(childValGraphic);
 		super.getRootNodeGraphic().getComponents().add(childValGraphic);

@@ -22,7 +22,7 @@ public class NodeParser {
 	
 	private List<String> functions =
 			Arrays.asList("log", "sin", "cos", "tan",
-					"sqrt", "cbrt", "root", "ln", "random", "randomInt");
+					"sqrt", "cbrt", "root", "ln", "random", "rand", "randint", "randomint");
 	
 	private List<String> nonFunctionalIdentifiers = 
 			Arrays.asList();
@@ -147,6 +147,7 @@ public class NodeParser {
 		if (openBrackets.contains(expression.charAt(0) + "") &&
 				closeBrackets.contains(expression.charAt(expression.length() - 1) + ""))
 			// expression is surrounded by parens
+			//this allows a paren to open and a bracket to close, should be redone
 			return parseNode(expression.substring(1, expression.length() - 1));
 		
 		for (int precedence = initialPrecedence ; precedence <= highestPrecedence ; precedence++) {
@@ -234,10 +235,10 @@ public class NodeParser {
 					else if (symbol.equals("random")){
 						o = new Operator.RandomGenerator();
 					}
-					else if (symbol.equals("randomInt")){
+					else if (symbol.equalsIgnoreCase("randomInt")){
 						o = new Operator.RandomIntGenerator();
 					}
-					else if (symbol.equals("ln"))
+					else if (symbol.equalsIgnoreCase("ln"))
 						o = new Operator.NaturalLog();
 					else if (symbol.equals("sin"))
 						o = new Operator.Sine();
