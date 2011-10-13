@@ -37,18 +37,23 @@ public abstract class Operator {
 
 	public abstract String getSymbol();
 	
-	public abstract Number evaluate(Vector<Number> children) throws NodeException;
+	public abstract Node evaluate(Vector<Number> children);
 
-	public abstract String format(Vector<String> children) throws NodeException;
+	public abstract String format(Vector<String> children) throws ArgumentException;
+	
+	/**
+	 * @return The number of arguments this operator can take, {@code -1} if variable.
+	 */
+	public abstract int getArity();
 
 	public DisplayFormat getFormat() {
 		return null;
 	}
 
-	public String toString(Vector<Node> children) throws NodeException {
+	public String toString(Vector<Node> children) {
 		Vector<String> stringChildren = new Vector<String>();
 		for (Node c : children)
-			stringChildren.add(c.toStringRepresentation());
+			stringChildren.add(c.toString());
 		return format(stringChildren);
 	}
 	
@@ -60,14 +65,14 @@ public abstract class Operator {
 		}
 	
 		@Override
-		public Number evaluate(Vector<Number> children) throws NodeException {
+		public Number evaluate(Vector<Number> children) throws ArgumentException {
 			if (children.size() != 1)
 				throwBadArguments();
 			return children.get(0).negate();
 		}
 	
 		@Override
-		public String format(Vector<String> children) throws NodeException {
+		public String format(Vector<String> children) throws ArgumentException {
 			if (children.size() != 1)
 				throwBadArguments();
 			return getSymbol() + children.get(0);
@@ -77,12 +82,23 @@ public abstract class Operator {
 		public Operator clone() {
 			return new Negation();
 		}
+
+		@Override
+		public int getArity() {
+			return 1;
+		}
 		
 	}
 
 	public static abstract class BinaryOperator extends Operator {
+		
 		@Override
-		public String format(Vector<String> children) throws NodeException {
+		public int getArity() {
+			return 2;
+		}
+		
+		@Override
+		public String format(Vector<String> children) throws ArgumentException {
 			if (children.size() != 2){
 				throwBadArguments();
 			}
@@ -90,13 +106,13 @@ public abstract class Operator {
 		}
 		
 		@Override
-		public Number evaluate(Vector<Number> children) throws NodeException {
+		public Node evaluate(Vector<Number> children) throws ArgumentException {
 			if (children.size() != 2)
 				throwBadArguments();
 			return evaluate(children.get(0), children.get(1));
 		}
 		
-		public abstract Number evaluate (Number a, Number b) throws NodeException;
+		public abstract Node evaluate (Number a, Number b);
 	}
 	
 	public static class Addition extends BinaryOperator {
@@ -266,8 +282,9 @@ public abstract class Operator {
 		}
 
 		@Override
-		public Number evaluate(Number a, Number b) throws NodeException {
-			throw new NodeException("cannot evaluate an equality");
+		public Node evaluate(Number a, Number b) {
+//			throw new NodeException("cannot evaluate an equality");
+			return new Expression(this.clone(), a, b);
 		}
 
 		@Override
@@ -282,14 +299,14 @@ public abstract class Operator {
 		public abstract Number safeEval(Vector<Number> children);
 		
 		@Override
-		public Number evaluate(Vector<Number> children) throws NodeException {
+		public Number evaluate(Vector<Number> children) throws ArgumentException {
 			if (children.size() != getArity())
 				throwBadArguments();
 			return safeEval(children);
 		}
 		
 		@Override
-		public String format(Vector<String> children) throws NodeException {
+		public String format(Vector<String> children) throws ArgumentException {
 			if (children.size() != getArity())
 				throwBadArguments();
 			String s = getSymbol() + "(";
@@ -534,7 +551,7 @@ public abstract class Operator {
 		}
 	}
 	
-	public static void throwBadArguments() throws NodeException {
-		throw new NodeException("Incorrect number of arguments");
+	public static void throwBadArguments() throws ArgumentException {
+		throw new ArgumentException("Incorrect number of arguments");
 	}
 }

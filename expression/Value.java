@@ -13,25 +13,25 @@ import java.util.Vector;
 public abstract class Value extends Node {
 	
 	@Override
-	public Node collectLikeTerms() throws NodeException {
+	public Node collectLikeTerms() {
 		// this means nothing for pure Values
-		return this.cloneNode();
+		return this.clone();
 	}
 
 	@Override
-	public Node smartNumericSimplify() throws NodeException {
+	public Node smartNumericSimplify() {
 		return numericSimplify();
 	}
 	
 	@Override
-	public Node numericSimplify() throws NodeException {
+	public Node numericSimplify() {
 		// this means nothing for pure Values
-		return this.cloneNode();
+		return this.clone();
 	}
 	
 	@Override
-	public Node standardFormat() throws NodeException {
-		return this.cloneNode();
+	public Node standardFormat() {
+		return this.clone();
 	}
 	
 	@Override
@@ -53,7 +53,7 @@ public abstract class Value extends Node {
 		return (this instanceof Identifier);
 	}
 
-	public static Value parseValue(String expression) throws NodeException {
+	public static Value parseValue(String expression) throws IdentifierException {
 		try {
 			return Number.parseNumber(expression);
 		} catch (NumericException e) {

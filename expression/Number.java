@@ -37,12 +37,12 @@ public class Number extends Value implements Comparable<Number> {
 	}
 
 	@Override
-	public Number cloneNode() {
+	public Number clone() {
 		return new Number(getValue());
 	}
 
 	@Override
-	public String toStringRepresentation() {
+	public String toString() {
 		if (isInteger()){
 			return (int) value + "";
 		}

@@ -46,18 +46,17 @@ public class Expression extends Node {
 	}
 	
 	@Override
-	public String toStringRepresentation() throws NodeException {
-//		if ( ! (o instanceof Operator.Equals))
-//			return parenthetize(o.toString(children));
-//		else
-			return o.toString(children);
+	public String toString() {
+		if ( !(o instanceof Operator.Equals))
+			return parenthetize(o.toString(children));
+		return o.toString(children);
 	}
 	
 	@Override
-	public Expression cloneNode() throws NodeException {
+	public Expression clone() {
 		Vector<Node> clone = new Vector<Node>();
 		for (Node child : children)
-			clone.add(child.cloneNode());
+			clone.add(child.clone());
 		return new Expression(o.clone(), clone);
 	}
 
@@ -68,9 +67,55 @@ public class Expression extends Node {
 			newChildren.add(c.replace(identifier, node));
 		return new Expression(o, newChildren);
 	}
+	
+	@Override
+	public Node getSelection(Selection s) {
+		if (s.depth() == 0)
+			return this;
+		return children.elementAt(s.first()).getSelection(s.pop());
+	}
+	
+	@Override
+	public Selection find(Node node) {
+		if (this.equals(node))
+			return new Selection();
+		for (int i = 0 ; i < children.size() ; i++) {
+			Node c = children.get(i);
+			Selection s = c.find(node);
+			if (s != null) {
+				return s.push(i);
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public Selection findFromLast(Node node) {
+		if (this.equals(node))
+			return new Selection();
+		for (int i = children.size() - 1 ; i >= 0 ; i--) {
+			Node c = children.get(i);
+			Selection s = c.findFromLast(node);
+			if (s != null) {
+				return s.push(i);
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public Node replace(Selection s, Node node) {
+		if (s.depth() == 0)
+			return node;
+		@SuppressWarnings("unchecked")
+		Vector<Node> newChildren = (Vector<Node>) children.clone();
+		newChildren.set(s.first(), 
+				newChildren.get(s.first()).replace(s.pop(), node));
+		return new Expression(o, newChildren);
+	}
 
 	@Override
-	public Node numericSimplify() throws NodeException {
+	public Node numericSimplify() {
 		Vector<Node> simplifiedChildren = new Vector<Node>();
 		Vector<Number> numbers = new Vector<Number>();
 		Node simplified;
@@ -79,21 +124,19 @@ public class Expression extends Node {
 			simplified = c.numericSimplify();
 			simplifiedChildren.add(simplified);
 			if (simplified instanceof Number) {
-				numbers.add((Number) simplified.cloneNode());
+				numbers.add((Number) simplified.clone());
 			} else {
 				totallyNumeric = false;
 			}
 		}
-		if (totallyNumeric && ! ( o instanceof Operator.Equals ) ){
+		if (totallyNumeric)
 			return o.evaluate(numbers);
-		}
-		else{
+		else
 			return new Expression(o.clone(), simplifiedChildren);
-		}
 	}
 	
 	@Override
-	public Node smartNumericSimplify() throws NodeException {
+	public Node smartNumericSimplify() {
 		Vector<Node> addends = splitOnAddition();
 		if (addends.size() > 1) {
 			Vector<Node> simplified = new Vector<Node>();
@@ -182,7 +225,7 @@ public class Expression extends Node {
 	}
 
 	@Override
-	public Node collectLikeTerms() throws NodeException {
+	public Node collectLikeTerms() {
 		Vector<Node> split = splitOnAddition();
 		Vector<Node> terms = new Vector<Node>();
 		if (split.size() == 1) {
@@ -202,7 +245,7 @@ public class Expression extends Node {
 			factors = term.splitOnMultiplication();
 			collectedFactors = new Vector<Node>();
 			for (Node f : factors) {
-				collectedFactors.add(f.cloneNode());
+				collectedFactors.add(f.clone());
 			}
 			expandedTerms.add(collectedFactors);
 		}
@@ -275,7 +318,7 @@ public class Expression extends Node {
 	}
 	
 	@Override
-	public Node standardFormat() throws NodeException {
+	public Node standardFormat() {
 		Vector<Node> terms = splitOnAddition();
 		
 		if (terms.size() > 1) {
@@ -464,6 +507,7 @@ public class Expression extends Node {
 	}
 	
 	private static Node stagger(Vector<Node> addends, Operator op) {
+		@SuppressWarnings("unchecked")
 		Vector<Node> children = (Vector<Node>) addends.clone();
 		
 		int size = children.size();

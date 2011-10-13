@@ -35,7 +35,7 @@ public abstract class Node implements Cloneable {
 	/**  Returns a {@code String} representation 
 	 * of this expression tree. 
 	 * @throws NodeException */
-	public abstract String toStringRepresentation() throws NodeException;
+	public abstract String toString();
 
 
 	/**
@@ -43,7 +43,7 @@ public abstract class Node implements Cloneable {
 	 * i.e. clones all sub-nodes.
 	 * @throws NodeException 
 	 */
-	public abstract Node cloneNode() throws NodeException;
+	public abstract Node clone();
 	
 	/** Replaces all instances of {@code x} with {@code n}.
 	 * @param identifier The identifier to find.
@@ -52,22 +52,44 @@ public abstract class Node implements Cloneable {
 	 */
 	public abstract Node replace(Identifier identifier, Node node);
 	
-	public Node replace(String id, Node node) throws NodeException {
+	public Node replace(String id, Node node) throws IdentifierException {
 		return replace(new Identifier(id), node);
 	}
 	
-	public abstract Node collectLikeTerms() throws NodeException;
+	public Node getSelection(Selection s) {
+		if (s.depth() == 0)
+			return this;
+		throw new IndexOutOfBoundsException();
+	}
+	
+	public Node replace(Selection s, Node node) {
+		if (s.depth() == 0)
+			return node;
+		throw new IndexOutOfBoundsException();
+	}
+	
+	public Selection find(Node node) {
+		if (this.equals(node))
+			return new Selection();
+		return null;
+	}
+	
+	public Selection findFromLast(Node node) {
+		return find(node);
+	}
+	
+	public abstract Node collectLikeTerms();
 	
 	/** Simplifies all numeric calculations. 
 	 * Does not take advantage of numeric identities.
 	 * @return An altered {@code Node} with no references to the original.
 	 * @throws NodeException 
 	 */
-	public abstract Node numericSimplify() throws NodeException;
+	public abstract Node numericSimplify();
 	
-	public abstract Node smartNumericSimplify() throws NodeException;
+	public abstract Node smartNumericSimplify();
 	
-	public Node simplify() throws NodeException {
+	public Node simplify() {
 		Node simplified = this;
 		Node last;
 		do {
@@ -84,7 +106,7 @@ public abstract class Node implements Cloneable {
 	
 	public abstract Vector<Node> splitOnMultiplication();
 	
-	public abstract Node standardFormat() throws NodeException;
+	public abstract Node standardFormat();
 	
 	protected abstract int standardCompare(Node other);
 	
@@ -117,7 +139,7 @@ public abstract class Node implements Cloneable {
 	/** Parses {@code expression} to {@code Node} form with the default settings.
 	 * @throws NodeException 
 	 */
-	public static Node parseNode(String expression) throws NodeException {
+	public static Node parseNode(String expression) throws ParseException {
 		return defaultParser.parseNode(expression);
 	}
 	

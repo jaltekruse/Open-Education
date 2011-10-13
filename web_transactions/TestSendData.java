@@ -1,4 +1,4 @@
-package web_transations;
+package web_transactions;
 
 public class TestSendData {
 

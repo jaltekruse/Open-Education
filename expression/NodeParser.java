@@ -20,9 +20,11 @@ public class NodeParser {
 	
 	private boolean identifiersAsVariables = false;
 	
+	private Vector<Variable> variableList = new Vector<Variable>();
+	
 	private List<String> functions =
 			Arrays.asList("log", "sin", "cos", "tan",
-					"sqrt", "cbrt", "root", "ln", "random", "rand", "randint", "randomint");
+					"sqrt", "cbrt", "root", "ln", "random", "randomInt");
 	
 	private List<String> nonFunctionalIdentifiers = 
 			Arrays.asList();
@@ -116,7 +118,7 @@ public class NodeParser {
 		return null;
 	}
 	
-	public Node parseNode(String expression) throws NodeException {
+	public Node parseNode(String expression) throws ParseException {
 		expression = format(expression);
 		return parse(expression);
 	}
@@ -125,30 +127,51 @@ public class NodeParser {
 		return expression.replaceAll("\\s", "");
 	}
 	
-	private Node parse(String expression) throws NodeException {
+	private Node parse(String expression) throws ParseException {
 		return parse(expression, lowestPrecedence, expression.length() - 1);
 	}
 	
-	private Node parse(String expression, int initialPrecedence, int offset) throws NodeException{
+	private Node parse(String expression, int initialPrecedence, int offset) throws ParseException{
 		try {
 			return rawParse(expression, initialPrecedence, offset);
-		} catch (NodeException e) {
+		} catch (ParseException e) {
 			if (e.getMessage().equals(exEmptyString) && allowEmptyArguments)
 				return new EmptyValue();
 			else
-				throw e;
+				throw new ParseException(e);
 		}
 	}
 
-	private Node rawParse(String expression, int initialPrecedence, int offset) throws NodeException {
+	private String unshell(String expression) {
+		int depth = 0;
+		for (int i = 0 ; i < expression.length() ; i++) {
+			String c = expression.charAt(i) + "";
+			if (openBrackets.contains(c))
+				depth++;
+			if (closeBrackets.contains(c))
+				depth--;
+			if (depth == 0) {
+				if (i == 0) {
+					return expression;
+				} else if (i == (expression.length() - 1)) {
+					return expression.substring(1, expression.length() - 1);
+				} else {
+					return expression;
+				}
+			}
+		}
+		return expression;
+	}
+	
+	private Node rawParse(String expression, int initialPrecedence, int offset) throws ParseException {
 		if (expression.equals("")) // string is whitespace
-			throw new NodeException(exEmptyString);
+			throw new ParseException(exEmptyString);
 		
-		if (openBrackets.contains(expression.charAt(0) + "") &&
-				closeBrackets.contains(expression.charAt(expression.length() - 1) + ""))
+		String unshell = unshell(expression);
+		if (!unshell.equals(expression)) {
 			// expression is surrounded by parens
-			//this allows a paren to open and a bracket to close, should be redone
-			return parseNode(expression.substring(1, expression.length() - 1));
+			return parseNode(unshell);
+		}
 		
 		for (int precedence = initialPrecedence ; precedence <= highestPrecedence ; precedence++) {
 			List<String> operators = getOperators(precedence);
@@ -235,10 +258,10 @@ public class NodeParser {
 					else if (symbol.equals("random")){
 						o = new Operator.RandomGenerator();
 					}
-					else if (symbol.equalsIgnoreCase("randomInt")){
+					else if (symbol.equals("randomInt")){
 						o = new Operator.RandomIntGenerator();
 					}
-					else if (symbol.equalsIgnoreCase("ln"))
+					else if (symbol.equals("ln"))
 						o = new Operator.NaturalLog();
 					else if (symbol.equals("sin"))
 						o = new Operator.Sine();
@@ -268,7 +291,7 @@ public class NodeParser {
 								break;
 							}
 						}
-					} catch (NodeException e) {
+					} catch (ParseException e) {
 						if (e.getMessage().equals(exEmptyString))
 							missingArg = true;
 						else
@@ -291,12 +314,45 @@ public class NodeParser {
 		return parseValue(expression);
 	}
 	
-	private Value parseValue(String expression) throws NodeException {
-		Value v = Value.parseValue(expression);
-		if ((v instanceof Identifier) && identifiersAsVariables) {
-			v = new Variable(expression);
+	private Value parseValue(String expression) throws ParseException {
+		try {
+			Value v = Value.parseValue(expression);
+			if (v instanceof Identifier) {
+				if (identifiersAsVariables) {
+					v = getVariable(expression);
+				}
+				
+				if ((((Identifier) v).getIdentifier().length() > 1)
+						&& !allowLongIdentifiers) {
+					throw new IdentifierException("identifier too long");
+				}
+			}
+			return v;
+		} catch (IdentifierException e) {
+			throw new ParseException(e);
 		}
+	}
+	
+	private Variable getVariable(String id) throws IdentifierException {
+		Variable v = findVariable(id);
+		if (v != null)
+			return v;
+		v = new Variable(id);
+		variableList.add(v);
 		return v;
+	}
+	
+	public Variable findVariable(String identifier) {
+		for (Variable v : variableList) {
+			if (v.getIdentifier().equals(identifier)) {
+				return v;
+			}
+		}
+		return null;
+	}
+	
+	public void dumpVariables() {
+		variableList = new Vector<Variable>();
 	}
 	
 	private Vector<String> splitArgs(String string, String delim) {
@@ -415,7 +471,7 @@ public class NodeParser {
 		return false;
 	}
 	
-	private Vector<Node> splitAtIndex(String expression, int index, int symbolLength) throws NodeException {
+	private Vector<Node> splitAtIndex(String expression, int index, int symbolLength) throws ParseException {
 		Vector<Node> children = new Vector<Node>();
 		children.add(parseNode(expression.substring(0, index)));
 		children.add(parseNode(expression.substring(index + symbolLength)));
