@@ -8,8 +8,6 @@
 
 package doc_gui.mathobject_gui;
 
-import gui.graph.CalcInfoBox;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -44,11 +42,11 @@ public class MathObjectGUI{
 	public static int WEST_DOT = 7;
 	
 	public void drawMathObject(MathObject object, Graphics g, Point pageOrigin, float zoomLevel){
-		System.out.println("empty defualt mathObject renderer");
+//		System.out.println("empty defualt mathObject renderer");
 	};
 	
 	public void drawInteractiveComponents(MathObject object, Graphics g, Point pageOrigin, float zoomLevel){
-		System.out.println("empty defualt mathObject interactive components renderer");
+//		System.out.println("empty defualt mathObject interactive components renderer");
 	};
 	
 	public static void drawResizingDots(MathObject object, Graphics g, Point pageOrigin, float zoomLevel){
@@ -211,52 +209,52 @@ public class MathObjectGUI{
 		int verticalMovement, horizontalMovement;
 		
 		if (dotVal == SOUTH_DOT){
-			verticalMovement = (int)( docPt.getyPos() - object.getyPos() - object.getHeight());
+			verticalMovement = ( docPt.getyPos() - object.getyPos() - object.getHeight());
 			object.setHeight(object.getHeight() + verticalMovement);
 		}
 		else if (dotVal == NORTH_DOT){
-			verticalMovement = (int)( docPt.getyPos() - object.getyPos());
+			verticalMovement = ( docPt.getyPos() - object.getyPos());
 			object.setHeight(object.getHeight() - verticalMovement);
 			object.setyPos(object.getyPos() + verticalMovement);
 		}
 		else if (dotVal == WEST_DOT){
-			horizontalMovement = (int)( docPt.getxPos() - object.getxPos());
+			horizontalMovement = ( docPt.getxPos() - object.getxPos());
 			object.setWidth(object.getWidth() - horizontalMovement);
 			object.setxPos(object.getxPos() + horizontalMovement);
 		}
 		else if (dotVal == EAST_DOT){
-			horizontalMovement = (int)( docPt.getxPos() - object.getxPos() - object.getWidth());
+			horizontalMovement = ( docPt.getxPos() - object.getxPos() - object.getWidth());
 			object.setWidth(object.getWidth() + horizontalMovement);
 		}
 		else if (dotVal == NORTHEAST_DOT){
-			verticalMovement = (int)( docPt.getyPos() - object.getyPos());
+			verticalMovement = ( docPt.getyPos() - object.getyPos());
 			object.setHeight(object.getHeight() - verticalMovement);
 			object.setyPos(object.getyPos() + verticalMovement);
 			
-			horizontalMovement = (int)( docPt.getxPos() - object.getxPos() - object.getWidth());
+			horizontalMovement = ( docPt.getxPos() - object.getxPos() - object.getWidth());
 			object.setWidth(object.getWidth() + horizontalMovement);	
 		}
 		else if (dotVal == SOUTHEAST_DOT){
-			verticalMovement = (int)( docPt.getyPos() - object.getyPos() - object.getHeight());
+			verticalMovement = ( docPt.getyPos() - object.getyPos() - object.getHeight());
 			object.setHeight(object.getHeight() + verticalMovement);
 			
-			horizontalMovement = (int)( docPt.getxPos() - object.getxPos() - object.getWidth());
+			horizontalMovement = ( docPt.getxPos() - object.getxPos() - object.getWidth());
 			object.setWidth(object.getWidth() + horizontalMovement);
 		}
 		else if (dotVal == SOUTHWEST_DOT){
-			horizontalMovement = (int)( docPt.getxPos() - object.getxPos());
+			horizontalMovement = ( docPt.getxPos() - object.getxPos());
 			object.setWidth(object.getWidth() - horizontalMovement);
 			object.setxPos(object.getxPos() + horizontalMovement);
 			
-			verticalMovement = (int)( docPt.getyPos() - object.getyPos() - object.getHeight());
+			verticalMovement = ( docPt.getyPos() - object.getyPos() - object.getHeight());
 			object.setHeight(object.getHeight() + verticalMovement);
 		}
 		else if (dotVal == NORTHWEST_DOT){
-			horizontalMovement = (int)( docPt.getxPos() - object.getxPos());
+			horizontalMovement = ( docPt.getxPos() - object.getxPos());
 			object.setWidth(object.getWidth() - horizontalMovement);
 			object.setxPos(object.getxPos() + horizontalMovement);
 			
-			verticalMovement = (int)( docPt.getyPos() - object.getyPos());
+			verticalMovement = ( docPt.getyPos() - object.getyPos());
 			object.setHeight(object.getHeight() - verticalMovement);
 			object.setyPos(object.getyPos() + verticalMovement);
 		}

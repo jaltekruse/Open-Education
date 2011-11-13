@@ -22,7 +22,7 @@ public class NodeParser {
 	
 	private List<String> functions =
 			Arrays.asList("log", "sin", "cos", "tan",
-					"sqrt", "cbrt", "root", "ln", "random", "rand", "randint", "randomint");
+					"sqrt", "cbrt", "root", "ln", "randomInt", "random");
 	
 	private List<String> nonFunctionalIdentifiers = 
 			Arrays.asList();
@@ -126,7 +126,8 @@ public class NodeParser {
 	}
 	
 	private Node parse(String expression) throws NodeException {
-		return parse(expression, lowestPrecedence, expression.length() - 1);
+		Node n = parse(expression, lowestPrecedence, expression.length() - 1);;
+		return n;
 	}
 	
 	private Node parse(String expression, int initialPrecedence, int offset) throws NodeException{
@@ -140,15 +141,45 @@ public class NodeParser {
 		}
 	}
 
+	private String unshell(String expression) {
+		int depth = 0;
+		for (int i = 0 ; i < expression.length() ; i++) {
+			String c = expression.charAt(i) + "";
+			if (openBrackets.contains(c))
+				depth++;
+			if (closeBrackets.contains(c))
+				depth--;
+			if (depth == 0) {
+				if (i == 0) {
+					return expression;
+				} else if (i == (expression.length() - 1)) {
+					return expression.substring(1, expression.length() - 1);
+				} else {
+					return expression;
+				}
+			}
+		}
+		return expression;
+	}
+
 	private Node rawParse(String expression, int initialPrecedence, int offset) throws NodeException {
 		if (expression.equals("")) // string is whitespace
 			throw new NodeException(exEmptyString);
 		
-		if (openBrackets.contains(expression.charAt(0) + "") &&
-				closeBrackets.contains(expression.charAt(expression.length() - 1) + ""))
-			// expression is surrounded by parens
-			//this allows a paren to open and a bracket to close, should be redone
-			return parseNode(expression.substring(1, expression.length() - 1));
+		
+		String unshell = unshell(expression);
+		if (!unshell.equals(expression)) {
+		// expression is surrounded by parens
+			Node newNode = parseNode(unshell);
+			newNode.setDisplayParentheses(true);
+			return newNode;
+		}
+		
+//		if (openBrackets.contains(expression.charAt(0) + "") &&
+//				closeBrackets.contains(expression.charAt(expression.length() - 1) + ""))
+//			// expression is surrounded by parens
+//			//this allows a paren to open and a bracket to close, should be redone
+//			return parseNode(expression.substring(1, expression.length() - 1));
 		
 		for (int precedence = initialPrecedence ; precedence <= highestPrecedence ; precedence++) {
 			List<String> operators = getOperators(precedence);
@@ -215,7 +246,6 @@ public class NodeParser {
 				
 				return new Expression(o, children);
 			}
-			
 			if (functions.contains(symbol)) {
 				if (index == 0) {
 					Vector<String> stringChildren = new Vector<String>();
@@ -283,7 +313,12 @@ public class NodeParser {
 					if (index != 0) {
 						return parse(expression, precedence, index - 1);
 					}
-					return parseValue(expression);
+					else if ( Character.isDigit(expression.charAt(index + 1))){
+						return parseValue(expression);
+					}
+					else{
+						return new Expression( new Operator.Negation(), parseNode(expression.substring(1)));
+					}
 				}
 			}
 		}

@@ -12,8 +12,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Stroke;
-
 import tree.Decimal;
 import tree.EvalException;
 import tree.ExpressionParser;

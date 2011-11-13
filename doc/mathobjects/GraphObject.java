@@ -8,11 +8,11 @@
 
 package doc.mathobjects;
 
-import tree.EvalException;
 import doc.Page;
 import doc_gui.attributes.BooleanAttribute;
 import doc_gui.attributes.DoubleAttribute;
 import doc_gui.attributes.IntegerAttribute;
+import doc_gui.attributes.MathObjectAttribute;
 import doc_gui.attributes.StringAttribute;
 
 public class GraphObject extends MathObject {
@@ -50,6 +50,7 @@ public class GraphObject extends MathObject {
 //		addStudentAction("Graph point");
 	}
 
+	@Override
 	public void performSpecialObjectAction(String s){
 		if (s.equals(DEFAULT_GRID)){
 			setDefaults();
@@ -150,6 +151,7 @@ public class GraphObject extends MathObject {
 	public String getExpression(){
 		return ((StringAttribute)getAttributeWithName("y=")).getValue();
 	}
+	@Override
 	public void setAttributeValue(String n, Object o) throws AttributeException{
 		if (n.equals("xMin")){
 			if (o instanceof Double){
@@ -168,6 +170,16 @@ public class GraphObject extends MathObject {
 	@Override
 	public void addDefaultAttributes() {
 		
+	}
+	
+	@Override
+	public GraphObject clone() {
+		GraphObject o = new GraphObject(getParentPage());
+		o.removeAllAttributes();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			o.addAttribute( mAtt.clone());
+		}
+		return o;
 	}
 
 	@Override

@@ -5,8 +5,6 @@ import java.util.StringTokenizer;
 import doc.GridPoint;
 import doc.mathobjects.AttributeException;
 
-import java.util.StringTokenizer;
-
 public class GridPointAttribute extends MathObjectAttribute<GridPoint> {
 	
 	double xMin,xMax,yMin, yMax;
@@ -38,7 +36,6 @@ public class GridPointAttribute extends MathObjectAttribute<GridPoint> {
 
 	@Override
 	public String getType() {
-		// TODO Auto-generated method stub
 		return GRID_POINT_ATTRIBUTE;
 	}
 

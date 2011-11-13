@@ -17,7 +17,6 @@ import java.awt.print.PrinterException;
 
 import doc.Document;
 import doc.Page;
-import doc.PageGUI;
 
 public class DocPrinter implements Printable{
 
@@ -31,11 +30,8 @@ public class DocPrinter implements Printable{
 			p = doc.getPage(page + 1);
 		} catch (DocumentException e) {
 			// TODO Auto-generated catch block
-			System.out.println("no such page");
 			return NO_SUCH_PAGE;
 		}
-		
-		System.out.println("printing page");
 
         PageGUI pageDrawer = new PageGUI();
         

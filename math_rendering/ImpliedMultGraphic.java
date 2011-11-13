@@ -18,7 +18,7 @@ import expression.Expression;
 
 public class ImpliedMultGraphic extends BinExpressionGraphic {
 
-	private int space;
+private int space;
 	
 	public ImpliedMultGraphic(Expression e, RootNodeGraphic gr) {
 		super(e, gr);
@@ -35,6 +35,7 @@ public class ImpliedMultGraphic extends BinExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void drawCursor(){
 		String opString = getValue().getOperator().getSymbol();
 		
@@ -49,10 +50,12 @@ public class ImpliedMultGraphic extends BinExpressionGraphic {
 		
 	}
 	
+	@Override
 	public int getMaxCursorPos(){
 		return NO_VALID_CURSOR_POS;
 	}
 	
+	@Override
 	public void setCursorPos(int xPixelPos){
 		
 		String numberString = getValue().getOperator().getSymbol();
@@ -89,6 +92,7 @@ public class ImpliedMultGraphic extends BinExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void moveCursorWest(){
 		if (super.getRootNodeGraphic().getCursor().getPos() > 0){
 			super.getRootNodeGraphic().getCursor().setPos( super.getRootNodeGraphic().getCursor().getPos() - 1); 
@@ -106,6 +110,7 @@ public class ImpliedMultGraphic extends BinExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void moveCursorEast(){
 		if (super.getRootNodeGraphic().getCursor().getPos() < getMaxCursorPos()){
 			super.getRootNodeGraphic().getCursor().setPos( super.getRootNodeGraphic().getCursor().getPos() + 1); 
@@ -123,11 +128,13 @@ public class ImpliedMultGraphic extends BinExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void sendCursorInFromEast(int yPos, NodeGraphic vg){
 		super.getRootNodeGraphic().getCursor().setValueGraphic(getLeftGraphic().getMostInnerEast());
 		super.getRootNodeGraphic().getCursor().setPos(getLeftGraphic().getMostInnerEast().getMaxCursorPos() - 1);
 	}
 	
+	@Override
 	public void sendCursorInFromWest(int yPos, NodeGraphic vg){
 		super.getRootNodeGraphic().getCursor().setValueGraphic(getRightGraphic().getMostInnerEast());
 		super.getRootNodeGraphic().getCursor().setPos(1);
@@ -142,8 +149,8 @@ public class ImpliedMultGraphic extends BinExpressionGraphic {
 		
 		space = (int) (3 * super.getRootNodeGraphic().getSizeAdjustment());
 		
-		Node tempLeft = ((Expression)super.getValue()).getChild(0);
-		Node tempRight = ((Expression)super.getValue()).getChild(1);
+		Node tempLeft = (super.getValue()).getChild(0);
+		Node tempRight = (super.getValue()).getChild(1);
 		NodeGraphic leftValGraphic = null;
 		NodeGraphic rightValGraphic = null; 
 		int[] rightSize = {0,0};
@@ -178,8 +185,6 @@ public class ImpliedMultGraphic extends BinExpressionGraphic {
 		int height = 0;
 		
 		if (leftValGraphic.getUpperHeight() > rightValGraphic.getUpperHeight()){
-			System.out.println("left has higher upper height " + leftValGraphic.getUpperHeight() + " "
-					+ rightValGraphic.getUpperHeight());
 			height = leftValGraphic.getUpperHeight();
 			symbolY1 = leftValGraphic.getUpperHeight() + y1 - (int) (Math.round((symbolSize[1]/2.0)));
 			symbolY2 = symbolY1 + symbolSize[1];
@@ -198,7 +203,7 @@ public class ImpliedMultGraphic extends BinExpressionGraphic {
 			height += leftValGraphic.getLowerHeight();
 			setLowerHeight(leftValGraphic.getLowerHeight());
 		}
-		else if (leftValGraphic.getLowerHeight() < rightValGraphic.getLowerHeight())
+		else
 		{
 			height += rightValGraphic.getLowerHeight();
 			setLowerHeight(rightValGraphic.getLowerHeight());
@@ -224,10 +229,12 @@ public class ImpliedMultGraphic extends BinExpressionGraphic {
 		return null;
 	}
 	
+	@Override
 	public NodeGraphic getLeftGraphic(){
 		return super.getComponents().get(0);
 	}
 	
+	@Override
 	public NodeGraphic getRightGraphic(){
 		return super.getComponents().get(1);
 	}

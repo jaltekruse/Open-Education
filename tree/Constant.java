@@ -53,6 +53,7 @@ public class Constant extends NumberWithName {
 	 * 
 	 * @return the name of the constant"
 	 */
+	@Override
 	public String toString() {
 		String varInfo = new String();
 		varInfo += getName();
@@ -64,35 +65,41 @@ public class Constant extends NumberWithName {
 		return varInfo;
 	}
 	
+	@Override
 	public Number eval(){
 		syncValWithConststorage();
 		return value;
 	}
 	
+	@Override
 	public Expression add(Expression e) throws EvalException
 	{
 		syncValWithConststorage();
 		return value.add(e);
 	}
 
+	@Override
 	public Expression subtract(Expression e) throws EvalException
 	{
 		syncValWithConststorage();
 		return value.subtract(e);
 	}
 	
+	@Override
 	public Expression multiply(Expression e) throws EvalException
 	{
 		syncValWithConststorage();
 		return value.multiply(e);
 	}
 	
+	@Override
 	public Expression divide(Expression e) throws EvalException
 	{
 		syncValWithConststorage();
 		return value.divide(e);
 	}
 
+	@Override
 	public Expression power(Expression e) throws EvalException
 	{
 		syncValWithConststorage();
@@ -176,6 +183,7 @@ public class Constant extends NumberWithName {
 		return value.natLog();
 	}
 	
+	@Override
 	public Expression absoluteValue() throws EvalException
 	{
 		syncValWithConststorage();

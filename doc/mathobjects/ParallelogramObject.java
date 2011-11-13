@@ -2,6 +2,7 @@ package doc.mathobjects;
 
 import doc.GridPoint;
 import doc.Page;
+import doc_gui.attributes.MathObjectAttribute;
 
 public class ParallelogramObject extends PolygonObject {
 
@@ -29,17 +30,26 @@ public class ParallelogramObject extends PolygonObject {
 		addVertex(new GridPoint(.75, 1));
 		addVertex(new GridPoint(0, 1));
 	}
-
-	@Override
-	public String getType() {
-		// TODO Auto-generated method stub
-		return PARALLELOGRAM_OBJECT;
-	}
-
+	
 	@Override
 	public void addDefaultAttributes() {
 		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
+	public String getType() {
+		// TODO Auto-generated method stub
+		return PARALLELOGRAM_OBJECT;
+	}
+	
+	@Override
+	public ParallelogramObject clone() {
+		ParallelogramObject o = new ParallelogramObject(getParentPage());
+		o.removeAllAttributes();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			o.addAttribute( mAtt.clone());
+		}
+		return o;
+	}
 }

@@ -10,9 +10,7 @@ package math_rendering;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.RenderingHints;
 import java.util.Vector;
 
 import expression.Expression;
@@ -41,6 +39,7 @@ public class BinExpressionGraphic extends ExpressionGraphic{
 				symbolX1 + space, symbolY2);
 	}
 	
+	@Override
 	public void drawCursor(){
 		String opString = getValue().getOperator().getSymbol();
 		
@@ -55,10 +54,12 @@ public class BinExpressionGraphic extends ExpressionGraphic{
 		
 	}
 	
+	@Override
 	public int getMaxCursorPos(){
 		return getValue().getOperator().getSymbol().length();
 	}
 	
+	@Override
 	public void setCursorPos(int xPixelPos){
 		
 		String numberString = getValue().getOperator().getSymbol();
@@ -95,6 +96,7 @@ public class BinExpressionGraphic extends ExpressionGraphic{
 		}
 	}
 	
+	@Override
 	public void moveCursorWest(){
 		if (super.getRootNodeGraphic().getCursor().getPos() > 0){
 			super.getRootNodeGraphic().getCursor().setPos( super.getRootNodeGraphic().getCursor().getPos() - 1); 
@@ -112,6 +114,7 @@ public class BinExpressionGraphic extends ExpressionGraphic{
 		}
 	}
 	
+	@Override
 	public void moveCursorEast(){
 		if (super.getRootNodeGraphic().getCursor().getPos() < getMaxCursorPos()){
 			super.getRootNodeGraphic().getCursor().setPos( super.getRootNodeGraphic().getCursor().getPos() + 1); 
@@ -129,11 +132,13 @@ public class BinExpressionGraphic extends ExpressionGraphic{
 		}
 	}
 	
+	@Override
 	public void sendCursorInFromEast(int yPos, NodeGraphic vg){
 		super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 		super.getRootNodeGraphic().getCursor().setPos(getMaxCursorPos() - 1);
 	}
 	
+	@Override
 	public void sendCursorInFromWest(int yPos, NodeGraphic vg){
 		super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 		super.getRootNodeGraphic().getCursor().setPos(1);
@@ -148,8 +153,8 @@ public class BinExpressionGraphic extends ExpressionGraphic{
 		
 		space = (int) (4 * getRootNodeGraphic().getSizeAdjustment());
 		
-		Node tempLeft = ((Expression)super.getValue()).getChild(0);
-		Node tempRight = ((Expression)super.getValue()).getChild(1);
+		Node tempLeft = (super.getValue()).getChild(0);
+		Node tempRight = (super.getValue()).getChild(1);
 		NodeGraphic leftValGraphic = null;
 		NodeGraphic rightValGraphic = null; 
 		int[] rightSize = {0,0};

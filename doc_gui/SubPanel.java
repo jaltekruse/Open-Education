@@ -9,7 +9,6 @@
 package doc_gui;
 
 
-import java.awt.Container;
 import java.awt.GridBagLayout;
 
 import javax.swing.JPanel;

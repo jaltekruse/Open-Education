@@ -8,11 +8,9 @@
 
 package doc.mathobjects;
 
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Vector;
 
-import doc.Document;
 import doc.Page;
 import doc_gui.attributes.IntegerAttribute;
 import doc_gui.attributes.ListAttribute;
@@ -45,10 +43,17 @@ public abstract class MathObject {
 	public static final String REGULAR_POLYGON_OBJECT = "RegularPolygon";
 	public static final String ARROW_OBJECT = "Arrow";
 	public static final String PYRAMID_OBJECT = "Pyramid";
+	public static final String GENERATED_PROBLEM = "GeneratedProblem";
 	
 	
-	public static final String MAKE_INTO_PROBLEM = "Make into Problem";
 	public static final String MAKE_SQUARE = "Make Square";
+	public static final String MAKE_INTO_PROBLEM = "Make into Problem";
+	public static final String ADJUST_SIZE_AND_POSITION = "Adjust size and position";
+	
+	public static final String WIDTH = "width";
+	public static final String HEIGHT = "height";
+	public static final String X_POS = "xPos";
+	public static final String Y_POS = "yPos";
 	
 	//holds a list of function names to manipulate objects, such as
 	//flip horizontally/vertically, actual code to change the object is
@@ -59,14 +64,23 @@ public abstract class MathObject {
 	
 	private boolean studentSelectable;
 	
+	private boolean isHorizontallyResizable;
+	
+	private boolean isVerticallyResizable;
+	
 	public MathObject(){
 		attributes = new Vector<MathObjectAttribute>();
 		actions = new Vector<String>();
 		lists = new Vector<ListAttribute>();
 		studentActions = new Vector<String>();
 		addAction(MAKE_SQUARE);
-		addDefaultAttributes();
+//		addAction(ADJUST_SIZE_AND_POSITION);
 		addGenericDefaultAttributes();
+		addDefaultAttributes();
+		getAttributeWithName(X_POS).setValue(0);
+		getAttributeWithName(Y_POS).setValue(0);
+		getAttributeWithName(WIDTH).setValue(0);
+		getAttributeWithName(HEIGHT).setValue(0);
 		studentSelectable = false;
 	}
 	
@@ -77,8 +91,9 @@ public abstract class MathObject {
 		lists = new Vector<ListAttribute>();
 		studentActions = new Vector<String>();
 		addAction(MAKE_SQUARE);
-		addDefaultAttributes();
+//		addAction(ADJUST_SIZE_AND_POSITION);
 		addGenericDefaultAttributes();
+		addDefaultAttributes();
 		studentSelectable = false;
 	}
 	
@@ -88,20 +103,22 @@ public abstract class MathObject {
 		actions = new Vector<String>();
 		lists = new Vector<ListAttribute>();
 		studentActions = new Vector<String>();
-		addDefaultAttributes();
+		addAction(MAKE_SQUARE);
+//		addAction(ADJUST_SIZE_AND_POSITION);
 		addGenericDefaultAttributes();
-		getAttributeWithName("xPos").setValue(x);
-		getAttributeWithName("yPos").setValue(y);
-		getAttributeWithName("width").setValue(w);
-		getAttributeWithName("height").setValue(h);
+		addDefaultAttributes();
+		getAttributeWithName(X_POS).setValue(x);
+		getAttributeWithName(Y_POS).setValue(y);
+		getAttributeWithName(WIDTH).setValue(w);
+		getAttributeWithName(HEIGHT).setValue(h);
 		studentSelectable = false;
 	}
 	
 	public void addGenericDefaultAttributes(){
-		addAttribute(new IntegerAttribute("xPos", 1, 610));
-		addAttribute(new IntegerAttribute("yPos", 1, 790));
-		addAttribute(new IntegerAttribute("width", 1, 610));
-		addAttribute(new IntegerAttribute("height", 1, 790));
+		addAttribute(new IntegerAttribute(X_POS, 1, 610));
+		addAttribute(new IntegerAttribute(Y_POS, 1, 790));
+		addAttribute(new IntegerAttribute(WIDTH, 1, 610));
+		addAttribute(new IntegerAttribute(HEIGHT, 1, 790));
 	}
 	
 	public abstract void addDefaultAttributes();
@@ -138,74 +155,8 @@ public abstract class MathObject {
 		return false;
 	}
 	
-	public MathObject clone(){
-		MathObject o = null;
-		if (this instanceof TextObject){
-			o = new TextObject(getParentPage());
-		}
-		else if (this instanceof OvalObject){
-			o = new OvalObject(getParentPage());
-		}
-		else if (this instanceof GraphObject){
-			o = new GraphObject(getParentPage());
-		}
-		else if (this instanceof CubeObject){
-			o = new CubeObject(getParentPage());
-		}
-		else if (this instanceof TriangleObject){
-			o = new TriangleObject(getParentPage());
-		}
-		else if (this instanceof HexagonObject){
-			o = new HexagonObject(getParentPage());
-		}
-		else if (this instanceof ParallelogramObject){
-			o = new ParallelogramObject(getParentPage());
-		}
-		else if (this instanceof TrapezoidObject){
-			o = new TrapezoidObject(getParentPage());
-		}
-		else if (this instanceof RectangleObject){
-			o = new RectangleObject(getParentPage());
-		}
-		else if(this instanceof ExpressionObject){
-			o = new ExpressionObject(getParentPage());
-		}
-		else if (this instanceof NumberLineObject){
-			o = new NumberLineObject(getParentPage());
-		}
-		else if (this instanceof AnswerBoxObject){
-			o = new AnswerBoxObject(getParentPage());
-		}
-		else if (this instanceof CylinderObject){
-			o = new CylinderObject(getParentPage());
-		}
-		else if (this instanceof RegularPolygonObject){
-			o = new RegularPolygonObject(getParentPage());
-		}
-		else if (this instanceof ArrowObject){
-			o = new ArrowObject(getParentPage());
-		}
-		else if (this instanceof Grouping){
-			if (this instanceof ProblemObject){
-				o = new ProblemObject(getParentPage());
-			}
-			else{
-				o = new Grouping(this.getParentPage());
-			}
-			for (MathObject mObj : ((Grouping)this).getObjects()){
-				((Grouping)o).addObjectFromPage(mObj.clone());
-			}
-		}
-		else{
-			System.out.println("unrecognized object type attempted to be cloned: " + o);
-		}
-		
-		o.removeAllAttributes();
-		for (MathObjectAttribute mAtt : getAttributes()){
-			o.addAttribute(mAtt.clone());
-		}
-		return o;
-	}
+	@Override
+	public abstract MathObject clone();
 	
 	public void removeAllAttributes(){
 		attributes = new Vector<MathObjectAttribute>();
@@ -221,20 +172,26 @@ public abstract class MathObject {
 		}
 	}
 	
-	public void performAction(String s){
-		if (s.equals(MAKE_INTO_PROBLEM) && ! ( this instanceof Grouping ) )
-		{//grouping has its own code segment for this, it will be called below with performSpecialAction()
-			ProblemObject newProblem = new ProblemObject(getParentPage(), getxPos(),getyPos(),
-					getWidth(), getHeight());
-			
-			this.getParentPage().getParentDoc().docPanel.setFocusedObject(newProblem);
-			Vector<MathObject> newObjects = new Vector<MathObject>();
-			newObjects.add(this);
-			newProblem.addObjectFromPage(this);
-			getParentPage().addObject(newProblem);
-			getParentPage().removeObject(this);
+	/**
+	 * Checks to see if this object is within the margins of the page it belongs to.
+	 * @return
+	 */
+	public boolean isOnPage(){
+		Rectangle objRect = getBounds();
+		if (getParentPage() == null){
+			// something should be done to handle this error
 		}
-		else if (s.equals(MAKE_SQUARE)){
+		Rectangle pageRect = new Rectangle(getParentPage().getxMargin(), getParentPage().getyMargin(),
+				getParentPage().getWidth() - 2 * getParentPage().getxMargin(),
+				getParentPage().getHeight() - 2 * getParentPage().getyMargin());
+		if ( pageRect.contains(objRect)){
+			return true;
+		}
+		return false;
+	}
+	
+	public void performAction(String s){
+		if (s.equals(MAKE_SQUARE)){
 			int area = this.getWidth() * this.getHeight();
 			int sideLength = (int) Math.sqrt(area);
 			this.setWidth(sideLength);
@@ -259,35 +216,35 @@ public abstract class MathObject {
 	}
 	
 	public void setWidth(int width) {
-		getAttributeWithName("width").setValue(width);
+		getAttributeWithName(WIDTH).setValue(width);
 	}
 
 	public int getWidth() {
-		return ((IntegerAttribute)getAttributeWithName("width")).getValue();
+		return ((IntegerAttribute)getAttributeWithName(WIDTH)).getValue();
 	}
 
 	public void setHeight(int height) {
-		getAttributeWithName("height").setValue(height);
+		getAttributeWithName(HEIGHT).setValue(height);
 	}
 
 	public int getHeight() {
-		return ((IntegerAttribute)getAttributeWithName("height")).getValue();
+		return ((IntegerAttribute)getAttributeWithName(HEIGHT)).getValue();
 	}
 
 	public void setxPos(int xPos) {
-		getAttributeWithName("xPos").setValue(xPos);
+		getAttributeWithName(X_POS).setValue(xPos);
 	}
 
 	public int getxPos() {
-		return ((IntegerAttribute)getAttributeWithName("xPos")).getValue();
+		return ((IntegerAttribute)getAttributeWithName(X_POS)).getValue();
 	}
 
 	public void setyPos(int yPos) {
-		getAttributeWithName("yPos").setValue(yPos);
+		getAttributeWithName(Y_POS).setValue(yPos);
 	}
 
 	public int getyPos() {
-		return ((IntegerAttribute)getAttributeWithName("yPos")).getValue();
+		return ((IntegerAttribute)getAttributeWithName(Y_POS)).getValue();
 	}
 
 	public void setAttributes(Vector<MathObjectAttribute> attributes) {

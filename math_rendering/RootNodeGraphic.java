@@ -12,19 +12,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.util.Vector;
 
 import expression.Node;
 import expression.NodeException;
 import expression.Number;
 
-import tree.BinExpression;
-import tree.Expression;
-import tree.Fraction;
-import tree.Decimal;
-import tree.MissingValue;
-import tree.Operator;
 import tree.Expression;
 
 public class RootNodeGraphic{

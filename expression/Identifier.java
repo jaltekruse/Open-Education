@@ -31,13 +31,18 @@ public class Identifier extends Value {
 
 	@Override
 	public String toStringRepresentation() {
+		if ( displayParentheses()){
+			return "(" + getIdentifier() + ")";
+		}
 		return getIdentifier();
 	}
 	
 	@Override
 	public Identifier cloneNode() throws NodeException {
 		try {
-			return new Identifier(identifier);
+			Identifier i = new Identifier(identifier);
+			i.setDisplayParentheses(displayParentheses());
+			return i;
 		} catch (NodeException e) {
 			System.err.println("random stupid error, in class Identifier");
 			return null;
@@ -46,10 +51,7 @@ public class Identifier extends Value {
 
 	@Override
 	public Node replace(Identifier identifier, Node node) {
-		System.out.println("this identifer:" + this.identifier);
-		System.out.println("to replace with:" + identifier.identifier);
 		if (this.equals(identifier)){
-			System.out.println("replacing");
 			return node;
 		}
 		else

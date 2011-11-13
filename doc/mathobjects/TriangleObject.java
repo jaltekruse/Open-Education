@@ -8,11 +8,11 @@
 
 package doc.mathobjects;
 
-import java.awt.Point;
 import java.util.Vector;
 
 import doc.GridPoint;
 import doc.Page;
+import doc_gui.attributes.MathObjectAttribute;
 
 public class TriangleObject extends PolygonObject {
 	
@@ -59,6 +59,7 @@ public class TriangleObject extends PolygonObject {
 		
 	}
 	
+	@Override
 	public void performSpecialObjectAction(String s){
 		if (s.equals(FLIP_HORIZONTALLY)){
 			flipHorizontally();
@@ -92,6 +93,16 @@ public class TriangleObject extends PolygonObject {
 		verticies.get(1).sety(1);
 		verticies.get(2).setx(0);
 		verticies.get(2).sety(1);
+	}
+	
+	@Override
+	public TriangleObject clone() {
+		TriangleObject o = new TriangleObject(getParentPage());
+		o.removeAllAttributes();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			o.addAttribute( mAtt.clone());
+		}
+		return o;
 	}
 
 	@Override

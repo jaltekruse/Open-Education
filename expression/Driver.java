@@ -1,7 +1,5 @@
 package expression;
 
-import generation.ProblemGenerator;
-
 public class Driver {
 
 	/**
@@ -21,8 +19,10 @@ public class Driver {
 //		System.out.println(g.generateLinear());
 
 		try {
-			System.out.println(Node.parseNode("-x"));
+			Node.parseNode("5^(3+x)=5").printTree();
 
+			Node n = Node.parseNode("3+5+4");
+			System.out.println( ((Expression)n).getChildren().size() );
 		}catch (NodeException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

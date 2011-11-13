@@ -11,7 +11,6 @@ package math_rendering;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.util.ArrayList;
 import java.util.Vector;
 
 import expression.Expression;
@@ -41,6 +40,7 @@ public class UnaryExpressionGraphic extends ExpressionGraphic {
 				symbolX1, symbolY2);
 	}
 	
+	@Override
 	public void drawCursor(){
 		String opString = getValue().getOperator().getSymbol();
 		
@@ -62,10 +62,12 @@ public class UnaryExpressionGraphic extends ExpressionGraphic {
 				numberString.substring(0, super.getRootNodeGraphic().getCursor().getPos()));
 	}
 	
+	@Override
 	public int getMaxCursorPos(){
 		return getValue().getOperator().getSymbol().length();
 	}
 	
+	@Override
 	public void setCursorPos(int xPixelPos){
 		
 		String valueString = getValue().getOperator().getSymbol();
@@ -106,6 +108,7 @@ public class UnaryExpressionGraphic extends ExpressionGraphic {
 		
 	}
 	
+	@Override
 	public void moveCursorWest(){
 		if (super.getRootNodeGraphic().getCursor().getPos() > 0){
 			super.getRootNodeGraphic().getCursor().setPos( super.getRootNodeGraphic().getCursor().getPos() - 1); 
@@ -123,6 +126,7 @@ public class UnaryExpressionGraphic extends ExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void moveCursorEast(){
 		if (super.getRootNodeGraphic().getCursor().getPos() < getMaxCursorPos()){
 			super.getRootNodeGraphic().getCursor().setPos( super.getRootNodeGraphic().getCursor().getPos() + 1); 
@@ -140,6 +144,7 @@ public class UnaryExpressionGraphic extends ExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void moveCursorNorth(){
 		if (getNorth() == null)
 		{
@@ -153,6 +158,7 @@ public class UnaryExpressionGraphic extends ExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void moveCursorSouth(){
 		if (getSouth() == null)
 		{
@@ -166,20 +172,24 @@ public class UnaryExpressionGraphic extends ExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void sendCursorInFromEast(int yPos, NodeGraphic vg){
 		super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 		super.getRootNodeGraphic().getCursor().setPos(getMaxCursorPos() - 1);
 	}
 	
+	@Override
 	public void sendCursorInFromWest(int yPos, NodeGraphic vg){
 		super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 		super.getRootNodeGraphic().getCursor().setPos(1);
 	}
 	
+	@Override
 	public void sendCursorInFromNorth(int xPos, NodeGraphic vg){
 		setCursorPos(xPos);
 	}
 	
+	@Override
 	public void sendCursorInFromSouth(int xPos, NodeGraphic vg){
 		setCursorPos(xPos);
 	}
@@ -204,7 +214,6 @@ public class UnaryExpressionGraphic extends ExpressionGraphic {
 		int[] symbolSize = {0, 0};
 		int[] totalSize = {0, 0};
 		
-		System.out.println("UnaryValue: " + value.toString());
 		symbolSize[0] = super.getRootNodeGraphic().getStringWidth(value.getOperator().getSymbol(), f) + space;
 		symbolSize[1] = super.getRootNodeGraphic().getFontHeight(f);
 		childValGraphic = makeNodeGraphic(tempChild);

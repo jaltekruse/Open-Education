@@ -8,13 +8,16 @@
 
 package doc.mathobjects;
 
+import java.awt.Color;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
 import doc.Page;
+import doc_gui.attributes.ColorAttribute;
 import doc_gui.attributes.IntegerAttribute;
 import doc_gui.attributes.ListAttribute;
+import doc_gui.attributes.MathObjectAttribute;
 import doc_gui.attributes.StringAttribute;
 import expression.Expression;
 import expression.Node;
@@ -52,6 +55,7 @@ public class ExpressionObject extends MathObject {
 		getAttributeWithName("expression").setValue("");
 		getAttributeWithName("steps").setValue("");
 		getAttributeWithName("fontSize").setValue(12);
+		getAttributeWithName("fill color").setValue(Color.WHITE);
 	}
 
 	public ExpressionObject(Page p){
@@ -72,6 +76,7 @@ public class ExpressionObject extends MathObject {
 		getAttributeWithName("expression").setValue("");
 		getAttributeWithName("steps").setValue("");
 		getAttributeWithName("fontSize").setValue(12);
+		getAttributeWithName("fill color").setValue(Color.WHITE);
 	}
 
 	public ExpressionObject() {
@@ -91,6 +96,7 @@ public class ExpressionObject extends MathObject {
 		getAttributeWithName("expression").setValue("");
 		getAttributeWithName("steps").setValue("");
 		getAttributeWithName("fontSize").setValue(12);
+		getAttributeWithName("fill color").setValue(Color.WHITE);
 	}
 
 	@Override
@@ -100,6 +106,7 @@ public class ExpressionObject extends MathObject {
 		steps.setUserEditable(false);
 		addAttribute(steps);
 		addAttribute(new IntegerAttribute("fontSize", 1, 50));
+		addAttribute(new ColorAttribute("fill color"));
 	}
 	
 	public void setAttributeValue(String n, Object o) throws AttributeException{
@@ -112,10 +119,26 @@ public class ExpressionObject extends MathObject {
 	}
 
 	public void performSpecialObjectAction(String s){
+		System.out.println("expression to operate on: " + getExpression());
+		if (s.equals(MathObject.MAKE_INTO_PROBLEM)){
+			ProblemObject newProblem = new ProblemObject(getParentPage(), getxPos(),
+					getyPos(), getWidth(), getHeight() );
+			this.getParentPage().getParentDoc().getDocViewerPanel().setFocusedObject(newProblem);
+			newProblem.addObjectFromPage(this);
+			getParentPage().addObject(newProblem);
+			getParentPage().removeObject(this);
+		}
+		if ( ((StringAttribute)getAttributeWithName("expression")).getValue() == null || 
+				((StringAttribute)getAttributeWithName("expression")).getValue().equals("") ){
+			JOptionPane.showMessageDialog(null,
+					"There is no expression to work with, enter one in the box below.",
+					"Warning",
+					JOptionPane.WARNING_MESSAGE);
+			return;
+		}
 		if (s.equals(UNDO_STEP)){
 			if ( ! ((StringAttribute)getAttributeWithName("steps")).getValue().equals("")){
 				String stepsString = getAttributeWithName("steps").getValue().toString();
-				System.out.println(stepsString);
 				Vector<String> steps = new Vector<String>();
 				int lastEnd = 0;
 				for (int i = 0; i < stepsString.length(); i++){
@@ -150,7 +173,8 @@ public class ExpressionObject extends MathObject {
 					null,
 					null,
 					null);
-			if (child1.equals("")){
+			System.out.println("read in: " + child1);
+			if (child1 == null || child1.equals("")){
 				return;
 			}
 			Node newNode = null;
@@ -174,7 +198,6 @@ public class ExpressionObject extends MathObject {
 				}
 				else{
 					String stepsString = getAttributeWithName("steps").getValue().toString();
-					System.out.println(stepsString);
 					Vector<String> steps = new Vector<String>();
 					int lastEnd = 0;
 					for (int i = 0; i < stepsString.length(); i++){
@@ -221,7 +244,7 @@ public class ExpressionObject extends MathObject {
 					}
 					n = Node.parseNode(steps.get(steps.size() - 1));
 				}
-				n = n.simplify();
+				n = n.numericSimplify();
 
 				getAttributeWithName("steps").setValue(
 						getAttributeWithName("steps").getValue().toString()
@@ -233,8 +256,10 @@ public class ExpressionObject extends MathObject {
 
 			return;
 		}
-		Node n = null;
+		
+	
 		// all of the rest of the operations require an equals sign
+		Node n = null;
 		try{
 			String expression = ((StringAttribute)getAttributeWithName("expression")).getValue();
 			if ( ! expression.equals("")){
@@ -280,7 +305,9 @@ public class ExpressionObject extends MathObject {
 			                    null,
 			                    operations,
 			                    "sqrt");
-
+			if (op == null || op.equals("")){
+				return;
+			}
 			Operator o = null;
 			if (op.equals("sqrt")){
 				o = new Operator.SquareRoot();
@@ -350,7 +377,7 @@ public class ExpressionObject extends MathObject {
 				null,
 				null,
 				null);
-		if (child1.equals("")){
+		if (child1 == null || child1.equals("") ){
 			return;
 		}
 		Node newNode = null;
@@ -405,7 +432,7 @@ public class ExpressionObject extends MathObject {
 				null,
 				null,
 				null);
-		if (child1.equals("")){
+		if (child1 == null || child1.equals("") ){
 			return;
 		}
 		Node newNode;
@@ -441,6 +468,16 @@ public class ExpressionObject extends MathObject {
 				getAttributeWithName("steps").getValue().toString()
 				 + ex.toStringRepresentation()+ ";");
 
+	}
+	
+	@Override
+	public ExpressionObject clone() {
+		ExpressionObject o = new ExpressionObject(getParentPage());
+		o.removeAllAttributes();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			o.addAttribute( mAtt.clone());
+		}
+		return o;
 	}
 
 	public String getExpression(){

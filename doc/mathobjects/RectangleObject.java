@@ -8,12 +8,9 @@
 
 package doc.mathobjects;
 
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-
 import doc.GridPoint;
 import doc.Page;
+import doc_gui.attributes.MathObjectAttribute;
 
 /**
  * A basic MathObject that represents a rectangular space on the screen.
@@ -48,6 +45,16 @@ public class RectangleObject extends PolygonObject {
 	@Override
 	public void addDefaultAttributes() {
 		
+	}
+	
+	@Override
+	public RectangleObject clone() {
+		RectangleObject o = new RectangleObject(getParentPage());
+		o.removeAllAttributes();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			o.addAttribute( mAtt.clone());
+		}
+		return o;
 	}
 
 	@Override

@@ -11,7 +11,6 @@ package doc_gui.attributes;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,6 +36,7 @@ public abstract class MathObjectAttribute<K> {
 	public static final String INTEGER_ATTRIBUTE = "int";
 	public static final String STRING_ATTRIBUTE = "string";
 	public static final String COLOR_ATTRIBUTE = "color";
+	public static final String DATE = "date";
 	
 	private String name;
 	
@@ -86,6 +86,7 @@ public abstract class MathObjectAttribute<K> {
 		+ "\" value=\"" + getValue().toString() + "\"/>\n";
 	}
 	
+	@Override
 	public MathObjectAttribute clone(){
 		MathObjectAttribute a = null;
 		if (this instanceof BooleanAttribute){
@@ -124,6 +125,21 @@ public abstract class MathObjectAttribute<K> {
 						((ColorAttribute) this).getValue().getBlue() ) );
 			}
 		}
+		else if ( this instanceof DateAttribute){
+			a = new DateAttribute(this.getName());
+			if ( this.getValue() != null){
+				Date date = new Date();
+				try{
+					date.setMonth( ( (DateAttribute)this).getValue().getMonth());
+					date.setDay( ( (DateAttribute)this).getValue().getDay());
+					date.setYear( ( (DateAttribute)this).getValue().getYear());
+				} catch (Exception ex){
+					// stupid error, values are taken out of a date, so they will
+					// be valid
+				}
+				a.setValue(date);
+			}
+		}
 		if (a != null){
 			a.setStudentEditable(isStudentEditable());
 			a.setUserEditable(isUserEditable());
@@ -137,71 +153,6 @@ public abstract class MathObjectAttribute<K> {
 	}
 	
 	public abstract String getType();
-	
-	public JPanel makeAdjustmentPanel(final DocViewerPanel dvp){
-		JPanel temp = new JPanel();
-		temp.setLayout(new GridBagLayout());
-		
-		GridBagConstraints con = new GridBagConstraints();
-		con.fill = GridBagConstraints.HORIZONTAL;
-		con.weightx = .01;
-		con.gridx = 0;
-		con.gridy = 0;
-		con.insets = new Insets(0, 10, 0, 10);
-		temp.add(new JLabel(getName()), con);
-		final JTextField field = new JTextField();
-		con.weightx = 1;
-		con.gridx = 1;
-		temp.add(field, con);
-		field.setText(getValue().toString());
-		field.addFocusListener(new FocusListener(){
-
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void focusLost(FocusEvent arg0) {
-				try {
-					setValueWithString(field.getText());
-					dvp.repaintDoc();
-				} catch (AttributeException e) {
-					if (!showingDialog){
-						JOptionPane.showMessageDialog(null,
-							    e.getMessage(),
-							    "Error",
-							    JOptionPane.ERROR_MESSAGE);
-						showingDialog = false;
-					}
-				}
-			}
-			
-		});
-		field.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					setValueWithString(field.getText());
-					dvp.repaintDoc();
-				} catch (AttributeException e) {
-					// TODO Auto-generated catch block
-					if (!showingDialog){
-						showingDialog = true;
-						JOptionPane.showMessageDialog(null,
-							    e.getMessage(),
-							    "Error",
-							    JOptionPane.ERROR_MESSAGE);
-						showingDialog = false;
-					}
-				}
-			}
-			
-		});
-		return temp;
-	}
 
 	public void setStudentEditable(boolean studentEditable) {
 		this.studentEditable = studentEditable;

@@ -193,6 +193,7 @@ public abstract class Operator {
 			setFormat(format);
 		}
 
+		@Override
 		public Format getFormat() {
 			return format;
 		}
@@ -362,7 +363,7 @@ public abstract class Operator {
 
 		@Override
 		public Number safeEval(Vector<Number> children) {
-			return new Number( (int) ( random.nextInt((int) ( children.get(1).getValue() -
+			return new Number( ( random.nextInt((int) ( children.get(1).getValue() -
 					children.get(0).getValue()  + 1) ) + (int) children.get(0).getValue() ) );
 		}
 

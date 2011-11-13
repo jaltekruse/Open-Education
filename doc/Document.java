@@ -11,6 +11,7 @@ package doc;
 import java.util.Vector;
 
 
+import doc.mathobjects.ProblemGenerator;
 import doc_gui.DocViewerPanel;
 import doc_gui.DocumentException;
 import doc_gui.attributes.MathObjectAttribute;
@@ -31,12 +32,13 @@ public class Document {
 	public static final String AUTHOR = "author";
 	public static final String DATE = "date";
 	public static final String AUTHOR_ID = "authorID";
-	public static final String INCLUDE_NAME_FIELD = "include name field";
 	
 	private Vector<Page> pages;
 	
+	private Vector<ProblemGenerator> problemGenerators;
+	
 	//this should not be exported to files, it is a bridge between the front end and back end
-	public DocViewerPanel docPanel;
+	private DocViewerPanel docPanel;
 	
 	//stores all of the data for the document, allows for easy creation of a
 	//panel for setting document properties, just like the MathObject properties panel
@@ -48,16 +50,7 @@ public class Document {
 		pages = new Vector<Page>();
 		subjectsCovered = new Vector<String>();
 		getAttributeWithName(FILENAME).setValue(name);
-		System.out.println(getAttributeWithName(FILENAME).getValue());
 	}
-	
-//	public Document(String name){
-//		attributes = new Vector<MathObjectAttribute>();
-//		addAttributes();
-//		pages = new Vector<Page>();
-//		subjectsCovered = new Vector<String>();
-//		getAttributeWithName(FILENAME).setValue(name);
-//	}
 	
 	private void addAttributes(){
 		addAttribute(new StringAttribute(FILENAME));
@@ -73,7 +66,6 @@ public class Document {
 				return mathAtt;
 			}
 		}
-		System.out.println("attribute with name '" + n + "' not found in document");
 		return null;
 	}
 	
@@ -84,7 +76,6 @@ public class Document {
 	private void addAttribute(MathObjectAttribute mAtt){
 		for (MathObjectAttribute mathAtt : attributes){
 			if (mathAtt.getName().equals(mAtt.getName())){
-				System.out.println("name '" + mAtt.getName() + "' already in use within document");
 				return;
 			}
 		}
@@ -164,10 +155,10 @@ public class Document {
 	 */
 	public Page getPage(int index) throws DocumentException
 	{
-		if (index < 1 || index > pages.size()){
+		if (index < 0 || index > pages.size() - 1){
 			throw new DocumentException("Invaid page requested");
 		}
-		return pages.get(index - 1);
+		return pages.get(index);
 	}
 	
 	public String exportDoc(){
@@ -180,7 +171,7 @@ public class Document {
 			pages.add(p);
 		}
 		else{
-			System.out.println("Page is already contained in specified document");
+//			System.out.println("Page is already contained in specified document");
 		}
 	}
 	
@@ -189,16 +180,16 @@ public class Document {
 			pages.remove(p);
 		}
 		else{
-			System.out.println("Page is not contained in specified document");
+//			System.out.println("Page is not contained in specified document");
 		}
 	}
 	
 	public int getNumPages(){
-		return pages.size() + 1;
+		return pages.size();
 	}
 	
 	public void addBlankPage(){
-		pages.add(pages.size(), new Page(this));
+		pages.add(new Page(this));
 	}
 	
 	public int getPageIndex(Page p) throws DocumentException{
@@ -216,6 +207,22 @@ public class Document {
 	
 	public int lastPageIndex(){
 		return pages.size() + 1;
+	}
+
+	public void setDocViewerPanel(DocViewerPanel docPanel) {
+		this.docPanel = docPanel;
+	}
+
+	public DocViewerPanel getDocViewerPanel() {
+		return docPanel;
+	}
+
+	public Vector<ProblemGenerator> getProblemGenerators() {
+		return problemGenerators;
+	}
+
+	public void setProblemGenerators(Vector<ProblemGenerator> problemGenerators) {
+		this.problemGenerators = problemGenerators;
 	}
 
 }

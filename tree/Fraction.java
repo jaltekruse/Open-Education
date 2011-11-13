@@ -40,6 +40,7 @@ public class Fraction extends Number{
 		return this;
 	}
 	
+	@Override
 	public String toString(){
 		if (d == 1){
 			return "" + n;
@@ -98,6 +99,7 @@ public class Fraction extends Number{
 		return false;
 	}
 	
+	@Override
 	public Expression multiply(Expression e) throws EvalException
 	{
 		if (e instanceof Decimal)
@@ -123,6 +125,7 @@ public class Fraction extends Number{
 		}
 	}
 	
+	@Override
 	public Expression add(Expression e) throws EvalException
 	{
 		if (e instanceof Decimal)
@@ -148,6 +151,7 @@ public class Fraction extends Number{
 		}
 	}
 	
+	@Override
 	public Expression subtract(Expression e) throws EvalException
 	{
 		if (e instanceof Decimal)
@@ -173,6 +177,7 @@ public class Fraction extends Number{
 		}
 	}
 
+	@Override
 	public Expression divide(Expression e) throws EvalException
 	{
 		if (e instanceof Decimal)
@@ -198,6 +203,7 @@ public class Fraction extends Number{
 		}
 	}
 
+	@Override
 	public Expression power(Expression e) throws EvalException
 	{
 		if (e instanceof Decimal)
@@ -311,7 +317,8 @@ public class Fraction extends Number{
 		return new Decimal(frac2Dec(this).natLog().getValue());
 	}
 	
+	@Override
 	public Expression absoluteValue() throws EvalException{
-		return new Fraction((int) Math.abs(n), d);
+		return new Fraction(Math.abs(n), d);
 	}
 }

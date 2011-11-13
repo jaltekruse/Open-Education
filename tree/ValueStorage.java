@@ -53,7 +53,7 @@ public abstract class ValueStorage {
 	public ValueWithName findIfStored(String s){
 		ValueWithName tempElm;
 		for(int i = 0; i < groups.size(); i++){
-			tempElm = ((ValStorageGroup) groups.get(i)).findIfStored(s);
+			tempElm = (groups.get(i)).findIfStored(s);
 			if(tempElm != null)
 				return tempElm;
 		}

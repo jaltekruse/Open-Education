@@ -10,14 +10,12 @@ package tree;
 
 public abstract class Expression {
 	
-
 	private Expression parent;//the parent of this expression in the tree
 	protected Operator op;//the operator associated with this expression
 	
 	//the parser currently in use, stores the calculator state
 	//used for calculation of trig functions and finding variable values
 	private static ExpressionParser parser;
-	
 	
 	public Expression(ExpressionParser p){
 		parser = p;
@@ -29,12 +27,12 @@ public abstract class Expression {
 		op = o;
 	}
 	
-	public Operator getOp()
+	public Operator getOperator()
 	{
 		return op;
 	}
 	
-	public void setOp(Operator o)
+	public void setOperator(Operator o)
 	{
 		op = o;
 	}
@@ -58,13 +56,12 @@ public abstract class Expression {
 	}
 	
 	public Expression findParentTermRoot(){
-		System.out.println("find term thingy:" + this);
 		if (hasParent()){
 			if (getParent() instanceof Expression){
-				if (((Expression)getParent()).getOp() != Operator.ADD
-						&& ((Expression)getParent()).getOp() != Operator.SUBTRACT
-						&& ((Expression)getParent()).getOp() != Operator.EQ
-						&& ((Expression)getParent()).getOp() != Operator.ASSIGN){
+				if ((getParent()).getOperator() != Operator.ADD
+						&& (getParent()).getOperator() != Operator.SUBTRACT
+						&& (getParent()).getOperator() != Operator.EQ
+						&& (getParent()).getOperator() != Operator.ASSIGN){
 					return getParent().findParentTermRoot();
 				}
 			}
@@ -96,7 +93,7 @@ public abstract class Expression {
 	public boolean onLeftSideEquation(){
 		if (hasParent()){
 			if (getParent() instanceof BinExpression){
-				if (((BinExpression)getParent()).getOp() == Operator.ASSIGN){
+				if (((BinExpression)getParent()).getOperator() == Operator.ASSIGN){
 					if (isLeftChild()){
 						return true;
 					}
@@ -110,7 +107,7 @@ public abstract class Expression {
 	public boolean onRightSideEquation(){
 		if (hasParent()){
 			if (getParent() instanceof BinExpression){
-				if (((BinExpression)getParent()).getOp() == Operator.ASSIGN){
+				if (((BinExpression)getParent()).getOperator() == Operator.ASSIGN){
 					if (isRightChild()){
 						return true;
 					}

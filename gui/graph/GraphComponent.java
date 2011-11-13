@@ -12,8 +12,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-
 import tree.EvalException;
 import tree.ParseException;
 

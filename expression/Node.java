@@ -9,6 +9,10 @@ import java.util.Vector;
  */
 public abstract class Node implements Cloneable {
 	
+	private Node parentNode;
+	
+	private RootNode rootNode;
+	
 	private static final Comparator<Node> standardComparator = 
 		new Comparator<Node>() {
 			@Override
@@ -36,7 +40,6 @@ public abstract class Node implements Cloneable {
 	 * of this expression tree. 
 	 * @throws NodeException */
 	public abstract String toStringRepresentation() throws NodeException;
-
 
 	/**
 	 * Returns a deep copy of this {@code Node}; 
@@ -78,6 +81,31 @@ public abstract class Node implements Cloneable {
 		} while (!last.equals(simplified));
 		
 		return simplified;
+	}
+	
+	public void printTree(){
+		printTree(this, 0);
+	}
+	
+	public void printTree(Node n, int depth){
+		String space = "";
+		for (int i = 0; i < depth; i++){
+			space += "  ";
+		}
+		if ( n instanceof Expression){
+			System.out.println( space + ((Expression)n).getOperator().getSymbol());
+			for (Node child : ((Expression)n).getChildren()){
+				printTree(child, depth + 1);
+			}
+		}
+		else{
+			try {
+				System.out.println( space + n.toStringRepresentation());
+			} catch (NodeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public abstract Vector<Node> splitOnAddition();
@@ -123,5 +151,21 @@ public abstract class Node implements Cloneable {
 	
 	public static Comparator<Node> getStandardComparator() {
 		return standardComparator;
+	}
+
+	public void setParentNode(Node parentNode) {
+		this.parentNode = parentNode;
+	}
+
+	public Node getParentNode() {
+		return parentNode;
+	}
+
+	public void setRootNode(RootNode rootNode) {
+		this.rootNode = rootNode;
+	}
+
+	public RootNode getRootNode() {
+		return rootNode;
 	}
 }

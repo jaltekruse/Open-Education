@@ -2,6 +2,7 @@ package doc.mathobjects;
 
 import doc.GridPoint;
 import doc.Page;
+import doc_gui.attributes.MathObjectAttribute;
 
 public class ArrowObject extends PolygonObject {
 
@@ -44,6 +45,16 @@ public class ArrowObject extends PolygonObject {
 	public void addDefaultAttributes() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public ArrowObject clone() {
+		ArrowObject o = new ArrowObject(getParentPage());
+		o.removeAllAttributes();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			o.addAttribute( mAtt.clone());
+		}
+		return o;
 	}
 
 }

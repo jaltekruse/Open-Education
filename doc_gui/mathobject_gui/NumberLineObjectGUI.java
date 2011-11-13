@@ -10,13 +10,9 @@ package doc_gui.mathobject_gui;
 
 import gui.graph.NumberLine;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
-
 import doc.mathobjects.NumberLineObject;
 import doc_gui.attributes.DoubleAttribute;
 

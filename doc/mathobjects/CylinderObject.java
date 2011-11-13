@@ -7,6 +7,7 @@ import doc.Page;
 import doc_gui.attributes.BooleanAttribute;
 import doc_gui.attributes.ColorAttribute;
 import doc_gui.attributes.IntegerAttribute;
+import doc_gui.attributes.MathObjectAttribute;
 
 public class CylinderObject extends MathObject {
 
@@ -53,9 +54,19 @@ public class CylinderObject extends MathObject {
 				setAttributeValue("flip vertically", ! isFlippedVertically());
 			} catch (AttributeException e) {
 				// TODO Auto-generated catch block
-				System.out.println("stupid error in CylinderGUI");
+				System.out.println("error in CylinderGUI.performSpecialObjectAction");
 			}
 		}
+	}
+	
+	@Override
+	public CylinderObject clone() {
+		CylinderObject o = new CylinderObject(getParentPage());
+		o.removeAllAttributes();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			o.addAttribute( mAtt.clone());
+		}
+		return o;
 	}
 	
 	public boolean isFlippedVertically(){
@@ -110,4 +121,5 @@ public class CylinderObject extends MathObject {
 		return heightHalfDisk;
 	}
 
+	
 }

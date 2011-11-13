@@ -41,7 +41,6 @@ public class FractionGraphic extends NodeGraphic<Fraction>{
 	public void draw() {
 		Graphics g = super.getRootNodeGraphic().getGraphics();
 		g.setFont(getFont());
-		System.out.println(getFont().getName());
 		FontMetrics fm = g.getFontMetrics();
 		if (style == Style.SLASH || (style == Style.HORIZONTAL && getValue().getDenominator() == 1)){
 			if (isSelected())
@@ -71,6 +70,7 @@ public class FractionGraphic extends NodeGraphic<Fraction>{
 		}
 	}
 	
+@Override
 public void drawCursor(){
 		
 		int xPos = findCursorXPos();
@@ -80,6 +80,7 @@ public void drawCursor(){
 		
 	}
 	
+	@Override
 	public int getMaxCursorPos(){
 		return getValue().toString().length();
 	}
@@ -91,6 +92,7 @@ public void drawCursor(){
 				numberString.substring(0, super.getRootNodeGraphic().getCursor().getPos()));
 	}
 	
+	@Override
 	public void setCursorPos(int xPixelPos){
 		
 		String numberString = getValue().toString();
@@ -134,6 +136,7 @@ public void drawCursor(){
 		}
 	}
 	
+	@Override
 	public void moveCursorWest(){
 		if (super.getRootNodeGraphic().getCursor().getPos() > 0){
 			super.getRootNodeGraphic().getCursor().setPos( super.getRootNodeGraphic().getCursor().getPos() - 1); 
@@ -151,6 +154,7 @@ public void drawCursor(){
 		}
 	}
 	
+	@Override
 	public void moveCursorEast(){
 		if (super.getRootNodeGraphic().getCursor().getPos() < getValue().toString().length()){
 			super.getRootNodeGraphic().getCursor().setPos( super.getRootNodeGraphic().getCursor().getPos() + 1); 
@@ -168,6 +172,7 @@ public void drawCursor(){
 		}
 	}
 	
+	@Override
 	public void moveCursorNorth(){
 		if (getNorth() == null)
 		{
@@ -181,6 +186,7 @@ public void drawCursor(){
 		}
 	}
 	
+	@Override
 	public void moveCursorSouth(){
 		if (getSouth() == null)
 		{
@@ -194,18 +200,21 @@ public void drawCursor(){
 		}
 	}
 	
+	@Override
 	public void sendCursorInFromEast(int yPos, NodeGraphic vg)
 	{
 		super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 		super.getRootNodeGraphic().getCursor().setPos(getMaxCursorPos() - 1);
 	}
 	
+	@Override
 	public void sendCursorInFromWest(int yPos, NodeGraphic vg)
 	{
 		super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 		super.getRootNodeGraphic().getCursor().setPos(1);
 	}
 
+	@Override
 	public void sendCursorInFromNorth(int xPos, NodeGraphic vg){
 //		super.getCompExGraphic().getCursor().setValueGraphic(this);
 		setCursorPos(xPos);
@@ -213,6 +222,7 @@ public void drawCursor(){
 				super.getRootNodeGraphic().getCursor().getValueGraphic().getValue().toString());
 	}
 	
+	@Override
 	public void sendCursorInFromSouth(int xPos, NodeGraphic vg){
 //		super.getCompExGraphic().getCursor().setValueGraphic(this);
 		setCursorPos(xPos);

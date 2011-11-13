@@ -53,6 +53,7 @@ public class AbsoluteValueGraphic extends UnaryExpressionGraphic {
 	}
 	
 
+	@Override
 	public void drawCursor(){
 		int cursorPos = super.getRootNodeGraphic().getCursor().getPos();
 		
@@ -63,6 +64,7 @@ public class AbsoluteValueGraphic extends UnaryExpressionGraphic {
 		
 	}
 	
+	@Override
 	public int findCursorXPos(){
 		super.getRootNodeGraphic().getGraphics().setFont(getFont());
 		int cursorPos = super.getRootNodeGraphic().getCursor().getPos();
@@ -85,14 +87,15 @@ public class AbsoluteValueGraphic extends UnaryExpressionGraphic {
 			
 	}
 	
+	@Override
 	public int getMaxCursorPos(){
 		return 3;
 	}
 	
+	@Override
 	public void setCursorPos(int xPixelPos){
 		
 		String valueString = getValue().getOperator().getSymbol();
-		System.out.println("set paren Cursor pos");
 		
 		if (xPixelPos < getX1() + widthSpaceAndLine + space){
 			if (xPixelPos < getX1() + widthSpaceAndLine/2){
@@ -126,6 +129,7 @@ public class AbsoluteValueGraphic extends UnaryExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void moveCursorWest(){
 		int cursorPos = getRootNodeGraphic().getCursor().getPos();
 		if (cursorPos == 3 || cursorPos == 1){
@@ -143,6 +147,7 @@ public class AbsoluteValueGraphic extends UnaryExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void moveCursorEast(){
 		int cursorPos = getRootNodeGraphic().getCursor().getPos();
 		if (cursorPos == 2 || cursorPos == 0){
@@ -160,10 +165,10 @@ public class AbsoluteValueGraphic extends UnaryExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void moveCursorNorth(){
 		if (getNorth() == null)
 		{
-			System.out.println("nothing to north");
 			return;
 		}
 		else
@@ -173,10 +178,10 @@ public class AbsoluteValueGraphic extends UnaryExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void moveCursorSouth(){
 		if (getSouth() == null)
 		{
-			System.out.println("nothing to south");
 			return;
 		}
 		else
@@ -186,9 +191,9 @@ public class AbsoluteValueGraphic extends UnaryExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void sendCursorInFromEast(int yPos, NodeGraphic vg){
 		if (super.containedBelow(vg)){
-			System.out.println("move into division from east, containedbelow");
 			super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 			super.getRootNodeGraphic().getCursor().setPos(0);
 		}
@@ -198,9 +203,9 @@ public class AbsoluteValueGraphic extends UnaryExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void sendCursorInFromWest(int yPos, NodeGraphic vg){
 		if (super.containedBelow(vg)){
-			System.out.println("move into division from west, containedbelow");
 			super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 			super.getRootNodeGraphic().getCursor().setPos(getMaxCursorPos());
 		}
@@ -210,10 +215,12 @@ public class AbsoluteValueGraphic extends UnaryExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void sendCursorInFromNorth(int xPos, NodeGraphic vg){
 		setCursorPos(xPos);
 	}
 	
+	@Override
 	public void sendCursorInFromSouth(int xPos, NodeGraphic vg){
 		setCursorPos(xPos);
 	}
@@ -244,7 +251,7 @@ public class AbsoluteValueGraphic extends UnaryExpressionGraphic {
 		// The call to getChild() skips the first paren inside of the operator, the parens are needed to have
 		// an expression inside of a UnaryOp, but they are not usually displayed
 		// if a user wants to show parens, the can use  two pairs of parens: abs((5/6))
-		Node tempChild = ((Expression)super.getValue()).getChild(0);
+		Node tempChild = (super.getValue()).getChild(0);
 		
 		NodeGraphic childValGraphic = makeNodeGraphic(tempChild);
 		childSize = childValGraphic.requestSize(g, f, x1 + widthSpaceAndLine + space, y1 + overhang);

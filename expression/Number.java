@@ -19,6 +19,7 @@ public class Number extends Value implements Comparable<Number> {
 		return new Number(value);
 	}
 	
+	@Override
 	public boolean equals(Object other) {
 		if (other == null)
 			return false;
@@ -38,19 +39,27 @@ public class Number extends Value implements Comparable<Number> {
 
 	@Override
 	public Number cloneNode() {
-		return new Number(getValue());
+		Number n =  new Number(getValue());
+		n.setDisplayParentheses(displayParentheses());
+		return n;
 	}
 
 	@Override
 	public String toStringRepresentation() {
+		String result;
 		if (isInteger()){
-			return (int) value + "";
+			result = (int) value + "";
 		}
 		else{
-			return getValue() + ""; // change this!!
+			result = getValue() + ""; // change this!!
 		}
+		if (displayParentheses()){
+			return "(" + result + ")";
+		}
+		return result;
 	}
 
+	@Override
 	public Node replace(Identifier x, Node n) {
 		return this;
 	}

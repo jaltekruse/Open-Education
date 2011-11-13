@@ -1,13 +1,12 @@
 package doc.mathobjects;
 
 import java.awt.Color;
-import java.util.Vector;
-
 import doc.GridPoint;
 import doc.Page;
 import doc_gui.attributes.BooleanAttribute;
 import doc_gui.attributes.ColorAttribute;
 import doc_gui.attributes.IntegerAttribute;
+import doc_gui.attributes.MathObjectAttribute;
 
 public class CubeObject extends MathObject{
 	
@@ -39,6 +38,7 @@ public class CubeObject extends MathObject{
 		addAction(PolygonObject.FLIP_HORIZONTALLY);
 	}
 	
+	@Override
 	public void performSpecialObjectAction(String s){
 		if (s.equals(PolygonObject.FLIP_HORIZONTALLY)){
 			((BooleanAttribute)getAttributeWithName("flip horizontally")).setValue( ! isFlippedHorizontally());
@@ -101,5 +101,15 @@ public class CubeObject extends MathObject{
 
 	public static GridPoint getSide2Pt() {
 		return side2Pt;
+	}
+	
+	@Override
+	public CubeObject clone() {
+		CubeObject o = new CubeObject(getParentPage());
+		o.removeAllAttributes();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			o.addAttribute( mAtt.clone());
+		}
+		return o;
 	}
 }

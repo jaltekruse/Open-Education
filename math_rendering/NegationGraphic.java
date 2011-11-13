@@ -46,6 +46,7 @@ public class NegationGraphic extends UnaryExpressionGraphic {
 		super.getRootNodeGraphic().getGraphics().setStroke(new BasicStroke());
 	}
 
+	@Override
 	public void drawCursor(){
 		int xPos = symbolX1;
 		
@@ -57,13 +58,15 @@ public class NegationGraphic extends UnaryExpressionGraphic {
 		
 	}
 	
+	@Override
 	public int getMaxCursorPos(){
 		return 1;
 	}
 	
+	@Override
 	public void setCursorPos(int xPixelPos){
 		
-		String numberString = getValue().getOp().getSymbol();
+		String numberString = getValue().getOperator().getSymbol();
 		
 		if (xPixelPos < getX1()){
 			super.getRootNodeGraphic().getCursor().setPos(0);
@@ -99,6 +102,7 @@ public class NegationGraphic extends UnaryExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void moveCursorWest(){
 		if (super.getRootNodeGraphic().getCursor().getPos() > 0){
 			super.getRootNodeGraphic().getCursor().setPos( super.getRootNodeGraphic().getCursor().getPos() - 1); 
@@ -116,6 +120,7 @@ public class NegationGraphic extends UnaryExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void moveCursorEast(){
 		if (super.getRootNodeGraphic().getCursor().getPos() < getMaxCursorPos()){
 			super.getRootNodeGraphic().getCursor().setPos( super.getRootNodeGraphic().getCursor().getPos() + 1); 

@@ -11,10 +11,7 @@ package math_rendering;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
-
-import math_rendering.DivisionGraphic.Style;
 
 import expression.Expression;
 import expression.Node;
@@ -35,6 +32,7 @@ public class ExponentGraphic extends BinExpressionGraphic {
 		// TODO Auto-generated constructor stub
 	}
 	
+	@Override
 	public void draw(){
 		//no symbol to draw
 		if (isSelected()){
@@ -44,6 +42,7 @@ public class ExponentGraphic extends BinExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void drawCursor(){
 		String numberString = getValue().toString();
 		
@@ -54,16 +53,20 @@ public class ExponentGraphic extends BinExpressionGraphic {
 		
 	}
 	
+	@Override
 	public void setCursorPos(int xPixelPos){
 		//cursor does not exist in this graphic, send to upper child
 		super.getLeftGraphic().getMostInnerSouth().setCursorPos(xPixelPos);
 	}
 	
+	@Override
 	public void moveCursorWest(){}
 	
+	@Override
 	public void moveCursorEast(){
 	}
 	
+	@Override
 	public void moveCursorNorth(){}
 	
 	private int findCursorXPos() {
@@ -71,8 +74,10 @@ public class ExponentGraphic extends BinExpressionGraphic {
 		return getX1() + super.getRootNodeGraphic().getCursor().getPos() * (getX2() - getX1()); 
 	}
 
+	@Override
 	public void moveCursorSouth(){}
 	
+	@Override
 	public void sendCursorInFromEast(int yPos, NodeGraphic vg)
 	{
 		if (getLeftGraphic().containedBelow(getRootNodeGraphic().getCursor().getValueGraphic()) ||
@@ -94,6 +99,7 @@ public class ExponentGraphic extends BinExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void sendCursorInFromWest(int yPos, NodeGraphic vg)
 	{
 		if (getLeftGraphic().containedBelow(getRootNodeGraphic().getCursor().getValueGraphic()) ||
@@ -116,6 +122,7 @@ public class ExponentGraphic extends BinExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void sendCursorInFromNorth(int xPos, NodeGraphic vg){
 		if (getRightGraphic().containedBelow(getRootNodeGraphic().getCursor().getValueGraphic()) ||
 				this.getRightGraphic().equals(getRootNodeGraphic().getCursor().getValueGraphic()))
@@ -143,6 +150,7 @@ public class ExponentGraphic extends BinExpressionGraphic {
 		}
 	}
 	
+	@Override
 	public void sendCursorInFromSouth(int xPos, NodeGraphic vg){
 		if (getLeftGraphic().containedBelow(getRootNodeGraphic().getCursor().getValueGraphic()) ||
 				this.getLeftGraphic().equals(getRootNodeGraphic().getCursor().getValueGraphic()))
@@ -173,10 +181,12 @@ public class ExponentGraphic extends BinExpressionGraphic {
 	/**
 	 * The cursor can either be before or after the bar.
 	 */
+	@Override
 	public int getMaxCursorPos(){
 		return 1;
 	}
 
+	@Override
 	public int[] requestSize(Graphics g, Font f, int x1, int y1) throws Exception {
 		// TODO Auto-generated method stub
 
@@ -186,8 +196,8 @@ public class ExponentGraphic extends BinExpressionGraphic {
 		extraShiftUp = (int) (2 * getRootNodeGraphic().getSizeAdjustment());
 		
 		
-		Node tempLeft = ((Expression)super.getValue()).getChild(0);
-		Node tempRight = ((Expression)super.getValue()).getChild(1);
+		Node tempLeft = (super.getValue()).getChild(0);
+		Node tempRight = (super.getValue()).getChild(1);
 		NodeGraphic leftValGraphic = null;
 		NodeGraphic rightValGraphic = null; 
 		int[] rightSize = {0,0};
@@ -256,9 +266,6 @@ public class ExponentGraphic extends BinExpressionGraphic {
 			
 			setLeftGraphic(leftValGraphic);
 			setRightGraphic(rightValGraphic);
-			
-			System.out.println("exponent children:" + getComponents());
-			System.out.println(this);
 			
 			rightValGraphic.shiftToX1(x1 + leftSize[0] + spaceBetweenBaseAndSuper);
 			

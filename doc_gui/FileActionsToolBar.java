@@ -2,21 +2,9 @@ package doc_gui;
 
 
 import java.awt.event.KeyEvent;
-import java.awt.print.PageFormat;
-import java.awt.print.Paper;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.JToolBar;
-
-import doc.Page;
-import doc.xml.DocReader;
 
 public class FileActionsToolBar extends JToolBar {
 	
@@ -29,6 +17,7 @@ public class FileActionsToolBar extends JToolBar {
 		
 		OCButton saveButton = new OCButton(saveIcon, "Save [ctrl+s]", 1, 1, 2, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				notebookPanel.save();
 			}
@@ -40,6 +29,7 @@ public class FileActionsToolBar extends JToolBar {
 		
 		OCButton openButton = new OCButton(openIcon, "Open [ctrl+o]", 1, 1, 2, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				notebookPanel.open();
 			}
@@ -51,6 +41,7 @@ public class FileActionsToolBar extends JToolBar {
 			OCButton addPageButton = new OCButton(addPageIcon,
 					"Add Page [ctrl+n](before selected, or at the end if none selected)", 1, 1, 2, 0, this){
 				
+				@Override
 				public void associatedAction(){
 					notebookPanel.addPage();
 				}
@@ -60,6 +51,7 @@ public class FileActionsToolBar extends JToolBar {
 			
 			OCButton pagePropsButton = new OCButton(pagePropsIcon, "Doc Properties", 1, 1, 2, 0, this){
 				
+				@Override
 				public void associatedAction(){
 					notebookPanel.showDocProperties();
 				}
@@ -70,6 +62,7 @@ public class FileActionsToolBar extends JToolBar {
 		
 		OCButton zoomIn = new OCButton(zoomInIcon, "Zoom In [ctrl and '+']", 1, 1, 2, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				notebookPanel.zoomIn();
 			}
@@ -79,6 +72,7 @@ public class FileActionsToolBar extends JToolBar {
 		
 		OCButton zoomOut = new OCButton(zoomOutIcon, "Zoom Out [ctrl and '-']", 1, 1, 3, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				notebookPanel.getCurrentDocViewer().zoomOut();
 			}
@@ -105,6 +99,7 @@ public class FileActionsToolBar extends JToolBar {
 		
 		OCButton printButton = new OCButton(printIcon, "Print [ctrl+p]", 1, 1, 3, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				notebookPanel.print();
 			}

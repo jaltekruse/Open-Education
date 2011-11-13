@@ -32,6 +32,7 @@ public class Expression extends Node {
 		setChildren(v);
 	}
 	
+	@Override
 	public boolean equals(Object other) {
 		if ((other == null) || !(other instanceof Expression))
 			return false;
@@ -47,9 +48,9 @@ public class Expression extends Node {
 	
 	@Override
 	public String toStringRepresentation() throws NodeException {
-//		if ( ! (o instanceof Operator.Equals))
-//			return parenthetize(o.toString(children));
-//		else
+		if ( ! (o instanceof Operator.Equals) && displayParentheses())
+			return parenthetize(o.toString(children));
+		else
 			return o.toString(children);
 	}
 	
@@ -58,7 +59,9 @@ public class Expression extends Node {
 		Vector<Node> clone = new Vector<Node>();
 		for (Node child : children)
 			clone.add(child.cloneNode());
-		return new Expression(o.clone(), clone);
+		Expression e = new Expression(o.clone(), clone);
+		e.setDisplayParentheses(displayParentheses());
+		return e;
 	}
 
 	@Override
@@ -105,7 +108,7 @@ public class Expression extends Node {
 			for (int i = simplified.size() - 1 ; i >= 0 ; i--) {
 				addend = simplified.get(i);
 				if (addend instanceof Number) {
-					numbers.add((Number) addend);
+					numbers.add(addend);
 					simplified.remove(i);
 				}
 			}
@@ -146,7 +149,7 @@ public class Expression extends Node {
 			for (int i = simplified.size() - 1 ; i >= 0 ; i--) {
 				addend = simplified.get(i);
 				if (addend instanceof Number) {
-					numbers.add((Number) addend);
+					numbers.add(addend);
 					simplified.remove(i);
 				}
 			}
@@ -480,6 +483,7 @@ public class Expression extends Node {
 		}
 	}
 
+	@Override
 	public boolean containsIdentifier() {
 		boolean id = false;
 		for (Node child : children) {

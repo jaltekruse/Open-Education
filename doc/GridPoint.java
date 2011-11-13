@@ -36,6 +36,7 @@ public class GridPoint {
 		return y;
 	}
 	
+	@Override
 	public String toString(){
 		String output = "";
 		output += "(";

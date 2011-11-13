@@ -15,7 +15,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.Vector;
 
-import doc.GridPoint;
 import doc.mathobjects.GraphObject;
 import doc_gui.attributes.BooleanAttribute;
 import doc_gui.attributes.DoubleAttribute;
@@ -24,7 +23,6 @@ import doc_gui.attributes.IntegerAttribute;
 import tree.EvalException;
 import tree.ExpressionParser;
 import tree.ParseException;
-import tree.ValueNotStoredException;
 import tree.VarStorage;
 
 public class Graph {
@@ -53,7 +51,7 @@ public class Graph {
 		parser = new ExpressionParser();
 	}
 	
-	public void repaint(Graphics g, int xSize, int ySize){
+	public void repaint(Graphics g, int xSize, int ySize) throws EvalException, ParseException{
 		try {
 			X_MIN = varList.getVarVal("xMin").toDec().getValue();
 			X_MAX = varList.getVarVal("xMax").toDec().getValue();
@@ -73,7 +71,7 @@ public class Graph {
 		repaint(g, xSize, ySize, 1, 0, 0, null);
 	}
 	
-	public void syncWithGraphObject(GraphObject gObj, int xSize, int ySize){
+	public void pullVarsFromGraphObject(GraphObject gObj, int xSize, int ySize){
 		X_SIZE = xSize;
 		if (X_SIZE == 0){
 			X_SIZE = 1;
@@ -97,60 +95,47 @@ public class Graph {
 		NUM_FREQ = 2;
 	}
 	
-	public void repaint(Graphics g, int xSize, int ySize, float docZoomLevel,
-			int xPicOrigin, int yPicOrigin, GraphObject gObj){
-		
-		try
-		{	
-			DOC_ZOOM_LEVEL = docZoomLevel;
-			X_PIC_ORIGIN = xPicOrigin;
-			Y_PIC_ORIGIN = yPicOrigin;
-			X_SIZE = xSize;
-			if (X_SIZE == 0){
-				X_SIZE = 1;
-			}
-			Y_SIZE = ySize;
-			if (Y_SIZE == 0){
-				Y_SIZE = 1;
-			}
-			if (gObj != null)
-			{//there is an associated GraphObject, so the graph is being used in OpenNotebook
-				X_MIN = ((DoubleAttribute)gObj.getAttributeWithName("xMin")).getValue();
-				X_MAX = ((DoubleAttribute)gObj.getAttributeWithName("xMax")).getValue();
-				Y_MIN = ((DoubleAttribute)gObj.getAttributeWithName("yMin")).getValue();
-				Y_MAX = ((DoubleAttribute)gObj.getAttributeWithName("yMax")).getValue();
-				X_STEP = ((DoubleAttribute)gObj.getAttributeWithName("xStep")).getValue();
-				Y_STEP = ((DoubleAttribute)gObj.getAttributeWithName("yStep")).getValue();
-				FONT_SIZE = ((IntegerAttribute)gObj.getAttributeWithName("fontSize")).getValue();
-				SHOW_AXIS = ((BooleanAttribute)gObj.getAttributeWithName("showAxis")).getValue();
-				SHOW_GRID = ((BooleanAttribute)gObj.getAttributeWithName("showGrid")).getValue();
-				SHOW_NUMBERS = ((BooleanAttribute)gObj.getAttributeWithName("showNumbers")).getValue();
-			}
-			X_PIXEL = (X_MAX - X_MIN) / X_SIZE;
-			Y_PIXEL = (Y_MAX - Y_MIN) / Y_SIZE;
-			NUM_FREQ = 2;
-
-			
-		}catch (Exception e){
-			e.printStackTrace();
+	public void pushValsToGraphObject(GraphObject gObj){
+		if (X_SIZE == 0){
+			X_SIZE = 1;
+			((DoubleAttribute)gObj.getAttributeWithName("width")).setValue((double)X_SIZE);
 		}
+		if (Y_SIZE == 0){
+			Y_SIZE = 1;
+			((DoubleAttribute)gObj.getAttributeWithName("width")).setValue((double)Y_SIZE);
+		}
+		((DoubleAttribute)gObj.getAttributeWithName("xMin")).setValue(X_MIN);
+		((DoubleAttribute)gObj.getAttributeWithName("xMax")).setValue(X_MAX);
+		((DoubleAttribute)gObj.getAttributeWithName("yMin")).setValue(Y_MIN);
+		((DoubleAttribute)gObj.getAttributeWithName("yMax")).setValue(Y_MAX);
+		((DoubleAttribute)gObj.getAttributeWithName("xStep")).setValue(X_STEP);
+		((DoubleAttribute)gObj.getAttributeWithName("yStep")).setValue(Y_STEP);
+		((IntegerAttribute)gObj.getAttributeWithName("fontSize")).setValue(FONT_SIZE);
+		((BooleanAttribute)gObj.getAttributeWithName("showAxis")).setValue(SHOW_AXIS);
+		((BooleanAttribute)gObj.getAttributeWithName("showGrid")).setValue(SHOW_GRID);
+		((BooleanAttribute)gObj.getAttributeWithName("showNumbers")).setValue(SHOW_NUMBERS);
+	}
+	
+	public void repaint(Graphics g, int xSize, int ySize, float docZoomLevel,
+			int xPicOrigin, int yPicOrigin, GraphObject gObj) throws EvalException, ParseException{
 		
+		DOC_ZOOM_LEVEL = docZoomLevel;
+		X_PIC_ORIGIN = xPicOrigin;
+		Y_PIC_ORIGIN = yPicOrigin;
+		
+		if ( gObj != null){
+			pullVarsFromGraphObject(gObj, xSize, ySize);
+		}
+
 		g.setColor(Color.white);
 		g.fillRect(X_PIC_ORIGIN, Y_PIC_ORIGIN, X_SIZE, Y_SIZE);
 		
 		cartAxis.draw(g);
 		
+		
 		for (SingleGraph sg : singleGraphs){
 			if ( ! sg.hasFocus() ){
-				try {
-					sg.draw(g);
-				} catch (EvalException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace(); 
-				}
+				sg.draw(g);
 			}
 		}
 		
@@ -159,15 +144,7 @@ public class Graph {
 		//the integrals that are drawn with the line above
 		for (SingleGraph sg : singleGraphs){
 			if ( sg.hasFocus() ){
-				try {
-					sg.draw(g);
-				} catch (EvalException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				sg.draw(g);
 			}
 		}
 		
@@ -198,8 +175,10 @@ public class Graph {
 		
 		((Graphics2D)g).setStroke(new BasicStroke(1));
 		
-//		g.dispose();
-		//graphCompPic.flush();
+		
+		if ( gObj != null){
+			pushValsToGraphObject(gObj);
+		}
 	}
 	
 	public void addPoint(double x, double y){

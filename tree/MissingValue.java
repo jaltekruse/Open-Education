@@ -10,6 +10,7 @@ package tree;
 
 public class MissingValue extends Number{
 
+	@Override
 	public String toString(){
 		return "[nothing]";
 	}

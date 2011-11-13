@@ -4,15 +4,12 @@ package doc_gui;
 import javax.swing.ImageIcon;
 import javax.swing.JToolBar;
 
-import doc.Document;
-import doc.Page;
 import doc.mathobjects.AnswerBoxObject;
 import doc.mathobjects.ArrowObject;
 import doc.mathobjects.CubeObject;
 import doc.mathobjects.CylinderObject;
 import doc.mathobjects.ExpressionObject;
 import doc.mathobjects.GraphObject;
-import doc.mathobjects.HexagonObject;
 import doc.mathobjects.NumberLineObject;
 import doc.mathobjects.OvalObject;
 import doc.mathobjects.ParallelogramObject;
@@ -33,9 +30,9 @@ public class ObjectToolBar extends JToolBar {
 		
 		OCButton rectButton = new OCButton(rectIcon, "Add Rectangle", 1, 1, 0, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				//pass even down to current doc window for placing a mathObj
-				
 				notebookPanel.getCurrentDocViewer().createMathObject(new RectangleObject());
 			}
 		};
@@ -44,6 +41,7 @@ public class ObjectToolBar extends JToolBar {
 		
 		OCButton ovalButton = new OCButton(ovalIcon, "Add Oval", 1, 1, 1, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				//pass even down to current doc window for placing a mathObj
 
@@ -55,6 +53,7 @@ public class ObjectToolBar extends JToolBar {
 		
 		OCButton triangleButton = new OCButton(triangleIcon, "Add Triangle", 1, 1, 1, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				//pass even down to current doc window for placing a mathObj
 				
@@ -68,10 +67,11 @@ public class ObjectToolBar extends JToolBar {
 		OCButton regularPoygonButton = new OCButton(regularPolygonIcon,
 				"Add Regular Polygon", 1, 1, 1, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				//pass even down to current doc window for placing a mathObj
 				
-				notebookPanel.getCurrentDocViewer().createMathObject(new RegularPolygonObject(12));
+				notebookPanel.getCurrentDocViewer().createMathObject(new RegularPolygonObject());
 			}
 		};
 		
@@ -79,6 +79,7 @@ public class ObjectToolBar extends JToolBar {
 		
 		OCButton trapezoidButton = new OCButton(trapezoidIcon, "Add Trapezoid", 1, 1, 1, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				//pass even down to current doc window for placing a mathObj
 				
@@ -92,6 +93,7 @@ public class ObjectToolBar extends JToolBar {
 		OCButton parallelogramButton = new OCButton(parallelogramIcon,
 				"Add Parallelogram", 1, 1, 1, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				//pass even down to current doc window for placing a mathObj
 				
@@ -104,6 +106,7 @@ public class ObjectToolBar extends JToolBar {
 		OCButton arrowButton = new OCButton(arrowIcon,
 				"Add Arrow", 1, 1, 1, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				//pass even down to current doc window for placing a mathObj
 				
@@ -115,6 +118,7 @@ public class ObjectToolBar extends JToolBar {
 		
 		OCButton cubeButton = new OCButton(cubeIcon, "Add Cube", 1, 1, 1, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				//pass even down to current doc window for placing a mathObj
 				
@@ -126,6 +130,7 @@ public class ObjectToolBar extends JToolBar {
 		
 		OCButton cylinderButton = new OCButton(cylinderIcon, "Add Cube", 1, 1, 1, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				//pass even down to current doc window for placing a mathObj
 				
@@ -137,6 +142,7 @@ public class ObjectToolBar extends JToolBar {
 		
 		OCButton gridButton = new OCButton(gridIcon, "Add Graph", 1, 1, 2, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				//pass even down to current doc window for placing a mathObj
 				
@@ -148,6 +154,7 @@ public class ObjectToolBar extends JToolBar {
 		
 		OCButton numberLineButton = new OCButton(numberLineIcon, "Add Number Line", 1, 1, 2, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				//pass even down to current doc window for placing a mathObj
 				
@@ -159,6 +166,7 @@ public class ObjectToolBar extends JToolBar {
 		
 		OCButton textButton = new OCButton(textIcon, "Add Text", 1, 1, 6, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				//pass even down to current doc window for placing a mathObj
 				
@@ -170,6 +178,7 @@ public class ObjectToolBar extends JToolBar {
 		
 		OCButton expressionButton = new OCButton(expressionIcon, "Add Expression", 1, 1, 6, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				//pass even down to current doc window for placing a mathObj
 				
@@ -179,6 +188,7 @@ public class ObjectToolBar extends JToolBar {
 		
 		OCButton answerBoxButton = new OCButton("answer box", "Add Answer Box", 1, 1, 6, 0, this){
 			
+			@Override
 			public void associatedAction(){
 				//pass even down to current doc window for placing a mathObj
 				

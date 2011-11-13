@@ -37,6 +37,8 @@ public class Variable extends Identifier {
 	
 	@Override
 	public Variable cloneNode() throws NodeException {
-		return new Variable(getIdentifier(), index);
+		Variable v = new Variable(getIdentifier(), index);
+		v.setDisplayParentheses(displayParentheses());
+		return v;
 	}
 }

@@ -40,15 +40,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
 
 import doc.Document;
 import doc.mathobjects.AttributeException;
 import doc.mathobjects.GraphObject;
+import doc.mathobjects.Grouping;
 import doc.mathobjects.MathObject;
 import doc.mathobjects.PolygonObject;
 import doc.mathobjects.TriangleObject;
@@ -80,7 +79,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		scrollPane = new JScrollPane(panel);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+//		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		this.getContentPane().add(scrollPane);
 		thisFrame = this;
 	}
@@ -109,7 +108,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 						panel.add(new BooleanAdjustmentPanel((BooleanAttribute)mAtt, docPanel, panel), con);
 					}
 					else if (mAtt instanceof StringAttribute){
-						panel.add(new StringAdjustmentPanel((StringAttribute)mAtt, docPanel, panel), con);
+						panel.add(new StringAdjustmentPanel(mAtt, docPanel, panel), con);
 					}
 					else if (mAtt instanceof ColorAttribute){
 						panel.add(new ColorAdjustmentPanel((ColorAttribute)mAtt, docPanel, panel), con);
@@ -140,7 +139,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		GridBagConstraints con = new GridBagConstraints();
 		con.fill = GridBagConstraints.BOTH;
 		con.weightx = 1;
-		con.weighty = 1;
+		con.weighty = .01;
 		con.gridx = 0;
 		con.gridy = 0;
 		
@@ -198,23 +197,37 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 					( ! docPanel.isInStudentMode() && mAtt.isUserEditable()) )
 			{// only show editing dialog if in teacher mode (not student)
 				//or if the attribute has been left student editable
+				if (mAtt.getName().equals(MathObject.WIDTH) ||
+						mAtt.getName().equals(MathObject.HEIGHT) ||
+						mAtt.getName().equals(MathObject.X_POS) ||
+						mAtt.getName().equals(MathObject.Y_POS))
+				{// the position and size must be adjusted using a popup dialog,
+					//removes clutter from this window
+					continue;
+				}
 				if (mAtt instanceof BooleanAttribute){
+					con.weighty = .01;
 					adjusters.add(new BooleanAdjustmentPanel((BooleanAttribute)mAtt, docPanel, panel));
 				}
 				else if (mAtt instanceof StringAttribute){
+					con.weighty = 1;
 					adjusters.add(new StringAdjustmentPanel(mAtt, docPanel, panel ));
 				}
 				else if (mAtt instanceof ColorAttribute){
+					con.weighty = .01;
 					adjusters.add(new ColorAdjustmentPanel((ColorAttribute)mAtt, docPanel, panel ));
 				}
 				else{
+					con.weighty = .01;
 					adjusters.add(new GenericAdjustmentPanel(mAtt, docPanel, panel));
 				}
 				panel.add(adjusters.get(adjusters.size() - 1), con);
 				con.gridy++;
 			}
 		}
+
 		panel.revalidate();
+		this.pack();
 	}
 	
 	
@@ -222,6 +235,9 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		String filename = null;
 		if (actionName.equals(MathObject.MAKE_SQUARE)){
 			filename = "img/makeSquare.png";
+		}
+		else if (actionName.equals(MathObject.ADJUST_SIZE_AND_POSITION)){
+			filename = "img/adjustSizeAndPosition.png";
 		}
 		else if (actionName.equals(TriangleObject.MAKE_ISOSCELES_TRIANGLE)){
 			filename = "img/makeIsosceles.png";
@@ -241,15 +257,32 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		else if (actionName.equals(GraphObject.ZOOM_OUT)){
 			filename = "img/smallZoomOut.png";
 		}
+		else if (actionName.equals(GraphObject.DEFAULT_GRID)){
+			filename = "img/defaultGrid.png";
+		}
+		else if (actionName.equals(Grouping.BRING_TO_BOTTOM)){
+			filename = "img/alignBottom.png";
+		}
+		else if (actionName.equals(Grouping.BRING_TO_TOP)){
+			filename = "img/alignTop.png";
+		}
+		else if (actionName.equals(Grouping.BRING_TO_LEFT)){
+			filename = "img/alignLeft.png";
+		}
+		else if (actionName.equals(Grouping.BRING_TO_RIGHT)){
+			filename = "img/alignRight.png";
+		}
 		else{
 			return null;
 		}
 		
 		try {
+
 			BufferedImage image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(filename));
 			return new ImageIcon(image);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			System.out.println("cannot find image: " + filename);
 		}
 		return null;
 	}
@@ -272,6 +305,8 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		public abstract void addPanelContent();
 		
 		public abstract void updateData();
+		
+		public abstract void applyPanelValueToObject();
 	}
 	
 	private class GenericAdjustmentPanel extends AdjustmentPanel{
@@ -286,6 +321,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		@Override
 		public void updateData() {
 			field.setText(mAtt.getValue().toString());
+			field.setCaretPosition(0);
 		}
 
 		@Override
@@ -356,6 +392,23 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 				
 			});
 		}
+
+		@Override
+		public void applyPanelValueToObject() {
+			// TODO Auto-generated method stub
+			try {
+				mAtt.setValueWithString(field.getText());
+				docPanel.repaintDoc();
+			} catch (AttributeException e) {
+				if (!showingDialog){
+					JOptionPane.showMessageDialog(null,
+						    e.getMessage(),
+						    "Error",
+						    JOptionPane.ERROR_MESSAGE);
+					showingDialog = false;
+				}
+			}
+		}
 	}
 	
 	private class StringAdjustmentPanel extends AdjustmentPanel{
@@ -370,7 +423,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 
 		@Override
 		public void addPanelContent() {
-			textArea = new JTextArea(3, 10);
+			textArea = new JTextArea(3, 6);
 			textArea.setEditable(true);
 			textArea.setLineWrap(true);
 			textArea.setWrapStyleWord(true);
@@ -422,16 +475,36 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 			con.gridx = 0;
 			con.gridwidth = 1;
 			con.gridy = 0;
-			con.insets = new Insets(0, 10, 0, 10);
+			con.insets = new Insets(5, 5, 0, 5);
 			add(new JLabel(mAtt.getName()), con);
+			
+			JButton applyChanges = new JButton("Apply");
+			applyChanges.setToolTipText("Value can also be applied by hitting Enter");
+			con.gridx = 1;
+			con.weightx = .1;
+			con.weighty = .1;
+			con.gridheight = 1;
+			add(applyChanges, con);
+			applyChanges.addActionListener(new ActionListener(){
+
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					// TODO Auto-generated method stub
+					applyPanelValueToObject();
+				}
+			});
+			
 			con.fill = GridBagConstraints.BOTH;
 			con.weightx = 1;
 			con.weighty = 1;
+			con.gridwidth = 2;
 			con.gridy = 1;
 			con.gridx = 0;
-			con.gridheight = 2;
+			con.gridheight = 3;
 			scrollPane = new JScrollPane(textArea);
 			scrollPane.setWheelScrollingEnabled(false);
+			con.insets = new Insets(0, 5, 0, 0);
+			add(scrollPane, con);
 			scrollPane.addMouseWheelListener(new MouseWheelListener(){
 
 				@Override
@@ -455,14 +528,31 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 				}
 				
 			});
-			add(scrollPane, con);
-			
+
 		}
 
 		@Override
 		public void updateData() {
-			System.out.println(mAtt.getName());
 			textArea.setText(mAtt.getValue().toString());
+		}
+
+		@Override
+		public void applyPanelValueToObject() {
+			// TODO Auto-generated method stub
+			try {
+				mAtt.getParentObject().setAttributeValue(mAtt.getName(), textArea.getText());
+				docPanel.repaintDoc();
+			} catch (AttributeException e) {
+				// TODO Auto-generated catch block
+				if (!showingDialog){
+					showingDialog = true;
+					JOptionPane.showMessageDialog(null,
+						    e.getMessage(),
+						    "Error",
+						    JOptionPane.ERROR_MESSAGE);
+					showingDialog = false;
+				}
+			}
 		}
 		
 	}
@@ -505,6 +595,13 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 			});
 			add(checkbox);
 			
+		}
+
+		@Override
+		public void applyPanelValueToObject() {
+			// TODO Auto-generated method stub
+			mAtt.setValue(true);
+			docPanel.repaintDoc();
 		}
 		
 	}
@@ -614,6 +711,12 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 			add(colorLabel, con);
 			con.gridx = 2;
 			add(setColor, con);
+		}
+
+		@Override
+		public void applyPanelValueToObject() {
+			// TODO Auto-generated method stub
+			
 		}
 		
 	}

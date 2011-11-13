@@ -90,7 +90,7 @@ public class CompleteProblem {
 		System.out.println("smallest's parent:" + smallVal.getParent());
 //		currentCEG.clearSelection();
 		if (smallVal instanceof BinExpression){
-			if (((BinExpression)smallVal).getOp().getPrec() < 3)
+			if (((BinExpression)smallVal).getOperator().getPrec() < 3)
 			{//did not click on a term
 				
 			}
@@ -139,10 +139,10 @@ public class CompleteProblem {
 		}
 		System.out.println("xPos:" + xPos);
 		if (rootVal instanceof BinExpression){
-			if (((BinExpression) rootVal).getOp() == Operator.ASSIGN){
+			if (((BinExpression) rootVal).getOperator() == Operator.ASSIGN){
 				uEx.setChild(((BinExpression)rootVal).getLeftChild());
 				((BinExpression)rootVal).setLeftChild(uEx);
-				UnaryExpression uEx2 = new UnaryExpression(uEx.getOp());
+				UnaryExpression uEx2 = new UnaryExpression(uEx.getOperator());
 				uEx2.setChild(((BinExpression)rootVal).getRightChild());
 				((BinExpression)rootVal).setRightChild(uEx2);
 				setCurrentCEG(new RootNodeGraphic(rootVal));
@@ -186,17 +186,17 @@ public class CompleteProblem {
 			}
 			System.out.println("xPos:" + xPos);
 			if (rootVal instanceof BinExpression){
-				if (((BinExpression) rootVal).getOp() == Operator.ASSIGN){
+				if (((BinExpression) rootVal).getOperator() == Operator.ASSIGN){
 					
 					if (selectedTerm.isRightChild()){
 						System.out.println("selected is right");
 						if (selectedTerm.getParent() instanceof BinExpression){
-							if (((BinExpression)selectedTerm.getParent()).getOp() == Operator.SUBTRACT){
+							if (((BinExpression)selectedTerm.getParent()).getOperator() == Operator.SUBTRACT){
 								//term just needs to be added to other side
 								opString = "+";
 							}
-							else if (((BinExpression)selectedTerm.getParent()).getOp() == Operator.ADD 
-									|| ((BinExpression)selectedTerm.getParent()).getOp() == Operator.ASSIGN ){
+							else if (((BinExpression)selectedTerm.getParent()).getOperator() == Operator.ADD 
+									|| ((BinExpression)selectedTerm.getParent()).getOperator() == Operator.ASSIGN ){
 								//negate term before moving to other side
 								opString = "-";
 							}
@@ -243,12 +243,12 @@ public class CompleteProblem {
 					if (selectedTerm.isLeftChild()){
 						System.out.println("selected is left");
 						if (selectedTermParent instanceof BinExpression){
-							if (((BinExpression)selectedTerm.getParent()).getOp() == Operator.SUBTRACT){
+							if (((BinExpression)selectedTerm.getParent()).getOperator() == Operator.SUBTRACT){
 								//term just needs to be added to other side
 								opString = "+";
 							}
-							else if (((BinExpression)selectedTerm.getParent()).getOp() == Operator.ADD 
-									|| ((BinExpression)selectedTerm.getParent()).getOp() == Operator.ASSIGN ){
+							else if (((BinExpression)selectedTerm.getParent()).getOperator() == Operator.ADD 
+									|| ((BinExpression)selectedTerm.getParent()).getOperator() == Operator.ASSIGN ){
 								//negate term before moving to other side
 								opString = "-";
 							}

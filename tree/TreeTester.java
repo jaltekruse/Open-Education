@@ -12,7 +12,7 @@ public class TreeTester {
 
 	public static void main(String[] args){
 		
-		String expression = "sqrt(3+5)";
+		String expression = "(/)";
 		ExpressionParser parser = new ExpressionParser();
 		Expression parsedExpression = null;
 		if (args.length > 0){
@@ -31,16 +31,16 @@ public class TreeTester {
 		}
 		else{
 			try {
-				System.out.println(expression);
+				System.out.println("fed in: " + expression);
 				parsedExpression = parser.ParseExpression(expression);
-				System.out.println(expression);
+				System.out.println("parsed:" + parsedExpression);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		try {
-			System.out.println(parsedExpression.eval());
+//			System.out.println(parsedExpression.eval());
 			UnaryExpression sqrt = new UnaryExpression(Operator.SQRT);
 			Fraction f1 = new Fraction(3, 1);
 			Fraction f2 = new Fraction(5, 1);
