@@ -27,9 +27,8 @@ public class ExpressionParser {
 	private int currCharNum, elementCount;
 	private char currChar;
 	
-	//counter for the number of parenthesis found, if ( found add one, if ) found xubtract one
+	//counter for the number of parenthesis found, if open paren found add one, if close paren found subtract one
 	private int matchedParens;
-	
 	
 	//used to keep track of the units for angle measures, impacts the trig function evaluation
 	private int angleUnits;
@@ -105,15 +104,11 @@ public class ExpressionParser {
 			hitCloseParen();
 		}
 		
+		
 		else if (matchedParens != 0){
 			throw new ParseException("Did not match parenthesis");
 		}
-		if (vals.size() == 1){//there were no operators given
-//			if (vals.get(0) instanceof Var 
-//					&& ((Var)vals.get(0)).getValue() == null){
-//				throw new ParseException("Variable \"" + 
-//						((Var)vals.get(0)).getName() + "\" has not been given a value");
-//			}
+		if (vals.size() == 1){
 			return vals.get(0);
 		}
 		if (e == null){
@@ -153,7 +148,16 @@ public class ExpressionParser {
 			addBinOp(Operator.ADD);
 			break;
 		case '-':
-			addBinOp(Operator.SUBTRACT);
+			if (vals.isEmpty())
+			{// all values that have been read have been incorporated into the tree
+				//therefore there is no left child for a subtraction, interpret as negation
+				addUnaryOp(Operator.NEG);
+				return;
+			}
+			else{
+				addBinOp(Operator.SUBTRACT);
+			}
+
 			break;
 		case '*':
 			if (currCharNum < s.length() - 1 && s.charAt(currCharNum + 1) == '*'){
@@ -238,12 +242,13 @@ public class ExpressionParser {
 		while (e.hasParent() && numParensHit < 1)
 		{
 			e = e.getParent();
-			if (e != null && e.getOp() == Operator.PAREN){
+			if (e != null && e.getOperator() == Operator.PAREN){
 				numParensHit++;;
 			}
 		}
 		if (numParensHit == 2)
-			e = (Expression) ((UnaryExpression)e).getChild();
+			e = ((UnaryExpression)e).getChild();
+		
 	}
 
 	/**
@@ -412,7 +417,7 @@ public class ExpressionParser {
 		}
 		else if(varElm.equals("frac")){
 			//think of how to add things like this, functions/values with multiple inputs
-			//such as frac(2/3)
+			//such as frac(2,3)
 		}
 		else if(varElm.equals("solve")){
 			//will be the evaluate algebraically function, not quite done yet...
@@ -425,11 +430,6 @@ public class ExpressionParser {
 				addValue(tempElm);
 				return;
 			}
-//			if (!(e == null && vals.size() == 0)){// something has been scanned in
-//				if (VARLIST.findIfStored(varElm) == null){
-//					throw new ParseException("Variable \"" + varElm + "\" has not been given a value");
-//				}
-//			}
 			
 			Var newVar = VARLIST.storeVar(varElm, null);
 			newVar = new Var(newVar.getName(), null);
@@ -480,56 +480,39 @@ public class ExpressionParser {
 	public void addBinOp(Operator o) throws ParseException{
 		BinExpression newEx = new BinExpression(o);
 		
-		if (e instanceof BinExpression  && ((BinExpression)e).getRightChild() == null){
-			if (o == Operator.SUBTRACT && vals.isEmpty()){
-				addUnaryOp(Operator.NEG);
-				return;
-			}
-			else
-			{
-				//throw new ParseException("2 binary operators adjacent");
-				addValue(new MissingValue());
-			}
+		if (e instanceof BinExpression  && ((BinExpression)e).getRightChild() == null)
+		{// there are two binary operators adjacent, add a missing value node between them
+			addValue(new MissingValue());
 		}
-		if (e instanceof UnaryExpression && ((UnaryExpression)e).getChild() == null){
-			if (vals.size() == 1 && e.isContainerOp()){
+		if (e instanceof UnaryExpression && ((UnaryExpression)e).getChild() == null)
+		{
+			if (vals.size() == 1 && e.isContainerOp())
+			{// a value is in temporary storage, and the last element that was added to the tree
+				//was a container, add the new binary expression to 
 				newEx.setLeftChild(vals.remove(0));
 				((UnaryExpression)e).setChild(newEx);
 				e = newEx;
 				vals = new ArrayList<Expression>();
 				return;
 			}
-			else if (vals.size() == 0 && o == Operator.SUBTRACT)
-			{
-				addUnaryOp(Operator.NEG);
-				return;
-			}
 			else
 			{
-				
 				if (vals.size() == 0)
 				{
 					addValue(new MissingValue());
 				}
 				((UnaryExpression)e).setChild(newEx);
+				
 				newEx.setLeftChild(vals.get(0));
+				vals = new ArrayList<Expression>();
+				e = newEx;
 				return;
 			}
 		}
 		else{
 			newEx = new BinExpression(o);
 			if(e == null){
-				if (o == Operator.SUBTRACT && vals.isEmpty()){
-					addUnaryOp(Operator.NEG);
-					return;
-				}
-				else if (o != Operator.ASSIGN){
-//					if (vals.size() == 1 && vals.get(0) instanceof Var){
-//						if (((Var)vals.get(0)).getValue() == null){
-//							throw new ParseException("Variable \"" + ((Var)vals.get(0)).getName()
-//									+ "\" has not been given a value");
-//						}
-//					}
+				if (o != Operator.ASSIGN){
 					e = newEx;
 					if (vals.size() == 1){
 						newEx.setLeftChild(vals.get(0));
@@ -567,29 +550,32 @@ public class ExpressionParser {
 				vals = new ArrayList<Expression>();
 			}
 			else{
-				if (newEx.getOp().getPrec() > e.getOp().getPrec()){
+				if (newEx.getOperator().getPrec() > e.getOperator().getPrec())
+				{// the precedence of the new operation is greater than that
+					//of the last added to the tree
 					if (e instanceof BinExpression){
 						newEx.setLeftChild(((BinExpression)e).getRightChild());
 						((BinExpression)e).setRightChild(newEx);
 						e = newEx;
 						return;
 					}
-					else if (e instanceof UnaryExpression){
+					else if (e instanceof UnaryExpression)
+					{//
 						newEx.setLeftChild(e);
 						e = newEx;
 						return;
 					}
 				}
 				else {
-					while(e.hasParent() && newEx.getOp().getPrec() < e.getOp().getPrec()
+					while(e.hasParent() && newEx.getOperator().getPrec() < e.getOperator().getPrec()
 							&& !(e.getParent().isContainerOp())){
 						e = e.getParent();
 					}
 					if (e instanceof BinExpression)
 					{
-						if (e.getOp().getPrec() < newEx.getOp().getPrec())
+						if (e.getOperator().getPrec() < newEx.getOperator().getPrec())
 						{
-							((BinExpression)newEx).setLeftChild(((BinExpression)e).getRightChild());
+							(newEx).setLeftChild(((BinExpression)e).getRightChild());
 							((BinExpression)e).setRightChild(newEx);
 							e = newEx;
 							return;
@@ -635,7 +621,6 @@ public class ExpressionParser {
 		UnaryExpression newEx = new UnaryExpression(o);
 		
 		if (e == null){
-			System.out.println("e is null");
 			if (o.isUnaryPost()){
 				newEx.setChild(vals.get(0));
 				vals = new ArrayList<Expression>();
@@ -662,7 +647,7 @@ public class ExpressionParser {
 			if (o == Operator.NOT){
 				newEx.setChild(((BinExpression)e).getRightChild());
 				vals = new ArrayList<Expression>();
-				newEx.setOp(Operator.FACT);
+				newEx.setOperator(Operator.FACT);
 				((BinExpression)e).setRightChild(newEx);
 				e = newEx;
 				return;
@@ -684,7 +669,6 @@ public class ExpressionParser {
 			return;
 		}
 		else if (e instanceof UnaryExpression){
-			System.out.println("e is unary");
 			if (vals.size() == 1){
 				addBinOp(Operator.IMP_MULT);
 				((BinExpression)e).setRightChild(newEx);
@@ -694,7 +678,7 @@ public class ExpressionParser {
 			else{
 				if (((UnaryExpression)e).hasChild() && o.isUnaryPost()){
 					vals = new ArrayList<Expression>();
-					((UnaryExpression)newEx).setChild(e);
+					(newEx).setChild(e);
 					e = newEx;
 					return;
 				}
@@ -719,38 +703,6 @@ public class ExpressionParser {
 					return;
 				}
 			}
-//			else{
-//				System.out.println("got to else of addBinOp!!!!!!!!!!!!");
-//				if (newEx.getOp().getPrec() > e.getOp().getPrec()){
-//					System.out.println("parent2: "+ e.toString());
-//					if (e instanceof BinExpression){
-//						((BinExpression)e).setRightChild(newEx);
-//						e = newEx;
-//					}
-//					else if (e instanceof UnaryExpression){
-//						BinExpression newBinEx = new BinExpression();
-//						newBinEx.setLeftChild(e);
-//						e = newBinEx;
-//						addBinOp(Operator.IMP_MULT);
-//						addValue(newEx);
-//					}
-//				}
-//				else {
-//					System.out.println("parent3: "+ e.toString());
-//					if (e.isContainerOp() && ((UnaryExpression)e).hasChild()){
-//						newEx.setChild(e);
-//						e = newEx;
-//						return;
-//					}
-//					while(newEx.getOp().getPrec() < e.getOp().getPrec() && e.hasParent()
-//							&& !(e.getParent().isContainerOp())){
-//						e = e.getParent();
-//					}
-//					newEx.setChild(e);
-//					e = newEx;
-//					return;
-//				}
-//			}
 		}
 	}
 	

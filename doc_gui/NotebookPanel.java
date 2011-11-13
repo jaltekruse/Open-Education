@@ -14,8 +14,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
@@ -35,7 +33,6 @@ import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -44,26 +41,17 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import doc.Document;
 import doc.Page;
-import doc.mathobjects.AnswerBoxObject;
-import doc.mathobjects.CubeObject;
-import doc.mathobjects.ExpressionObject;
 import doc.mathobjects.GraphObject;
 import doc.mathobjects.Grouping;
-import doc.mathobjects.HexagonObject;
 import doc.mathobjects.MathObject;
-import doc.mathobjects.NumberLineObject;
 import doc.mathobjects.OvalObject;
-import doc.mathobjects.ParallelogramObject;
 import doc.mathobjects.RectangleObject;
 import doc.mathobjects.TextObject;
-import doc.mathobjects.TrapezoidObject;
 import doc.mathobjects.TriangleObject;
 import doc.xml.DocReader;
 
@@ -112,6 +100,7 @@ public class NotebookPanel extends SubPanel {
 		bCon.weightx = 1;
 		bCon.weighty = 1;
 		this.add(docTabs, bCon);
+		
 		
 		tabLabels = new Vector<DocTabClosePanel>();
 		openDocs = new Vector<DocViewerPanel>();
@@ -265,9 +254,7 @@ public class NotebookPanel extends SubPanel {
 			getCurrentDocViewer().repaintDoc();
 		}
 		else if ( getCurrentDocViewer().getSelectedPage() != null){
-			getCurrentDocViewer().getDoc().removePage(
-					getCurrentDocViewer().getSelectedPage());
-			getCurrentDocViewer().resizeViewWindow();
+			deletePage();
 		}
 		else{
 			JOptionPane.showMessageDialog(this,
@@ -314,8 +301,13 @@ public class NotebookPanel extends SubPanel {
 		if (getCurrentDocViewer().getFocusedObject() != null){
 			MathObject mObj = getCurrentDocViewer().getFocusedObject();
 			if (mObj == getCurrentDocViewer().getTempGroup()){
-				getCurrentDocViewer().removeTempGroup();
-				mObj.getParentPage().addObject(mObj);
+				getCurrentDocViewer().getTempGroup().getParentPage().removeObject(mObj);
+				MathObject newGroup = getCurrentDocViewer().getTempGroup().clone();
+				mObj.getParentPage().addObject(newGroup);
+				getCurrentDocViewer().resetTempGroup();
+				//make sure this comes after the call to resetTempGroup, when a new focused object is set
+				// it places the objects in the temp group back on the page, which is not what is needed here
+				getCurrentDocViewer().setFocusedObject(newGroup);
 				getCurrentDocViewer().repaintDoc();
 			}
 
@@ -327,7 +319,7 @@ public class NotebookPanel extends SubPanel {
 		if (mObj != null){
 			if (mObj instanceof Grouping){
 				if (mObj == getCurrentDocViewer().getTempGroup()){
-					getCurrentDocViewer().resetTempGroup();
+					getCurrentDocViewer().ungroupTempGroup();
 					getCurrentDocViewer().setFocusedObject(null);
 					getCurrentDocViewer().repaintDoc();
 					return;
@@ -386,7 +378,8 @@ public class NotebookPanel extends SubPanel {
 	public void addPage(){
 		Document doc = getCurrentDocViewer().getDoc();
 		Page p = getCurrentDocViewer().getSelectedPage();
-		if (p != null){
+		
+		if (doc.getNumPages() > 0 && p != null){
 			int index = 0;
 			try {
 				index = doc.getPageIndex(p);
@@ -412,6 +405,7 @@ public class NotebookPanel extends SubPanel {
 		}
 		getCurrentDocViewer().getDoc().removePage(
 				getCurrentDocViewer().getSelectedPage());
+		getCurrentDocViewer().setSelectedPage(null);
 		getCurrentDocViewer().resizeViewWindow();
 	}
 	
@@ -703,7 +697,7 @@ public class NotebookPanel extends SubPanel {
 				ySize = rand.nextInt(200) + 100;
 				thickness = rand.nextInt(10) + 1;
 				doc = rand.nextInt(openDocs.size());
-				page = rand.nextInt(openDocs.get(doc).getDoc().getNumPages() - 1) + 1;
+				page = rand.nextInt(openDocs.get(doc).getDoc().getNumPages()) + 1;
 				
 				if (objType == 0){
 					objectToAdd = new RectangleObject(openDocs.get(doc).getDoc().getPage(page),

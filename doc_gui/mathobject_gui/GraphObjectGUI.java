@@ -14,11 +14,11 @@ import gui.graph.GraphedCartFunction;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.image.BufferedImage;
-
 import doc.mathobjects.GraphObject;
 
+import tree.EvalException;
 import tree.ExpressionParser;
+import tree.ParseException;
 
 public class GraphObjectGUI extends MathObjectGUI {
 
@@ -43,15 +43,23 @@ public class GraphObjectGUI extends MathObjectGUI {
 					new ExpressionParser(), graph, Color.BLUE));
 		}
 		
-		graph.repaint(g, width , height, zoomLevel, xOrigin, yOrigin, object);
+		try {
+			graph.repaint(g, width , height, zoomLevel, xOrigin, yOrigin, object);
+		} catch (EvalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 	}
 	
 	public void mouseClicked(GraphObject gObj, int x , int y, float zoomLevel){
 		//add a point to the graph
-		graph.syncWithGraphObject(gObj, (int) (gObj.getWidth() * zoomLevel),
+		graph.pullVarsFromGraphObject(gObj, (int) (gObj.getWidth() * zoomLevel),
 				(int) (gObj.getHeight() * zoomLevel) );
 		graph.addPointAtScreenPt(x, y);
-		
 	}
 }

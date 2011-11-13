@@ -32,6 +32,7 @@ public class Expression extends Node {
 		setChildren(v);
 	}
 	
+	@Override
 	public boolean equals(Object other) {
 		if ((other == null) || !(other instanceof Expression))
 			return false;
@@ -46,18 +47,33 @@ public class Expression extends Node {
 	}
 	
 	@Override
+<<<<<<< HEAD
 	public String toString() {
 		if ( !(o instanceof Operator.Equals))
 			return parenthetize(o.toString(children));
 		return o.toString(children);
+=======
+	public String toStringRepresentation() throws NodeException {
+		if ( ! (o instanceof Operator.Equals) && displayParentheses())
+			return parenthetize(o.toString(children));
+		else
+			return o.toString(children);
+>>>>>>> newParser
 	}
 	
 	@Override
 	public Expression clone() {
 		Vector<Node> clone = new Vector<Node>();
 		for (Node child : children)
+<<<<<<< HEAD
 			clone.add(child.clone());
 		return new Expression(o.clone(), clone);
+=======
+			clone.add(child.cloneNode());
+		Expression e = new Expression(o.clone(), clone);
+		e.setDisplayParentheses(displayParentheses());
+		return e;
+>>>>>>> newParser
 	}
 
 	@Override
@@ -148,7 +164,7 @@ public class Expression extends Node {
 			for (int i = simplified.size() - 1 ; i >= 0 ; i--) {
 				addend = simplified.get(i);
 				if (addend instanceof Number) {
-					numbers.add((Number) addend);
+					numbers.add(addend);
 					simplified.remove(i);
 				}
 			}
@@ -189,7 +205,7 @@ public class Expression extends Node {
 			for (int i = simplified.size() - 1 ; i >= 0 ; i--) {
 				addend = simplified.get(i);
 				if (addend instanceof Number) {
-					numbers.add((Number) addend);
+					numbers.add(addend);
 					simplified.remove(i);
 				}
 			}
@@ -524,6 +540,7 @@ public class Expression extends Node {
 		}
 	}
 
+	@Override
 	public boolean containsIdentifier() {
 		boolean id = false;
 		for (Node child : children) {

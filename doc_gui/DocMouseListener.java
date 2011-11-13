@@ -15,7 +15,6 @@ import java.util.Vector;
 
 import javax.swing.event.MouseInputListener;
 
-import doc.GridPoint;
 import doc.Page;
 import doc.PointInDocument;
 import doc.mathobjects.MathObject;
@@ -41,7 +40,6 @@ public class DocMouseListener implements MouseInputListener{
 	
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		System.out.println("xClick: " + e.getX() + " yClick: " + e.getY());
 		
 		boolean clickHandled = false, requiresRedraw = false;
 		if (selectionRectRequiresMouseDrag || selectionRectBeingResized){
@@ -53,32 +51,21 @@ public class DocMouseListener implements MouseInputListener{
 		
 		if ( ! clickedPt.isOutSidePage()){
 			try {
-
 				
 				Rectangle objRect;
 
 				//gives extra space around object to allow selection,
 				//most useful for when objects are very thin
 				int clickBuffer = 3;
+			
 				Vector<MathObject> currPageObjects =
 					docPanel.getDoc().getPage(clickedPt.getPage()).getObjects();
-				MathObject mObj;
-				mObj = docPanel.getFocusedObject();
-				
-				//this does not allow objects that are over other objects to be selected, without
-				//de-selecting the lower object
-//				if (mObj != null){
-//					objRect = new Rectangle(mObj.getxPos() - clickBuffer, mObj.getyPos() - clickBuffer,
-//							mObj.getWidth() + 2 * clickBuffer, mObj.getHeight() + 2 * clickBuffer);
-//					if (objRect.contains(new Point(clickedPt.getxPos(), clickedPt.getyPos()))){
-//						//send event to object
-//						docPanel.repaintDoc();
-//						return;
-//					}
-//				}
+				MathObject mObj, oldFocused;
+				oldFocused = docPanel.getFocusedObject();
 
 				for ( int i = (currPageObjects.size() - 1); i >= 0; i--)
 				{//cycle through all of the objects on the page that was clicked
+					
 					mObj = docPanel.getDoc().getPage(clickedPt.getPage()).getObjects().get(i);
 					objRect = new Rectangle(mObj.getxPos() - clickBuffer, mObj.getyPos() - clickBuffer,
 							mObj.getWidth() + 2 * clickBuffer, mObj.getHeight() + 2 * clickBuffer);
@@ -86,22 +73,13 @@ public class DocMouseListener implements MouseInputListener{
 							mObj != docPanel.getFocusedObject())
 					{// the click occurred within an object, that was not already selected
 						if (mObj instanceof Grouping && docPanel.isInStudentMode()){
-							// groups cannot be selected by a student, but their sub-members can
-							// if they are student selectable (that is handled in the setFocuedObject
-							// method in the DociViewerPanel class)
-//							GridPoint clickInGrouping = new GridPoint(
-//									( clickedPt.getxPos() - mObj.getxPos() ) / mObj.getWidth(),
-//									( clickedPt.getyPos() - mObj.getyPos() ) / mObj.getHeight());
-							System.out.println("check group objects");
+							// TODO change this to fit new group structure
 							for (MathObject subObj : ((Grouping)mObj).getObjects()){
-								objRect = new Rectangle((int) (subObj.getxPos()/1000.0 * mObj.getWidth() + mObj.getxPos() ),
-										(int) (subObj.getyPos()/1000.0 * mObj.getHeight() + mObj.getyPos() ),
-										(int) (subObj.getWidth()/1000.0 * mObj.getWidth() ),
-										(int) (subObj.getHeight()/1000.0 * mObj.getHeight() ) );
-								System.out.println(objRect.getX() + " " + objRect.getY() + " " +objRect.getWidth());
-								System.out.println(clickedPt.getxPos() + " " + clickedPt.getyPos());
+								objRect = new Rectangle(subObj.getxPos(), subObj.getyPos(),
+										subObj.getWidth(),subObj.getHeight());
 								if (objRect.contains(new Point(clickedPt.getxPos(), clickedPt.getyPos())) 
 										&& mObj != docPanel.getFocusedObject()){
+									System.out.println("set focused");
 									docPanel.setFocusedObject(subObj);
 									docPanel.repaint();
 									return;
@@ -117,6 +95,19 @@ public class DocMouseListener implements MouseInputListener{
 					}
 				}
 				
+				if (docPanel.getFocusedObject() == oldFocused){
+					if (oldFocused != null){
+						objRect = new Rectangle(oldFocused.getxPos() - clickBuffer, oldFocused.getyPos() - clickBuffer,
+								oldFocused.getWidth() + 2 * clickBuffer, oldFocused.getHeight() + 2 * clickBuffer);
+						if ( ! objRect.contains(new Point(clickedPt.getxPos(), clickedPt.getyPos()))){
+							//send event to object
+							docPanel.setFocusedObject(null);
+							docPanel.repaintDoc();
+							return;
+						}
+					}
+				}
+				
 				
 			} catch (DocumentException e1) {
 				// TODO Auto-generated catch block
@@ -125,15 +116,14 @@ public class DocMouseListener implements MouseInputListener{
 		}
 		else
 		{//click was outside of page
-			System.out.println("outside page");
 			docPanel.setSelectedPage(null);
+			docPanel.setFocusedObject(null);
 			docPanel.repaintDoc();
 			return;
 		}
 		
 		//objects can be off of the page, so this check must happen out here
 		if (docPanel.getFocusedObject() != null && ! clickHandled){
-			System.out.println("check for sending into obj");
 			Point objPos = null;
 			try {
 				objPos = docPanel.getObjectPos(docPanel.getFocusedObject());
@@ -155,8 +145,9 @@ public class DocMouseListener implements MouseInputListener{
 		
 		if ( ! clickHandled && ! clickedPt.isOutSidePage()){
 			//the click hit a page, but missed all of its objects, select the page
+			System.out.println("before");
 			docPanel.setSelectedPage(clickedPt.getPage());
-			System.out.println("set selected page");
+			System.out.println("after");
 			clickHandled = true;
 			requiresRedraw = true;
 		}
@@ -189,7 +180,6 @@ public class DocMouseListener implements MouseInputListener{
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 		draggingDot = false;
-		System.out.println("pressed");
 		
 		try {
 		
@@ -250,7 +240,7 @@ public class DocMouseListener implements MouseInputListener{
 				else
 				{//create a box to select multiple objects
 					if ( ! docPanel.isInStudentMode() ){
-						docPanel.resetTempGroup();
+						docPanel.ungroupTempGroup();
 						RectangleObject rect = new RectangleObject(docPanel.getDoc().getPage(clickedPt.getPage()));
 						rect.setxPos(clickedPt.getxPos());
 						rect.setyPos(clickedPt.getyPos());
@@ -265,7 +255,7 @@ public class DocMouseListener implements MouseInputListener{
 			{//click was outside of page
 				if (placingObject){
 					setPlacingObject(false);
-					docPanel.resetTempGroup();
+					docPanel.ungroupTempGroup();
 				}
 			}
 			
@@ -278,8 +268,6 @@ public class DocMouseListener implements MouseInputListener{
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
-		System.out.println("released");
 		
 		if (objPlacementRequiresMouseDrag)
 		{// the mouse was pressed, but not dragged to set an objects size
@@ -306,16 +294,15 @@ public class DocMouseListener implements MouseInputListener{
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		// TODO Auto-generated method stub
-		System.out.println("mouse dragged");
 		PointInDocument docPt = docPanel.panelPt2DocPt(e.getX(), e.getY());
 		
-		if (objPlacementRequiresMouseDrag() || selectionRectRequiresMouseDrag){
+		if (objPlacementRequiresMouseDrag || selectionRectRequiresMouseDrag){
 			if (selectionRectRequiresMouseDrag)
 			{//swap in the selection rectangle, allows reuse of code for the addition of a
 				//rectangle to select objects
 				objToPlace = docPanel.getSelectionRect();
-				docPanel.setFocusedObject(objToPlace);
 				selectionRectBeingResized = true;
+				selectionRectRequiresMouseDrag = false;
 			}
 			if (docPt.isOutSidePage()){
 				objToPlace.getParentPage().removeObject(objToPlace);
@@ -323,7 +310,10 @@ public class DocMouseListener implements MouseInputListener{
 			}
 			else{
 				boolean isWest = false;
-				draggingDot = true;
+				if ( ! selectionRectBeingResized)
+				{ // if the object being sized is not the resize rectangle
+					draggingDot = true;
+				}
 				if (docPt.getxPos() < objToPlace.getxPos()){
 					objToPlace.setWidth(objToPlace.getxPos() - docPt.getxPos());
 					objToPlace.setxPos(docPt.getxPos());
@@ -354,7 +344,7 @@ public class DocMouseListener implements MouseInputListener{
 				}
 				if (selectionRectRequiresMouseDrag){
 					selectionRectRequiresMouseDrag = false;
-					docPanel.setFocusedObject(null);
+					selectionRectBeingResized = true;
 				}
 				setObjPlacementRequiresMouseDrag(false);
 				docPanel.repaintDoc();
@@ -364,8 +354,14 @@ public class DocMouseListener implements MouseInputListener{
 		
 		if (draggingObject)
 		{// A mathobject on the document is being shifted to a new location
-//			System.out.println("xOff: " + xBoxOffset + " yOff:  " + yBoxOffset);
 			try {
+				Page contactedPage = docPanel.getDoc().getPage( docPanel.panelPt2DocPt(e.getX(), e.getY()).getPage() ); 
+				if ( contactedPage != docPanel.getFocusedObject().getParentPage() )
+				{ // the mouse moved off of the page the object was on previously
+					docPanel.getFocusedObject().getParentPage().removeObject(docPanel.getFocusedObject());
+					docPanel.getFocusedObject().setParentPage(contactedPage);
+					contactedPage.addObject(docPanel.getFocusedObject());
+				}
 				MathObjectGUI.moveBoxToPoint(new Point (e.getX(), e.getY()),
 						docPanel.getFocusedObject(),
 						docPanel.getPageOrigin(docPanel.getFocusedObject().getParentPage()),
@@ -380,129 +376,180 @@ public class DocMouseListener implements MouseInputListener{
 		}
 		if (draggingDot || selectionRectBeingResized)
 		{// one of the dots of an object is being moved to make it larger or smaller
+			
+			MathObject objToResize = null;
+			if (draggingDot)
+			{// an object is focused and one of its resizing dots has been contacted
+				//resize the focues object
+				objToResize = docPanel.getFocusedObject();
+			}
+			else if ( selectionRectBeingResized)
+			{// the user drew a selection rectangle on the screen, resize the selection rectangle
+				objToResize = docPanel.getSelectionRect();
+			}
+			
+			Page pageOfResizeObject = objToResize.getParentPage();
+			Page contactedPage = null;
 			try {
-				if (selectionRectBeingResized){
-					System.out.println("being resized");
-					docPanel.setFocusedObject(docPanel.getSelectionRect());
-				}
-				
-				Page p = docPanel.getFocusedObject().getParentPage();
-				if ( ! docPt.isOutSidePage() && p == docPanel.getDoc().getPage(docPt.getPage())){
-					MathObjectGUI.moveResizeDot(docPanel.getFocusedObject(), currentDragDot,
-							docPt, this);
-					if (selectionRectBeingResized)
-					{//a special object that does note exist in the document was resized, it is used
-						//to select multiple objects at once and create groups
-						
-						//need to modify this code to take into account the current stacking of the objects
-						//large objects automatically cover up smaller ones using this system
-						docPanel.setSelectionRect((RectangleObject)docPanel.getFocusedObject());
-						docPanel.setFocusedObject(null);
-						Rectangle selectRect = docPanel.getSelectionRect().getBounds();
-						docPanel.resetTempGroup();
-						Grouping tempGroup = docPanel.getTempGroup();
-						tempGroup.setParentPage(docPanel.getSelectionRect().getParentPage());
-						Vector<MathObject> pageObjects = docPanel.getSelectionRect().getParentPage().getObjects();
-						for (MathObject mObj : pageObjects){
-							if (selectRect.intersects(mObj.getBounds()) &&
-									! tempGroup.getObjects().contains(mObj)){
-								tempGroup.addObjectFromPage(mObj);
-							}
-						}
-						if (tempGroup.getObjects().size() > 0)
-						{//an object was added
-							if (tempGroup.getObjects().size() == 1){// only one object was contacted, select it
-								docPanel.setFocusedObject(tempGroup.getObjects().get(0));
-								docPanel.repaintDoc();
-								return;
-							}
-							docPanel.getSelectionRect().getParentPage().addObject(tempGroup);
-							docPanel.setFocusedObject(tempGroup);
-						}
-						for (MathObject mObj : tempGroup.getObjects()){
-							mObj.getParentPage().removeObject(mObj);
-						}
-						
-					}
-					docPanel.repaintDoc();
-					
-					return;
-				}
-				else{
-					Point pageOrigin = docPanel.getPageOrigin(docPanel.getFocusedObject().getParentPage());
-					//flags to indicate that a position has not been assigned to the click
-					int xMouseRequest = Integer.MAX_VALUE;
-					int yMouseRequest = Integer.MAX_VALUE;
-					
-					if (e.getX() <= pageOrigin.getX())
-					{//event was to the left of the document, send an resize request with the edge of page
-						//and the events given y position
-						xMouseRequest = 0;
-					}
-					else if ( e.getX() >= pageOrigin.getX() + 
-							(int) (p.getWidth() * docPanel.getZoomLevel())){
-						xMouseRequest = p.getWidth();
-					}
-					
-					if (e.getY() <= pageOrigin.getY()){
-						yMouseRequest = 0;
-					}
-					
-					else if (e.getY() >= pageOrigin.getY() +
-							(int) (p.getHeight() * docPanel.getZoomLevel())){
-						yMouseRequest = p.getHeight();
-					}
-					
-					if (yMouseRequest == Integer.MAX_VALUE){
-						yMouseRequest = docPt.getyPos();
-					}
-					if (xMouseRequest == Integer.MAX_VALUE){
-						xMouseRequest = docPt.getxPos();
-					}
-					MathObjectGUI.moveResizeDot(docPanel.getFocusedObject(), currentDragDot,
-							new PointInDocument (1, xMouseRequest, yMouseRequest), this);
-					
-					if (selectionRectBeingResized)
-					{//a special object that does note exist in the document was resized, it is used
-						//to select multiple objects at once and create groups
-						
-						//need to modify this code to take into account the current stacking of the objects
-						//large objects automatically cover up smaller ones using this system
-						docPanel.setSelectionRect((RectangleObject)docPanel.getFocusedObject());
-						docPanel.setFocusedObject(null);
-						Rectangle selectRect = docPanel.getSelectionRect().getBounds();
-						docPanel.resetTempGroup();
-						Grouping tempGroup = docPanel.getTempGroup();
-						tempGroup.setParentPage(docPanel.getSelectionRect().getParentPage());
-						Vector<MathObject> pageObjects = docPanel.getSelectionRect().getParentPage().getObjects();
-						for (MathObject mObj : pageObjects){
-							if (selectRect.intersects(mObj.getBounds()) &&
-									! tempGroup.getObjects().contains(mObj)){
-								tempGroup.addObjectFromPage(mObj);
-							}
-						}
-						if (tempGroup.getObjects().size() > 0)
-						{//an object was added
-							if (tempGroup.getObjects().size() == 1){// only one object was contacted, select it
-								docPanel.setFocusedObject(tempGroup.getObjects().get(0));
-								docPanel.repaintDoc();
-								return;
-							}
-							docPanel.getSelectionRect().getParentPage().addObject(tempGroup);
-							docPanel.setFocusedObject(tempGroup);
-						}
-						for (MathObject mObj : tempGroup.getObjects()){
-							mObj.getParentPage().removeObject(mObj);
-						}
-						
-					}
-					docPanel.repaintDoc();
-				}
-						
+				contactedPage = docPanel.getDoc().getPage(docPt.getPage());
 			} catch (DocumentException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}	
+			}
+			
+			if ( ! docPt.isOutSidePage() && pageOfResizeObject == contactedPage){
+				
+				if (selectionRectBeingResized)
+				{//a special object that does note exist in the document was resized, it is used
+					//to select multiple objects at once and create groups
+					
+					MathObjectGUI.moveResizeDot(docPanel.getSelectionRect(), currentDragDot,
+							docPt, this);
+					adjustTempGroupSelection();
+				}
+				else{// a regular object was resized
+					MathObjectGUI.moveResizeDot(objToResize, currentDragDot,
+							docPt, this);
+				}
+				docPanel.repaintDoc();
+				return;
+			}
+			else
+			{// the mouse moved outside of the page where the object to resize resides
+				Point pageOrigin = null;
+				try {
+					pageOrigin = docPanel.getPageOrigin(objToResize.getParentPage());
+				} catch (DocumentException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				//flags to indicate that a position has not been assigned to the click
+				int xMouseRequest = Integer.MAX_VALUE;
+				int yMouseRequest = Integer.MAX_VALUE;
+				
+				if (e.getX() <= pageOrigin.getX())
+				{//event was to the left of the document, send an resize request with the edge of page
+					//and the events given y position
+					xMouseRequest = 0;
+				}
+				else if ( e.getX() >= pageOrigin.getX() + 
+						(int) (pageOfResizeObject.getWidth() * docPanel.getZoomLevel())){
+					xMouseRequest = pageOfResizeObject.getWidth();
+				}
+				
+				if (e.getY() <= pageOrigin.getY()){
+					yMouseRequest = 0;
+				}
+				
+				else if (e.getY() >= pageOrigin.getY() +
+						(int) (pageOfResizeObject.getHeight() * docPanel.getZoomLevel())){
+					yMouseRequest = pageOfResizeObject.getHeight();
+				}
+				
+				if (yMouseRequest == Integer.MAX_VALUE){
+					yMouseRequest = docPt.getyPos();
+				}
+				if (xMouseRequest == Integer.MAX_VALUE){
+					xMouseRequest = docPt.getxPos();
+				}
+				MathObjectGUI.moveResizeDot(objToResize, currentDragDot,
+						new PointInDocument (1, xMouseRequest, yMouseRequest), this);
+				
+				if (selectionRectBeingResized)
+				{//a special object that does note exist in the document was resized, it is used
+					//to select multiple objects at once and create groups
+					
+					adjustTempGroupSelection();
+					
+				}
+				docPanel.repaintDoc();
+			}
+		}
+	}
+	
+	private void adjustTempGroupSelection(){
+		//need to modify this code to take into account the current stacking of the objects
+		//large objects automatically cover up smaller ones using this system
+		Rectangle selectRect = docPanel.getSelectionRect().getBounds();
+		Grouping tempGroup = docPanel.getTempGroup();
+		Vector<MathObject> pageObjects = docPanel.getSelectionRect().getParentPage().getObjects();
+		
+		//temporary storage of objects that collide with the selection rectangle
+		Vector<MathObject> collisionObjects = new Vector<MathObject>();
+		
+		for (MathObject mObj : pageObjects)
+		{// find all of the bojects that were contated by the selection rectangle
+			if (selectRect.intersects(mObj.getBounds()))
+			{
+				collisionObjects.add(mObj);
+			}
+		}
+		
+		if (collisionObjects.size() == 0)
+		{// no objects were contacted
+			docPanel.ungroupTempGroup();
+			docPanel.setFocusedObject(null);
+			return;
+		}
+		
+		if (collisionObjects.size() == 1)
+		{// only one object was contacted
+			MathObject contactedObj = collisionObjects.get(0);
+			if (contactedObj.equals(docPanel.getFocusedObject()))
+			{//collision occurred with a single object already selected
+				;//do nothing
+				if (contactedObj != tempGroup){
+					collisionObjects.remove(contactedObj);
+					docPanel.repaint();
+					return;
+				}
+			}
+			else{
+				docPanel.setFocusedObject(contactedObj);
+				collisionObjects.remove(contactedObj);
+				return;
+			}
+		}
+		
+		if (collisionObjects.contains(tempGroup)){
+			MathObject mObj = null;
+			//need to make sure all of the objects in the group were contacted, otherwise remove them
+			for ( int i = 0; i < tempGroup.getObjects().size(); i++ ){
+				mObj = tempGroup.getObjects().get(i);
+				if ( ! selectRect.intersects(mObj.getBounds()) ){
+					tempGroup.removeObject(mObj);
+					tempGroup.getParentPage().addObject(mObj);
+					i--;
+				}
+			}
+			
+			// remove the temporary group from the contacted list, it now contains only elements that were
+			// in it before and were contacted by the current selection rectangle
+			collisionObjects.remove(tempGroup);
+		}
+		
+		//objects were selected, that have not been added to the temp group yet
+		
+		if (collisionObjects.size() > 0){
+			
+			tempGroup.setParentPage(collisionObjects.get(0).getParentPage());
+			collisionObjects.get(0).getParentPage().addObject(tempGroup);
+			for ( MathObject mObj : collisionObjects){
+				tempGroup.addObjectFromPage(mObj);
+				mObj.getParentPage().removeObject(mObj);
+			}
+			
+
+			
+			docPanel.setFocusedObject(tempGroup);
+		}
+		
+		if (tempGroup.getParentPage() != null){
+			if (tempGroup.getObjects().size() == 1)
+			{// there is one one object left in the temporary group
+				docPanel.setFocusedObject(tempGroup.getObjects().get(0));
+				docPanel.ungroupTempGroup();
+			}
 		}
 	}
 

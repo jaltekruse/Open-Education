@@ -80,19 +80,33 @@ public class Page implements MathObjectContainer{
 		
 //		Rectangle objRect = new Rectangle(mObj.getxPos(), mObj.getyPos(), mObj.getWidth(), mObj.getHeight());
 //		if (printablePage.contains(objRect)){
-//			objects.add(mObj);
+//		objects.add(mObj);
 //			return true;
 //		}
+		
 		if ( ! objects.contains(mObj)){
 			objects.add(mObj);
 		}
-		return true;
+
+		return false;
 		//throw error? the object would not fit within the printable page with the current position and dimensions
 	}
 	
 	public void bringObjectToFront(MathObject mObj){
 		objects.remove(mObj);
 		objects.add(mObj);
+	}
+	
+	public void shiftObjInFrontOfOther(MathObject toMove, MathObject toBeBehind){
+		objects.remove(toMove);
+		objects.add(objects.indexOf(toBeBehind), toMove);
+	}
+	
+	public boolean objInFrontOfOther(MathObject obj1, MathObject obj2){
+		if (objects.indexOf(obj1) > objects.indexOf(obj2)){
+			return true;
+		}
+		return false;
 	}
 	
 	public void sendObjectForward(MathObject mObj){

@@ -5,52 +5,94 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 
 import doc.Page;
+import doc_gui.DocumentException;
+import doc_gui.attributes.MathObjectAttribute;
 import doc_gui.attributes.StringAttribute;
 import expression.*;
 import expression.Number;
 
-public class ProblemObject extends Grouping {
+public class ProblemObject extends Grouping implements ProblemGenerator {
 	
-//	private Grouping groupOfObjects;
-	public static final String GENERATE_NEW = "Generate new problem";
-	public static final String GENERATE_LIST = "Generate list of problems";
+	public static final String REMOVE_PROBLEM = "Remove problem";
+	public static final String GENERATE_NEW = "Generate problems";
+	
+	public static final String SCRIPTS = "scripts";
+	
+	/*
+	 a = randomInt(5, 10);
+	 b=randomInt(2,5);
+	 d=randomInt(3,6);
+	 e=randomInt(3,9);
+	 p=2*(a*x-c) + 2*(d*x+e);
+	 */
 	private static final int bufferSpace = 20;
 	
 	public ProblemObject(Page p, int x, int y, int w, int h) {
 		super(p, x, y, w, h);
-		addAttribute(new StringAttribute("scripts"));
-		getAttributeWithName("scripts").setValue("");
+		addAttribute(new StringAttribute(SCRIPTS));
+		getAttributeWithName(SCRIPTS).setValue("");
 		removeAction(MathObject.MAKE_INTO_PROBLEM);
+		removeAction(Grouping.BRING_TO_LEFT);
+		removeAction(Grouping.BRING_TO_TOP);
+		removeAction(Grouping.BRING_TO_RIGHT);
+		removeAction(Grouping.BRING_TO_BOTTOM);
+		addAction(REMOVE_PROBLEM);
 		addAction(GENERATE_NEW);
-		addAction(GENERATE_LIST);
-		// TODO Auto-generated constructor stub
+
 	}
 	
 	public ProblemObject(Page p){
 		super(p);
-		addAttribute(new StringAttribute("scripts"));
-		getAttributeWithName("scripts").setValue("");
+		addAttribute(new StringAttribute(SCRIPTS));
+		getAttributeWithName(SCRIPTS).setValue("");
 		removeAction(MathObject.MAKE_INTO_PROBLEM);
+		removeAction(Grouping.BRING_TO_LEFT);
+		removeAction(Grouping.BRING_TO_TOP);
+		removeAction(Grouping.BRING_TO_RIGHT);
+		removeAction(Grouping.BRING_TO_BOTTOM);
+		addAction(REMOVE_PROBLEM);
 		addAction(GENERATE_NEW);
-		addAction(GENERATE_LIST);
 	}
 	
 	public ProblemObject() {
-		getAttributeWithName("scripts").setValue("");
+		getAttributeWithName(SCRIPTS).setValue("");
 		removeAction(MathObject.MAKE_INTO_PROBLEM);
+		removeAction(Grouping.BRING_TO_LEFT);
+		removeAction(Grouping.BRING_TO_TOP);
+		removeAction(Grouping.BRING_TO_RIGHT);
+		removeAction(Grouping.BRING_TO_BOTTOM);
+		addAction(REMOVE_PROBLEM);
 		addAction(GENERATE_NEW);
-		addAction(GENERATE_LIST);
 	}
 	
 	public String getScripts(){
-		return ((StringAttribute)getAttributeWithName("scripts")).getValue();
+		return ((StringAttribute)getAttributeWithName(SCRIPTS)).getValue();
 	}
 	
+	@Override
 	public void performSpecialObjectAction(String s) {
-		if (s.equals(GENERATE_NEW)){
-			getParentPage().addObject(generateProblem());
+		if (s.equals(REMOVE_PROBLEM)){
+			Object[] options = {"Continue", "Cancel"};
+			int n = JOptionPane.showOptionDialog(null,
+			    "This operation will ungroup the objects in this problem and\n" +
+			    "place them back on the page. It will also delete the problem's\n" +
+			    "script data.",
+			    "Revert a Problem",
+			    JOptionPane.YES_NO_CANCEL_OPTION,
+			    JOptionPane.WARNING_MESSAGE,
+			    null,
+			    options,
+			    options[1]);
+
+			if (n == 0){ 
+				this.unGroup();
+				this.getParentPage().removeObject(this);
+			}
 		}
-		if (s.equals(GENERATE_LIST)){
+		else if (s.equals(STORE_IN_DATABASE)){
+			getParentPage().getParentDoc().getDocViewerPanel().getNotebook().getDatabase().addGrouping(this);
+		}
+		else if (s.equals(GENERATE_NEW)){
 			int number = 0;
 			do {
 				String num = (String)JOptionPane.showInputDialog(
@@ -61,21 +103,26 @@ public class ProblemObject extends Grouping {
 						null,
 						null,
 						null);
+				if (num == null)
+				{// the user hit cancel or the exit button on the dialog
+					return;
+				}
 				try{
 					number = Integer.parseInt(num);
 				} catch ( Exception e){
 					JOptionPane.showMessageDialog(null,
-						    "Input must be an integer between 2 and 20",
+						    "Input must be an integer between 1 and 50",
 						    "Error",
 						    JOptionPane.ERROR_MESSAGE);
 				}
-				if (number < 2 && number > 20){
+				if (number < 1 || number > 50){
 					JOptionPane.showMessageDialog(null,
-						    "Input must be an integer between 2 and 20",
+						    "Input must be an integer between 1 and 50",
 						    "Error",
 						    JOptionPane.ERROR_MESSAGE);
 				}
-			} while ( number < 2 && number > 20);
+			} while ( number < 1 || number > 50);
+			
 			int greatestWidth = 0, greatestHeight = 0;
 			Vector<Grouping> newProblems = new Vector<Grouping>();
 			for (int i = 0; i < number; i++){
@@ -88,55 +135,67 @@ public class ProblemObject extends Grouping {
 					greatestHeight = newProb.getHeight();
 				}
 			}
-			int bufferspace = 15;
-			System.out.println("greatestWidth:" + greatestWidth);
-			int numColumns = (int) ( (getParentPage().getWidth()
-					- 2 * getParentPage().getxMargin()) / (greatestWidth + bufferSpace) );
+			int numColumns = ( (getParentPage().getWidth()
+					- 2 * getParentPage().getxMargin() - bufferSpace) / (greatestWidth + bufferSpace) );
+			int totalExtraSpace = ( (getParentPage().getWidth()
+					- 2 * getParentPage().getxMargin() - bufferSpace) % (greatestWidth + bufferSpace) );
+			
+			int extraColumnSpace = totalExtraSpace / (numColumns + 1);
 			int currColumn = 0;
-			int currYpos = getyPos() + getHeight() + bufferSpace;
+			int curryPos = getyPos() + getHeight() + bufferSpace;
+			Page currentPage = getParentPage();
+			
 			for (Grouping g : newProblems){
-				g.setxPos(getParentPage().getxMargin() + currColumn * (greatestWidth + bufferSpace));
-				g.setyPos(currYpos);
-				g.unGroup();
-//				getParentPage().addObject(g);
+				g.setxPos(currentPage.getxMargin() + bufferSpace + extraColumnSpace + 
+						currColumn * (greatestWidth + bufferSpace + extraColumnSpace));
+				g.setyPos(curryPos);
+				if ( ! g.isOnPage()){
+					System.out.println("not on page");
+					try {
+						if ( currentPage.getParentDoc().getNumPages() < currentPage.getParentDoc().getPageIndex(currentPage) + 2)
+						{// a new page must be added to add the objects
+							currentPage.getParentDoc().addBlankPage();
+							currentPage = currentPage.getParentDoc().getPage(currentPage.getParentDoc().getNumPages() - 1);
+							currentPage.getParentDoc().getDocViewerPanel().resizeViewWindow();
+						}
+						else
+						{// there is a next page on the document that the new objects can be added to
+							currentPage = currentPage.getParentDoc().getPage( currentPage.getParentDoc().getPageIndex(currentPage) + 1);
+						}
+						
+						curryPos = currentPage.getyMargin() + bufferSpace;
+						g.setyPos(curryPos);
+					} catch (DocumentException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				currentPage.addObject(g);
+				g.setParentPage(currentPage);
 				currColumn++;
 				if (currColumn > numColumns - 1){
-					currYpos += greatestHeight + bufferSpace;
+					curryPos += greatestHeight + bufferSpace;
 					currColumn = 0;
 				}
 			}
 
 		}
-		if (s.equals(STORE_IN_DATABASE)){
-			this.getParentPage().getParentDoc().docPanel.getNotebook().getDatabase().addGrouping(this);
-		}
 	}
 	
-	public Grouping generateProblem(){
-		System.out.println("yPos make new prob:" + getyPos());
+	public GeneratedProblem generateProblem(){
 		Grouping newProblem = new Grouping(getParentPage(), getxPos(),
 				getyPos() + getHeight() + bufferSpace, getWidth(), getHeight());
-		System.out.println("width Prob:" + getWidth());
-		System.out.println("yPos new prob:" + newProblem.getyPos());
 		String scriptsString = getScripts();
-		Vector<String> scripts = new Vector<String>();
-		int lastEnd = 0;
-		for (int i = 0; i < scriptsString.length(); i++){
-			if (scriptsString.charAt(i) == ';'){
-				scripts.add(scriptsString.substring(lastEnd, i));
-				lastEnd = i + 1;
-			}
-			else if ( i == scriptsString.length() - 1){
-				scripts.add(scriptsString.substring(lastEnd, i + 1));
-			}
-		}
+		String[] scripts = scriptsString.split(";");
 		Node n =  null;
 		Vector<String> varNames = new Vector<String>();
 		Vector<Number> varVals = new Vector<Number>();
 		for (String str : scripts){
-			System.out.println("script:" + str );
+			if (str == null || str.equals("")){
+				continue;
+			}
 			try {
-				n = n.parseNode(str);
+				n = Node.parseNode(str);
 				
 				//sub in variables already assigned in previous scripts
 				for ( int i = 0 ; i < varNames.size(); i++){
@@ -150,17 +209,21 @@ public class ProblemObject extends Grouping {
 					if (ex.getOperator() instanceof Operator.Equals){
 						if (ex.getChild(0) instanceof Identifier){
 							Identifier var = (Identifier)ex.getChild(0);
+							System.out.println("found var " + ex.getChild(1).toStringRepresentation());
 							if (ex.getChild(1) instanceof Number){
-								System.out.println("add var");
 								varNames.add(var.getIdentifier());
 								varVals.add((Number) ex.getChild(1));
+								System.out.println(var.getIdentifier() 
+										+ " = " + ex.getChild(1).toStringRepresentation());
 							}
 						}
 					}
 				}
 			} catch (NodeException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				JOptionPane.showMessageDialog(null,
+					    "Error generating a problem, check scripts.",
+					    "Error",
+					    JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		
@@ -168,17 +231,12 @@ public class ProblemObject extends Grouping {
 		Node expression;
 		Character prevChar, postChar;
 		
-		for (MathObject mathObj : getObjects()){
-			mathObj.setxPos(getxPos() + (int) Math.round(mathObj.getxPos()/1000.0 * getWidth()) );
-			mathObj.setyPos(getyPos() + (int) Math.round(mathObj.getyPos()/1000.0 * getHeight()) );
-			mathObj.setWidth((int) Math.round(mathObj.getWidth()/1000.0 * getWidth()) );
-			mathObj.setHeight((int) Math.round(mathObj.getHeight()/1000.0 * getHeight()) );
-		}
-		
 		MathObject newObj;
 		
 		for (MathObject mObj : getObjects()){
 			newObj = mObj.clone();
+			newObj.setParentPage(mObj.getParentPage());
+			mObj.getParentPage().addObject(newObj);
 			if ( newObj instanceof ExpressionObject){
 				exString = ((ExpressionObject)newObj).getExpression();
 				try {
@@ -188,11 +246,8 @@ public class ProblemObject extends Grouping {
 						expression = expression.replace(varNames.get(i), varVals.get(i));
 						((ExpressionObject)newObj).setExpression(expression.toString());
 					}
-				} catch (NodeException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (AttributeException e) {
-					// TODO Auto-generated catch block
+				} catch (Exception e) {
+					
 					e.printStackTrace();
 				}
 			
@@ -230,7 +285,6 @@ public class ProblemObject extends Grouping {
 					}
 				}
 				try {
-					System.out.println(textString);
 					((TextObject) newObj).setText(textString);
 				} catch (AttributeException e) {
 					// TODO Auto-generated catch block
@@ -243,18 +297,25 @@ public class ProblemObject extends Grouping {
 			
 			//expressions can change their bounds when the random values are substituted in
 			//this line set the bounds to the actual space it takes to render them
-			getParentPage().getParentDoc().docPanel.drawObjectInBackgorund(newObj);
+			getParentPage().getParentDoc().getDocViewerPanel().drawObjectInBackgorund(newObj);
 			newProblem.addObjectFromPage(newObj);
+			newObj.getParentPage().removeObject(newObj);
 		}
-		
-		for (MathObject mathObj : getObjects()){
-			mathObj.setWidth( (int) ((double)mathObj.getWidth()/getWidth() * 1000) );
-			mathObj.setHeight( (int) ((double)mathObj.getHeight()/getHeight() * 1000) );
-			mathObj.setxPos( (int) ( ((double) mathObj.getxPos() - getxPos())/getWidth() * 1000) );
-			mathObj.setyPos( (int) ( ((double) mathObj.getyPos() - getyPos())/getHeight() * 1000) );
+
+		return new GeneratedProblem(newProblem.getParentPage(), this, newProblem);
+	}
+	
+	@Override
+	public ProblemObject clone() {
+		ProblemObject o = new ProblemObject(getParentPage());
+		o.removeAllAttributes();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			o.addAttribute( mAtt.clone());
 		}
-		
-		return newProblem;
+		for ( MathObject mObj : getObjects()){
+			o.addObjectFromPage(mObj);
+		}
+		return o;
 	}
 
 	@Override

@@ -32,6 +32,7 @@ public class UnaryExpression extends Expression {
 	}
 	
 	
+	@Override
 	public Expression eval() throws EvalException{
 		if(child != null){
 			
@@ -70,6 +71,7 @@ public class UnaryExpression extends Expression {
 		throw new EvalException("a unary operator did not have a value");
 	}
 	
+	@Override
 	public String toString(){
 		String result = new String();
 //		System.out.println("op:");

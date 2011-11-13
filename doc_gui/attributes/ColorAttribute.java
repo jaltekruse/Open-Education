@@ -3,7 +3,6 @@ package doc_gui.attributes;
 import java.awt.Color;
 import java.util.StringTokenizer;
 
-import doc.GridPoint;
 import doc.mathobjects.AttributeException;
 
 public class ColorAttribute extends MathObjectAttribute<Color> {
@@ -22,6 +21,7 @@ public class ColorAttribute extends MathObjectAttribute<Color> {
 		return COLOR_ATTRIBUTE;
 	}
 	
+	@Override
 	public String export(){
 		String s = "<" + getType() + " name=\"" + getName()
 		+ "\" value=\"";

@@ -45,6 +45,7 @@ public abstract class ExpressionGraphic extends NodeGraphic<Expression> {
 		return null;
 	}
 
+	@Override
 	void shiftToX1(int x1) {
 		int xChange = x1 - getX1();
 		for (NodeGraphic vg : getComponents()){
@@ -56,6 +57,7 @@ public abstract class ExpressionGraphic extends NodeGraphic<Expression> {
 		setX1(x1);
 	}
 
+	@Override
 	void shiftToY1(int y1) {
 		int yChange = y1 - getY1();
 		for (NodeGraphic vg : getComponents()){

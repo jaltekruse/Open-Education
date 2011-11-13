@@ -14,6 +14,8 @@ import java.awt.Dimension;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.JApplet;
 
@@ -47,7 +49,7 @@ public class OpenNotebook extends JApplet{
 		//be used, so users will enter data like subjects covered, author, and modification date into a dialog
 		//this data can be stored on the back-end and then the back-end data can be passed into the classes to
 		//actually render the document
-		addContents(this.getContentPane(), this);
+//		addContents(this.getContentPane(), this);
 		database = new DatabaseOfGroupedObjects();
 	}
 	
@@ -65,7 +67,70 @@ public class OpenNotebook extends JApplet{
 		application.setJMenuBar(new NotebookMenuBar(notebook));
 		Dimension frameDim = new Dimension(1000, 600);
 		application.setPreferredSize(frameDim);
-		application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		// TODO check to see if user wants to save
+		application.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		
+		application.addWindowListener(new WindowListener(){
+
+			@Override
+			public void windowActivated(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				Object[] options = {"Close", "Cancel"};
+				int n = JOptionPane.showOptionDialog(application,
+				    "If you have any unsaved changes they will be lost.\n" +
+				    "Would you like to continue closing?",
+				    "Mode Seletion",
+				    JOptionPane.YES_NO_CANCEL_OPTION,
+				    JOptionPane.QUESTION_MESSAGE,
+				    null,
+				    options,
+				    options[1]);
+
+				if (n == 0){ 
+					application.dispose();
+				}
+				else{
+				}
+			}
+
+			@Override
+			public void windowDeactivated(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowDeiconified(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowIconified(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void windowOpened(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		
 		Object[] options = {"Student", "Teacher"};
 		int n = JOptionPane.showOptionDialog(application,
@@ -107,7 +172,7 @@ public class OpenNotebook extends JApplet{
 			}
 		});
 	}
-
+	
 	public void setInStudentMode(boolean b) {
 		inStudentMode = b;
 		if (application == null){

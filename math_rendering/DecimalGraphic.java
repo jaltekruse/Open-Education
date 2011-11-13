@@ -11,14 +11,8 @@ package math_rendering;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.util.Vector;
-
-import math_rendering.FractionGraphic.Style;
-
-import tree.Decimal;
-import tree.Expression;
 
 import expression.Number;
 
@@ -51,6 +45,7 @@ public class DecimalGraphic extends NodeGraphic<Number> {
 				getX1(), getY1(), getX2() - getX1(), getY2() - getY1());
 	}
 	
+	@Override
 	public void drawCursor(){
 		
 		int xPos = findCursorXPos();
@@ -60,6 +55,7 @@ public class DecimalGraphic extends NodeGraphic<Number> {
 		
 	}
 	
+	@Override
 	public int getMaxCursorPos(){
 		return getValue().toString().length();
 	}
@@ -71,6 +67,7 @@ public class DecimalGraphic extends NodeGraphic<Number> {
 				numberString.substring(0, super.getRootNodeGraphic().getCursor().getPos()));
 	}
 	
+	@Override
 	public void setCursorPos(int xPixelPos){
 		
 		String numberString = getValue().toString();
@@ -114,6 +111,7 @@ public class DecimalGraphic extends NodeGraphic<Number> {
 		}
 	}
 	
+	@Override
 	public void moveCursorWest(){
 		if (super.getRootNodeGraphic().getCursor().getPos() > 0){
 			super.getRootNodeGraphic().getCursor().setPos( super.getRootNodeGraphic().getCursor().getPos() - 1); 
@@ -131,6 +129,7 @@ public class DecimalGraphic extends NodeGraphic<Number> {
 		}
 	}
 	
+	@Override
 	public void moveCursorEast(){
 		if (super.getRootNodeGraphic().getCursor().getPos() < getValue().toString().length()){
 			super.getRootNodeGraphic().getCursor().setPos( super.getRootNodeGraphic().getCursor().getPos() + 1); 
@@ -148,6 +147,7 @@ public class DecimalGraphic extends NodeGraphic<Number> {
 		}
 	}
 	
+	@Override
 	public void moveCursorNorth(){
 		if (getNorth() == null)
 		{
@@ -161,6 +161,7 @@ public class DecimalGraphic extends NodeGraphic<Number> {
 		}
 	}
 	
+	@Override
 	public void moveCursorSouth(){
 		if (getSouth() == null)
 		{
@@ -174,18 +175,21 @@ public class DecimalGraphic extends NodeGraphic<Number> {
 		}
 	}
 	
+	@Override
 	public void sendCursorInFromEast(int yPos, NodeGraphic vg)
 	{
 		super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 		super.getRootNodeGraphic().getCursor().setPos(getMaxCursorPos() - 1);
 	}
 	
+	@Override
 	public void sendCursorInFromWest(int yPos, NodeGraphic vg)
 	{
 		super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 		super.getRootNodeGraphic().getCursor().setPos(1);
 	}
 
+	@Override
 	public void sendCursorInFromNorth(int xPos, NodeGraphic vg){
 //		super.getCompExGraphic().getCursor().setValueGraphic(this);
 		setCursorPos(xPos);
@@ -193,6 +197,7 @@ public class DecimalGraphic extends NodeGraphic<Number> {
 				super.getRootNodeGraphic().getCursor().getValueGraphic().getValue().toString());
 	}
 	
+	@Override
 	public void sendCursorInFromSouth(int xPos, NodeGraphic vg){
 //		super.getCompExGraphic().getCursor().setValueGraphic(this);
 		setCursorPos(xPos);
@@ -203,8 +208,12 @@ public class DecimalGraphic extends NodeGraphic<Number> {
 		// TODO right now prints toString representation, need to make horizonal, and slash representations soon
 		g.setFont(f);
 		setFont(f);
+<<<<<<< HEAD
 		String s = getValue().toString();
 		System.out.println("request size dec:" + s);
+=======
+		String s = getValue().toStringRepresentation();
+>>>>>>> newParser
 		int[] size = new int[2];
 		size[0] = getRootNodeGraphic().getStringWidth(s, f);
 		size[1] = getRootNodeGraphic().getFontHeight(f);

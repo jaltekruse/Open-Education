@@ -3,27 +3,42 @@ package doc.mathobjects;
 import java.awt.Rectangle;
 import java.util.Vector;
 
-import doc.Document;
 import doc.MathObjectContainer;
 import doc.Page;
+import doc_gui.attributes.Date;
+import doc_gui.attributes.DateAttribute;
+import doc_gui.attributes.IntegerAttribute;
 import doc_gui.attributes.MathObjectAttribute;
 import doc_gui.attributes.StringAttribute;
 
 public class Grouping extends MathObject implements MathObjectContainer{
 	
 	private Vector<MathObject> objects;
+	private Vector<DecimalRectangle> objectBounds;
+	
+	public static final String DATE = "date";
+	public static final String TAGS = "tags(separate by commas)";
+	public static final String AUTHOR = "author";
+	public static final String NAME = "group name"; 
+	
 	public static final String STORE_IN_DATABASE = "Store in Database";
 	public static final String BRING_TO_LEFT = "Bring all to Left";
+	public static final String BRING_TO_RIGHT = "Bring all to Right";
 	public static final String BRING_TO_TOP = "Bring all to Top";
+	public static final String BRING_TO_BOTTOM = "Bring all to Bottom";
 
 	public Grouping(){
 		objects = new Vector<MathObject>();
+		objectBounds = new Vector<DecimalRectangle>();
+		addMoreAttributes();
 		addAction(MathObject.MAKE_INTO_PROBLEM);
 		addAction(STORE_IN_DATABASE);
 		addAction(BRING_TO_LEFT);
+		addAction(BRING_TO_RIGHT);
 		addAction(BRING_TO_TOP);
-//		setDate("");
-//		setAuthor("");
+		addAction(BRING_TO_BOTTOM);
+		setDate(new Date());
+		setAuthor("");
 		setTags("");
 		setName("");
 	}
@@ -31,12 +46,16 @@ public class Grouping extends MathObject implements MathObjectContainer{
 	public Grouping(Page p, int x, int y, int w, int h) {
 		super(p, x, y, w, h);
 		objects = new Vector<MathObject>();
+		objectBounds = new Vector<DecimalRectangle>();
+		addMoreAttributes();
 		addAction(MathObject.MAKE_INTO_PROBLEM);
 		addAction(STORE_IN_DATABASE);
 		addAction(BRING_TO_LEFT);
+		addAction(BRING_TO_RIGHT);
 		addAction(BRING_TO_TOP);
-//		setDate("");
-//		setAuthor("");
+		addAction(BRING_TO_BOTTOM);
+		setDate(new Date());
+		setAuthor("");
 		setTags("");
 		setName("");
 	}
@@ -44,55 +63,96 @@ public class Grouping extends MathObject implements MathObjectContainer{
 	public Grouping(Page p){
 		super(p);
 		objects = new Vector<MathObject>();
+		objectBounds = new Vector<DecimalRectangle>();
+		addMoreAttributes();
 		addAction(MathObject.MAKE_INTO_PROBLEM);
 		addAction(STORE_IN_DATABASE);
 		addAction(BRING_TO_LEFT);
+		addAction(BRING_TO_RIGHT);
 		addAction(BRING_TO_TOP);
-//		setDate("");
-//		setAuthor("");
+		addAction(BRING_TO_BOTTOM);
+		setDate(new Date());
+		setAuthor("");
 		setTags("");
 		setName("");
 	}
 
 	@Override
 	public void addDefaultAttributes() {
-		addAttribute(new StringAttribute("group name"));
-//		addAttribute(new StringAttribute("author"));
-//		addAttribute(new StringAttribute("date(dd/mm/yy)"));
-		addAttribute(new StringAttribute("tags(separate by commas)"));
-		
+
 	}
 	
+	public void addMoreAttributes(){
+		MathObjectAttribute name = new StringAttribute(NAME);
+		name.setUserEditable(false);
+		addAttribute(name);
+		MathObjectAttribute tags = new StringAttribute(TAGS);
+		tags.setUserEditable(false);
+		addAttribute(tags);
+		MathObjectAttribute author = new StringAttribute(AUTHOR);
+		author.setUserEditable(false);
+		addAttribute(author);
+		MathObjectAttribute date = new DateAttribute(DATE);
+		date.setUserEditable(false);
+		addAttribute(date);
+	}
+	
+	@Override
 	public void performSpecialObjectAction(String s) {
 		if (s.equals(MathObject.MAKE_INTO_PROBLEM)){
 			ProblemObject newProblem = new ProblemObject(getParentPage(), getxPos(),getyPos(),
 					getWidth(), getHeight());
 			
 			//this group might be the temporary one in the docViewerPanel, so just reset it
-			this.getParentPage().getParentDoc().docPanel.setTempGroup(new Grouping(new Page(new Document(""))));
-			this.getParentPage().getParentDoc().docPanel.setFocusedObject(newProblem);
+			this.getParentPage().getParentDoc().getDocViewerPanel().resetTempGroup();
+			this.getParentPage().getParentDoc().getDocViewerPanel().setFocusedObject(newProblem);
 
 			newProblem.setObjects(getObjects());
+			newProblem.setObjectBounds(getObjectBounds());
 			getParentPage().addObject(newProblem);
 			getParentPage().removeObject(this);
 		}
 		else if (s.equals(STORE_IN_DATABASE)){
-			this.getParentPage().getParentDoc().docPanel.getNotebook().getDatabase().addGrouping(this);
+			this.getParentPage().getParentDoc().getDocViewerPanel().getNotebook().getDatabase().addGrouping(this);
 		}
 		else if (s.equals(BRING_TO_LEFT)){
 			for (MathObject mObj  : getObjects()){
-				mObj.setxPos(0);
+				mObj.setxPos(getxPos());
 			}
 			adjustSizeToFixChildren();
 		}
 		else if (s.equals(BRING_TO_TOP)){
 			for (MathObject mObj  : getObjects()){
-				mObj.setyPos(0);
+				mObj.setyPos(getyPos());
+			}
+			adjustSizeToFixChildren();
+		}
+		else if (s.equals(BRING_TO_RIGHT)){
+			for (MathObject mObj  : getObjects()){
+				mObj.setxPos(getxPos() + getWidth() - mObj.getWidth());
+			}
+			adjustSizeToFixChildren();
+		}
+		else if (s.equals(BRING_TO_BOTTOM)){
+			for (MathObject mObj  : getObjects()){
+				mObj.setyPos(getyPos() + getHeight() - mObj.getHeight());
 			}
 			adjustSizeToFixChildren();
 		}
 	}
 	
+	@Override
+	public Grouping clone() {
+		Grouping o = new Grouping(getParentPage());
+		o.removeAllAttributes();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			o.addAttribute( mAtt.clone());
+		}
+		for ( MathObject mObj : getObjects()){
+			o.addObjectFromPage(mObj.clone());
+		}
+		return o;
+	}
 
 	@Override
 	public String getType() {
@@ -100,35 +160,35 @@ public class Grouping extends MathObject implements MathObjectContainer{
 	}
 	
 	public void setName(String s){
-		getAttributeWithName("group name").setValue(s);
+		getAttributeWithName(NAME).setValue(s);
 	}
 	
 	public String getName(){
-		return ((StringAttribute) getAttributeWithName("group name")).getValue();
+		return ((StringAttribute) getAttributeWithName(NAME)).getValue();
 	}
 	
 	public void setAuthor(String s){
-		getAttributeWithName("author").setValue(s);
+		getAttributeWithName(AUTHOR).setValue(s);
 	}
 	
 	public String getAuthor(){
-		return ((StringAttribute) getAttributeWithName("author")).getValue();
+		return ((StringAttribute) getAttributeWithName(AUTHOR)).getValue();
 	}
 	
-	public void setDate(String s){
-		getAttributeWithName("date(dd/mm/yy)").setValue(s);
+	public void setDate(Date d){
+		getAttributeWithName(DATE).setValue(d);
 	}
 	
-	public String getDate(){
-		return ((StringAttribute) getAttributeWithName("date(dd/mm/yy)")).getValue();
+	public Date getDate(){
+		return ((DateAttribute) getAttributeWithName(DATE)).getValue();
 	}
 	
 	public void setTags(String s){
-		getAttributeWithName("tags(separate by commas)").setValue(s);
+		getAttributeWithName(TAGS).setValue(s);
 	}
 	
 	public String getTags(){
-		return ((StringAttribute) getAttributeWithName("tags(separate by commas)")).getValue();
+		return ((StringAttribute) getAttributeWithName(TAGS)).getValue();
 	}
 
 	public void setObjects(Vector<MathObject> objects) {
@@ -164,12 +224,10 @@ public class Grouping extends MathObject implements MathObjectContainer{
 	}
 
 	public void adjustSizeToFixChildren(){
-		Vector<MathObject> temp = new Vector<MathObject>();
-		convertPositionsToPage();
-		for (MathObject mObj : getObjects()){
-			temp.add(mObj.clone());
-		}
-		getObjects().removeAllElements();
+		Vector<MathObject> temp = getObjects();
+		objects = new Vector<MathObject>();
+		objectBounds = new Vector<DecimalRectangle>();
+		objectBounds.removeAllElements();
 		for (MathObject mObj : temp){
 			addObjectFromPage(mObj);
 		}
@@ -177,7 +235,8 @@ public class Grouping extends MathObject implements MathObjectContainer{
 	}
 	
 	public boolean addObjectFromPage(MathObject mObj){
-		if (this.getParentPage() != mObj.getParentPage()){
+		if (this.getParentPage() != mObj.getParentPage())
+		{// cannot add object from another page
 			return false;
 		}
 		if (objects.size() == 0){
@@ -188,11 +247,10 @@ public class Grouping extends MathObject implements MathObjectContainer{
 			
 			//positions of objects within Groups are relative to the group origin
 			//and saved in a fraction of the total width/height, instead of number of pixels
-			mObj.setxPos(0);
-			mObj.setyPos(0);
-			mObj.setWidth(1000);
-			mObj.setHeight(1000);
+			objectBounds.add(new DecimalRectangle(0,0,1,1));
+//			getParentPage().shiftObjInFrontOfOther(this, mObj);
 			objects.add(mObj);
+			getParentPage().removeObject(mObj);
 			return true;
 		}
 		Rectangle objRect = new Rectangle(mObj.getxPos(), mObj.getyPos(), mObj.getWidth(), mObj.getHeight());
@@ -200,53 +258,85 @@ public class Grouping extends MathObject implements MathObjectContainer{
 		if (groupRect.contains(objRect))
 		{//the object fits into the current group rectangle, it must be added and have its position/size adjusted
 			//so it is relative to the size of the group
-			mObj.setWidth( (int) ((double)mObj.getWidth()/getWidth() * 1000) );
-			mObj.setHeight( (int) ((double)mObj.getHeight()/getHeight() * 1000) );
-			mObj.setxPos( (int) ( ((double) mObj.getxPos() - getxPos())/getWidth() * 1000) );
-			mObj.setyPos( (int) ( ((double) mObj.getyPos() - getyPos())/getHeight() * 1000) );
+			objectBounds.add(new DecimalRectangle(
+					((double) mObj.getxPos() - getxPos())/getWidth(),
+					((double) mObj.getyPos() - getyPos())/getHeight(),
+					(double)mObj.getWidth()/getWidth(),
+					(double)mObj.getHeight()/getHeight() ) );
 			objects.add(mObj);
 			return true;
 		}
-		else{
-			int oldx = getxPos();
-			int oldy = getyPos();
-			int oldWidth = getWidth();
-			int oldHeight = getHeight();
+		else
+		{// the new object is outside of the groups bounds
 			
-			//converts objects back to their on page positions
-			convertPositionsToPage();
+			//need to temporarily store the currently grouped objects
+			//to prevent them from being resized with the calls to setWidth
+			// which adjusts the size of the child objects as a side effect
 			
-			if ( mObj.getxPos() < oldx){
+			//they will be added back after the group is resized to accommodate
+			//the new object that was outside of the groups bounds
+			Vector<MathObject> oldObjects = objects;
+			objects = new Vector<MathObject>();
+			objectBounds = new Vector<DecimalRectangle>();
+			
+			//add additional height or width to the group if the object is outside
+
+			if ( mObj.getxPos() < getxPos()){
+
+				setWidth( getWidth() + getxPos() - mObj.getxPos());
 				setxPos(mObj.getxPos());
-				setWidth( getWidth() + oldx - mObj.getxPos());
+				
 			}
 			if (mObj.getxPos() + mObj.getWidth() > getxPos() + getWidth()){
 				setWidth( mObj.getxPos() + mObj.getWidth() - getxPos());
 			}
-			if ( mObj.getyPos() < oldy){
+
+			if ( mObj.getyPos() <  getyPos()){
+				setHeight( getHeight() +  getyPos() - mObj.getyPos());
 				setyPos(mObj.getyPos());
-				setHeight( getHeight() + oldy - mObj.getyPos());
 			}
 			if (mObj.getyPos() + mObj.getHeight() > getyPos() + getHeight()){
 				setHeight( mObj.getyPos() + mObj.getHeight() - getyPos());
 			}
 			
-			objects.add(mObj);
+			for (MathObject mathObj : oldObjects){
+				objects.add(mathObj);
+				DecimalRectangle temp = new DecimalRectangle(
+						((double) mathObj.getxPos() - getxPos())/getWidth(),
+						((double) mathObj.getyPos() - getyPos())/getHeight(),
+						(double)mathObj.getWidth()/getWidth(),
+						(double)mathObj.getHeight()/getHeight() );
+
+				objectBounds.add(temp);
+			}
 			
-			convertPositionsGroupRelative();
+
+			objectBounds.add(new DecimalRectangle(
+					((double) mObj.getxPos() - getxPos())/getWidth(),
+					((double) mObj.getyPos() - getyPos())/getHeight(),
+					(double)mObj.getWidth()/getWidth(),
+					(double)mObj.getHeight()/getHeight() ) );
+			objects.add(mObj);
+
 			return true;
 		}
 	}
 	
+	public void removeObject(MathObject mObj){
+		if ( ! objects.contains(mObj)){
+			return;
+		}
+		objectBounds.remove(objects.indexOf(mObj));
+		objects.remove(mObj);
+		adjustSizeToFixChildren();
+	}
+	
 	public void unGroup(){
-		//converts objects back to their on page positions, add them to the page
-		convertPositionsToPage();
 		
 		for (MathObject mathObj : objects){
 			getParentPage().addObject(mathObj);
 			mathObj.setParentPage(getParentPage());
 		}
-		
 		
 		//note, this method does not remove the group from the page, it must be done externally
 	}
@@ -262,6 +352,7 @@ public class Grouping extends MathObject implements MathObjectContainer{
 		String output = "";
 		output += "<" + getType() + ">\n";
 		for (MathObjectAttribute mAtt : getAttributes()){
+			System.out.println("attribute name: " + mAtt.getName());
 			output += mAtt.export();
 		}
 		for (MathObject mObj : getObjects()){
@@ -282,6 +373,77 @@ public class Grouping extends MathObject implements MathObjectContainer{
 	public boolean removeAllObjects() {
 		// TODO Auto-generated method stub
 		objects = new Vector<MathObject>();
+		objectBounds = new Vector<DecimalRectangle>();
 		return true;
+	}
+	
+	/**
+	 * This method is sued to move or resize all of the child object in a group after a corresponding
+	 * change to the group is made. This is not a method for adjusting the group size after child
+	 * objects have been modified and possibly been moved outside of the group.
+	 */
+	private void adjustChildrenToGroupChange(){
+		int index = 0;
+		DecimalRectangle tempBounds;
+		for (MathObject mathObj : objects){
+			tempBounds = objectBounds.get(index);
+			mathObj.setxPos(getxPos() + (int) Math.round(tempBounds.getX() * getWidth()) );
+			mathObj.setyPos(getyPos() + (int) Math.round(tempBounds.getY() * getHeight()) );
+			mathObj.setWidth((int) Math.round(tempBounds.getWidth() * getWidth()) );
+			mathObj.setHeight((int) Math.round(tempBounds.getHeight() * getHeight()) );
+			index++;
+		}
+	}
+	
+	@Override
+	public void setWidth(int width) {
+		getAttributeWithName(WIDTH).setValue(width);
+		adjustChildrenToGroupChange();
+	}
+
+	@Override
+	public int getWidth() {
+		return ((IntegerAttribute)getAttributeWithName(WIDTH)).getValue();
+	}
+
+	@Override
+	public void setHeight(int height) {
+		getAttributeWithName(HEIGHT).setValue(height);
+		adjustChildrenToGroupChange();
+	}
+
+	@Override
+	public int getHeight() {
+		return ((IntegerAttribute)getAttributeWithName(HEIGHT)).getValue();
+	}
+
+	@Override
+	public void setxPos(int xPos) {
+		getAttributeWithName(X_POS).setValue(xPos);
+		adjustChildrenToGroupChange();
+	}
+
+	@Override
+	public int getxPos() {
+		return ((IntegerAttribute)getAttributeWithName(X_POS)).getValue();
+	}
+
+	@Override
+	public void setyPos(int yPos) {
+		getAttributeWithName(Y_POS).setValue(yPos);
+		adjustChildrenToGroupChange();
+	}
+
+	@Override
+	public int getyPos() {
+		return ((IntegerAttribute)getAttributeWithName(Y_POS)).getValue();
+	}
+
+	public void setObjectBounds(Vector<DecimalRectangle> objectBounds) {
+		this.objectBounds = objectBounds;
+	}
+
+	public Vector<DecimalRectangle> getObjectBounds() {
+		return objectBounds;
 	}
 }

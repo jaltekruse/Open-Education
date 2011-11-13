@@ -33,17 +33,20 @@ public class Decimal extends Number
 		value = num;
 	}
 	
+	@Override
 	public Number eval()
 	{
 		return this;
 	}
 	
+	@Override
 	public String toString()
 	{
 		return "" + value;
 	}
 
 	
+	@Override
 	public Expression multiply(Expression e) throws EvalException
 	{
 		if (e instanceof Decimal)
@@ -69,6 +72,7 @@ public class Decimal extends Number
 		}
 	}
 
+	@Override
 	public Expression add(Expression e) throws EvalException
 	{
 		if (e instanceof Decimal)
@@ -94,6 +98,7 @@ public class Decimal extends Number
 		}
 	}
 	
+	@Override
 	public Expression subtract(Expression e) throws EvalException
 	{
 		if (e instanceof Decimal)
@@ -119,6 +124,7 @@ public class Decimal extends Number
 		}
 	}
 
+	@Override
 	public Expression divide(Expression e) throws EvalException
 	{
 		if (e instanceof Decimal)
@@ -144,6 +150,7 @@ public class Decimal extends Number
 		}
 	}
 
+	@Override
 	public Expression power(Expression e) throws EvalException
 	{
 		if (e instanceof Decimal)
@@ -272,6 +279,7 @@ public class Decimal extends Number
 		return new Decimal(Math.log(value));
 	}
 	
+	@Override
 	public Expression absoluteValue() throws EvalException{
 		return new Decimal(Math.abs(value));
 	}

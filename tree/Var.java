@@ -54,6 +54,7 @@ public class Var extends Expression implements ValueWithName {
 		return value;
 	}
 	
+	@Override
 	public String toString() {
 		String varInfo = new String();
 		varInfo += name;
@@ -100,30 +101,35 @@ public class Var extends Expression implements ValueWithName {
 		value = (Number) value.add(new Decimal(d));
 	}
 
+	@Override
 	public Expression add(Expression e) throws EvalException
 	{
 		syncValWithVarstorage();
 		return value.add(e);
 	}
 
+	@Override
 	public Expression subtract(Expression e) throws EvalException
 	{
 		syncValWithVarstorage();
 		return value.subtract(e);
 	}
 	
+	@Override
 	public Expression multiply(Expression e) throws EvalException
 	{
 		syncValWithVarstorage();
 		return value.multiply(e);
 	}
 	
+	@Override
 	public Expression divide(Expression e) throws EvalException
 	{
 		syncValWithVarstorage();
 		return value.divide(e);
 	}
 
+	@Override
 	public Expression power(Expression e) throws EvalException
 	{
 		syncValWithVarstorage();
@@ -207,6 +213,7 @@ public class Var extends Expression implements ValueWithName {
 		return value.natLog();
 	}
 	
+	@Override
 	public Expression absoluteValue() throws EvalException
 	{
 		syncValWithVarstorage();

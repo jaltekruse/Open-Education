@@ -2,6 +2,7 @@ package doc.mathobjects;
 
 import doc.GridPoint;
 import doc.Page;
+import doc_gui.attributes.MathObjectAttribute;
 
 public class ConnectedDrawing extends MathObject {
 
@@ -26,6 +27,17 @@ public class ConnectedDrawing extends MathObject {
 	public String getType() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public ConnectedDrawing clone() {
+		// TODO Auto-generated method stub
+		ConnectedDrawing o = new ConnectedDrawing(getParentPage());
+		o.removeAllAttributes();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			o.addAttribute( mAtt.clone());
+		}
+		return o;
 	}
 
 }

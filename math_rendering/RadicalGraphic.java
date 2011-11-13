@@ -53,6 +53,7 @@ public class RadicalGraphic extends UnaryExpressionGraphic {
 		super.getRootNodeGraphic().getGraphics().setStroke(new BasicStroke());
 	}
 	
+	@Override
 	public void drawCursor(int pos){
 		
 	}

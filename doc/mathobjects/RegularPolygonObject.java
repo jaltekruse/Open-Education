@@ -2,35 +2,31 @@ package doc.mathobjects;
 
 import doc.GridPoint;
 import doc.Page;
-import doc_gui.attributes.DoubleAttribute;
 import doc_gui.attributes.IntegerAttribute;
+import doc_gui.attributes.MathObjectAttribute;
 
 public class RegularPolygonObject extends PolygonObject {
 	
+	public static final String NUM_SIDES = "numSides";
+	
 	public RegularPolygonObject(Page p){
 		super(p);
-		getAttributeWithName("numSides").setValue(8);
-		addInitialPoints();
-
+		getAttributeWithName(NUM_SIDES).setValue(6);
+		generateVertices();
 	}
 	
 	public RegularPolygonObject() {
-		getAttributeWithName("numSides").setValue(8);
-		addInitialPoints();
+		getAttributeWithName(NUM_SIDES).setValue(6);
+		generateVertices();
 	}
 	
 	public RegularPolygonObject(int n){
-		getAttributeWithName("numSides").setValue(n);
-		generateVertices(n);
+		getAttributeWithName(NUM_SIDES).setValue(n);
+		generateVertices();
 	}
 	
-	@Override
-	public void addInitialPoints() {
-		// TODO Auto-generated method stub
-
-	}
-	
-	private void generateVertices(int n){
+	private void generateVertices(){
+		int n = ((IntegerAttribute)getAttributeWithName(NUM_SIDES)).getValue();
 		double initialAngle = .5 * Math.PI + (Math.PI - ( (n-2) * Math.PI )/n) / 2;
 		for (int i = 0; i < n; i++){
 			addVertex(new GridPoint(.5 + .5 * Math.cos(initialAngle + 2.0*Math.PI*i/n),
@@ -38,28 +34,43 @@ public class RegularPolygonObject extends PolygonObject {
 		}
 	}
 	
+	@Override
 	public void setAttributeValue(String n, Object o) throws AttributeException{
-		if (n.equals("numSides")){
-			System.out.println("val of att after reading from sting:" + o);
+		if (n.equals(NUM_SIDES)){
 			getAttributeWithName(n).setValue(o);
 			removeAllVertices();
-			System.out.println("att found " + getAttributeWithName(n).getValue());
-			generateVertices(((IntegerAttribute)getAttributeWithName(n)).getValue());
+			generateVertices();
 		}
 		else{
 			getAttributeWithName(n).setValue(o);
 		}
 	}
+	
+	@Override
+	public RegularPolygonObject clone() {
+		RegularPolygonObject o = new RegularPolygonObject(getParentPage());
+		o.removeAllAttributes();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			o.addAttribute( mAtt.clone());
+		}
+		return o;
+	}
 
 	@Override
 	public void addDefaultAttributes() {
-		addAttribute(new IntegerAttribute("numSides", 2, 30));
+		addAttribute(new IntegerAttribute(NUM_SIDES, 2, 30));
 	}
 
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
 		return REGULAR_POLYGON_OBJECT;
+	}
+
+	@Override
+	public void addInitialPoints() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -36,10 +36,11 @@ private int space;
 			getRootNodeGraphic().getGraphics().setColor(Color.black);
 		}
 		getRootNodeGraphic().getGraphics().setFont(getFont());
-		getRootNodeGraphic().getGraphics().drawString(getValue().getOp().getSymbol(),
+		getRootNodeGraphic().getGraphics().drawString(getValue().getOperator().getSymbol(),
 				symbolX1, symbolY2);
 	}
 	
+	@Override
 	public void drawCursor(int pos){
 		
 	}
@@ -77,7 +78,7 @@ private int space;
 		childValGraphic.getMostInnerEast().setEast(this);
 		setMostInnerEast(this);
 		
-		symbolSize[0] = super.getRootNodeGraphic().getStringWidth(value.getOp().getSymbol(), f);
+		symbolSize[0] = super.getRootNodeGraphic().getStringWidth(value.getOperator().getSymbol(), f);
 		symbolSize[1] = super.getRootNodeGraphic().getFontHeight(f);
 		
 		symbolY1 = y1 + childValGraphic.getUpperHeight() - (int) Math.round(symbolSize[1]/2.0);
@@ -98,8 +99,9 @@ private int space;
 		return totalSize;
 	}
 
+	@Override
 	public void drawCursor(){
-		String opString = getValue().getOp().getSymbol();
+		String opString = getValue().getOperator().getSymbol();
 		
 		int xPos = symbolX1 + super.getRootNodeGraphic().getGraphics().getFontMetrics().stringWidth(
 				opString.substring(0, super.getRootNodeGraphic().getCursor().getPos()));
@@ -112,13 +114,15 @@ private int space;
 		
 	}
 	
+	@Override
 	public int getMaxCursorPos(){
-		return getValue().getOp().getSymbol().length();
+		return getValue().getOperator().getSymbol().length();
 	}
 	
+	@Override
 	public void setCursorPos(int xPixelPos){
 		
-		String numberString = getValue().getOp().getSymbol();
+		String numberString = getValue().getOperator().getSymbol();
 		
 		if (xPixelPos < super.symbolX1){
 			getChildGraphic().setCursorPos(xPixelPos);
@@ -153,6 +157,7 @@ private int space;
 		}
 	}
 	
+	@Override
 	public void moveCursorWest(){
 		if (super.getRootNodeGraphic().getCursor().getPos() > 0){
 			super.getRootNodeGraphic().getCursor().setPos( super.getRootNodeGraphic().getCursor().getPos() - 1); 
@@ -170,6 +175,7 @@ private int space;
 		}
 	}
 	
+	@Override
 	public void moveCursorEast(){
 		if (super.getRootNodeGraphic().getCursor().getPos() < getMaxCursorPos()){
 			super.getRootNodeGraphic().getCursor().setPos( super.getRootNodeGraphic().getCursor().getPos() + 1); 
@@ -187,20 +193,24 @@ private int space;
 		}
 	}
 	
+	@Override
 	public void sendCursorInFromEast(int yPos, NodeGraphic vg){
 		super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 		super.getRootNodeGraphic().getCursor().setPos(getMaxCursorPos() - 1);
 	}
 	
+	@Override
 	public void sendCursorInFromWest(int yPos, NodeGraphic vg){
 		super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 		super.getRootNodeGraphic().getCursor().setPos(1);
 	}
 	
+	@Override
 	public void sendCursorInFromNorth(int xPos, NodeGraphic vg){
 		setCursorPos(xPos);
 	}
 	
+	@Override
 	public void sendCursorInFromSouth(int xPos, NodeGraphic vg){
 		setCursorPos(xPos);
 	}

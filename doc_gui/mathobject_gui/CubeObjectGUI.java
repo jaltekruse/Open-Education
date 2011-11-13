@@ -9,7 +9,6 @@ import java.awt.Polygon;
 
 import doc.GridPoint;
 import doc.mathobjects.CubeObject;
-import doc_gui.attributes.GridPointAttribute;
 
 public class CubeObjectGUI extends MathObjectGUI{
 
@@ -97,7 +96,7 @@ public class CubeObjectGUI extends MathObjectGUI{
 			g2d.setColor(MathObjectGUI.brightenColor(fillColor) );
 			g2d.fillPolygon(fillShape);
 		}
-		g2d.setStroke(new BasicStroke((float)thickness, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER) );
+		g2d.setStroke(new BasicStroke(thickness, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER) );
 		g2d.setColor(Color.BLACK);
 		
 		Polygon p = new Polygon();

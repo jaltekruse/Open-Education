@@ -2,11 +2,8 @@ package doc_gui;
 
 
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollBar;
 import javax.swing.JToolBar;
 
-import doc.mathobjects.Grouping;
 import doc.mathobjects.MathObject;
 import doc.mathobjects.ProblemObject;
 
@@ -17,7 +14,6 @@ public class ObjectActionsToolBar extends JToolBar{
 	public ObjectActionsToolBar(NotebookPanel p){
 		notebookPanel = p;
 		
-
 		if ( ! notebookPanel.isInStudentMode()){
 			ImageIcon deleteIcon = notebookPanel.getIcon("img/delete.png");
 			
@@ -25,6 +21,7 @@ public class ObjectActionsToolBar extends JToolBar{
 				
 				//allow this button to also delete page, need to add code to allow page to be
 				//selected and have visual feedback (a border) to indicate selection
+				@Override
 				public void associatedAction(){
 					notebookPanel.delete();
 				}
@@ -35,6 +32,7 @@ public class ObjectActionsToolBar extends JToolBar{
 			OCButton bringToFrontButton = new OCButton(bringToFrontIcon,
 					"Bring to Front", 1, 1, 3, 0, this){
 				
+				@Override
 				public void associatedAction(){
 					notebookPanel.bringToFront();
 				}
@@ -45,18 +43,9 @@ public class ObjectActionsToolBar extends JToolBar{
 			OCButton sendForwardButton = new OCButton(sendForwardIcon,
 					"Send Forward", 1, 1, 3, 0, this){
 				
+				@Override
 				public void associatedAction(){
 					notebookPanel.sendForward();
-				}
-			};
-			
-			ImageIcon bringToBackIcon = notebookPanel.getIcon("img/bringToBack.png");
-			
-			OCButton bringToBackButton = new OCButton(bringToBackIcon,
-					"Bring to Back", 1, 1, 3, 0, this){
-	
-				public void associatedAction(){
-					notebookPanel.bringToBack();
 				}
 			};
 			
@@ -67,8 +56,20 @@ public class ObjectActionsToolBar extends JToolBar{
 				
 				//allow this button to also delete page, need to add code to allow page to be
 				//selected and have visual feedback (a border) to indicagte selection
+				@Override
 				public void associatedAction(){
 					notebookPanel.sendBackward();
+				}
+			};
+			
+			ImageIcon bringToBackIcon = notebookPanel.getIcon("img/bringToBack.png");
+			
+			OCButton bringToBackButton = new OCButton(bringToBackIcon,
+					"Bring to Back", 1, 1, 3, 0, this){
+	
+				@Override
+				public void associatedAction(){
+					notebookPanel.bringToBack();
 				}
 			};
 			
@@ -79,6 +80,7 @@ public class ObjectActionsToolBar extends JToolBar{
 				
 				//allow this button to also delete page, need to add code to allow page to be
 				//selected and have visual feedback (a border) to indicagte selection
+				@Override
 				public void associatedAction(){
 					notebookPanel.cut();
 				}
@@ -91,6 +93,7 @@ public class ObjectActionsToolBar extends JToolBar{
 				
 				//allow this button to also delete page, need to add code to allow page to be
 				//selected and have visual feedback (a border) to indicagte selection
+				@Override
 				public void associatedAction(){
 					notebookPanel.copy();
 				}
@@ -103,6 +106,7 @@ public class ObjectActionsToolBar extends JToolBar{
 				
 				//allow this button to also delete page, need to add code to allow page to be
 				//selected and have visual feedback (a border) to indicagte selection
+				@Override
 				public void associatedAction(){
 					notebookPanel.paste();
 				}
@@ -112,6 +116,7 @@ public class ObjectActionsToolBar extends JToolBar{
 			
 			OCButton groupButton = new OCButton(groupIcon, "Group", 1, 1, 3, 0, this){
 				
+				@Override
 				public void associatedAction(){
 					notebookPanel.group();
 				}
@@ -124,6 +129,7 @@ public class ObjectActionsToolBar extends JToolBar{
 				
 				//allow this button to also delete page, need to add code to allow page to be
 				//selected and have visual feedback (a border) to indicagte selection
+				@Override
 				public void associatedAction(){
 					notebookPanel.ungroup();
 				}
@@ -134,6 +140,7 @@ public class ObjectActionsToolBar extends JToolBar{
 			OCButton generateProblems = new OCButton(problemGenerationIcon, "Generate Problems",
 					1, 1, 3, 0, this){
 				
+				@Override
 				public void associatedAction(){
 					MathObject mObj = notebookPanel.getCurrentDocViewer().getFocusedObject();
 					if ( mObj != null && mObj instanceof ProblemObject){

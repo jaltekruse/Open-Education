@@ -13,6 +13,7 @@ import java.awt.Color;
 import doc.Page;
 import doc_gui.attributes.ColorAttribute;
 import doc_gui.attributes.IntegerAttribute;
+import doc_gui.attributes.MathObjectAttribute;
 
 public class OvalObject extends MathObject {
 	
@@ -48,6 +49,16 @@ public class OvalObject extends MathObject {
 	
 	public Color getColor(){
 		return ((ColorAttribute)getAttributeWithName("fill color")).getValue();
+	}
+	
+	@Override
+	public OvalObject clone() {
+		OvalObject o = new OvalObject(getParentPage());
+		o.removeAllAttributes();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			o.addAttribute( mAtt.clone());
+		}
+		return o;
 	}
 
 	@Override

@@ -8,20 +8,7 @@
 
 package doc_gui.attributes;
 
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import doc.mathobjects.AttributeException;
-import doc_gui.DocViewerPanel;
 
 public class BooleanAttribute extends MathObjectAttribute<Boolean> {
 	

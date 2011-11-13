@@ -88,7 +88,6 @@ public abstract class NodeGraphic<E extends Node> {
 	}
 	
 	public NodeGraphic findValueGraphic(Expression v){
-		System.out.println(this.getValue());
 		NodeGraphic found;
 		for (NodeGraphic vg : getComponents()){
 			if (v.equals( vg.getValue() )){
@@ -121,6 +120,9 @@ public abstract class NodeGraphic<E extends Node> {
 	
 	public NodeGraphic makeNodeGraphic(Node n) throws RenderException{
 		
+		if (n.displayParentheses()){
+			return new ParenGraphic(n, getRootNodeGraphic());
+		}
 		if (n instanceof Number){
 			return new DecimalGraphic((Number)n, getRootNodeGraphic());
 		}
@@ -140,6 +142,7 @@ public abstract class NodeGraphic<E extends Node> {
 					if ( ex.getChild(1) instanceof Identifier){
 						return new ImpliedMultGraphic((Expression)n, getRootNodeGraphic());
 					}
+					return new DotMultiplication((Expression)n, getRootNodeGraphic());
 				}
 				return new BinExpressionGraphic((Expression)n, getRootNodeGraphic());
 			}
@@ -153,62 +156,8 @@ public abstract class NodeGraphic<E extends Node> {
 			}
 		}
 		else if (n instanceof Identifier){
-			return new ValueWithNameGraphic((Identifier) n, getRootNodeGraphic());
+			return new IdentifierGraphic((Identifier) n, getRootNodeGraphic());
 		}
-//		if (n instanceof Fraction)
-//		{
-//			return new FractionGraphic((Fraction)n, getRootNodeGraphic());
-//		}
-//		if (n instanceof Decimal){
-//			return new DecimalGraphic((Decimal)n, getRootNodeGraphic());
-//		}
-//		else if(n instanceof Var || n instanceof Constant)
-//		{
-//			return new ValueWithNameGraphic(n, getRootNodeGraphic());
-//		}
-//		else if (n instanceof MissingValue){
-//			return new NothingGraphic((MissingValue)n, getRootNodeGraphic());
-//		}
-//		else if (n instanceof BinExpression)
-//		{
-//			if (((BinExpression)n).getOp() == Operator.DIVIDE){
-//				return new DivisionGraphic((BinExpression)n, getRootNodeGraphic());
-//			}
-//			else if (((BinExpression)n).getOp() == Operator.POWER){
-//				return new ExponentGraphic((BinExpression)n, getRootNodeGraphic());
-//			}
-//			else if (((BinExpression)n).getOp() == Operator.IMP_MULT){
-//				return new ImpliedMultGraphic((BinExpression)n, getRootNodeGraphic());
-//			}
-//			else{
-//				return new BinExpressionGraphic((BinExpression)n, getRootNodeGraphic());
-//			}
-//			
-//		}
-//		else if (n instanceof UnaryExpression){
-//			if (((UnaryExpression)n).getOp() == Operator.PAREN)
-//			{
-//				return new ParenGraphic(((UnaryExpression)n), getRootNodeGraphic());
-//			}
-//			else if (((UnaryExpression)n).getOp() == Operator.ABS)
-//			{
-//				return new AbsoluteValueGraphic(((UnaryExpression)n), getRootNodeGraphic());
-//			}
-//			else if (((UnaryExpression)n).getOp() == Operator.NEG)
-//			{
-//				return new NegationGraphic(((UnaryExpression)n), getRootNodeGraphic());
-//			}
-//			else if (((UnaryExpression)n).getOp() == Operator.SQRT)
-//			{
-//				return new RadicalGraphic(((UnaryExpression)n), getRootNodeGraphic());
-//			}
-//			else if (((UnaryExpression)n).getOp() == Operator.FACT)
-//			{
-//				return new UnaryPostGraphic(((UnaryExpression)n), getRootNodeGraphic());
-//			}
-//			return new UnaryExpressionGraphic((UnaryExpression)n, getRootNodeGraphic());
-//		}
-//		System.out.println(n.toString());
 		throw new RenderException("unsupported Node");
 	}
 	

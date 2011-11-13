@@ -53,6 +53,7 @@ public abstract class PolygonObject extends MathObject {
 		return ((ColorAttribute)getAttributeWithName("fill color")).getValue();
 	}
 	
+	@Override
 	public void performSpecialObjectAction(String s){
 		if (s.equals(FLIP_HORIZONTALLY)){
 			flipHorizontally();
@@ -114,11 +115,9 @@ public abstract class PolygonObject extends MathObject {
 	}
 	
 	public void removeAllVertices(){
-		System.out.println("num verticies: " + getVertices().size());
 		for (int i = 0; i < getAttributes().size(); i++){
 			MathObjectAttribute mAtt = getAttributes().get(i);
 			if (mAtt instanceof GridPointAttribute){
-				System.out.println("remove vertex");
 				removeAttribute(mAtt);
 				i--;
 			}

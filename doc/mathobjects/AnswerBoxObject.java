@@ -2,6 +2,7 @@ package doc.mathobjects;
 
 import doc.Page;
 import doc_gui.attributes.IntegerAttribute;
+import doc_gui.attributes.MathObjectAttribute;
 import doc_gui.attributes.StringAttribute;
 
 public class AnswerBoxObject extends MathObject {
@@ -51,6 +52,17 @@ public class AnswerBoxObject extends MathObject {
 	
 	public void setText(String s) throws AttributeException{
 		setAttributeValue("answer", s);
+	}
+
+	@Override
+	public AnswerBoxObject clone() {
+		// TODO Auto-generated method stub
+		AnswerBoxObject o = new AnswerBoxObject(getParentPage());
+		o.removeAllAttributes();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			o.addAttribute( mAtt.clone());
+		}
+		return o;
 	}
 
 }

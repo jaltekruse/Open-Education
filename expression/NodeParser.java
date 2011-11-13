@@ -25,7 +25,7 @@ public class NodeParser {
 	private List<String> functions =
 			Arrays.asList("log", "sin", "cos", "tan",
 					"sqrt", "cbrt", "root", "ln", "random", "randomInt");
-	
+
 	private List<String> nonFunctionalIdentifiers = 
 			Arrays.asList();
 	
@@ -126,7 +126,7 @@ public class NodeParser {
 	private String format(String expression) {
 		return expression.replaceAll("\\s", "");
 	}
-	
+
 	private Node parse(String expression) throws ParseException {
 		return parse(expression, lowestPrecedence, expression.length() - 1);
 	}
@@ -169,8 +169,10 @@ public class NodeParser {
 		
 		String unshell = unshell(expression);
 		if (!unshell.equals(expression)) {
-			// expression is surrounded by parens
-			return parseNode(unshell);
+		// expression is surrounded by parens
+			Node newNode = parseNode(unshell);
+			newNode.setDisplayParentheses(true);
+			return newNode;
 		}
 		
 		for (int precedence = initialPrecedence ; precedence <= highestPrecedence ; precedence++) {
@@ -238,7 +240,6 @@ public class NodeParser {
 				
 				return new Expression(o, children);
 			}
-			
 			if (functions.contains(symbol)) {
 				if (index == 0) {
 					Vector<String> stringChildren = new Vector<String>();
@@ -306,7 +307,12 @@ public class NodeParser {
 					if (index != 0) {
 						return parse(expression, precedence, index - 1);
 					}
-					return parseValue(expression);
+					else if ( Character.isDigit(expression.charAt(index + 1))){
+						return parseValue(expression);
+					}
+					else{
+						return new Expression( new Operator.Negation(), parseNode(expression.substring(1)));
+					}
 				}
 			}
 		}

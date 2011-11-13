@@ -10,6 +10,7 @@ package doc.mathobjects;
 
 import doc.GridPoint;
 import doc.Page;
+import doc_gui.attributes.MathObjectAttribute;
 
 public class TrapezoidObject extends PolygonObject {
 
@@ -43,6 +44,16 @@ public class TrapezoidObject extends PolygonObject {
 		
 	}
 
+	@Override
+	public TrapezoidObject clone() {
+		TrapezoidObject o = new TrapezoidObject(getParentPage());
+		o.removeAllAttributes();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			o.addAttribute( mAtt.clone());
+		}
+		return o;
+	}
+	
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub

@@ -7,7 +7,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 
-import doc.GridPoint;
 import doc.mathobjects.CylinderObject;
 
 public class CylinderObjectGUI extends MathObjectGUI {
@@ -55,7 +54,7 @@ public class CylinderObjectGUI extends MathObjectGUI {
 			}
 	
 		}
-		g2d.setStroke(new BasicStroke((float)thickness, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER) );
+		g2d.setStroke(new BasicStroke(thickness, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER) );
 		g2d.setColor(Color.BLACK);
 		
 		g.drawLine((int) (object.getSide1pts()[0].getx() * width) + xOrigin,

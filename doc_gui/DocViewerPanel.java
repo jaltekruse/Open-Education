@@ -16,7 +16,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
@@ -26,14 +25,14 @@ import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.WindowConstants;
 
 import doc.Document;
 import doc.Page;
-import doc.PageGUI;
 import doc.PointInDocument;
+import doc.mathobjects.GraphObject;
 import doc.mathobjects.MathObject;
 import doc.mathobjects.Grouping;
-import doc.mathobjects.ProblemObject;
 import doc.mathobjects.RectangleObject;
 
 public class DocViewerPanel extends JDesktopPane{
@@ -86,12 +85,12 @@ public class DocViewerPanel extends JDesktopPane{
 	public DocViewerPanel(Document d, TopLevelContainerOld t, boolean b, OpenNotebook book){
 		notebook = book;
 		doc = d;
-		doc.docPanel = this;
+		doc.setDocViewerPanel(this);
 		
 		isInStudentMode = b;
 		thisPanel = this;
 		
-		tempGroup = new Grouping(new Page(doc));
+		tempGroup = new Grouping();
 		setPageGUI(new PageGUI(this));
 		background = new BufferedImage(10,10, 10);
 		
@@ -111,10 +110,15 @@ public class DocViewerPanel extends JDesktopPane{
 		docScrollPane.getHorizontalScrollBar().setUnitIncrement(12);
 		
 		objPropsFrame = new ObjectPropertiesFrame(this);
-		objPropsFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+		objPropsFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		objPropsFrame.setBounds(10, 10, 250, 300);
 		this.add(objPropsFrame);
 		//do not show yet, only appears when MathObject is selected
+		
+		GraphObject temp = new GraphObject();
+		setFocusedObject(temp);
+		setFocusedObject(null);
+		this.drawObjectInBackgorund(temp);
 		
 		docPropsFrame = new JInternalFrame("Document",
 				true, //resizable
@@ -123,7 +127,7 @@ public class DocViewerPanel extends JDesktopPane{
 				false);//iconifiable
 		
 		
-		docPropsFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+		docPropsFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		docPropsFrame.setBounds(20, 20, 200, 300);
 		this.add(docPropsFrame);
 		
@@ -134,7 +138,7 @@ public class DocViewerPanel extends JDesktopPane{
 				false, //maximizable
 				false);//iconifiable
 		
-		databaseFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+		databaseFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		databaseFrame.setBounds(20, 20, 300, 250);
 		this.add(databaseFrame);
 		
@@ -165,7 +169,6 @@ public class DocViewerPanel extends JDesktopPane{
 			}
 		});
 		
-		
 		this.add(docScrollPane);
 	}
 	
@@ -188,18 +191,14 @@ public class DocViewerPanel extends JDesktopPane{
 			 * 
 			 */
 			private static final long serialVersionUID = 1L;
-
-			public void update(Graphics g){
-				
-			}
 			
+			@Override
 			public void paint(Graphics g){
 			
-//				System.out.println("repaint");\
 				
 				//set the graphics object to render text and shapes with smooth lines
 				Graphics2D g2d = (Graphics2D)g;
-//				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RendringHints.VALUE_ANTIALIAS_ON);
 				
 				//pixels needed to render a page, and the minimum border space around it
 				int pageXSize = (int) (Page.DEFAULT_PAGE_WIDTH * zoomLevel);
@@ -207,14 +206,13 @@ public class DocViewerPanel extends JDesktopPane{
 				
 				Rectangle viewPortRect = new Rectangle( (int) docScrollPane.getViewport().getViewPosition().getX(),
 						(int) docScrollPane.getViewport().getViewPosition().getY(),
-						(int) docScrollPane.getViewport().getWidth(),
-						(int) docScrollPane.getViewport().getHeight());
+						docScrollPane.getViewport().getWidth(),
+						docScrollPane.getViewport().getHeight());
 				
 				//fill background with gray
 				g.setColor(Color.GRAY.brighter());
 				((Graphics2D) g).fill(viewPortRect);
 				
-//				System.out.println(viewPortRect.toString());
 				Rectangle currPageRect;
 				Point pageOrigin = null;
 				
@@ -222,8 +220,7 @@ public class DocViewerPanel extends JDesktopPane{
 				//and the sections overall width and height, both are in the user space at 72 dpi
 				int xShowing, yShowing, xSizeShowing, ySizeShowing;
 				
-				for (int i = 1; i < doc.getNumPages(); i++){
-					
+				for (int i = 0; i < doc.getNumPages(); i++){
 					//need to modify rectangle to properly calculate the portion of the page currently displayed
 					//which will be given in the user space starting with the origin of the printable area at 0,0
 					//and at 72 dpi
@@ -251,7 +248,6 @@ public class DocViewerPanel extends JDesktopPane{
 						else{
 							yShowing = (int) ((viewPortRect.getY() - currPageRect.getY()) / zoomLevel);
 						}
-						
 						try {
 							pageGUI.drawPageWithDecorations(g, doc.getPage(i), new Point(
 									(int) pageOrigin.getX(), (int) pageOrigin.getY()),
@@ -295,7 +291,7 @@ public class DocViewerPanel extends JDesktopPane{
 		int heightNeeded = adjustedBufferSpace;
 		
 		//add up space needed for all pages
-		for (int i = 1; i < doc.getNumPages(); i++){
+		for (int i = 0; i < doc.getNumPages(); i++){
 			heightNeeded += pageYSize + adjustedBufferSpace;
 		}
 		
@@ -367,7 +363,6 @@ public class DocViewerPanel extends JDesktopPane{
 		return doc.getPage(currentPage);
 	}
 	
-	//uses the integer codes declared as public ints above
 	public void createMathObject(MathObject mObj){
 		docMouse.setPlacingObject(true);
 		docMouse.setObjToPlace(mObj);
@@ -387,7 +382,7 @@ public class DocViewerPanel extends JDesktopPane{
 			selectedPage = p;
 			setFocusedObject(null);
 			if (tempGroup != null){
-				resetTempGroup();
+				ungroupTempGroup();
 			}
 		}
 		else{
@@ -405,34 +400,40 @@ public class DocViewerPanel extends JDesktopPane{
 		return selectedPage;
 	}
 	
-	public void setFocusedObject(MathObject focusedObject) {
-		System.out.println("set focused object");
-		if (focusedObject != null){
-			if ( ! isInStudentMode() || (isInStudentMode() && focusedObject.isStudentSelectable())){
-				this.focusedObject = focusedObject;
-				objPropsFrame.generatePanel(focusedObject);
+	public void setFocusedObject(MathObject newFocusedObject) {
+		if (newFocusedObject != null){
+			if ( ! isInStudentMode() || (isInStudentMode() && newFocusedObject.isStudentSelectable())){
+				this.focusedObject = newFocusedObject;
+				objPropsFrame.generatePanel(newFocusedObject);
 				objPropsFrame.setVisible(true);
 				setSelectedPage(null);
-				if (tempGroup != null && focusedObject != tempGroup && focusedObject != selectionRect){
-					resetTempGroup();
+				if (tempGroup != null && newFocusedObject != tempGroup){
+					ungroupTempGroup();
 				}
 			}
 		}
 		else{
-			this.focusedObject = focusedObject;
+			this.focusedObject = newFocusedObject;
 			objPropsFrame.setVisible(false);
 		}
 	}
 	
-	public void resetTempGroup(){
+	public void ungroupTempGroup(){
 		tempGroup.unGroup();
-		tempGroup.getParentPage().removeObject(tempGroup);
-		tempGroup = new Grouping(new Page(new Document("temp")));
+		if ( tempGroup.getParentPage() != null)
+			tempGroup.getParentPage().removeObject(tempGroup);
+		tempGroup = new Grouping();
+	}
+	
+	public void resetTempGroup(){
+		if ( tempGroup.getParentPage() != null)
+			tempGroup.getParentPage().removeObject(tempGroup);
+		tempGroup = new Grouping();
 	}
 	
 	public void removeTempGroup(){
+		tempGroup.removeAllObjects();
 		tempGroup.getParentPage().removeObject(tempGroup);
-		tempGroup = new Grouping(new Page(new Document("temp")));
 	}
 
 	public MathObject getFocusedObject() {
@@ -452,7 +453,7 @@ public class DocViewerPanel extends JDesktopPane{
 		ptInDoc.setOutSidePage(true);
 		
 		//go through all of the pages to look for collisions
-		for (int i = 1; i < doc.getNumPages(); i++){
+		for (int i = 0; i < doc.getNumPages(); i++){
 			
 			if (y > pageyOrigin && y < pageyOrigin + pageYSize){
 				
@@ -461,7 +462,7 @@ public class DocViewerPanel extends JDesktopPane{
 				ptInDoc.setOutSidePage(false);
 				break;
 			}
-			else if ( y < pageyOrigin)
+			else if ( y <= pageyOrigin)
 			{//the click was above this page, but did not hit any previous pages, it must be in the buffer
 				//space between pages
 				ptInDoc.setPage(i);
@@ -497,7 +498,7 @@ public class DocViewerPanel extends JDesktopPane{
 		int adjustedBufferSpace = (int) (DOC_BUFFER_SPACE * zoomLevel);
 		
 		return new Point((docPanel.getWidth() - pageXSize)/2,
-				adjustedBufferSpace + (pageIndex - 1) * (pageYSize + adjustedBufferSpace));
+				adjustedBufferSpace + pageIndex * (pageYSize + adjustedBufferSpace));
 	}
 	
 	public Point getObjectPos(MathObject mObj) throws DocumentException{
@@ -505,12 +506,7 @@ public class DocViewerPanel extends JDesktopPane{
 		return new Point( (int) (pageOrigin.getX() + mObj.getxPos() * zoomLevel)
 				, (int) (pageOrigin.getY() + mObj.getyPos() * zoomLevel));
 	}
-	
-	public boolean generateProblems(ProblemObject probelm){
-		
-		return true;
-	}
-	
+
 	public void showDatabase(){
 		databaseFrame.getContentPane().removeAll();
 		databaseFrame.getContentPane().add(new DatabasePanel(notebook.getDatabase(), this));
@@ -519,15 +515,7 @@ public class DocViewerPanel extends JDesktopPane{
 	}
 	
 	public Point getPageOrigin(Page p) throws DocumentException{
-		return getPageOrigin(doc.getPageIndex(p) + 1);
-	}
-	
-	public int getPagexSize(){
-		return (int) (Page.DEFAULT_PAGE_WIDTH * zoomLevel);
-	}
-
-	public int getPageySize(){
-		return  (int) (Page.DEFAULT_PAGE_HEIGHT * zoomLevel);
+		return getPageOrigin(doc.getPageIndex(p));
 	}
 	
 	public float getZoomLevel(){
@@ -556,10 +544,6 @@ public class DocViewerPanel extends JDesktopPane{
 
 	public RectangleObject getSelectionRect() {
 		return selectionRect;
-	}
-
-	public void setTempGroup(Grouping tempGroup) {
-		this.tempGroup = tempGroup;
 	}
 
 	public Grouping getTempGroup() {

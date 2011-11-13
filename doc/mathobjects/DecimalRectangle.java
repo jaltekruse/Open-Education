@@ -1,10 +1,10 @@
 package doc.mathobjects;
 
-public class DecimalRectagle {
+public class DecimalRectangle {
 
 	private double x, y, width, height;
 	
-	public DecimalRectagle(double x, double y, double width, double height){
+	public DecimalRectangle(double x, double y, double width, double height){
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -41,5 +41,10 @@ public class DecimalRectagle {
 
 	public double getHeight() {
 		return height;
+	}
+	
+	@Override
+	public String toString(){
+		return "( " + x + " , " + y + " ) [" + width + " , " + height + " ]";
 	}
 }

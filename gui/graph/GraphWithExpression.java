@@ -10,15 +10,10 @@ package gui.graph;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.Vector;
-
-import tree.Decimal;
 import tree.EvalException;
 import tree.Expression;
-import tree.Number;
 import tree.ExpressionParser;
 import tree.ParseException;
-import tree.Expression;
 import tree.Var;
 
 public class GraphWithExpression extends SingleGraph{

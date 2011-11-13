@@ -11,6 +11,7 @@ package doc.mathobjects;
 import doc.Page;
 import doc_gui.attributes.DoubleAttribute;
 import doc_gui.attributes.IntegerAttribute;
+import doc_gui.attributes.MathObjectAttribute;
 
 
 public class NumberLineObject extends MathObject {
@@ -51,6 +52,16 @@ public class NumberLineObject extends MathObject {
 	public String getType() {
 		// TODO Auto-generated method stub
 		return NUMBER_LINE_OBJECT;
+	}
+	
+	@Override
+	public NumberLineObject clone() {
+		NumberLineObject o = new NumberLineObject(getParentPage());
+		o.removeAllAttributes();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			o.addAttribute( mAtt.clone());
+		}
+		return o;
 	}
 
 }

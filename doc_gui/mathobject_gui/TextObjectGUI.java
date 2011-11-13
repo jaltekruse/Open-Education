@@ -8,7 +8,6 @@
 
 package doc_gui.mathobject_gui;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -16,16 +15,12 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
-import java.util.TreeMap;
-
 import doc.mathobjects.TextObject;
 import doc_gui.attributes.BooleanAttribute;
 

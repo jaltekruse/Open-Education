@@ -29,8 +29,10 @@ public class EmptyValue extends Value {
 	}
 
 	@Override
-	public EmptyValue clone() {
-		return new EmptyValue();
+	public EmptyValue cloneNode() {
+		EmptyValue e = new EmptyValue();
+		e.setDisplayParentheses(displayParentheses());
+		return e;
 	}
 
 	@Override

@@ -8,8 +8,9 @@
 
 package math_rendering;
 
-import java.awt.Graphics;
 import java.util.Vector;
+
+import expression.NodeException;
 
 public class ExpressionModification {
 
@@ -19,7 +20,7 @@ public class ExpressionModification {
 		expressions = new Vector<NodeGraphic>();
 	}
 	
-	public void draw(){
+	public void draw() throws NodeException{
 		for (NodeGraphic vg : expressions){
 			vg.drawAllBelow();
 		}

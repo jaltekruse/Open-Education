@@ -7,19 +7,18 @@
  * the file was found and delete it immediately. 
  */
 
-package doc;
+package doc_gui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
 
+import doc.Page;
 import doc.mathobjects.*;
-import doc_gui.DocViewerPanel;
 import doc_gui.mathobject_gui.AnswerBoxGUI;
 import doc_gui.mathobject_gui.CubeObjectGUI;
 import doc_gui.mathobject_gui.CylinderObjectGUI;
@@ -121,9 +120,6 @@ public class PageGUI {
 			if (mObj instanceof TriangleObject){
 		
 			}
-			else if (mObj instanceof HexagonObject){
-			
-			}
 			else{
 			
 			}
@@ -138,7 +134,7 @@ public class PageGUI {
 		
 		}
 		else{
-			System.out.println("unreconginzed object (printed in class PageGUI)");
+//			System.out.println("unreconginzed object (PageGUI.handleMouseAction)");
 		}
 	}
 	
@@ -164,42 +160,30 @@ public class PageGUI {
 			textGUI.drawMathObject((TextObject)mObj, g,
 					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			if (docPanel != null && docPanel.getFocusedObject() == mObj){
-				textGUI.drawInteractiveComponents((TextObject)mObj, g,
+				textGUI.drawInteractiveComponents(mObj, g,
 					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			}
 		}
 		else if (mObj instanceof Grouping){
 			Grouping group = ((Grouping)mObj);
 			for (MathObject mathObj : group.getObjects()){
-				int w = mathObj.getWidth();
-				int h = mathObj.getHeight();
-				int x = mathObj.getxPos();
-				int y = mathObj.getyPos();
-				mathObj.setxPos(group.getxPos() + (int) Math.round(mathObj.getxPos()/1000.0 * group.getWidth()) );
-				mathObj.setyPos(group.getyPos() + (int) Math.round(mathObj.getyPos()/1000.0 * group.getHeight()) );
-				mathObj.setWidth((int) Math.round(mathObj.getWidth()/1000.0 * group.getWidth()) );
-				mathObj.setHeight((int) Math.round(mathObj.getHeight()/1000.0 * group.getHeight()) );
 				drawObject(mathObj, g, p, pageOrigin, visiblePageSection, zoomLevel);
 				if (docPanel != null && group == docPanel.getFocusedObject()){
 					g.setColor(Color.BLUE);
 					((Graphics2D)g).setStroke(new BasicStroke(2));
-					g.drawRect((int) (pageOrigin.getX() + mathObj.getxPos() * zoomLevel) - 3, 
-							(int) (pageOrigin.getY() + mathObj.getyPos() * zoomLevel ) - 3,
-							(int) ( mathObj.getWidth() * zoomLevel ) + 6,
-							(int) ( mathObj.getHeight() * zoomLevel ) + 6);
+					g.drawRect((int) (pageOrigin.getX() + mathObj.getxPos() * zoomLevel), 
+							(int) (pageOrigin.getY() + mathObj.getyPos() * zoomLevel ),
+							(int) ( mathObj.getWidth() * zoomLevel ),
+							(int) ( mathObj.getHeight() * zoomLevel ));
 					((Graphics2D)g).setStroke(new BasicStroke(1));
 				}
-				mathObj.setxPos(x);
-				mathObj.setyPos(y);
-				mathObj.setWidth(w);
-				mathObj.setHeight(h);
 			}
 		}
 		else if (mObj instanceof OvalObject){
-			ovalGUI.drawMathObject((OvalObject)mObj, g,
+			ovalGUI.drawMathObject(mObj, g,
 					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			if (docPanel != null && docPanel.getFocusedObject() == mObj){
-				ovalGUI.drawInteractiveComponents((OvalObject)mObj, g,
+				ovalGUI.drawInteractiveComponents(mObj, g,
 					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			}
 		}
@@ -207,7 +191,7 @@ public class PageGUI {
 			graphGUI.drawMathObject((GraphObject)mObj, g,
 					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			if (docPanel != null && docPanel.getFocusedObject() == mObj){
-				graphGUI.drawInteractiveComponents((GraphObject)mObj, g,
+				graphGUI.drawInteractiveComponents(mObj, g,
 					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			}
 		}
@@ -215,7 +199,7 @@ public class PageGUI {
 			cubeGUI.drawMathObject((CubeObject)mObj, g,
 					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			if (docPanel != null && docPanel.getFocusedObject() == mObj){
-				cubeGUI.drawInteractiveComponents((CubeObject)mObj, g,
+				cubeGUI.drawInteractiveComponents(mObj, g,
 					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			}
 		}
@@ -226,17 +210,7 @@ public class PageGUI {
 				polygonGUI.drawMathObject((PolygonObject)mObj, g,
 						new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 				if (docPanel != null && docPanel.getFocusedObject() == mObj){
-					polygonGUI.drawInteractiveComponents((PolygonObject)mObj, g,
-						new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
-				}
-			}
-			else if (mObj instanceof HexagonObject){
-				//add call to custom drawer in HexagonObjectGUI if extra code is needed to be
-				//added to the generic polygon drawing method
-				polygonGUI.drawMathObject((PolygonObject)mObj, g,
-						new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
-				if (docPanel != null && docPanel.getFocusedObject() == mObj){
-					polygonGUI.drawInteractiveComponents((PolygonObject)mObj, g,
+					polygonGUI.drawInteractiveComponents(mObj, g,
 						new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 				}
 			}
@@ -244,7 +218,7 @@ public class PageGUI {
 				polygonGUI.drawMathObject((PolygonObject)mObj, g,
 						new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 				if (docPanel != null && docPanel.getFocusedObject() == mObj){
-					polygonGUI.drawInteractiveComponents((PolygonObject)mObj, g,
+					polygonGUI.drawInteractiveComponents(mObj, g,
 						new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 				}
 			}
@@ -261,7 +235,7 @@ public class PageGUI {
 			numLineGUI.drawMathObject((NumberLineObject)mObj, g,
 					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			if (docPanel != null && docPanel.getFocusedObject() == mObj){
-				numLineGUI.drawInteractiveComponents((NumberLineObject)mObj, g,
+				numLineGUI.drawInteractiveComponents(mObj, g,
 					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			}
 		}
@@ -269,7 +243,7 @@ public class PageGUI {
 			answerBoxGUI.drawMathObject((AnswerBoxObject)mObj, g,
 					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			if (docPanel != null && docPanel.getFocusedObject() == mObj){
-				answerBoxGUI.drawInteractiveComponents((AnswerBoxObject)mObj, g,
+				answerBoxGUI.drawInteractiveComponents(mObj, g,
 					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			}
 		}
@@ -277,12 +251,12 @@ public class PageGUI {
 			cylinderGUI.drawMathObject((CylinderObject)mObj, g,
 					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			if (docPanel != null && docPanel.getFocusedObject() == mObj){
-				cylinderGUI.drawInteractiveComponents((CylinderObject)mObj, g,
+				cylinderGUI.drawInteractiveComponents(mObj, g,
 					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			}
 		}
 		else{
-			System.out.println("unreconginzed object (printed in class PageGUI)");
+			System.out.println("unreconginzed object (printed in PageGUI.drawMathObj)");
 		}
 	}
 	
@@ -325,21 +299,31 @@ public class PageGUI {
 		drawPage(g, p, pageOrigin, visiblePageSection, zoomLevel);
 		
 		if (docPanel.getFocusedObject() != null){
-			if (docPanel.getFocusedObject().getParentPage() == p
-					&& p.getObjects().contains(docPanel.getFocusedObject()) )
+			MathObject focusedObj = docPanel.getFocusedObject();
+			
+			if (focusedObj.getParentPage() == p
+					&& p.getObjects().contains(focusedObj) )
 			{//the focused object is on this page, print the resize dots
 				//the temporary rectangle used for selecting a group of objects is
 				//created using a RectangleObject, but it is not added to its parent page
 				//in that case the dots are not drawn
-				if (docPanel.getFocusedObject() instanceof ExpressionObject){
-					MathObject mObj = docPanel.getFocusedObject();
-					if( mObj instanceof ExpressionObject){
-							expressionGUI.drawInteractiveComponents((ExpressionObject)mObj, g,
-								new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
-						}
+				if (focusedObj instanceof ExpressionObject){
+					if( focusedObj instanceof ExpressionObject){
+						expressionGUI.drawInteractiveComponents((ExpressionObject)focusedObj, g,
+						new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 					}
+					else{
+						g.setColor(Color.GRAY);
+						((Graphics2D)g).setStroke(new BasicStroke(2));
+						g.drawRect((int) (pageOrigin.getX() + focusedObj.getxPos() * zoomLevel) - 3, 
+								(int) (pageOrigin.getY() + focusedObj.getyPos() * zoomLevel ) - 3,
+								(int) ( focusedObj.getWidth() * zoomLevel ) + 6,
+								(int) ( focusedObj.getHeight() * zoomLevel ) + 6);
+						((Graphics2D)g).setStroke(new BasicStroke(1));
+					}
+				}
 				else{
-					MathObjectGUI.drawResizingDots(docPanel.getFocusedObject(), g,
+					MathObjectGUI.drawResizingDots(focusedObj, g,
 							new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 				}	
 			}

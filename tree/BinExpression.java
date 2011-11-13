@@ -47,12 +47,14 @@ public class BinExpression extends Expression {
 	/* (non-Javadoc)
 	 * @see tree.Expression#setOp(tree.Operator)
 	 */
-	public void setOp(Operator oper) {
+	@Override
+	public void setOperator(Operator oper) {
 		// has access to op from superclass Expression
 		op = oper;
 	}
 	
-	public Operator getOp(){
+	@Override
+	public Operator getOperator(){
 		// has access to op from superclass Expression
 		return op;
 	}
@@ -183,11 +185,12 @@ public class BinExpression extends Expression {
 		throw new EvalException("unrecognized operation");
 	}
 
+	@Override
 	public String toString(){
 		String result = new String();
 		if (getLeftChild() != null)
 			result += leftChild.toString();
-		if (getOp() != null)
+		if (getOperator() != null)
 			switch(op){
 			case ADD:
 				result += "+";
