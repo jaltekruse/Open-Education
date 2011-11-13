@@ -158,7 +158,7 @@ public class ExpressionObject extends MathObject {
 				newNode = Node.parseNode(child1);
 				getAttributeWithName("steps").setValue(
 						getAttributeWithName("steps").getValue().toString()
-						+ newNode.toStringRepresentation() + ";");
+						+ newNode.toString() + ";");
 			} catch (NodeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -192,7 +192,7 @@ public class ExpressionObject extends MathObject {
 				n = n.numericSimplify();
 				getAttributeWithName("steps").setValue(
 						getAttributeWithName("steps").getValue().toString()
-						+ n.toStringRepresentation() + ";");
+						+ n.toString() + ";");
 			} catch (NodeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -225,7 +225,7 @@ public class ExpressionObject extends MathObject {
 
 				getAttributeWithName("steps").setValue(
 						getAttributeWithName("steps").getValue().toString()
-						 + n.toStringRepresentation()+ ";");
+						 + n.toString()+ ";");
 			}catch (NodeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -313,7 +313,7 @@ public class ExpressionObject extends MathObject {
 			try {
 				getAttributeWithName("steps").setValue(
 						getAttributeWithName("steps").getValue().toString()
-						 + ex.toStringRepresentation()+ ";");
+						 + ex.toString()+ ";");
 			} catch (NodeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -392,7 +392,7 @@ public class ExpressionObject extends MathObject {
 
 		getAttributeWithName("steps").setValue(
 				getAttributeWithName("steps").getValue().toString()
-				 + ex.toStringRepresentation()+ ";");
+				 + ex.toString()+ ";");
 		
 	}
 
@@ -415,7 +415,7 @@ public class ExpressionObject extends MathObject {
 			Vector<Node> leftchildren = new Vector<Node>();
 	
 			//grab the left hand of the previous expression
-			leftchildren.add(ex.getChild(0).cloneNode());
+			leftchildren.add(ex.getChild(0).clone());
 			leftchildren.add(newNode);
 			newLeft.setChildren(leftchildren);
 	
@@ -423,7 +423,7 @@ public class ExpressionObject extends MathObject {
 			Vector<Node> rightchildren = new Vector<Node>();
 	
 			//grab the left hand of the previous expression
-			rightchildren.add(ex.getChild(1).cloneNode());
+			rightchildren.add(ex.getChild(1).clone());
 			rightchildren.add(newNode);
 			newRight.setChildren(rightchildren);
 	
@@ -439,7 +439,7 @@ public class ExpressionObject extends MathObject {
 
 		getAttributeWithName("steps").setValue(
 				getAttributeWithName("steps").getValue().toString()
-				 + ex.toStringRepresentation()+ ";");
+				 + ex.toString()+ ";");
 
 	}
 

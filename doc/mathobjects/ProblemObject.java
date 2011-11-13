@@ -186,7 +186,7 @@ public class ProblemObject extends Grouping {
 
 					for ( int i = 0 ; i < varNames.size(); i++){
 						expression = expression.replace(varNames.get(i), varVals.get(i));
-						((ExpressionObject)newObj).setExpression(expression.toStringRepresentation());
+						((ExpressionObject)newObj).setExpression(expression.toString());
 					}
 				} catch (NodeException e) {
 					// TODO Auto-generated catch block
@@ -207,22 +207,22 @@ public class ProblemObject extends Grouping {
 									( j == textString.length() - 1 ||
 									! Character.isLetter(textString.charAt(j + 1)) ) ){
 								if ( j != 0 && j != textString.length()){
-									textString = textString.substring(0, j) + varVals.get(i).toStringRepresentation() + 
+									textString = textString.substring(0, j) + varVals.get(i).toString() + 
 									textString.substring(j+1);
 								}
 								else{
 									if ( j == 0){
 										System.out.println("at start, length: " + textString.length());
 										if (textString.length() > 1)
-											textString = varVals.get(i).toStringRepresentation() + textString.substring(j + 1);
+											textString = varVals.get(i).toString() + textString.substring(j + 1);
 										else
-											textString = varVals.get(i).toStringRepresentation() + "";
+											textString = varVals.get(i).toString() + "";
 									}
 									else if ( j == textString.length()){
 										if (textString.length() > 1)
-											textString = textString.substring(0, j - 1) +  varVals.get(i).toStringRepresentation();
+											textString = textString.substring(0, j - 1) +  varVals.get(i).toString();
 										else
-											textString = varVals.get(i).toStringRepresentation() + "";
+											textString = varVals.get(i).toString() + "";
 									}
 								}
 							}

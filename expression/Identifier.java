@@ -10,7 +10,7 @@ public class Identifier extends Value {
 
 	private String identifier;
 	
-	public Identifier(String identifier) throws NodeException {
+	public Identifier(String identifier) throws IdentifierException {
 		setIdentifier(identifier);
 	}
 
@@ -30,26 +30,25 @@ public class Identifier extends Value {
 	}
 
 	@Override
-	public String toStringRepresentation() {
+	public String toString() {
 		return getIdentifier();
 	}
 	
 	@Override
-	public Identifier cloneNode() throws NodeException {
+	public Identifier clone() {
 		try {
 			return new Identifier(identifier);
-		} catch (NodeException e) {
-			System.err.println("random stupid error, in class Identifier");
+		} catch (IdentifierException e) {
 			return null;
 		}
 	}
 
 	@Override
 	public Node replace(Identifier identifier, Node node) {
-		System.out.println("this identifer:" + this.identifier);
-		System.out.println("to replace with:" + identifier.identifier);
+//		System.out.println("this identifer:" + this.identifier);
+//		System.out.println("to replace with:" + identifier.identifier);
 		if (this.equals(identifier)){
-			System.out.println("replacing");
+//			System.out.println("replacing");
 			return node;
 		}
 		else
@@ -60,10 +59,10 @@ public class Identifier extends Value {
 		return identifier;
 	}
 	
-	public void setIdentifier(String identifier) throws NodeException {
+	public void setIdentifier(String identifier) throws IdentifierException {
 		for (int i = 0 ; i < identifier.length(); i++) {
 			if (!isValidChar(identifier.charAt(i)))
-				throw new NodeException("Invalid identifier: " + identifier);
+				throw new IdentifierException("Invalid identifier: " + identifier);
 		}
 		this.identifier = identifier;
 	}

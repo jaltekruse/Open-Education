@@ -5,15 +5,15 @@ public class Variable extends Identifier {
 	private static int indexCount = 0;
 	private int index;
 	
-	public Variable() throws NodeException {
+	public Variable() throws IdentifierException {
 		this("x");
 	}
 	
-	public Variable(String identifier) throws NodeException {
+	public Variable(String identifier) throws IdentifierException {
 		this(identifier, nextIndex());
 	}
 	
-	private Variable(String identifier, int index) throws NodeException {
+	private Variable(String identifier, int index) throws IdentifierException {
 		super(identifier);
 		this.index = index;
 	}
@@ -36,7 +36,11 @@ public class Variable extends Identifier {
 	}
 	
 	@Override
-	public Variable cloneNode() throws NodeException {
-		return new Variable(getIdentifier(), index);
+	public Variable clone() {
+		try {
+			return new Variable(getIdentifier(), index);
+		} catch (IdentifierException e) {
+			return null;
+		}
 	}
 }
