@@ -11,6 +11,11 @@ public class Driver {
 		p.treatIdentifiersAsVariables(true);
 		Node n = p.parseNode("5^(x+3)+2");
 		System.out.println(n);
-		System.out.println(n.simplify());
+		try {
+			System.out.println(n.simplify().toStringRepresentation());
+		} catch (NodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

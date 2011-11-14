@@ -30,44 +30,16 @@ public class Identifier extends Value {
 	}
 
 	@Override
-<<<<<<< HEAD
-	public String toString() {
-=======
 	public String toStringRepresentation() {
 		if ( displayParentheses()){
 			return "(" + getIdentifier() + ")";
 		}
->>>>>>> newParser
 		return getIdentifier();
-	}
-	
-	@Override
-	public Identifier clone() {
-		try {
-<<<<<<< HEAD
-			return new Identifier(identifier);
-		} catch (IdentifierException e) {
-=======
-			Identifier i = new Identifier(identifier);
-			i.setDisplayParentheses(displayParentheses());
-			return i;
-		} catch (NodeException e) {
-			System.err.println("random stupid error, in class Identifier");
->>>>>>> newParser
-			return null;
-		}
 	}
 
 	@Override
 	public Node replace(Identifier identifier, Node node) {
-<<<<<<< HEAD
-//		System.out.println("this identifer:" + this.identifier);
-//		System.out.println("to replace with:" + identifier.identifier);
 		if (this.equals(identifier)){
-//			System.out.println("replacing");
-=======
-		if (this.equals(identifier)){
->>>>>>> newParser
 			return node;
 		}
 		else
@@ -98,5 +70,18 @@ public class Identifier extends Value {
 			return -1;
 		}
 		return identifier.compareTo(((Identifier) other).getIdentifier());
+	}
+
+	@Override
+	public Node cloneNode() throws NodeException {
+		// TODO Auto-generated method stub
+		try {
+			Identifier i = new Identifier(identifier);
+			i.setDisplayParentheses(displayParentheses());
+			return i;
+		} catch (NodeException e) {
+			System.err.println("random stupid error, in class Identifier");
+			return null;
+		}
 	}
 }

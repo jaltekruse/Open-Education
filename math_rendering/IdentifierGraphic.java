@@ -37,7 +37,7 @@ public class IdentifierGraphic extends NodeGraphic {
 			super.getRootNodeGraphic().getGraphics().setColor(Color.black);
 		}
 		getRootNodeGraphic().getGraphics().setFont(getFont());
-		getRootNodeGraphic().getGraphics().drawString(getValue().toString(), getX1(), getY2());
+		getRootNodeGraphic().getGraphics().drawString(getValue().toStringRepresentation(), getX1(), getY2());
 	}
 
 @Override
@@ -211,7 +211,7 @@ public void drawCursor(){
 		g.setFont(f);
 		setFont(f);
 		FontMetrics fm = g.getFontMetrics();
-		String s = getValue().toString();
+		String s = getValue().toStringRepresentation();
 		int[] size = new int[2];
 		size[0] = fm.stringWidth(s);
 		size[1] = getRootNodeGraphic().getFontHeight(f);

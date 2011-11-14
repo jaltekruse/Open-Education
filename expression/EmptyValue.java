@@ -40,4 +40,10 @@ public class EmptyValue extends Value {
 		return 0;
 	}
 
+	@Override
+	public String toStringRepresentation() throws NodeException {
+		// TODO Auto-generated method stub
+		return "?";
+	}
+
 }

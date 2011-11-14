@@ -38,14 +38,6 @@ public class Number extends Value implements Comparable<Number> {
 	}
 
 	@Override
-<<<<<<< HEAD
-	public Number clone() {
-		return new Number(getValue());
-	}
-
-	@Override
-	public String toString() {
-=======
 	public Number cloneNode() {
 		Number n =  new Number(getValue());
 		n.setDisplayParentheses(displayParentheses());
@@ -55,7 +47,6 @@ public class Number extends Value implements Comparable<Number> {
 	@Override
 	public String toStringRepresentation() {
 		String result;
->>>>>>> newParser
 		if (isInteger()){
 			result = (int) value + "";
 		}

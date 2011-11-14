@@ -39,14 +39,14 @@ public abstract class Node implements Cloneable {
 	/**  Returns a {@code String} representation 
 	 * of this expression tree. 
 	 * @throws NodeException */
-	public abstract String toString();
+	public abstract String toStringRepresentation() throws NodeException;
 
 	/**
 	 * Returns a deep copy of this {@code Node}; 
 	 * i.e. clones all sub-nodes.
 	 * @throws NodeException 
 	 */
-	public abstract Node clone();
+	public abstract Node cloneNode() throws NodeException;
 	
 	/** Replaces all instances of {@code x} with {@code n}.
 	 * @param identifier The identifier to find.
@@ -81,18 +81,18 @@ public abstract class Node implements Cloneable {
 		return find(node);
 	}
 	
-	public abstract Node collectLikeTerms();
+	public abstract Node collectLikeTerms() throws NodeException;
 	
 	/** Simplifies all numeric calculations. 
 	 * Does not take advantage of numeric identities.
 	 * @return An altered {@code Node} with no references to the original.
 	 * @throws NodeException 
 	 */
-	public abstract Node numericSimplify();
+	public abstract Node numericSimplify() throws NodeException;
 	
-	public abstract Node smartNumericSimplify();
+	public abstract Node smartNumericSimplify() throws NodeException;
 	
-	public Node simplify() {
+	public Node simplify() throws NodeException {
 		Node simplified = this;
 		Node last;
 		do {
@@ -105,11 +105,11 @@ public abstract class Node implements Cloneable {
 		return simplified;
 	}
 	
-	public void printTree(){
+	public void printTree() throws NodeException{
 		printTree(this, 0);
 	}
 	
-	public void printTree(Node n, int depth){
+	public void printTree(Node n, int depth) throws NodeException{
 		String space = "";
 		for (int i = 0; i < depth; i++){
 			space += "  ";
@@ -121,12 +121,7 @@ public abstract class Node implements Cloneable {
 			}
 		}
 		else{
-			try {
-				System.out.println( space + n.toStringRepresentation());
-			} catch (NodeException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			System.out.println( space + n.toStringRepresentation());
 		}
 	}
 
@@ -134,7 +129,7 @@ public abstract class Node implements Cloneable {
 	
 	public abstract Vector<Node> splitOnMultiplication();
 	
-	public abstract Node standardFormat();
+	public abstract Node standardFormat() throws NodeException;
 	
 	protected abstract int standardCompare(Node other);
 	

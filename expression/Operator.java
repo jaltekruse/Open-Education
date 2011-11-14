@@ -50,10 +50,10 @@ public abstract class Operator {
 		return null;
 	}
 
-	public String toString(Vector<Node> children) {
+	public String toString(Vector<Node> children) throws NodeException {
 		Vector<String> stringChildren = new Vector<String>();
 		for (Node c : children)
-			stringChildren.add(c.toString());
+			stringChildren.add(c.toStringRepresentation());
 		return format(stringChildren);
 	}
 	

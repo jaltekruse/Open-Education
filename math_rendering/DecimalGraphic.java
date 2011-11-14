@@ -36,7 +36,7 @@ public class DecimalGraphic extends NodeGraphic<Number> {
 		getRootNodeGraphic().getGraphics().setFont(getFont());
 		getRootNodeGraphic().getGraphics().setColor(Color.BLACK);
 		getRootNodeGraphic().getGraphics().drawString(
-				getValue().toString(), getX1(), getY2());
+				getValue().toStringRepresentation(), getX1(), getY2());
 	}
 	
 	public void drawSelection(){
@@ -208,12 +208,8 @@ public class DecimalGraphic extends NodeGraphic<Number> {
 		// TODO right now prints toString representation, need to make horizonal, and slash representations soon
 		g.setFont(f);
 		setFont(f);
-<<<<<<< HEAD
-		String s = getValue().toString();
-		System.out.println("request size dec:" + s);
-=======
 		String s = getValue().toStringRepresentation();
->>>>>>> newParser
+		System.out.println("number is: " + s);
 		int[] size = new int[2];
 		size[0] = getRootNodeGraphic().getStringWidth(s, f);
 		size[1] = getRootNodeGraphic().getFontHeight(f);

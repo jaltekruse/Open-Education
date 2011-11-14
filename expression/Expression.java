@@ -47,33 +47,22 @@ public class Expression extends Node {
 	}
 	
 	@Override
-<<<<<<< HEAD
-	public String toString() {
-		if ( !(o instanceof Operator.Equals))
-			return parenthetize(o.toString(children));
-		return o.toString(children);
-=======
 	public String toStringRepresentation() throws NodeException {
 		if ( ! (o instanceof Operator.Equals) && displayParentheses())
 			return parenthetize(o.toString(children));
 		else
 			return o.toString(children);
->>>>>>> newParser
 	}
 	
 	@Override
-	public Expression clone() {
+	public Expression cloneNode() throws NodeException {
 		Vector<Node> clone = new Vector<Node>();
-		for (Node child : children)
-<<<<<<< HEAD
-			clone.add(child.clone());
-		return new Expression(o.clone(), clone);
-=======
+		for (Node child : children){
 			clone.add(child.cloneNode());
+		}
 		Expression e = new Expression(o.clone(), clone);
 		e.setDisplayParentheses(displayParentheses());
 		return e;
->>>>>>> newParser
 	}
 
 	@Override
@@ -131,7 +120,7 @@ public class Expression extends Node {
 	}
 
 	@Override
-	public Node numericSimplify() {
+	public Node numericSimplify() throws NodeException {
 		Vector<Node> simplifiedChildren = new Vector<Node>();
 		Vector<Number> numbers = new Vector<Number>();
 		Node simplified;
@@ -140,7 +129,7 @@ public class Expression extends Node {
 			simplified = c.numericSimplify();
 			simplifiedChildren.add(simplified);
 			if (simplified instanceof Number) {
-				numbers.add((Number) simplified.clone());
+				numbers.add((Number) simplified.cloneNode());
 			} else {
 				totallyNumeric = false;
 			}
@@ -152,7 +141,7 @@ public class Expression extends Node {
 	}
 	
 	@Override
-	public Node smartNumericSimplify() {
+	public Node smartNumericSimplify() throws NodeException {
 		Vector<Node> addends = splitOnAddition();
 		if (addends.size() > 1) {
 			Vector<Node> simplified = new Vector<Node>();
@@ -241,7 +230,7 @@ public class Expression extends Node {
 	}
 
 	@Override
-	public Node collectLikeTerms() {
+	public Node collectLikeTerms() throws NodeException {
 		Vector<Node> split = splitOnAddition();
 		Vector<Node> terms = new Vector<Node>();
 		if (split.size() == 1) {
@@ -261,7 +250,7 @@ public class Expression extends Node {
 			factors = term.splitOnMultiplication();
 			collectedFactors = new Vector<Node>();
 			for (Node f : factors) {
-				collectedFactors.add(f.clone());
+				collectedFactors.add(f.cloneNode());
 			}
 			expandedTerms.add(collectedFactors);
 		}
@@ -334,7 +323,7 @@ public class Expression extends Node {
 	}
 	
 	@Override
-	public Node standardFormat() {
+	public Node standardFormat() throws NodeException {
 		Vector<Node> terms = splitOnAddition();
 		
 		if (terms.size() > 1) {

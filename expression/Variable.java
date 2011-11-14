@@ -36,18 +36,9 @@ public class Variable extends Identifier {
 	}
 	
 	@Override
-<<<<<<< HEAD
-	public Variable clone() {
-		try {
-			return new Variable(getIdentifier(), index);
-		} catch (IdentifierException e) {
-			return null;
-		}
-=======
-	public Variable cloneNode() throws NodeException {
+	public Variable cloneNode() throws IdentifierException {
 		Variable v = new Variable(getIdentifier(), index);
 		v.setDisplayParentheses(displayParentheses());
 		return v;
->>>>>>> newParser
 	}
 }
