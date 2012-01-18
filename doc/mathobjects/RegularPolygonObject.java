@@ -2,14 +2,16 @@ package doc.mathobjects;
 
 import doc.GridPoint;
 import doc.Page;
-import doc_gui.attributes.IntegerAttribute;
-import doc_gui.attributes.MathObjectAttribute;
+import doc.attributes.AttributeException;
+import doc.attributes.IntegerAttribute;
+import doc.attributes.ListAttribute;
+import doc.attributes.MathObjectAttribute;
 
 public class RegularPolygonObject extends PolygonObject {
 	
 	public static final String NUM_SIDES = "numSides";
 	
-	public RegularPolygonObject(Page p){
+	public RegularPolygonObject(MathObjectContainer p){
 		super(p);
 		getAttributeWithName(NUM_SIDES).setValue(6);
 		generateVertices();
@@ -48,10 +50,14 @@ public class RegularPolygonObject extends PolygonObject {
 	
 	@Override
 	public RegularPolygonObject clone() {
-		RegularPolygonObject o = new RegularPolygonObject(getParentPage());
+		RegularPolygonObject o = new RegularPolygonObject(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){
 			o.addAttribute( mAtt.clone());
+		}
+		o.removeAllLists();
+		for ( ListAttribute list : getLists()){
+			o.addList(list.clone());
 		}
 		return o;
 	}

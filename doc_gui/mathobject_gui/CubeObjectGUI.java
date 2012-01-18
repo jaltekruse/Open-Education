@@ -10,7 +10,7 @@ import java.awt.Polygon;
 import doc.GridPoint;
 import doc.mathobjects.CubeObject;
 
-public class CubeObjectGUI extends MathObjectGUI{
+public class CubeObjectGUI extends MathObjectGUI<CubeObject>{
 
 	public void drawMathObject(CubeObject object, Graphics g, Point pageOrigin, float zoomLevel){
 		g.setColor(Color.BLACK);

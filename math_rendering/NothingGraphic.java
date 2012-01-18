@@ -14,12 +14,14 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.util.Vector;
 
+import expression.EmptyValue;
+
 import tree.MissingValue;
 import tree.Expression;
 
-public class NothingGraphic extends NodeGraphic {
+public class NothingGraphic extends NodeGraphic<EmptyValue> {
 
-	public NothingGraphic(MissingValue v, RootNodeGraphic compExGraphic) {
+	public NothingGraphic(EmptyValue v, RootNodeGraphic compExGraphic) {
 		super(v, compExGraphic);
 		setMostInnerWest(this);
 		setMostInnerEast(this);

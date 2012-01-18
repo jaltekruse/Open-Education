@@ -348,7 +348,7 @@ public abstract class Operator {
 
 		@Override
 		public Operator clone() {
-			return new LogBase();
+			return new RandomGenerator();
 		}
 	}
 	
@@ -363,8 +363,18 @@ public abstract class Operator {
 
 		@Override
 		public Number safeEval(Vector<Number> children) {
-			return new Number( ( random.nextInt((int) ( children.get(1).getValue() -
-					children.get(0).getValue()  + 1) ) + (int) children.get(0).getValue() ) );
+			Number newNum = null;
+			do{
+//				try {
+//					Thread.sleep(2);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+				newNum = new Number( ( random.nextInt((int) ( children.get(1).getValue() -
+						children.get(0).getValue()  + 1) ) + (int) children.get(0).getValue() ) );
+			} while( newNum.getValue() == 0);
+			return newNum;
 		}
 
 		@Override
@@ -374,7 +384,7 @@ public abstract class Operator {
 
 		@Override
 		public Operator clone() {
-			return new LogBase();
+			return new RandomIntGenerator();
 		}
 	}
 	

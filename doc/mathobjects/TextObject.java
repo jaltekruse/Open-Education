@@ -9,10 +9,12 @@
 package doc.mathobjects;
 
 import doc.Page;
-import doc_gui.attributes.BooleanAttribute;
-import doc_gui.attributes.IntegerAttribute;
-import doc_gui.attributes.MathObjectAttribute;
-import doc_gui.attributes.StringAttribute;
+import doc.attributes.AttributeException;
+import doc.attributes.BooleanAttribute;
+import doc.attributes.IntegerAttribute;
+import doc.attributes.ListAttribute;
+import doc.attributes.MathObjectAttribute;
+import doc.attributes.StringAttribute;
 
 public class TextObject extends MathObject {
 	
@@ -20,24 +22,24 @@ public class TextObject extends MathObject {
 	public static final String FONT_SIZE = "fontSize";
 	public static final String SHOW_BOX = "showBox";
 	
-	public TextObject(Page p) {
+	public TextObject(MathObjectContainer p) {
 		super(p);
 		getAttributeWithName(FONT_SIZE).setValue(12);
 		getAttributeWithName(TEXT).setValue("");
-		getAttributeWithName(SHOW_BOX).setValue(true);
+		getAttributeWithName(SHOW_BOX).setValue(false);
 	}
 	
-	public TextObject(Page p, int x, int y, int width, int height, int fontSize, String s){
+	public TextObject(MathObjectContainer p, int x, int y, int width, int height, int fontSize, String s){
 		super(p, x, y, width, height);
 		getAttributeWithName(FONT_SIZE).setValue(fontSize);
 		getAttributeWithName(TEXT).setValue(s);
-		getAttributeWithName(SHOW_BOX).setValue(true);
+		getAttributeWithName(SHOW_BOX).setValue(false);
 	}
 
 	public TextObject() {
 		getAttributeWithName(FONT_SIZE).setValue(12);
 		getAttributeWithName(TEXT).setValue("");
-		getAttributeWithName(SHOW_BOX).setValue(true);
+		getAttributeWithName(SHOW_BOX).setValue(false);
 	}
 
 	@Override
@@ -57,10 +59,14 @@ public class TextObject extends MathObject {
 	
 	@Override
 	public TextObject clone() {
-		TextObject o = new TextObject(getParentPage());
+		TextObject o = new TextObject(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){
 			o.addAttribute( mAtt.clone());
+		}
+		o.removeAllLists();
+		for ( ListAttribute list : getLists()){
+			o.addList(list.clone());
 		}
 		return o;
 	}
@@ -68,7 +74,7 @@ public class TextObject extends MathObject {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return TEXT_OBJECT;
+		return TEXT_OBJ;
 	}
 	
 	public String getText(){

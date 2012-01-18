@@ -2,18 +2,19 @@ package doc.mathobjects;
 
 import doc.GridPoint;
 import doc.Page;
-import doc_gui.attributes.MathObjectAttribute;
+import doc.attributes.ListAttribute;
+import doc.attributes.MathObjectAttribute;
 
 public class ConnectedDrawing extends MathObject {
 
 	protected GridPoint[] points;
 	
-	public ConnectedDrawing(Page p, int x, int y, int w, int h) {
+	public ConnectedDrawing(MathObjectContainer p, int x, int y, int w, int h) {
 		super(p, x, y, w, h);
 		// TODO Auto-generated constructor stub
 	}
 	
-	public ConnectedDrawing(Page p){
+	public ConnectedDrawing(MathObjectContainer p){
 		super(p);
 	}
 
@@ -32,10 +33,14 @@ public class ConnectedDrawing extends MathObject {
 	@Override
 	public ConnectedDrawing clone() {
 		// TODO Auto-generated method stub
-		ConnectedDrawing o = new ConnectedDrawing(getParentPage());
+		ConnectedDrawing o = new ConnectedDrawing(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){
 			o.addAttribute( mAtt.clone());
+		}
+		o.removeAllLists();
+		for ( ListAttribute list : getLists()){
+			o.addList(list.clone());
 		}
 		return o;
 	}

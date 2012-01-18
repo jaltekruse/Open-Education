@@ -72,6 +72,27 @@ public class UnaryExpression extends Expression {
 	}
 	
 	@Override
+	public boolean allChildrenFilled() {
+		// TODO Auto-generated method stub
+		if ( child != null){
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean canHoldChildren() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	
+	@Override
+	public int getArity() {
+		// TODO Auto-generated method stub
+		return 1;
+	}
+	
+	@Override
 	public String toString(){
 		String result = new String();
 //		System.out.println("op:");
@@ -89,5 +110,27 @@ public class UnaryExpression extends Expression {
 			result += ")";
 		}
 		return result;
+	}
+
+	@Override
+	public boolean needsChildToLeft() {
+		// TODO Auto-generated method stub
+		if ( getOperator().isUnaryPost()){
+			return child == null;
+		}
+		else{
+			return false;
+		}
+	}
+
+	@Override
+	public boolean needsChildToRight() {
+		// TODO Auto-generated method stub
+		if ( getOperator().isUnaryPost()){
+			return false;
+		}
+		else{
+			return child == null;
+		}
 	}
 }

@@ -8,15 +8,16 @@
 
 package doc_gui.mathobject_gui;
 
-import gui.graph.NumberLine;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import doc.mathobjects.NumberLineObject;
-import doc_gui.attributes.DoubleAttribute;
 
-public class NumberLineObjectGUI extends MathObjectGUI {
+import doc.attributes.DoubleAttribute;
+import doc.mathobjects.NumberLineObject;
+import doc_gui.graph.NumberLine;
+
+public class NumberLineObjectGUI extends MathObjectGUI<NumberLineObject> {
 
 	private NumberLine numLine;
 	

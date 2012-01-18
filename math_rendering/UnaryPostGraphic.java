@@ -12,14 +12,14 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
-import tree.UnaryExpression;
-import tree.Expression;
+import expression.Expression;
+import expression.Node;
 
 public class UnaryPostGraphic extends UnaryExpressionGraphic {
 
 private int space;
 	
-	public UnaryPostGraphic(UnaryExpression v,
+	public UnaryPostGraphic(Expression v,
 			RootNodeGraphic compExGraphic) {
 		super(v, compExGraphic);
 		setMostInnerNorth(this);
@@ -59,7 +59,7 @@ private int space;
 		
 		space = (int) (2 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
 		
-		Expression tempChild = ((UnaryExpression)super.getValue()).getChild();
+		Node tempChild = getValue().getChild(0);
 		NodeGraphic childValGraphic = null;
 		int[] childSize = {0,0};
 		int[] symbolSize = {0, 0};

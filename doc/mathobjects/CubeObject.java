@@ -3,10 +3,12 @@ package doc.mathobjects;
 import java.awt.Color;
 import doc.GridPoint;
 import doc.Page;
-import doc_gui.attributes.BooleanAttribute;
-import doc_gui.attributes.ColorAttribute;
-import doc_gui.attributes.IntegerAttribute;
-import doc_gui.attributes.MathObjectAttribute;
+import doc.attributes.BooleanAttribute;
+import doc.attributes.ColorAttribute;
+import doc.attributes.EnumeratedAttribute;
+import doc.attributes.IntegerAttribute;
+import doc.attributes.ListAttribute;
+import doc.attributes.MathObjectAttribute;
 
 public class CubeObject extends MathObject{
 	
@@ -18,14 +20,14 @@ public class CubeObject extends MathObject{
 	private static GridPoint innerPoint = new GridPoint(.75, .25);
 
 	
-	public CubeObject(Page p, int x, int y, int w, int h, int t) {
+	public CubeObject(MathObjectContainer p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h);
 		getAttributeWithName("thickness").setValue(t);
 		addAction(PolygonObject.FLIP_VERTICALLY);
 		addAction(PolygonObject.FLIP_HORIZONTALLY);
 	}
 	
-	public CubeObject(Page p){
+	public CubeObject(MathObjectContainer p){
 		super(p);
 		getAttributeWithName("thickness").setValue(1);
 		addAction(PolygonObject.FLIP_VERTICALLY);
@@ -41,10 +43,12 @@ public class CubeObject extends MathObject{
 	@Override
 	public void performSpecialObjectAction(String s){
 		if (s.equals(PolygonObject.FLIP_HORIZONTALLY)){
-			((BooleanAttribute)getAttributeWithName("flip horizontally")).setValue( ! isFlippedHorizontally());
+			((BooleanAttribute)getAttributeWithName(
+					"flip horizontally")).setValue( ! isFlippedHorizontally());
 		}
 		else if (s.equals(PolygonObject.FLIP_VERTICALLY)){
-			((BooleanAttribute)getAttributeWithName("flip vertically")).setValue( ! isFlippedVertically());
+			((BooleanAttribute)getAttributeWithName(
+					"flip vertically")).setValue( ! isFlippedVertically());
 		}
 	}
 	
@@ -105,10 +109,14 @@ public class CubeObject extends MathObject{
 	
 	@Override
 	public CubeObject clone() {
-		CubeObject o = new CubeObject(getParentPage());
+		CubeObject o = new CubeObject(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){
 			o.addAttribute( mAtt.clone());
+		}
+		o.removeAllLists();
+		for ( ListAttribute list : getLists()){
+			o.addList(list.clone());
 		}
 		return o;
 	}

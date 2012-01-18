@@ -13,10 +13,10 @@ import java.util.Vector;
 
 import doc.GridPoint;
 import doc.Page;
-import doc_gui.attributes.ColorAttribute;
-import doc_gui.attributes.GridPointAttribute;
-import doc_gui.attributes.IntegerAttribute;
-import doc_gui.attributes.MathObjectAttribute;
+import doc.attributes.ColorAttribute;
+import doc.attributes.GridPointAttribute;
+import doc.attributes.IntegerAttribute;
+import doc.attributes.MathObjectAttribute;
 
 public abstract class PolygonObject extends MathObject {
 	
@@ -27,14 +27,14 @@ public abstract class PolygonObject extends MathObject {
 	
 	public static final String ROTATE_CLOCKWISE_90 = "rotate clockwise (90)";
 	
-	public PolygonObject(Page p, int x, int y, int w, int h, int t) {
+	public PolygonObject(MathObjectContainer p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h);
 		addAttribute(new IntegerAttribute("thickness", 1, 20));
 		addAttribute(new ColorAttribute("fill color"));
 		getAttributeWithName("thickness").setValue(t);
 	}
 	
-	public PolygonObject(Page p){
+	public PolygonObject(MathObjectContainer p){
 		super(p);
 		addAttribute(new IntegerAttribute("thickness", 1, 20));
 		addAttribute(new ColorAttribute("fill color"));

@@ -1,0 +1,211 @@
+<OpenNotebookDoc version="0.1" filename="Word Problems" author="" date="1/12/2012">
+<generators>
+</generators>
+<Page>
+<Problem>
+<int name="xPos" value="67"/>
+<int name="yPos" value="43"/>
+<int name="width" value="192"/>
+<int name="height" value="227"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="11/3/2011"/>
+<string name="scripts" value="l = randomInt(15,35); w=randomInt(8,18); d=randomInt(3,11); z=l*w*d;"/>
+<uuid name="uuid" value="5690128b-8871-4b0f-ad26-ae86fdc11c69"/>
+<Cube>
+<int name="xPos" value="68"/>
+<int name="yPos" value="152"/>
+<int name="width" value="178"/>
+<int name="height" value="81"/>
+<int name="thickness" value="1"/>
+<color name="fill color" value="null"/>
+<boolean name="flip vertically" value="false"/>
+<boolean name="flip horizontally" value="false"/>
+</Cube>
+<Text>
+<int name="xPos" value="183"/>
+<int name="yPos" value="193"/>
+<int name="width" value="16"/>
+<int name="height" value="24"/>
+<string name="text" value="?"/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="215"/>
+<int name="yPos" value="167"/>
+<int name="width" value="29"/>
+<int name="height" value="18"/>
+<string name="text" value="w"/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<AnswerBox>
+<int name="xPos" value="145"/>
+<int name="yPos" value="247"/>
+<int name="width" value="58"/>
+<int name="height" value="23"/>
+<string name="answer" value=""/>
+<int name="fontSize" value="12"/>
+</AnswerBox>
+<Text>
+<int name="xPos" value="163"/>
+<int name="yPos" value="133"/>
+<int name="width" value="47"/>
+<int name="height" value="20"/>
+<string name="text" value="l"/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="67"/>
+<int name="yPos" value="43"/>
+<int name="width" value="192"/>
+<int name="height" value="87"/>
+<string name="text" value="There is a rectangular pool advertized to hold z cubic feet of water. If the top of the pool is w X l ft, and the bottom is flat, how deep is the pool?"/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="97"/>
+<int name="yPos" value="248"/>
+<int name="width" value="46"/>
+<int name="height" value="19"/>
+<string name="text" value="depth:"/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+</Problem>
+<Problem>
+<int name="xPos" value="47"/>
+<int name="yPos" value="310"/>
+<int name="width" value="238"/>
+<int name="height" value="182"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="11/3/2011"/>
+<string name="scripts" value="a=randomInt(5, 10); c=randomInt(2,5); d=randomInt(3,6); e=randomInt(3,9); b=randomInt(2,5); p=2*(a*b-c) + 2*(d*b+e);"/>
+<uuid name="uuid" value="32ded413-f312-473f-aa40-e4f60a6e59fa"/>
+<Parallelogram>
+<int name="xPos" value="78"/>
+<int name="yPos" value="390"/>
+<int name="width" value="154"/>
+<int name="height" value="61"/>
+<int name="thickness" value="1"/>
+<color name="fill color" value="null"/>
+<point name="point1" value="(0.25,0.0)"/>
+<point name="point2" value="(1.0,0.0)"/>
+<point name="point3" value="(0.75,1.0)"/>
+<point name="point4" value="(0.0,1.0)"/>
+</Parallelogram>
+<AnswerBox>
+<int name="xPos" value="144"/>
+<int name="yPos" value="457"/>
+<int name="width" value="56"/>
+<int name="height" value="35"/>
+<string name="answer" value=""/>
+<int name="fontSize" value="12"/>
+</AnswerBox>
+<Expression>
+<int name="xPos" value="228"/>
+<int name="yPos" value="419"/>
+<int name="width" value="46"/>
+<int name="height" value="18"/>
+<string name="expression" value="ax-c"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+<Text>
+<int name="xPos" value="109"/>
+<int name="yPos" value="459"/>
+<int name="width" value="38"/>
+<int name="height" value="31"/>
+<string name="text" value="x="/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Expression>
+<int name="xPos" value="139"/>
+<int name="yPos" value="366"/>
+<int name="width" value="53"/>
+<int name="height" value="18"/>
+<string name="expression" value="dx+e"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+<Text>
+<int name="xPos" value="47"/>
+<int name="yPos" value="310"/>
+<int name="width" value="238"/>
+<int name="height" value="43"/>
+<string name="text" value="What is the value of x if the perimeter of the parellelogram is p?"/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+</Problem>
+<Problem>
+<int name="xPos" value="359"/>
+<int name="yPos" value="44"/>
+<int name="width" value="172"/>
+<int name="height" value="189"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="11/3/2011"/>
+<string name="scripts" value="a=randomInt(3,20)"/>
+<uuid name="uuid" value="d024c159-37c9-4804-b346-b98dbaafa7ab"/>
+<Text>
+<int name="xPos" value="359"/>
+<int name="yPos" value="158"/>
+<int name="width" value="172"/>
+<int name="height" value="75"/>
+<string name="text" value="Find the area of the region that is inside of the circle, and outside of the square."/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<AnswerBox>
+<int name="xPos" value="418"/>
+<int name="yPos" value="204"/>
+<int name="width" value="110"/>
+<int name="height" value="27"/>
+<string name="answer" value=""/>
+<int name="fontSize" value="12"/>
+</AnswerBox>
+<Oval>
+<int name="xPos" value="400"/>
+<int name="yPos" value="44"/>
+<int name="width" value="100"/>
+<int name="height" value="100"/>
+<int name="thickness" value="1"/>
+<color name="fill color" value="null"/>
+</Oval>
+<Rectangle>
+<int name="xPos" value="414"/>
+<int name="yPos" value="58"/>
+<int name="width" value="71"/>
+<int name="height" value="71"/>
+<int name="thickness" value="1"/>
+<color name="fill color" value="null"/>
+<point name="point1" value="(0.0,0.0)"/>
+<point name="point2" value="(1.0,0.0)"/>
+<point name="point3" value="(1.0,1.0)"/>
+<point name="point4" value="(0.0,1.0)"/>
+</Rectangle>
+<Text>
+<int name="xPos" value="461"/>
+<int name="yPos" value="85"/>
+<int name="width" value="28"/>
+<int name="height" value="21"/>
+<string name="text" value="a"/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+</Problem>
+</Page>
+</OpenNotebookDoc>

@@ -1,0 +1,262 @@
+<OpenNotebookDoc version="0.1" filename="Teacher Mode Tutorial" author="" date="1/18/2012">
+<generators>
+</generators>
+<Page>
+<Text>
+<int name="xPos" value="46"/>
+<int name="yPos" value="620"/>
+<int name="width" value="523"/>
+<int name="height" value="87"/>
+<string name="text" value="Next try editing the expression below. You must edit it as just text in the properties frame, but it will be rendered with proper math notation on the document. To create your own expressions later, you must use the separate button next to &quot;text&quot;. Expressions within text boxes will not be rendered. You can see an example of this to the right of the expression."/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Expression>
+<int name="xPos" value="50"/>
+<int name="yPos" value="725"/>
+<int name="width" value="170"/>
+<int name="height" value="25"/>
+<string name="expression" value="3x^2+5x+3=sqrt(6x-4)"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+<Text>
+<int name="xPos" value="339"/>
+<int name="yPos" value="727"/>
+<int name="width" value="184"/>
+<int name="height" value="19"/>
+<string name="text" value="3x^2+5x+3=sqrt(6x-4)"/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="55"/>
+<int name="yPos" value="702"/>
+<int name="width" value="190"/>
+<int name="height" value="12"/>
+<string name="text" value="Rendered expression:"/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="337"/>
+<int name="yPos" value="702"/>
+<int name="width" value="145"/>
+<int name="height" value="11"/>
+<string name="text" value="Text box:"/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="41"/>
+<int name="yPos" value="42"/>
+<int name="width" value="530"/>
+<int name="height" value="31"/>
+<string name="text" value="Open Notebook - Teacher Mode Tutorial "/>
+<int name="fontSize" value="18"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="45"/>
+<int name="yPos" value="461"/>
+<int name="width" value="212"/>
+<int name="height" value="78"/>
+<string name="text" value="After you clear the space, try adding a graph and graphing an equation, such as 2x+1. The graph will add &quot;y=&quot; for you."/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="45"/>
+<int name="yPos" value="541"/>
+<int name="width" value="214"/>
+<int name="height" value="66"/>
+<string name="text" value="To graph more than one expression click the &quot;Add new&quot; button at the bottom of the frame."/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="45"/>
+<int name="yPos" value="343"/>
+<int name="width" value="218"/>
+<int name="height" value="112"/>
+<string name="text" value="Use the trash can on the top toolbar to get rid of your object when it is selected. If you hit the button when the page highlighted in blue the page will be deleted. This is not recommended as it will remove this page of the tutorial."/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="45"/>
+<int name="yPos" value="228"/>
+<int name="width" value="229"/>
+<int name="height" value="120"/>
+<string name="text" value="You should see a frame appear above your document with buttons and input fields. You can use this to adjust the properties of your object. Change a few of your object&#039;s properties to see what you can do with it."/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="43"/>
+<int name="yPos" value="191"/>
+<int name="width" value="517"/>
+<int name="height" value="39"/>
+<string name="text" value="To begin, select one of the shapes on the bottom toolbar. Then click and drag your mouse on the page to place it. Try adding something in the space below."/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="41"/>
+<int name="yPos" value="126"/>
+<int name="width" value="532"/>
+<int name="height" value="68"/>
+<string name="text" value="The application has two modes, one for creating exercises and one for completing them. If you started the application in student mode, use the &quot;Mode&quot; option on the top menu to switch to teacher mode before starting this tutorial, or try opening the student mode tutorial instead."/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="41"/>
+<int name="yPos" value="75"/>
+<int name="width" value="526"/>
+<int name="height" value="48"/>
+<string name="text" value="Welcome to Open Notebook, a brand new way to create and complete math homework. In the next few minutes you will learn everything you need to start creating your own interactive worksheets."/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+</Page>
+<Page>
+<Text>
+<int name="xPos" value="42"/>
+<int name="yPos" value="40"/>
+<int name="width" value="532"/>
+<int name="height" value="49"/>
+<string name="text" value="You will see a number of different functions in the expression properties frame dealing with modifying expressions and applying operations. These are mostly for use by students solving probelms, so they are covered in the student tutorial."/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="47"/>
+<int name="yPos" value="249"/>
+<int name="width" value="530"/>
+<int name="height" value="175"/>
+<string name="text" value="You have likely figured out that objects can be resized using the small circles on their corners, and moved by clicking and dragging them. To make moving multiple objects easier you can put them into a group. To make a group, click on the document and drag your mouse. You will see a box forming and once it collides with an object, the object will be selected. If you contact multiple objects with the box, they will be added to a group and highlighted with blue rectangles. Once they are in a group you can click and drag to move the group, or use the small circles to resize it. When you click away from the group, the objects will lose their association. This allows for quick movements of related objects without permanently linking them. To make a group permanent click the button on the top toolbar with three objects surrounded by a square. To ungroup a set of items use the button next to it. Try grouping and ungrouping the objects below that form a problem."/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="42"/>
+<int name="yPos" value="223"/>
+<int name="width" value="193"/>
+<int name="height" value="29"/>
+<string name="text" value="Grouping Objects"/>
+<int name="fontSize" value="15"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="46"/>
+<int name="yPos" value="102"/>
+<int name="width" value="352"/>
+<int name="height" value="112"/>
+<string name="text" value="There is one more important type of object to look at, the answer box. To prevent students from editing problems and directions, the student mode does not allow students to change most of the objects on your documents. If you want a student to record a number, word or sentence, you can make an answer box. They appear in blue if unanswered and green if something has been entered."/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<AnswerBox>
+<int name="xPos" value="420"/>
+<int name="yPos" value="119"/>
+<int name="width" value="102"/>
+<int name="height" value="34"/>
+<string name="answer" value=""/>
+<int name="fontSize" value="12"/>
+</AnswerBox>
+<Text>
+<int name="xPos" value="298"/>
+<int name="yPos" value="469"/>
+<int name="width" value="277"/>
+<int name="height" value="161"/>
+<string name="text" value="The problem shown to the left seems a bit off. Although the answer could be written 2a+2b, you likely want to have numbers in place of the variables. Thankfully, there is no need write new numbers every time you want a problem like this. Open Notebook comes with an easy system for generating values to substitute into variables, and then automatically generating worksheets for you."/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="307"/>
+<int name="yPos" value="436"/>
+<int name="width" value="231"/>
+<int name="height" value="23"/>
+<string name="text" value="Generating Problems"/>
+<int name="fontSize" value="15"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="47"/>
+<int name="yPos" value="623"/>
+<int name="width" value="517"/>
+<int name="height" value="102"/>
+<string name="text" value="To see an example of this, use the &quot;Sample Docs&quot; button at the top to open the proportions worksheet. When it is opened, a new tab will be added to the application. This is where the button with the magic wand comes in. When you are viewing the proportions worksheet click it to generate a new version. Open Notebook comes with many of these problem formulas ready to use; to learn more about adding them to documents and writing your own formulas see the problem generation tutorial."/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="237"/>
+<int name="yPos" value="530"/>
+<int name="width" value="28"/>
+<int name="height" value="21"/>
+<string name="text" value="b"/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Parallelogram>
+<int name="xPos" value="63"/>
+<int name="yPos" value="506"/>
+<int name="width" value="189"/>
+<int name="height" value="47"/>
+<int name="thickness" value="1"/>
+<color name="fill color" value="null"/>
+<point name="point1" value="(0.25,0.0)"/>
+<point name="point2" value="(1.0,0.0)"/>
+<point name="point3" value="(0.75,1.0)"/>
+<point name="point4" value="(0.0,1.0)"/>
+</Parallelogram>
+<Text>
+<int name="xPos" value="161"/>
+<int name="yPos" value="489"/>
+<int name="width" value="39"/>
+<int name="height" value="20"/>
+<string name="text" value="a"/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="73"/>
+<int name="yPos" value="442"/>
+<int name="width" value="192"/>
+<int name="height" value="45"/>
+<string name="text" value="What is the perimeter of this paralellogram?"/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<AnswerBox>
+<int name="xPos" value="178"/>
+<int name="yPos" value="462"/>
+<int name="width" value="71"/>
+<int name="height" value="24"/>
+<string name="answer" value=""/>
+<int name="fontSize" value="12"/>
+</AnswerBox>
+<Text>
+<int name="xPos" value="426"/>
+<int name="yPos" value="96"/>
+<int name="width" value="119"/>
+<int name="height" value="22"/>
+<string name="text" value="Answer boxes:"/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<AnswerBox>
+<int name="xPos" value="421"/>
+<int name="yPos" value="164"/>
+<int name="width" value="102"/>
+<int name="height" value="34"/>
+<string name="answer" value="x=5"/>
+<int name="fontSize" value="12"/>
+</AnswerBox>
+</Page>
+</OpenNotebookDoc>

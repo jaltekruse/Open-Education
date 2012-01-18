@@ -24,7 +24,7 @@ public class ExpressionParser {
 	//persistent storage of constants, for more info see Constant and ConstantStorage classes
 	public ConstantStorage CONSTLIST;
 	
-	private int currCharNum, elementCount;
+	private int currCharNum;
 	private char currChar;
 	
 	//counter for the number of parenthesis found, if open paren found add one, if close paren found subtract one
@@ -77,7 +77,6 @@ public class ExpressionParser {
 		matchedParens = 0;
 		e = null;
 		currCharNum = 0;
-		elementCount = 0;
 		currChar = eqtn.charAt(currCharNum);
 		vals = new ArrayList<Expression>();
 		Expression root;
@@ -85,25 +84,28 @@ public class ExpressionParser {
 		//the main loop
 		while (currCharNum <= eqtn.length() - 1) {
 			parseElement(eqtn, currCharNum);
-			elementCount++;
 			//System.out.println("lengthLast: " + lengthLast);
 			currCharNum += lengthLast;
 			
 			//uncomment the next lines to print out the expression 
 			//as the loop executes
-//			if (e != null){
-//				root = e;
-//				while (root.hasParent()){
-//					root = root.getParent();
-//				}
-//				System.out.println(root.toString());
-//			}
-		}
-		if (matchedParens == 1)
-		{//there was one open paren that did not get close, assume one at the end
-			hitCloseParen();
+			if (e != null){
+				root = e;
+				while (root.hasParent()){
+					root = root.getParent();
+				}
+//				System.out.println("parsing expression: " + root.toString());
+//				System.out.println("e: " + e.toString());
+			}
 		}
 		
+		// temporarily disable this functionality to match other parser
+		// will add it back when there is only one parser in the system
+//		if (matchedParens == 1)
+//		{//there was one open paren that did not get close, assume one at the end
+//			hitCloseParen();
+//		}
+		if (false);
 		
 		else if (matchedParens != 0){
 			throw new ParseException("Did not match parenthesis");
@@ -148,9 +150,9 @@ public class ExpressionParser {
 			addBinOp(Operator.ADD);
 			break;
 		case '-':
-			if (vals.isEmpty())
-			{// all values that have been read have been incorporated into the tree
-				//therefore there is no left child for a subtraction, interpret as negation
+			if ( vals.isEmpty() && (e == null || e.needsChildToRight()) )
+			{// unary expression does not store child right away
+				// so 
 				addUnaryOp(Operator.NEG);
 				return;
 			}
@@ -198,13 +200,13 @@ public class ExpressionParser {
 		}
 
 		if ((currChar <= '9' && currChar >= '0') || currChar == '.') {
-			scanNum(s, currCharNum);
+			readNum(s, currCharNum);
 			return;
 		}
 		
 		else if ((currChar <= 'Z' && currChar >= 'A')
 				|| (currChar <= 'z' && currChar >= 'a') || currChar == '_') {
-			scanVar(s, pos);
+			readVar(s, pos);
 			return;
 		}
 
@@ -246,13 +248,20 @@ public class ExpressionParser {
 				numParensHit++;;
 			}
 		}
-		if (numParensHit == 2)
-			e = ((UnaryExpression)e).getChild();
+		if ( e.getParent() instanceof UnaryExpression){
+			e = e.getParent();
+			return;
+		}
+		
+		// I don't believe these lines should ever be needed
+		// but they were here for some time, so I'll ;eave them from now
+//		if (numParensHit == 2)
+//			e = ((UnaryExpression)e).getChild();
 		
 	}
 
 	/**
-	 * Scans a Number. Takes the string being parsed, and the position at which
+	 * Reads a Number. Takes the string being parsed, and the position at which
 	 * to begin. Actual scanning is done by the standard java Double scan
 	 * function. Length of the number in the string is determined in a basic
 	 * loop.
@@ -262,7 +271,7 @@ public class ExpressionParser {
 	 * @return a Decimal object
 	 * @throws ParseException 
 	 */
-	public void scanNum(String s, int pos) throws ParseException {
+	public void readNum(String s, int pos) throws ParseException {
 		int length = 0, numDecimalPts = 0;
 		boolean hasPowOfTen = false, hasNegPower = false;
 		
@@ -315,7 +324,7 @@ public class ExpressionParser {
 	}
 	
 	/**
-	 * Scans a Variable. Checks if it is an existing variable or constant
+	 * Reads a Variable. Checks if it is an existing variable or constant
 	 * and if it is adds the respective element to the expression.
 	 * addNewValue
 	 * @param s - string to parse
@@ -324,7 +333,7 @@ public class ExpressionParser {
 	 * @throws ParseException 
 	 */
 
-	public void scanVar(String s, int pos) throws ParseException{
+	public void readVar(String s, int pos) throws ParseException{
 		int length = 0;
 
 		for (int i = 0; pos + i < s.length(); i++) {
@@ -420,7 +429,7 @@ public class ExpressionParser {
 			//such as frac(2,3)
 		}
 		else if(varElm.equals("solve")){
-			//will be the evaluate algebraically function, not quite done yet...
+			//will solve function algebraically, not quite done yet...
 		}
 		else{
 			Constant tempElm = (Constant) CONSTLIST.findIfStored(varElm);
@@ -431,6 +440,10 @@ public class ExpressionParser {
 				return;
 			}
 			
+			// temporarily only allow single character variables, need to find a good way
+			// to allow words in expressions without hurting functionality
+			varElm = varElm.charAt(0) + "";
+			lengthLast = 1;
 			Var newVar = VARLIST.storeVar(varElm, null);
 			newVar = new Var(newVar.getName(), null);
 			newVar.setMaster(false);
@@ -442,6 +455,13 @@ public class ExpressionParser {
 		if(e instanceof BinExpression){
 			if(((BinExpression)e).getRightChild() == null){
 				((BinExpression)e).setRightChild(v);
+//				if ( ((BinExpression)e).getOperator().isPower() &&
+//						e.getParent().getOperator() == Operator.NEG)
+//				{// hack to make parabolic functions evaluate properly
+//					// i.e.  -(x-2)^2+1
+//					System.out.println("123$!@#$#WSD@#$@WED@#e");
+//					e = e.getParent();
+//				}
 				return;
 			}
 			else{
@@ -483,6 +503,16 @@ public class ExpressionParser {
 		if (e instanceof BinExpression  && ((BinExpression)e).getRightChild() == null)
 		{// there are two binary operators adjacent, add a missing value node between them
 			addValue(new MissingValue());
+		}
+		if (e instanceof UnaryExpression && ((UnaryExpression)e).getChild() != null){
+			if ( o.isPower() && ((UnaryExpression)e).getOperator() == Operator.NEG)
+			{// allows -x^2 to evaluate correctly, need to fix this by not assuming
+				// all unary operators have the highest precedence
+				newEx.setLeftChild(((UnaryExpression)e).getChild());
+				((UnaryExpression)e).setChild(newEx);
+				e = newEx;
+				return;
+			}
 		}
 		if (e instanceof UnaryExpression && ((UnaryExpression)e).getChild() == null)
 		{
@@ -657,6 +687,44 @@ public class ExpressionParser {
 			e = newEx;
 			return;
 		}
+		else if (e instanceof UnaryExpression){
+			if (vals.size() == 1){
+				addBinOp(Operator.IMP_MULT);
+				((BinExpression)e).setRightChild(newEx);
+				e = newEx;
+				return;
+			}
+			else{
+				if (((UnaryExpression)e).hasChild()){
+					if ( o.isUnaryPost() ){
+						vals = new ArrayList<Expression>();
+						newEx.setChild(e);
+						e = newEx;
+						return;
+					}
+					else
+					{// there is a unary expression with a child, and a new 
+						// unary operator is being added
+						if( o.isPower() )
+						{// this is a modification to ensure that expressions like -x^2 are
+							// evaluated as expected 
+							
+						}
+//						System.out.println("add unary after unary");
+						addBinOp(Operator.IMP_MULT);
+						((BinExpression)e).setRightChild(newEx);
+						e = newEx;
+						return;
+					}
+				}
+				else{
+					((UnaryExpression)e).setChild(newEx);
+					e = newEx;
+					return;
+				}
+			}
+
+		}
 		else if (e instanceof UnaryExpression && newEx.isContainerOp()){
 			if (vals.size() == 1){
 				addBinOp(Operator.IMP_MULT);
@@ -667,26 +735,6 @@ public class ExpressionParser {
 			((UnaryExpression)e).setChild(newEx);
 			e = newEx;
 			return;
-		}
-		else if (e instanceof UnaryExpression){
-			if (vals.size() == 1){
-				addBinOp(Operator.IMP_MULT);
-				((BinExpression)e).setRightChild(newEx);
-				e = newEx;
-				return;
-			}
-			else{
-				if (((UnaryExpression)e).hasChild() && o.isUnaryPost()){
-					vals = new ArrayList<Expression>();
-					(newEx).setChild(e);
-					e = newEx;
-					return;
-				}
-				((UnaryExpression)e).setChild(newEx);
-				e = newEx;
-				return;
-			}
-
 		}
 		else if (e instanceof UnaryExpression && ((UnaryExpression)e).getChild() == null){
 			throw new ParseException("unary expression without a value");

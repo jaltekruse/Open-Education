@@ -1,0 +1,778 @@
+<OpenNotebookDoc version="0.1" filename="Factoring" author="null" date="1/18/2012">
+<generators>
+<Problem>
+<int name="xPos" value="43"/>
+<int name="yPos" value="361"/>
+<int name="width" value="86"/>
+<int name="height" value="24"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="11/3/2011"/>
+<string name="scripts" value="d=randomInt(-9,9); e=randomInt(-9,9); b=d+e; c=d*e;"/>
+<uuid name="uuid" value="f7f18c86-6388-4438-ba58-2bbd2c1425ea"/>
+<Expression>
+<int name="xPos" value="43"/>
+<int name="yPos" value="361"/>
+<int name="width" value="86"/>
+<int name="height" value="24"/>
+<string name="expression" value="x^2+bx+c"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</Problem>
+<Problem>
+<int name="xPos" value="44"/>
+<int name="yPos" value="80"/>
+<int name="width" value="97"/>
+<int name="height" value="24"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="11/3/2011"/>
+<string name="scripts" value="d=randomInt(1,3); e=randomInt(-9,9); f=randomInt(1,3); g=randomInt(-9,9); a=d*f; b=d*g+e*f; c=e*g;"/>
+<uuid name="uuid" value="1e3bdf31-1a78-4077-96b4-5adb7c81d63a"/>
+<Expression>
+<int name="xPos" value="44"/>
+<int name="yPos" value="80"/>
+<int name="width" value="97"/>
+<int name="height" value="24"/>
+<string name="expression" value="ax^2+bx+c"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</Problem>
+</generators>
+<Page>
+<AnswerBox>
+<int name="xPos" value="432"/>
+<int name="yPos" value="55"/>
+<int name="width" value="138"/>
+<int name="height" value="42"/>
+<string name="answer" value=""/>
+<int name="fontSize" value="12"/>
+</AnswerBox>
+<Text>
+<int name="xPos" value="43"/>
+<int name="yPos" value="64"/>
+<int name="width" value="378"/>
+<int name="height" value="24"/>
+<string name="text" value="Factoring Quadratics"/>
+<int name="fontSize" value="20"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="42"/>
+<int name="yPos" value="41"/>
+<int name="width" value="220"/>
+<int name="height" value="42"/>
+<string name="text" value="Sample Worksheet"/>
+<int name="fontSize" value="20"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="431"/>
+<int name="yPos" value="38"/>
+<int name="width" value="132"/>
+<int name="height" value="22"/>
+<string name="text" value="Name:"/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<Text>
+<int name="xPos" value="50"/>
+<int name="yPos" value="103"/>
+<int name="width" value="471"/>
+<int name="height" value="31"/>
+<string name="text" value="Factor the following quadratic equations."/>
+<int name="fontSize" value="12"/>
+<boolean name="showBox" value="false"/>
+</Text>
+<GeneratedProblem>
+<int name="xPos" value="407"/>
+<int name="yPos" value="601"/>
+<int name="width" value="118"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="1e3bdf31-1a78-4077-96b4-5adb7c81d63a"/>
+<Expression>
+<int name="xPos" value="407"/>
+<int name="yPos" value="601"/>
+<int name="width" value="118"/>
+<int name="height" value="25"/>
+<string name="expression" value="9x^2+-54x+81"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="243"/>
+<int name="yPos" value="601"/>
+<int name="width" value="118"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="1e3bdf31-1a78-4077-96b4-5adb7c81d63a"/>
+<Expression>
+<int name="xPos" value="243"/>
+<int name="yPos" value="601"/>
+<int name="width" value="118"/>
+<int name="height" value="25"/>
+<string name="expression" value="6x^2+-24x+18"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="243"/>
+<int name="yPos" value="511"/>
+<int name="width" value="110"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="1e3bdf31-1a78-4077-96b4-5adb7c81d63a"/>
+<Expression>
+<int name="xPos" value="243"/>
+<int name="yPos" value="511"/>
+<int name="width" value="110"/>
+<int name="height" value="25"/>
+<string name="expression" value="3x^2+2x+-21"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="407"/>
+<int name="yPos" value="511"/>
+<int name="width" value="114"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="1e3bdf31-1a78-4077-96b4-5adb7c81d63a"/>
+<Expression>
+<int name="xPos" value="407"/>
+<int name="yPos" value="511"/>
+<int name="width" value="114"/>
+<int name="height" value="25"/>
+<string name="expression" value="6x^2+30x+36"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="79"/>
+<int name="yPos" value="511"/>
+<int name="width" value="110"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="1e3bdf31-1a78-4077-96b4-5adb7c81d63a"/>
+<Expression>
+<int name="xPos" value="79"/>
+<int name="yPos" value="511"/>
+<int name="width" value="110"/>
+<int name="height" value="25"/>
+<string name="expression" value="3x^2+1x+-14"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="79"/>
+<int name="yPos" value="556"/>
+<int name="width" value="114"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="1e3bdf31-1a78-4077-96b4-5adb7c81d63a"/>
+<Expression>
+<int name="xPos" value="79"/>
+<int name="yPos" value="556"/>
+<int name="width" value="114"/>
+<int name="height" value="25"/>
+<string name="expression" value="2x^2+11x+15"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="79"/>
+<int name="yPos" value="601"/>
+<int name="width" value="118"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="1e3bdf31-1a78-4077-96b4-5adb7c81d63a"/>
+<Expression>
+<int name="xPos" value="79"/>
+<int name="yPos" value="601"/>
+<int name="width" value="118"/>
+<int name="height" value="25"/>
+<string name="expression" value="3x^2+15x+-42"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="407"/>
+<int name="yPos" value="466"/>
+<int name="width" value="114"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="1e3bdf31-1a78-4077-96b4-5adb7c81d63a"/>
+<Expression>
+<int name="xPos" value="407"/>
+<int name="yPos" value="466"/>
+<int name="width" value="114"/>
+<int name="height" value="25"/>
+<string name="expression" value="2x^2+-3x+-27"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="79"/>
+<int name="yPos" value="466"/>
+<int name="width" value="102"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="1e3bdf31-1a78-4077-96b4-5adb7c81d63a"/>
+<Expression>
+<int name="xPos" value="79"/>
+<int name="yPos" value="466"/>
+<int name="width" value="102"/>
+<int name="height" value="25"/>
+<string name="expression" value="2x^2+6x+-8"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="243"/>
+<int name="yPos" value="466"/>
+<int name="width" value="118"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="1e3bdf31-1a78-4077-96b4-5adb7c81d63a"/>
+<Expression>
+<int name="xPos" value="243"/>
+<int name="yPos" value="466"/>
+<int name="width" value="118"/>
+<int name="height" value="25"/>
+<string name="expression" value="3x^2+-14x+16"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="407"/>
+<int name="yPos" value="421"/>
+<int name="width" value="98"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="1e3bdf31-1a78-4077-96b4-5adb7c81d63a"/>
+<Expression>
+<int name="xPos" value="407"/>
+<int name="yPos" value="421"/>
+<int name="width" value="98"/>
+<int name="height" value="25"/>
+<string name="expression" value="2x^2+7x+3"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="79"/>
+<int name="yPos" value="421"/>
+<int name="width" value="114"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="1e3bdf31-1a78-4077-96b4-5adb7c81d63a"/>
+<Expression>
+<int name="xPos" value="79"/>
+<int name="yPos" value="421"/>
+<int name="width" value="114"/>
+<int name="height" value="25"/>
+<string name="expression" value="2x^2+-4x+-16"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="243"/>
+<int name="yPos" value="421"/>
+<int name="width" value="106"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="1e3bdf31-1a78-4077-96b4-5adb7c81d63a"/>
+<Expression>
+<int name="xPos" value="243"/>
+<int name="yPos" value="421"/>
+<int name="width" value="106"/>
+<int name="height" value="25"/>
+<string name="expression" value="6x^2+26x+8"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="243"/>
+<int name="yPos" value="556"/>
+<int name="width" value="98"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="1e3bdf31-1a78-4077-96b4-5adb7c81d63a"/>
+<Expression>
+<int name="xPos" value="243"/>
+<int name="yPos" value="556"/>
+<int name="width" value="98"/>
+<int name="height" value="25"/>
+<string name="expression" value="6x^2+8x+2"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="407"/>
+<int name="yPos" value="556"/>
+<int name="width" value="110"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="1e3bdf31-1a78-4077-96b4-5adb7c81d63a"/>
+<Expression>
+<int name="xPos" value="407"/>
+<int name="yPos" value="556"/>
+<int name="width" value="110"/>
+<int name="height" value="25"/>
+<string name="expression" value="3x^2+-13x+4"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="193"/>
+<int name="yPos" value="207"/>
+<int name="width" value="87"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="f7f18c86-6388-4438-ba58-2bbd2c1425ea"/>
+<Expression>
+<int name="xPos" value="193"/>
+<int name="yPos" value="207"/>
+<int name="width" value="87"/>
+<int name="height" value="25"/>
+<string name="expression" value="x^2+5x+4"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="193"/>
+<int name="yPos" value="162"/>
+<int name="width" value="103"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="f7f18c86-6388-4438-ba58-2bbd2c1425ea"/>
+<Expression>
+<int name="xPos" value="193"/>
+<int name="yPos" value="162"/>
+<int name="width" value="103"/>
+<int name="height" value="25"/>
+<string name="expression" value="x^2+10x+21"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="322"/>
+<int name="yPos" value="162"/>
+<int name="width" value="99"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="f7f18c86-6388-4438-ba58-2bbd2c1425ea"/>
+<Expression>
+<int name="xPos" value="322"/>
+<int name="yPos" value="162"/>
+<int name="width" value="99"/>
+<int name="height" value="25"/>
+<string name="expression" value="x^2+0x+-49"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="451"/>
+<int name="yPos" value="162"/>
+<int name="width" value="99"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="f7f18c86-6388-4438-ba58-2bbd2c1425ea"/>
+<Expression>
+<int name="xPos" value="451"/>
+<int name="yPos" value="162"/>
+<int name="width" value="99"/>
+<int name="height" value="25"/>
+<string name="expression" value="x^2+4x+-32"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="64"/>
+<int name="yPos" value="207"/>
+<int name="width" value="91"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="f7f18c86-6388-4438-ba58-2bbd2c1425ea"/>
+<Expression>
+<int name="xPos" value="64"/>
+<int name="yPos" value="207"/>
+<int name="width" value="91"/>
+<int name="height" value="25"/>
+<string name="expression" value="x^2+-5x+6"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="64"/>
+<int name="yPos" value="162"/>
+<int name="width" value="99"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="f7f18c86-6388-4438-ba58-2bbd2c1425ea"/>
+<Expression>
+<int name="xPos" value="64"/>
+<int name="yPos" value="162"/>
+<int name="width" value="99"/>
+<int name="height" value="25"/>
+<string name="expression" value="x^2+2x+-15"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="64"/>
+<int name="yPos" value="252"/>
+<int name="width" value="87"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="f7f18c86-6388-4438-ba58-2bbd2c1425ea"/>
+<Expression>
+<int name="xPos" value="64"/>
+<int name="yPos" value="252"/>
+<int name="width" value="87"/>
+<int name="height" value="25"/>
+<string name="expression" value="x^2+6x+9"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="451"/>
+<int name="yPos" value="207"/>
+<int name="width" value="87"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="f7f18c86-6388-4438-ba58-2bbd2c1425ea"/>
+<Expression>
+<int name="xPos" value="451"/>
+<int name="yPos" value="207"/>
+<int name="width" value="87"/>
+<int name="height" value="25"/>
+<string name="expression" value="x^2+5x+6"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="322"/>
+<int name="yPos" value="207"/>
+<int name="width" value="99"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="f7f18c86-6388-4438-ba58-2bbd2c1425ea"/>
+<Expression>
+<int name="xPos" value="322"/>
+<int name="yPos" value="207"/>
+<int name="width" value="99"/>
+<int name="height" value="25"/>
+<string name="expression" value="x^2+4x+-32"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="193"/>
+<int name="yPos" value="252"/>
+<int name="width" value="107"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="f7f18c86-6388-4438-ba58-2bbd2c1425ea"/>
+<Expression>
+<int name="xPos" value="193"/>
+<int name="yPos" value="252"/>
+<int name="width" value="107"/>
+<int name="height" value="25"/>
+<string name="expression" value="x^2+-15x+56"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="451"/>
+<int name="yPos" value="252"/>
+<int name="width" value="91"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="f7f18c86-6388-4438-ba58-2bbd2c1425ea"/>
+<Expression>
+<int name="xPos" value="451"/>
+<int name="yPos" value="252"/>
+<int name="width" value="91"/>
+<int name="height" value="25"/>
+<string name="expression" value="x^2+-6x+8"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="322"/>
+<int name="yPos" value="252"/>
+<int name="width" value="99"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="f7f18c86-6388-4438-ba58-2bbd2c1425ea"/>
+<Expression>
+<int name="xPos" value="322"/>
+<int name="yPos" value="252"/>
+<int name="width" value="99"/>
+<int name="height" value="25"/>
+<string name="expression" value="x^2+2x+-24"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="451"/>
+<int name="yPos" value="297"/>
+<int name="width" value="107"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="f7f18c86-6388-4438-ba58-2bbd2c1425ea"/>
+<Expression>
+<int name="xPos" value="451"/>
+<int name="yPos" value="297"/>
+<int name="width" value="107"/>
+<int name="height" value="25"/>
+<string name="expression" value="x^2+-12x+35"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="322"/>
+<int name="yPos" value="297"/>
+<int name="width" value="107"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="f7f18c86-6388-4438-ba58-2bbd2c1425ea"/>
+<Expression>
+<int name="xPos" value="322"/>
+<int name="yPos" value="297"/>
+<int name="width" value="107"/>
+<int name="height" value="25"/>
+<string name="expression" value="x^2+-12x+35"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="193"/>
+<int name="yPos" value="297"/>
+<int name="width" value="99"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="f7f18c86-6388-4438-ba58-2bbd2c1425ea"/>
+<Expression>
+<int name="xPos" value="193"/>
+<int name="yPos" value="297"/>
+<int name="width" value="99"/>
+<int name="height" value="25"/>
+<string name="expression" value="x^2+6x+-27"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+<GeneratedProblem>
+<int name="xPos" value="64"/>
+<int name="yPos" value="297"/>
+<int name="width" value="99"/>
+<int name="height" value="25"/>
+<string name="group name" value=""/>
+<string name="tags(separate by commas)" value=""/>
+<string name="author" value=""/>
+<date name="date" value="1/18/2012"/>
+<uuid name="uuid" value="f7f18c86-6388-4438-ba58-2bbd2c1425ea"/>
+<Expression>
+<int name="xPos" value="64"/>
+<int name="yPos" value="297"/>
+<int name="width" value="99"/>
+<int name="height" value="25"/>
+<string name="expression" value="x^2+-8x+15"/>
+<string name="steps" value=""/>
+<int name="fontSize" value="12"/>
+<color name="fill color" value="255,255,255"/>
+<list name="steps" type="string" childName="val">
+</list></Expression>
+</GeneratedProblem>
+</Page>
+</OpenNotebookDoc>

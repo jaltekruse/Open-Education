@@ -24,5 +24,29 @@ public abstract class Number extends Expression{
 	}
 	
 	public Number(){}
+	
+	@Override
+	public boolean allChildrenFilled() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean canHoldChildren() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	public boolean needsChildToLeft(){
+		return false;
+	}
+	
+	public boolean needsChildToRight(){
+		return false;
+	}
+	
+	public int getArity(){
+		return 0;
+	}
 
 }

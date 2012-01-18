@@ -19,6 +19,7 @@ import expression.NodeException;
 import expression.Number;
 import expression.Expression;
 import expression.Operator;
+import expression.EmptyValue;
 
 public abstract class NodeGraphic<E extends Node> {
 	
@@ -123,8 +124,11 @@ public abstract class NodeGraphic<E extends Node> {
 		if (n.displayParentheses()){
 			return new ParenGraphic(n, getRootNodeGraphic());
 		}
-		if (n instanceof Number){
+		else if (n instanceof Number){
 			return new DecimalGraphic((Number)n, getRootNodeGraphic());
+		}
+		else if (n instanceof EmptyValue){
+			return new NothingGraphic((EmptyValue)n, getRootNodeGraphic());
 		}
 		else if (n instanceof Expression){
 			Expression ex = (Expression) n;
@@ -135,11 +139,14 @@ public abstract class NodeGraphic<E extends Node> {
 				if (ex.getOperator() instanceof Operator.Division){
 					return new DivisionGraphic((Expression)n, getRootNodeGraphic());
 				}
-				else if (ex.getOperator() instanceof Operator.Multiplication) //&&
-//						( (Operator.Multiplication) ex.getOperator() ).getFormat()
-//						== Operator.Multiplication.Format.IMPLICIT)
+				else if (ex.getOperator() instanceof Operator.Multiplication)
 				{
-					if ( ex.getChild(1) instanceof Identifier){
+					if ( ex.getChild(1) instanceof Identifier ||
+							ex.getChild(1).displayParentheses() ||
+							(ex.getChild(1) instanceof Expression && 
+							(((Expression)ex.getChild(1)).getChild(0) instanceof Identifier ||
+							((Expression)ex.getChild(1)).getOperator() instanceof Operator.UnaryFunction))
+							){
 						return new ImpliedMultGraphic((Expression)n, getRootNodeGraphic());
 					}
 					return new DotMultiplication((Expression)n, getRootNodeGraphic());
@@ -150,6 +157,9 @@ public abstract class NodeGraphic<E extends Node> {
 				if (ex.getOperator() instanceof Operator.UnaryFunction){
 					if (ex.getOperator() instanceof Operator.SquareRoot){
 						return new RadicalGraphic((Expression)n, getRootNodeGraphic());
+					}
+					else if (ex.getOperator() instanceof Operator.Negation ){
+						return new NegationGraphic((Expression)n, getRootNodeGraphic());
 					}
 					return new UnaryExpressionGraphic((Expression)n, getRootNodeGraphic());
 				}
@@ -232,9 +242,9 @@ public abstract class NodeGraphic<E extends Node> {
 
 	public void setNorth(NodeGraphic north) {
 		this.north = north;
-		System.out.println(getComponents());
+//		System.out.println(getComponents());
 		for (NodeGraphic vg : getComponents()){
-			System.out.println(vg.toString());
+//			System.out.println(vg.toString());
 			vg.setNorth(north);
 		}
 	}
@@ -245,9 +255,9 @@ public abstract class NodeGraphic<E extends Node> {
 
 	public void setSouth(NodeGraphic south) {
 		this.south = south;
-		System.out.println("setSouth: " + getValue().toString());
+//		System.out.println("setSouth: " + getValue().toString());
 		for (NodeGraphic vg : getComponents()){
-			System.out.println("valGraphic class setChildSouth: " + vg.getValue().toString());
+//			System.out.println("valGraphic class setChildSouth: " + vg.getValue().toString());
 			vg.setSouth(south);
 		}
 	}

@@ -2,17 +2,18 @@ package doc.mathobjects;
 
 import doc.GridPoint;
 import doc.Page;
-import doc_gui.attributes.MathObjectAttribute;
+import doc.attributes.ListAttribute;
+import doc.attributes.MathObjectAttribute;
 
 public class ParallelogramObject extends PolygonObject {
 
-	public ParallelogramObject(Page p, int x, int y, int w, int h, int t) {
+	public ParallelogramObject(MathObjectContainer p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h, t);
 		addInitialPoints();
 		addAction(PolygonObject.FLIP_VERTICALLY);
 	}
 	
-	public ParallelogramObject(Page p){
+	public ParallelogramObject(MathObjectContainer p){
 		super(p);
 		addInitialPoints();
 		addAction(PolygonObject.FLIP_VERTICALLY);
@@ -40,15 +41,19 @@ public class ParallelogramObject extends PolygonObject {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return PARALLELOGRAM_OBJECT;
+		return PARALLELOGRAM_OBJ;
 	}
 	
 	@Override
 	public ParallelogramObject clone() {
-		ParallelogramObject o = new ParallelogramObject(getParentPage());
+		ParallelogramObject o = new ParallelogramObject(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){
 			o.addAttribute( mAtt.clone());
+		}
+		o.removeAllLists();
+		for ( ListAttribute list : getLists()){
+			o.addList(list.clone());
 		}
 		return o;
 	}

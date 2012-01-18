@@ -122,7 +122,7 @@ public class DivisionGraphic extends BinExpressionGraphic {
 	public void moveCursorNorth(){
 		if (getNorth() == null)
 		{
-			System.out.println("nothing to north");
+//			System.out.println("nothing to north");
 			return;
 		}
 		else
@@ -141,7 +141,7 @@ public class DivisionGraphic extends BinExpressionGraphic {
 	public void moveCursorSouth(){
 		if (getSouth() == null)
 		{
-			System.out.println("nothing to south");
+//			System.out.println("nothing to south");
 			return;
 		}
 		else
@@ -155,7 +155,7 @@ public class DivisionGraphic extends BinExpressionGraphic {
 	public void sendCursorInFromEast(int yPos, NodeGraphic vg)
 	{
 		if (super.containedBelow(vg)){
-			System.out.println("move into division from east, containedbelow");
+//			System.out.println("move into division from east, containedbelow");
 			super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 			super.getRootNodeGraphic().getCursor().setPos(0);
 		}
@@ -170,7 +170,7 @@ public class DivisionGraphic extends BinExpressionGraphic {
 	public void sendCursorInFromWest(int yPos, NodeGraphic vg)
 	{
 		if (super.containedBelow(vg)){
-			System.out.println("move into division from west, containedbelow");
+//			System.out.println("move into division from west, containedbelow");
 			super.getRootNodeGraphic().getCursor().setValueGraphic(this);
 			super.getRootNodeGraphic().getCursor().setPos(getMaxCursorPos());
 		}
@@ -183,13 +183,13 @@ public class DivisionGraphic extends BinExpressionGraphic {
 	
 	@Override
 	public void sendCursorInFromNorth(int xPos, NodeGraphic vg){
-		System.out.println("Division send in from north, xPos: " + xPos);
+//		System.out.println("Division send in from north, xPos: " + xPos);
 		getRightGraphic().getMostInnerNorth().sendCursorInFromNorth(xPos, this);
 	}
 	
 	@Override
 	public void sendCursorInFromSouth(int xPos, NodeGraphic vg){
-		System.out.println("division send from south");
+//		System.out.println("division send from south");
 		getLeftGraphic().getMostInnerSouth().sendCursorInFromSouth(xPos, this);
 	}
 	

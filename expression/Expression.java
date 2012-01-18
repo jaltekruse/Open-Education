@@ -67,9 +67,14 @@ public class Expression extends Node {
 	@Override
 	public Node replace(Identifier identifier, Node node) {
 		Vector<Node> newChildren = new Vector<Node>();
-		for (Node c : children)
+		for (Node c : children){
 			newChildren.add(c.replace(identifier, node));
-		return new Expression(o, newChildren);
+		}
+		Expression newEx = new Expression(o, newChildren);
+		if (this.displayParentheses()){
+			newEx.setDisplayParentheses(true);
+		}
+		return newEx;
 	}
 
 	@Override

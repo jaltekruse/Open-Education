@@ -19,7 +19,7 @@ import doc.PointInDocument;
 import doc.mathobjects.MathObject;
 import doc_gui.DocMouseListener;
 
-public class MathObjectGUI{
+public abstract class MathObjectGUI<K extends MathObject>{
 	
 	private static int resizeDotDiameter = 10;
 	
@@ -32,33 +32,58 @@ public class MathObjectGUI{
 	/**
 	 * Represents the value of the upper left resizing dot.
 	 */
-	public static int NORTHWEST_DOT = 0;
-	public static int NORTH_DOT = 1;
-	public static int NORTHEAST_DOT = 2;
-	public static int EAST_DOT = 3;
-	public static int SOUTHEAST_DOT = 4;
-	public static int SOUTH_DOT = 5;
-	public static int SOUTHWEST_DOT = 6;
-	public static int WEST_DOT = 7;
+	public static final int NORTHWEST_DOT = 0;
+	public static final int NORTH_DOT = 1;
+	public static final int NORTHEAST_DOT = 2;
+	public static final int EAST_DOT = 3;
+	public static final int SOUTHEAST_DOT = 4;
+	public static final int SOUTH_DOT = 5;
+	public static final int SOUTHWEST_DOT = 6;
+	public static final int WEST_DOT = 7;
 	
-	public void drawMathObject(MathObject object, Graphics g, Point pageOrigin, float zoomLevel){
-//		System.out.println("empty defualt mathObject renderer");
-	};
+	public abstract void drawMathObject(K object, Graphics g, Point pageOrigin, float zoomLevel);
 	
-	public void drawInteractiveComponents(MathObject object, Graphics g, Point pageOrigin, float zoomLevel){
-//		System.out.println("empty defualt mathObject interactive components renderer");
-	};
+	public void drawInteractiveComponents(K object, Graphics g, Point pageOrigin, float zoomLevel){}
 	
 	public static void drawResizingDots(MathObject object, Graphics g, Point pageOrigin, float zoomLevel){
 		
-		Point p;
-		for (int i = NORTHWEST_DOT; i <= WEST_DOT; i++){
-			p = getPosResizeDot(object, pageOrigin, zoomLevel, i);
-			g.setColor(Color.WHITE);
-			g.fillOval( (int) p.getX(), (int) p.getY(), resizeDotDiameter, resizeDotDiameter);
-			g.setColor(Color.BLACK);
-			g.drawOval((int) p.getX(), (int) p.getY(), resizeDotDiameter, resizeDotDiameter);
+		if ( object.isVerticallyResizable() && object.isHorizontallyResizable()){
+			for (int i = NORTHWEST_DOT; i <= WEST_DOT; i++){
+				drawResizeDot(object, g, pageOrigin, zoomLevel, i);
+			}
+			return;
 		}
+		if ( object.isVerticallyResizable()){
+			drawResizeDot(object, g, pageOrigin, zoomLevel, NORTH_DOT);
+			drawResizeDot(object, g, pageOrigin, zoomLevel, SOUTH_DOT);
+			return;
+		}
+		if ( object.isHorizontallyResizable()){
+			drawResizeDot(object, g, pageOrigin, zoomLevel, WEST_DOT);
+			drawResizeDot(object, g, pageOrigin, zoomLevel, EAST_DOT);
+			return;
+		}
+
+	}
+	
+	/**
+	 * Draws a single white circle (dot) used to show a user that they can click and drag
+	 * to resize an object.
+	 * 
+	 * @param object - the object able to be resized
+	 * @param g - the graphics object to draw on
+	 * @param pageOrigin - the point on the graphics object where the objects parent page
+	 * 				
+	 * @param zoomLevel
+	 * @param dot
+	 */
+	private static void drawResizeDot(MathObject object, Graphics g, Point pageOrigin, float zoomLevel, int dot){
+		Point p;
+		p = getPosResizeDot(object, pageOrigin, zoomLevel, dot);
+		g.setColor(Color.WHITE);
+		g.fillOval( (int) p.getX(), (int) p.getY(), resizeDotDiameter, resizeDotDiameter);
+		g.setColor(Color.BLACK);
+		g.drawOval((int) p.getX(), (int) p.getY(), resizeDotDiameter, resizeDotDiameter);
 	}
 	
 	public static Point getPosResizeDot(MathObject object, Point pageOrigin, float zoomLevel, int dotVal){
@@ -121,17 +146,54 @@ public class MathObjectGUI{
 	
 	public static int detectResizeDotCollision(Point clickPos, MathObject object,
 			Point pageOrigin, float zoomLevel){
-		int extraBuffer = 0;
+		int extraBuffer = 1;
 		Point p;
-		for (int i = NORTHWEST_DOT; i <= WEST_DOT; i++){
-			p = getPosResizeDot(object, pageOrigin, zoomLevel, i);
+		
+		if ( object.isVerticallyResizable() && object.isHorizontallyResizable()){
+			for (int i = NORTHWEST_DOT; i <= WEST_DOT; i++){
+				p = getPosResizeDot(object, pageOrigin, zoomLevel, i);
+				if ( Math.sqrt( Math.pow( (p.getX() + resizeDotRadius - clickPos.getX() ), 2) +
+						Math.pow( (p.getY() + resizeDotRadius - clickPos.getY() ), 2))
+						<= resizeDotRadius + extraBuffer)
+				{//calculate the distance from the click to one of the dots
+					return i;
+				}
+			}
+		}
+		if ( object.isVerticallyResizable()){
+			p = getPosResizeDot(object, pageOrigin, zoomLevel, NORTH_DOT);
 			if ( Math.sqrt( Math.pow( (p.getX() + resizeDotRadius - clickPos.getX() ), 2) +
 					Math.pow( (p.getY() + resizeDotRadius - clickPos.getY() ), 2))
 					<= resizeDotRadius + extraBuffer)
 			{//calculate the distance from the click to one of the dots
-				return i;
+				return NORTH_DOT;
+			}
+			p = getPosResizeDot(object, pageOrigin, zoomLevel, SOUTH_DOT);
+			if ( Math.sqrt( Math.pow( (p.getX() + resizeDotRadius - clickPos.getX() ), 2) +
+					Math.pow( (p.getY() + resizeDotRadius - clickPos.getY() ), 2))
+					<= resizeDotRadius + extraBuffer)
+			{//calculate the distance from the click to one of the dots
+				return SOUTH_DOT;
 			}
 		}
+		if ( object.isHorizontallyResizable()){
+			p = getPosResizeDot(object, pageOrigin, zoomLevel, WEST_DOT);
+			if ( Math.sqrt( Math.pow( (p.getX() + resizeDotRadius - clickPos.getX() ), 2) +
+					Math.pow( (p.getY() + resizeDotRadius - clickPos.getY() ), 2))
+					<= resizeDotRadius + extraBuffer)
+			{//calculate the distance from the click to one of the dots
+				return WEST_DOT;
+			}
+			p = getPosResizeDot(object, pageOrigin, zoomLevel, EAST_DOT);
+			if ( Math.sqrt( Math.pow( (p.getX() + resizeDotRadius - clickPos.getX() ), 2) +
+					Math.pow( (p.getY() + resizeDotRadius - clickPos.getY() ), 2))
+					<= resizeDotRadius + extraBuffer)
+			{//calculate the distance from the click to one of the dots
+				return EAST_DOT;
+			}
+		}
+		
+
 		return Integer.MAX_VALUE;
 	}
 	

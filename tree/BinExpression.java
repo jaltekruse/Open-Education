@@ -218,4 +218,35 @@ public class BinExpression extends Expression {
 			result += rightChild.toString();
 		return result;
 	}
+
+	@Override
+	public boolean allChildrenFilled() {
+		// TODO Auto-generated method stub
+		if ( leftChild != null && rightChild != null){
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean canHoldChildren() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	
+	public int getArity(){
+		return 2;
+	}
+
+	@Override
+	public boolean needsChildToLeft() {
+		// TODO Auto-generated method stub
+		return leftChild == null;
+	}
+
+	@Override
+	public boolean needsChildToRight() {
+		// TODO Auto-generated method stub
+		return rightChild == null;
+	}
 }

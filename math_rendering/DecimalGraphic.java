@@ -151,7 +151,7 @@ public class DecimalGraphic extends NodeGraphic<Number> {
 	public void moveCursorNorth(){
 		if (getNorth() == null)
 		{
-			System.out.println("nothing to north");
+//			System.out.println("nothing to north");
 			return;
 		}
 		else
@@ -165,7 +165,7 @@ public class DecimalGraphic extends NodeGraphic<Number> {
 	public void moveCursorSouth(){
 		if (getSouth() == null)
 		{
-			System.out.println("nothing to south");
+//			System.out.println("nothing to south");
 			return;
 		}
 		else
@@ -193,8 +193,8 @@ public class DecimalGraphic extends NodeGraphic<Number> {
 	public void sendCursorInFromNorth(int xPos, NodeGraphic vg){
 //		super.getCompExGraphic().getCursor().setValueGraphic(this);
 		setCursorPos(xPos);
-		System.out.println("Dec graphic in from north, cursor: " +
-				super.getRootNodeGraphic().getCursor().getValueGraphic().getValue().toString());
+//		System.out.println("Dec graphic in from north, cursor: " +
+//				super.getRootNodeGraphic().getCursor().getValueGraphic().getValue().toString());
 	}
 	
 	@Override

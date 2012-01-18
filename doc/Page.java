@@ -11,7 +11,9 @@ package doc;
 import java.awt.Rectangle;
 import java.util.Vector;
 
+import doc.mathobjects.Grouping;
 import doc.mathobjects.MathObject;
+import doc.mathobjects.MathObjectContainer;
 
 public class Page implements MathObjectContainer{
 	
@@ -39,8 +41,6 @@ public class Page implements MathObjectContainer{
 	
 	private int xMargin, yMargin, pageWidth, pageHeight;
 	
-	private String heading;
-	
 	private Vector<MathObject> objects;
 	
 	private Document parentDoc;
@@ -58,8 +58,8 @@ public class Page implements MathObjectContainer{
 		this.objects = objects;
 	}
 	
-	public void removeObject(MathObject mObj){
-		objects.remove(mObj);
+	public boolean removeObject(MathObject mObj){
+		return objects.remove(mObj);
 	}
 
 	public Vector<MathObject> getObjects() {
@@ -123,6 +123,20 @@ public class Page implements MathObjectContainer{
 				break;
 			}
 		}
+	}
+	
+	public boolean objectContainedBelow(MathObject o){
+		for (MathObject mObj : objects){
+			if ( o == mObj){
+				return true;
+			}
+			if ( mObj instanceof Grouping){
+				if ( ((Grouping)mObj).objectContainedBelow(o)){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	public void sendObjectBackward(MathObject mObj){
@@ -201,7 +215,7 @@ public class Page implements MathObjectContainer{
 	@Override
 	public boolean childObjectsFocusable() {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -213,7 +227,14 @@ public class Page implements MathObjectContainer{
 	@Override
 	public boolean removeAllObjects() {
 		// TODO Auto-generated method stub
-		return false;
+		objects = new Vector<MathObject>();
+		return true;
+	}
+
+	@Override
+	public Page getParentPage() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

@@ -9,7 +9,7 @@ import java.awt.Polygon;
 
 import doc.mathobjects.CylinderObject;
 
-public class CylinderObjectGUI extends MathObjectGUI {
+public class CylinderObjectGUI extends MathObjectGUI<CylinderObject> {
 
 	public void drawMathObject(CylinderObject object, Graphics g, Point pageOrigin, float zoomLevel){
 		g.setColor(Color.BLACK);

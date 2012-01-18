@@ -78,8 +78,6 @@ public class ObjectActionsToolBar extends JToolBar{
 			OCButton cutButton = new OCButton(cutIcon,
 					"Cut [ctrl+x]", 1, 1, 3, 0, this){
 				
-				//allow this button to also delete page, need to add code to allow page to be
-				//selected and have visual feedback (a border) to indicagte selection
 				@Override
 				public void associatedAction(){
 					notebookPanel.cut();
@@ -91,8 +89,6 @@ public class ObjectActionsToolBar extends JToolBar{
 			OCButton copyButton = new OCButton(copyIcon,
 					"Copy [ctrl+c]", 1, 1, 3, 0, this){
 				
-				//allow this button to also delete page, need to add code to allow page to be
-				//selected and have visual feedback (a border) to indicagte selection
 				@Override
 				public void associatedAction(){
 					notebookPanel.copy();
@@ -104,8 +100,6 @@ public class ObjectActionsToolBar extends JToolBar{
 			OCButton pasteButton = new OCButton(pasteIcon,
 					"Paste [ctrl+v]", 1, 1, 3, 0, this){
 				
-				//allow this button to also delete page, need to add code to allow page to be
-				//selected and have visual feedback (a border) to indicagte selection
 				@Override
 				public void associatedAction(){
 					notebookPanel.paste();
@@ -127,37 +121,35 @@ public class ObjectActionsToolBar extends JToolBar{
 			OCButton ungroupButton = new OCButton(ungroupIcon, "Ungroup a Grouping or Problem",
 					1, 1, 3, 0, this){
 				
-				//allow this button to also delete page, need to add code to allow page to be
-				//selected and have visual feedback (a border) to indicagte selection
 				@Override
 				public void associatedAction(){
 					notebookPanel.ungroup();
 				}
 			};
 			
-			ImageIcon problemGenerationIcon = notebookPanel.getIcon("img/generateListOfProblems.png");
+//			ImageIcon problemGenerationIcon = notebookPanel.getIcon("img/generateListOfProblems.png");
+//			
+//			OCButton generateProblems = new OCButton(problemGenerationIcon, "Generate Problems",
+//					1, 1, 3, 0, this){
+//				
+//				@Override
+//				public void associatedAction(){
+//					MathObject mObj = notebookPanel.getCurrentDocViewer().getFocusedObject();
+//					if ( mObj != null && mObj instanceof ProblemObject){
+//						
+//					}
+//					notebookPanel.getCurrentDocViewer().showDatabase();
+//				}
+//			};
 			
-			OCButton generateProblems = new OCButton(problemGenerationIcon, "Generate Problems",
-					1, 1, 3, 0, this){
-				
-				@Override
-				public void associatedAction(){
-					MathObject mObj = notebookPanel.getCurrentDocViewer().getFocusedObject();
-					if ( mObj != null && mObj instanceof ProblemObject){
-						
-					}
-					notebookPanel.getCurrentDocViewer().showDatabase();
-				}
-			};
-			
-//			OCButton loginButton = new OCButton("Login", "Login", 1, 1, 3, 0, this, null){
+//			OCButton logiseparatedButton = new OCButton("Login", "Login", 1, 1, 3, 0, this, null){
 //				
 //				//allow this button to also delete page, need to add code to allow page to be
 //				//selected and have visual feedback (a border) to indicate selection
 //				public void associatedAction(){
 //					String s = (String)JOptionPane.showInputDialog(
 //		                    this,
-//		                    "give you user name and Passowrd separted by a colon",
+//		                    "give you user name and Password  by a colon",
 //		                    "Login",
 //		                    JOptionPane.PLAIN_MESSAGE,
 //		                    null,

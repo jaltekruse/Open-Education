@@ -10,17 +10,18 @@ package doc.mathobjects;
 
 import doc.GridPoint;
 import doc.Page;
-import doc_gui.attributes.MathObjectAttribute;
+import doc.attributes.ListAttribute;
+import doc.attributes.MathObjectAttribute;
 
 public class TrapezoidObject extends PolygonObject {
 
-	public TrapezoidObject(Page p, int x, int y, int w, int h, int t) {
+	public TrapezoidObject(MathObjectContainer p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h, t);
 		addInitialPoints();
 		addAction(PolygonObject.FLIP_VERTICALLY);
 	}
 	
-	public TrapezoidObject(Page p){
+	public TrapezoidObject(MathObjectContainer p){
 		super(p);
 		addInitialPoints();
 		addAction(PolygonObject.FLIP_VERTICALLY);
@@ -46,10 +47,14 @@ public class TrapezoidObject extends PolygonObject {
 
 	@Override
 	public TrapezoidObject clone() {
-		TrapezoidObject o = new TrapezoidObject(getParentPage());
+		TrapezoidObject o = new TrapezoidObject(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){
 			o.addAttribute( mAtt.clone());
+		}
+		o.removeAllLists();
+		for ( ListAttribute list : getLists()){
+			o.addList(list.clone());
 		}
 		return o;
 	}
@@ -57,7 +62,7 @@ public class TrapezoidObject extends PolygonObject {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return TRAPEZOID_OBJECT;
+		return TRAPEZOID_OBJ;
 	}
 
 }

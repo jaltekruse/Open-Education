@@ -1,7 +1,8 @@
 package curriculum;
 
 import java.util.Vector;
-import doc_gui.attributes.*;
+
+import doc.attributes.*;
 
 public class Book {
 	

@@ -26,12 +26,7 @@ public class DocPrinter implements Printable{
     PrinterException {
     	
     	Page p;
-		try {
-			p = doc.getPage(page + 1);
-		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
-			return NO_SUCH_PAGE;
-		}
+		p = doc.getPage(page + 1);
 
         PageGUI pageDrawer = new PageGUI();
         

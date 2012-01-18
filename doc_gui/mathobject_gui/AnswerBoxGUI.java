@@ -16,7 +16,7 @@ import java.text.AttributedString;
 
 import doc.mathobjects.AnswerBoxObject;
 
-public class AnswerBoxGUI extends MathObjectGUI {
+public class AnswerBoxGUI extends MathObjectGUI<AnswerBoxObject> {
 
 	
 	public void drawMathObject(AnswerBoxObject object, Graphics g, Point pageOrigin,

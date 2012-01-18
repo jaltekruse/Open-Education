@@ -19,7 +19,9 @@ public class Driver {
 //		System.out.println(g.generateLinear());
 
 		try {
-			Node.parseNode("5^(3+x)=5").printTree();
+			System.out.println(Node.parseNode("a*sin(x)"));
+			System.out.println(
+					Node.parseNode("a(x+c)^2+b").replace("a", new Number(0)).toStringRepresentation());
 
 			Node n = Node.parseNode("3+5+4");
 			System.out.println( ((Expression)n).getChildren().size() );

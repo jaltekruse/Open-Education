@@ -37,6 +37,20 @@ public abstract class Expression {
 		op = o;
 	}
 	
+	public abstract boolean allChildrenFilled();
+	
+	public abstract boolean canHoldChildren();
+	
+	public abstract boolean needsChildToLeft();
+	
+	public abstract boolean needsChildToRight();
+	
+	/**
+	 * Returns the number of arguments taken by a function.
+	 * @return - the number of arguments
+	 */
+	public abstract int getArity();
+	
 	public boolean isContainerOp()
 	{
 		return (op == Operator.PAREN || op == Operator.BRACKET || op == Operator.CURL_BRAC);

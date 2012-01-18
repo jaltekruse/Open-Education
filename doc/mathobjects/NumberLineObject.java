@@ -9,23 +9,26 @@
 package doc.mathobjects;
 
 import doc.Page;
-import doc_gui.attributes.DoubleAttribute;
-import doc_gui.attributes.IntegerAttribute;
-import doc_gui.attributes.MathObjectAttribute;
+import doc.attributes.DoubleAttribute;
+import doc.attributes.IntegerAttribute;
+import doc.attributes.ListAttribute;
+import doc.attributes.MathObjectAttribute;
 
 
 public class NumberLineObject extends MathObject {
 	
-	public NumberLineObject(Page p, int x, int y, int w, int h) {
+	public NumberLineObject(MathObjectContainer p, int x, int y, int w, int h) {
 		super(p, x, y, w, h);
-			getAttributeWithName("min").setValue(-5.0);
-			getAttributeWithName("max").setValue(5.0);
-			getAttributeWithName("step").setValue(1.0);
-			getAttributeWithName("fontSize").setValue(8);
+		setVerticallyResizable(false);
+		getAttributeWithName("min").setValue(-5.0);
+		getAttributeWithName("max").setValue(5.0);
+		getAttributeWithName("step").setValue(1.0);
+		getAttributeWithName("fontSize").setValue(8);
 	}
 	
-	public NumberLineObject(Page p){
+	public NumberLineObject(MathObjectContainer p){
 		super(p);
+		setVerticallyResizable(false);
 		getAttributeWithName("min").setValue(-5.0);
 		getAttributeWithName("max").setValue(5.0);
 		getAttributeWithName("step").setValue(1.0);
@@ -33,6 +36,7 @@ public class NumberLineObject extends MathObject {
 	}
 
 	public NumberLineObject() {
+		setVerticallyResizable(false);
 		getAttributeWithName("min").setValue(-5.0);
 		getAttributeWithName("max").setValue(5.0);
 		getAttributeWithName("step").setValue(1.0);
@@ -51,15 +55,19 @@ public class NumberLineObject extends MathObject {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return NUMBER_LINE_OBJECT;
+		return NUMBER_LINE;
 	}
 	
 	@Override
 	public NumberLineObject clone() {
-		NumberLineObject o = new NumberLineObject(getParentPage());
+		NumberLineObject o = new NumberLineObject(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){
 			o.addAttribute( mAtt.clone());
+		}
+		o.removeAllLists();
+		for ( ListAttribute list : getLists()){
+			o.addList(list.clone());
 		}
 		return o;
 	}

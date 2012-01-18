@@ -8,14 +8,17 @@
 
 package doc;
 
+import java.util.UUID;
 import java.util.Vector;
 
 
+import doc.attributes.Date;
+import doc.attributes.DateAttribute;
+import doc.attributes.MathObjectAttribute;
+import doc.attributes.StringAttribute;
 import doc.mathobjects.ProblemGenerator;
 import doc_gui.DocViewerPanel;
 import doc_gui.DocumentException;
-import doc_gui.attributes.MathObjectAttribute;
-import doc_gui.attributes.StringAttribute;
 
 public class Document {
 	
@@ -26,14 +29,13 @@ public class Document {
 	
 	//actual values stored in MathObjectAttribute objects these are standard
 	//strings for the 'name' fields of those attributes
-	public static final String FILENAME = "filename";
-	public static final String HEADER = "header";
-	public static final String FOOTER = "footer";
-	public static final String AUTHOR = "author";
-	public static final String DATE = "date";
-	public static final String AUTHOR_ID = "authorID";
+	public static final String FILENAME = "filename", HEADER = "header", FOOTER = "footer", 
+			AUTHOR = "author", DATE = "date", AUTHOR_ID = "authorID", GENERATORS = "generators",
+			OPEN_NOTEBOOK_DOC = "OpenNotebookDoc";
 	
 	private Vector<Page> pages;
+	
+	private Vector<ProblemGenerator> generators;
 	
 	private Vector<ProblemGenerator> problemGenerators;
 	
@@ -46,6 +48,7 @@ public class Document {
 	
 	public Document(String name){
 		attributes = new Vector<MathObjectAttribute>();
+		generators = new Vector<ProblemGenerator>();
 		addAttributes();
 		pages = new Vector<Page>();
 		subjectsCovered = new Vector<String>();
@@ -55,9 +58,7 @@ public class Document {
 	private void addAttributes(){
 		addAttribute(new StringAttribute(FILENAME));
 		addAttribute(new StringAttribute(AUTHOR));
-		addAttribute(new StringAttribute(HEADER));
-		addAttribute(new StringAttribute(FOOTER));
-		addAttribute(new StringAttribute(DATE));
+		addAttribute(new DateAttribute(DATE));
 	}
 	
 	private MathObjectAttribute getAttributeWithName(String n){
@@ -81,7 +82,30 @@ public class Document {
 		}
 		attributes.add(mAtt);
 	}
-
+	
+	public Vector<ProblemGenerator> getGenerators() {
+		return generators;
+	}
+	
+	public ProblemGenerator getGeneratorWithID(UUID id){
+		for ( ProblemGenerator gen : generators){
+			if ( gen.getUUID().compareTo(id) == 0){
+				return gen;
+			}
+		}
+		return null;
+	}
+	
+	public void addGenerator(ProblemGenerator generator) throws Exception{
+		for ( ProblemGenerator gen : generators){
+			if ( gen.getUUID().compareTo(generator.getUUID()) == 0){
+				throw new Exception("UUID already in use");
+			}
+		}
+		generator.setParentDocument(this);
+		generators.add(generator);
+	}
+	
 	public void setFilename(String s) {
 		getAttributeWithName(FILENAME).setValue(s);
 	}
@@ -98,22 +122,6 @@ public class Document {
 		return subjectsCovered;
 	}
 
-	public void setHeader(String s) {
-		getAttributeWithName(HEADER).setValue(s);
-	}
-
-	public String getHeader() {
-		return ((StringAttribute)getAttributeWithName(HEADER)).getValue();
-	}
-
-	public void setFooter(String s) {
-		getAttributeWithName(FOOTER).setValue(s);
-	}
-
-	public String getFooter() {
-		return ((StringAttribute)getAttributeWithName(FOOTER)).getValue();
-	}
-
 	public void setAuthor(String s) {
 		getAttributeWithName(AUTHOR).setValue(s);
 	}
@@ -127,23 +135,28 @@ public class Document {
 		
 	}
 	
-	public String getDate(){
-		return ((StringAttribute)getAttributeWithName(DATE)).getValue();
+	public Date getDate(){
+		return ((DateAttribute)getAttributeWithName(DATE)).getValue();
 	}
 	
 	public String exportToXML(){
 		String output = "";
 //		output += "<?XML version=\"1.0\" encoding=\"\"?>\n";
-		output += "<OpenNotebookDoc " + "version=\"0.1\" " + FILENAME + "=\"" + getName() + "\" " + AUTHOR + "=\"" + getAuthor() +
-				"\" " + HEADER + "=\"" + getHeader() + "\" " + FOOTER + "=\"" + getFooter() + "\" "
-				+ DATE + "=\"" + getDate() + "\">\n";
+		output += "<" + OPEN_NOTEBOOK_DOC + " " + "version=\"0.1\" " + FILENAME + "=\""
+				+ getName() + "\" " + AUTHOR + "=\"" + getAuthor()				
+				+ "\" " + DATE + "=\"" + getDate() + "\">\n";
 		for (String s : subjectsCovered){
 			output += "<subject name=\"" + s + "\"></subject>";
 		}
+		output += "<" + GENERATORS + ">\n";
+		for ( ProblemGenerator gen : generators){
+			output += gen.exportToXML();
+		}
+		output += "</" + GENERATORS + ">\n";
 		for (Page p : pages){
 			output += p.exportToXML();
 		}
-		output += "</OpenNotebookDoc>";
+		output += "</" + OPEN_NOTEBOOK_DOC + ">";
 		return output;
 	}
 	
@@ -151,19 +164,13 @@ public class Document {
 	 * Returns a page object stored at the given index. The indices start at 1.
 	 * @param index - the index of the page to retrieve
 	 * @return the page object at the selected index
-	 * @throws DocumentException - if index is out of range
 	 */
-	public Page getPage(int index) throws DocumentException
+	public Page getPage(int index)
 	{
 		if (index < 0 || index > pages.size() - 1){
-			throw new DocumentException("Invaid page requested");
+			return null;
 		}
 		return pages.get(index);
-	}
-	
-	public String exportDoc(){
-		String docString = new String();
-		return null;
 	}
 	
 	public void addPage(Page p){
@@ -192,12 +199,9 @@ public class Document {
 		pages.add(new Page(this));
 	}
 	
-	public int getPageIndex(Page p) throws DocumentException{
+	public int getPageIndex(Page p){
 		
 		int index = pages.indexOf(p);
-		if (index == -1){
-			throw new DocumentException("page does not belong to this document");
-		}
 		return index;
 	}
 	

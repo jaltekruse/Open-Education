@@ -2,17 +2,18 @@ package doc.mathobjects;
 
 import doc.GridPoint;
 import doc.Page;
-import doc_gui.attributes.MathObjectAttribute;
+import doc.attributes.ListAttribute;
+import doc.attributes.MathObjectAttribute;
 
 public class ArrowObject extends PolygonObject {
 
-	public ArrowObject(Page p, int x, int y, int w, int h, int t) {
+	public ArrowObject(MathObjectContainer p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h, t);
 		addInitialPoints();
 		addAction(PolygonObject.FLIP_HORIZONTALLY);
 	}
 	
-	public ArrowObject(Page p){
+	public ArrowObject(MathObjectContainer p){
 		super(p);
 		addInitialPoints();
 		addAction(PolygonObject.FLIP_HORIZONTALLY);
@@ -49,10 +50,14 @@ public class ArrowObject extends PolygonObject {
 
 	@Override
 	public ArrowObject clone() {
-		ArrowObject o = new ArrowObject(getParentPage());
+		ArrowObject o = new ArrowObject(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){
 			o.addAttribute( mAtt.clone());
+		}
+		o.removeAllLists();
+		for ( ListAttribute list : getLists()){
+			o.addList(list.clone());
 		}
 		return o;
 	}

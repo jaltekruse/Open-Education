@@ -3,26 +3,31 @@ package doc_gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButtonMenuItem;
+
 import doc.Document;
 
 public class NotebookMenuBar extends JMenuBar {
 
-	JMenu mode;
+	JMenu mode, view, file, edit;
 	OpenNotebook openBook;
 	
 	public NotebookMenuBar(OpenNotebook book){
 		super();
 		
 		openBook = book;
-		JMenu file = new JMenu("File");
+		file = new JMenu("File");
 		this.add(file);
-		JMenuItem newDoc = new JMenuItem("New Document");
-		file.add(newDoc);
-		newDoc.addActionListener(new ActionListener(){
+		
+		JMenuItem item;
+		item = new JMenuItem("New Document");
+		file.add(item);
+		item.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -31,18 +36,18 @@ public class NotebookMenuBar extends JMenuBar {
 				openBook.getNotebookPanel().addDoc(tempDoc);
 			}
 		});
-		JMenuItem open = new JMenuItem("Open");
-		file.add(open);
-		open.addActionListener(new ActionListener(){
+		item = new JMenuItem("Open");
+		file.add(item);
+		item.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				openBook.getNotebookPanel().open();
 			}
 		});
-		JMenuItem save = new JMenuItem("Save");
-		file.add(save);
-		save.addActionListener(new ActionListener(){
+		item = new JMenuItem("Save");
+		file.add(item);
+		item.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -50,12 +55,22 @@ public class NotebookMenuBar extends JMenuBar {
 			}
 		});
 		
-		JMenu edit = new JMenu("Edit");
+		item = new JMenuItem("Quit");
+		file.add(item);
+		item.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				OpenNotebook.quit();
+			}
+		});
+		
+		edit = new JMenu("Edit");
 		this.add(edit);
 		
-		JMenuItem addPage = new JMenuItem("Add Page");
-		edit.add(addPage);
-		addPage.addActionListener(new ActionListener(){
+		item = new JMenuItem("Add Page");
+		edit.add(item);
+		item.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -65,9 +80,9 @@ public class NotebookMenuBar extends JMenuBar {
 		
 		edit.addSeparator();
 		
-		JMenuItem cut = new JMenuItem("Cut");
-		edit.add(cut);
-		cut.addActionListener(new ActionListener(){
+		item = new JMenuItem("Cut");
+		edit.add(item);
+		item.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -75,9 +90,9 @@ public class NotebookMenuBar extends JMenuBar {
 			}
 		});
 		
-		JMenuItem copy = new JMenuItem("Copy");
-		edit.add(copy);
-		copy.addActionListener(new ActionListener(){
+		item = new JMenuItem("Copy");
+		edit.add(item);
+		item.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -85,9 +100,9 @@ public class NotebookMenuBar extends JMenuBar {
 			}
 		});
 		
-		JMenuItem paste = new JMenuItem("Paste");
-		edit.add(paste);
-		paste.addActionListener(new ActionListener(){
+		item = new JMenuItem("Paste");
+		edit.add(item);
+		item.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -95,9 +110,9 @@ public class NotebookMenuBar extends JMenuBar {
 			}
 		});
 		
-		JMenuItem delete = new JMenuItem("Delete");
-		edit.add(delete);
-		delete.addActionListener(new ActionListener(){
+		item = new JMenuItem("Delete");
+		edit.add(item);
+		item.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -107,9 +122,9 @@ public class NotebookMenuBar extends JMenuBar {
 		
 		edit.addSeparator();
 		
-		JMenuItem sendForward = new JMenuItem("Send Forward");
-		edit.add(sendForward);
-		sendForward.addActionListener(new ActionListener(){
+		item = new JMenuItem("Send Forward");
+		edit.add(item);
+		item.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -117,9 +132,9 @@ public class NotebookMenuBar extends JMenuBar {
 			}
 		});
 		
-		JMenuItem bringToFront = new JMenuItem("Bring to Front");
-		edit.add(bringToFront);
-		bringToFront.addActionListener(new ActionListener(){
+		item = new JMenuItem("Bring to Front");
+		edit.add(item);
+		item.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -127,9 +142,9 @@ public class NotebookMenuBar extends JMenuBar {
 			}
 		});
 		
-		JMenuItem sendBackward = new JMenuItem("Send Backward");
-		edit.add(sendBackward);
-		sendBackward.addActionListener(new ActionListener(){
+		item = new JMenuItem("Send Backward");
+		edit.add(item);
+		item.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -137,9 +152,9 @@ public class NotebookMenuBar extends JMenuBar {
 			}
 		});
 		
-		JMenuItem bringToBack = new JMenuItem("Bring to Back");
-		edit.add(bringToBack);
-		bringToBack.addActionListener(new ActionListener(){
+		item = new JMenuItem("Bring to Back");
+		edit.add(item);
+		item.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -147,15 +162,85 @@ public class NotebookMenuBar extends JMenuBar {
 			}
 		});
 		
+		edit.addSeparator();
+		
+		
+		item = new JMenuItem("Set Preferences Directory");
+		edit.add(item);
+		item.addActionListener(new ActionListener(){
 
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				openBook.setPreferencesDirectory();
+			}
+		});
+		
+		view = new JMenu("View");
+		this.add(view);
+		
+		item = new JMenuItem("Zoom In");
+		view.add(item);
+		item.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				openBook.getNotebookPanel().zoomIn();
+			}
+		});
+		
+		item = new JMenuItem("Zoom Out");
+		view.add(item);
+		item.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				openBook.getNotebookPanel().zoomOut();
+			}
+		});
+		
+		view.addSeparator();
+		
+		ButtonGroup group = new ButtonGroup();
+		
+		JRadioButtonMenuItem radioItem = new JRadioButtonMenuItem("Align Pages Right");
+		radioItem.setSelected(true);
+		group.add(radioItem);
+		view.add(radioItem);
+		radioItem.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				openBook.getNotebookPanel().setDocAlignment(OpenNotebook.ALIGN_DOCS_RIGHT);
+			}
+		});
+		
+		radioItem = new JRadioButtonMenuItem("Align Pages Left");
+		group.add(radioItem);
+		view.add(radioItem);
+		radioItem.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				openBook.getNotebookPanel().setDocAlignment(OpenNotebook.ALIGN_DOCS_LEFT);
+			}
+		});
+		
+		radioItem = new JRadioButtonMenuItem("Align Pages Center");
+		group.add(radioItem);
+		view.add(radioItem);
+		radioItem.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				openBook.getNotebookPanel().setDocAlignment(OpenNotebook.ALIGN_DOCS_CENTER);
+			}
+		});
 	
 		mode = new JMenu("Mode");
 		this.add(mode);
 
 		if (openBook.isInStudentMode()){
-			JMenuItem teacherMode = new JMenuItem("Teacher");
-			mode.add(teacherMode);
-			teacherMode.addActionListener(new ActionListener(){
+			item = new JMenuItem("Teacher");
+			mode.add(item);
+			item.addActionListener(new ActionListener(){
 	
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
@@ -177,9 +262,9 @@ public class NotebookMenuBar extends JMenuBar {
 		}
 
 		else{
-			JMenuItem studentMode = new JMenuItem("Student");
-			mode.add(studentMode);
-			studentMode.addActionListener(new ActionListener(){
+			item = new JMenuItem("Student");
+			mode.add(item);
+			item.addActionListener(new ActionListener(){
 	
 				@Override
 				public void actionPerformed(ActionEvent arg0) {

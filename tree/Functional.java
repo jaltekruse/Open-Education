@@ -10,7 +10,7 @@ package tree;
 
 import java.util.*;
 
-public class Functional extends Expression {
+public abstract class Functional extends Expression {
 
 		ArrayList<Expression> inputs;
 		Operator op;

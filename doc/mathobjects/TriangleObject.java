@@ -12,7 +12,8 @@ import java.util.Vector;
 
 import doc.GridPoint;
 import doc.Page;
-import doc_gui.attributes.MathObjectAttribute;
+import doc.attributes.ListAttribute;
+import doc.attributes.MathObjectAttribute;
 
 public class TriangleObject extends PolygonObject {
 	
@@ -20,7 +21,7 @@ public class TriangleObject extends PolygonObject {
 	
 	public static final String MAKE_ISOSCELES_TRIANGLE = "make isosceles triangle";
 		
-	public TriangleObject(Page p){
+	public TriangleObject(MathObjectContainer p){
 		super(p);
 		addInitialPoints();
 		addAction(PolygonObject.FLIP_VERTICALLY);
@@ -29,7 +30,7 @@ public class TriangleObject extends PolygonObject {
 		addAction(MAKE_ISOSCELES_TRIANGLE);
 	}
 	
-	public TriangleObject(Page p, int x, int y, int w, int h, int thickness) {
+	public TriangleObject(MathObjectContainer p, int x, int y, int w, int h, int thickness) {
 		super(p, x, y, w, h, thickness);
 		addInitialPoints();
 		addAction(PolygonObject.FLIP_VERTICALLY);
@@ -97,10 +98,14 @@ public class TriangleObject extends PolygonObject {
 	
 	@Override
 	public TriangleObject clone() {
-		TriangleObject o = new TriangleObject(getParentPage());
+		TriangleObject o = new TriangleObject(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){
 			o.addAttribute( mAtt.clone());
+		}
+		o.removeAllLists();
+		for ( ListAttribute list : getLists()){
+			o.addList(list.clone());
 		}
 		return o;
 	}
@@ -108,7 +113,7 @@ public class TriangleObject extends PolygonObject {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return TRIANGLE_OBJECT;
+		return TRIANGLE_OBJ;
 	}
 	
 	

@@ -10,7 +10,8 @@ package doc.mathobjects;
 
 import doc.GridPoint;
 import doc.Page;
-import doc_gui.attributes.MathObjectAttribute;
+import doc.attributes.ListAttribute;
+import doc.attributes.MathObjectAttribute;
 
 /**
  * A basic MathObject that represents a rectangular space on the screen.
@@ -20,12 +21,12 @@ import doc_gui.attributes.MathObjectAttribute;
  */
 public class RectangleObject extends PolygonObject {
 	
-	public RectangleObject(Page p, int x, int y, int w, int h, int t) {
+	public RectangleObject(MathObjectContainer p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h, t);
 		addInitialPoints();
 	}
 	
-	public RectangleObject(Page p){
+	public RectangleObject(MathObjectContainer p){
 		super(p);
 		addInitialPoints();
 	}
@@ -49,10 +50,14 @@ public class RectangleObject extends PolygonObject {
 	
 	@Override
 	public RectangleObject clone() {
-		RectangleObject o = new RectangleObject(getParentPage());
+		RectangleObject o = new RectangleObject(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){
 			o.addAttribute( mAtt.clone());
+		}
+		o.removeAllLists();
+		for ( ListAttribute list : getLists()){
+			o.addList(list.clone());
 		}
 		return o;
 	}
@@ -60,6 +65,6 @@ public class RectangleObject extends PolygonObject {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return RECTANGLE_OBJECT;
+		return RECTANGLE;
 	}
 }

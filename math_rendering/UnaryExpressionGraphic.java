@@ -71,7 +71,7 @@ public class UnaryExpressionGraphic extends ExpressionGraphic {
 	public void setCursorPos(int xPixelPos){
 		
 		String valueString = getValue().getOperator().getSymbol();
-		System.out.println("set Unary Cursor pos");
+//		System.out.println("set Unary Cursor pos");
 		
 		if (xPixelPos < super.symbolX1){
 			super.getRootNodeGraphic().getCursor().setPos(0);

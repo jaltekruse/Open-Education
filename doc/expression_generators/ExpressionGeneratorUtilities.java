@@ -32,17 +32,15 @@ public class ExpressionGeneratorUtilities {
 		int numZeros = 0;
 		int numNegatives = 0;
 		int minNumOps = 1;
-		int maxNumOps = 5;
+		int maxNumOps = 3;
 		int numOps;
 		System.out.println(7.84);
 		System.out.println(2.8 * 2.8);
 		
 		for (int j = 0; j < numTrials; j++){
 			System.out.println();
-			System.out.println("new Expression");
-			System.out.println("-------------------------");
-			numOps = (int) generateRandomInt(minNumOps, maxNumOps, false);
-			Node n = randomExpression(ops, vars, numOps, 30, 1, 10, true, false, false, true);
+			numOps = (int) randomInt(minNumOps, maxNumOps, false);
+			Node n = randomExpression(ops, vars, numOps, 20, 1, 10, true, false, false, true);
 			try {
 				System.out.println(n.toStringRepresentation());
 				System.out.println(n.numericSimplify().toStringRepresentation());
@@ -57,12 +55,12 @@ public class ExpressionGeneratorUtilities {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("out of " + numTrials + " trials " + numZeros + " evaluated to 0.");
-		System.out.println("out of " + numTrials + " trials " + numNegatives + " evaluated to a negative.");
+		System.out.println( numZeros + " out of " + numTrials + " trials evaluated to 0.");
+		System.out.println(numNegatives + " out of " + numTrials + " trials evaluated to a negative.");
 		
-		for (int j = 0; j < 0; j++){
-			System.out.println(generateRandomDecimal( 1, 5, .2));
-		}
+//		for (int j = 0; j < 0; j++){
+//			System.out.println(generateRandomDecimal( 1, 5, .2));
+//		}
 
 	}
 	
@@ -82,13 +80,22 @@ public class ExpressionGeneratorUtilities {
 		// for (x+y) / (x-y) ;  (x+5) + (3+(x-4))  and other situations with parenthesis
 		
 		// first trial, random expression using 4 major operations, and only integers from 1 to 12, integer answers
-		// problems : division by 0, fixed
-		// numbers get too big : solution to try, if number is too big, make sure a division is the next thing added
-		// make division require a small result, or try again to add a different operation ( could cause infinite loop)
-		// but would require it to keep picking multiplication with random number generator
+		// problems :
+		// -----------
+		// - division by 0, fixed
+		// - numbers get too big :
+		//		solution1 :
+		//			if number is too big, make sure a division is the next thing added
+		// 			make division require a small result, or try again to add a different
+		//			operation ( could cause infinite loop) but would require it to keep
+		//			picking multiplication with random number generator
+		// 		solution2 :
+		//			try generating expression through creating terms out of just numbers
+		//			or a few simple multiplications of divisions and then randomly
+		//			add or subtract them
 		
 		Node n;
-		n = new Number( generateRandomInt( minNumVal, maxNumVal, excludeZero));
+		n = new Number( randomInt( minNumVal, maxNumVal, excludeZero));
 		
 		for (int i = 0; i < numOps; i++){
 			n = addRandomOp( n, ops, vars, minNumVal, maxNumVal, maxAbsVal, excludeZero, subtractNegatives, addNegatives);
@@ -105,7 +112,7 @@ public class ExpressionGeneratorUtilities {
 		for ( double num = 2; num < d / 2 + 1; d++){
 			if ( d / num == 0){
 				index = factors.length;
-				System.arraycopy(factors, 0, new double[index+ 1], 0, index);
+				System.arraycopy(factors, 0, new double[index + 1], 0, index);
 				factors[index] = num;
 			}
 		}
@@ -171,7 +178,7 @@ public class ExpressionGeneratorUtilities {
 		
 		int opIndex = rand.nextInt( ops.length );
 		String opCode = ops[opIndex];
-		Node newChild = new Number( generateRandomInt(min, max, excludeZero) );
+		Node newChild = new Number( randomInt(min, max, excludeZero) );
 		Operator op = null;
 		Number newNum;
 		Expression newEx;
@@ -211,7 +218,7 @@ public class ExpressionGeneratorUtilities {
 			else if ( expressionVal == 0){
 				newNum = (Number) newChild; 
 				do{ 
-					newChild = new Number( generateRandomInt(min, max, excludeZero));
+					newChild = new Number( randomInt(min, max, excludeZero));
 				} while( newNum.getValue() == 0);
 				
 				addChild(newEx, n);
@@ -220,7 +227,7 @@ public class ExpressionGeneratorUtilities {
 			else if ( isPrime( expressionVal ) || ( rand.nextBoolean() && ! numberTooBig) )
 			{// the expression evaluates to a prime number, so it must be the divisor
 				// or the expression was randomly selected to be the divisor when it wasn't prime
-				newChild = new Number( expressionVal * generateRandomInt(min, max, excludeZero));
+				newChild = new Number( expressionVal * randomInt(min, max, excludeZero));
 				addChild(newEx, newChild);
 				addChild(newEx, n);
 			}
@@ -271,7 +278,7 @@ public class ExpressionGeneratorUtilities {
 						tempMin = min;
 					}
 					while ( newNum.getValue() < 0){
-						newNum = new Number( generateRandomInt(tempMin, max, excludeZero) );
+						newNum = new Number( randomInt(tempMin, max, excludeZero) );
 					}
 				}
 			}
@@ -309,7 +316,7 @@ public class ExpressionGeneratorUtilities {
 						tempMin = min;
 					}
 					while ( newNum.getValue() < 0){
-						newNum = new Number( generateRandomInt(tempMin, max, excludeZero) );
+						newNum = new Number( randomInt(tempMin, max, excludeZero) );
 					}
 				}
 			}
@@ -333,13 +340,13 @@ public class ExpressionGeneratorUtilities {
 			}
 			
 			newNum = (Number) newChild; 
-			if ( expressionVal * 2 > maxAbsVal)
+			if ( expressionVal * 4 > maxAbsVal)
 			{// a multiplication cannot be performed on the current expression without making the result too large
 				// try again
 				return addRandomOp(n, ops, vars, min, max, maxAbsVal, excludeZero, subtractNegatives, addNegatives);
 			}
 			while ( Math.abs(expressionVal * newNum.getValue()) > maxAbsVal){
-				newNum = new Number( generateRandomInt(min, max, excludeZero) );
+				newNum = new Number( randomInt(min, max, excludeZero) );
 			}
 			
 		}
@@ -374,6 +381,17 @@ public class ExpressionGeneratorUtilities {
 		return true;
 	}
 	
+	public Node randomFraction(int min, int max, boolean allowImproper, boolean allowZero){
+		if ( min > max){
+			// min must be smaller
+			return null;
+		}
+		int denom = rand.nextInt(max - min) + min;
+		Number denominator = new Number( denom );
+		
+		return null;
+	}
+	
 	public static Node randomEquation(){
 		
 		return null;
@@ -395,7 +413,7 @@ public class ExpressionGeneratorUtilities {
 		return null;
 	}
 	
-	public static double generateRandomInt(double a, double b, boolean excludeZero){
+	public static double randomInt(double a, double b, boolean excludeZero){
 		double randVal = rand.nextDouble() * ( b - a );
 		double randNum = ( (int) (a + (int) Math.round(randVal) ) );
 		if ( a < 0 && b > 0 && excludeZero){
@@ -407,7 +425,7 @@ public class ExpressionGeneratorUtilities {
 
 	}
 	
-	public static double generateRandomDecimal(double a, double b, double round){
+	public static double randomDecimal(double a, double b, double round){
 		double randNum = a + rand.nextDouble() * ( b - a);
 		return randNum - randNum % round;
 		

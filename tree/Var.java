@@ -231,4 +231,34 @@ public class Var extends Expression implements ValueWithName {
 	{
 		isMaster = b;
 	}
+
+	@Override
+	public boolean allChildrenFilled() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean canHoldChildren() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int getArity() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean needsChildToLeft() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean needsChildToRight() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

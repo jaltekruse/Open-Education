@@ -104,6 +104,28 @@ public class FileActionsToolBar extends JToolBar {
 				notebookPanel.print();
 			}
 		};
+		
+		if ( ! notebookPanel.isInStudentMode()){
+			ImageIcon generateIcon = notebookPanel.getIcon("img/generateWorksheet.png");
+			
+			OCButton genreateButton = new OCButton(generateIcon, "Generate Worksheet", 1, 1, 3, 0, this){
+				
+				@Override
+				public void associatedAction(){
+					notebookPanel.generateWorksheet();
+				}
+			};
+		}
+		
+		
+		OCButton sampleDocs = new OCButton("Sample Docs", "Sample Documents",
+				1, 1, 3, 0, this){
+			
+			@Override
+			public void associatedAction(){
+				notebookPanel.setSampleDialogVisible(true);
+			}
+		};
 	}
 
 }

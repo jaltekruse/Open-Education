@@ -26,14 +26,14 @@ public class TreeTester {
 				}
 			}
 			else{
-				System.out.println("please give one argument, an expression to be evaluated");
+//				System.out.println("please give one argument, an expression to be evaluated");
 			}
 		}
 		else{
 			try {
-				System.out.println("fed in: " + expression);
+//				System.out.println("fed in: " + expression);
 				parsedExpression = parser.ParseExpression(expression);
-				System.out.println("parsed:" + parsedExpression);
+//				System.out.println("parsed:" + parsedExpression);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

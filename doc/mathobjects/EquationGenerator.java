@@ -1,11 +1,12 @@
 package doc.mathobjects;
 
-import doc_gui.attributes.MathObjectAttribute;
 import doc.Page;
+import doc.attributes.ListAttribute;
+import doc.attributes.MathObjectAttribute;
 
 public class EquationGenerator extends MathObject {
 
-	public EquationGenerator(Page p){
+	public EquationGenerator(MathObjectContainer p){
 		
 	}
 	
@@ -23,10 +24,14 @@ public class EquationGenerator extends MathObject {
 	
 	@Override
 	public EquationGenerator clone() {
-		EquationGenerator o = new EquationGenerator(getParentPage());
+		EquationGenerator o = new EquationGenerator(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){
 			o.addAttribute( mAtt.clone());
+		}
+		o.removeAllLists();
+		for ( ListAttribute list : getLists()){
+			o.addList(list.clone());
 		}
 		return o;
 	}

@@ -17,7 +17,7 @@ import java.awt.geom.Ellipse2D;
 
 import doc.mathobjects.OvalObject;
 
-public class OvalObjectGUI extends MathObjectGUI {
+public class OvalObjectGUI extends MathObjectGUI<OvalObject> {
 
 	public void drawMathObject(OvalObject object, Graphics g, Point pageOrigin,
 			float zoomLevel) {

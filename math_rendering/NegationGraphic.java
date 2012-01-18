@@ -13,14 +13,14 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
-import tree.UnaryExpression;
-import tree.Expression;
+import expression.Expression;
+import expression.Node;
 
 public class NegationGraphic extends UnaryExpressionGraphic {
 
 	private int space;
 	
-	public NegationGraphic(UnaryExpression v,
+	public NegationGraphic(Expression v,
 			RootNodeGraphic compExGraphic) {
 		super(v, compExGraphic);
 		setMostInnerNorth(this);
@@ -162,7 +162,7 @@ public class NegationGraphic extends UnaryExpressionGraphic {
 		
 		space = (int) (3 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
 		
-		Expression tempChild = ((UnaryExpression)super.getValue()).getChild();
+		Node tempChild = ((Expression)getValue()).getChild(0);
 		NodeGraphic childValGraphic = null;
 		int[] childSize = {0,0};
 		int[] symbolSize = {0, 0};

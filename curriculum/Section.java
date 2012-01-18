@@ -2,9 +2,9 @@ package curriculum;
 
 import java.util.Vector;
 
-import doc_gui.attributes.MathObjectAttribute;
-import doc_gui.attributes.StringAttribute;
 import doc.Document;
+import doc.attributes.MathObjectAttribute;
+import doc.attributes.StringAttribute;
 import doc.mathobjects.ProblemGenerator;
 
 public class Section {

@@ -8,8 +8,21 @@
 
 package doc_gui.mathobject_gui;
 
-public class TriangleObjectGUI extends MathObjectGUI {
+import java.awt.Graphics;
+import java.awt.Point;
+
+import doc.mathobjects.TriangleObject;
+
+public class TriangleObjectGUI extends MathObjectGUI<TriangleObject> {
+
+	@Override
+	public void drawMathObject(TriangleObject object, Graphics g,
+			Point pageOrigin, float zoomLevel) {
+		// TODO Auto-generated method stub
+		
+	}
 	
-	//add custom drawing method if generic PolygonObjectGUI
-	//does not provide enough functionality
+	// add custom drawing method if generic PolygonObjectGUI
+	// does not provide enough functionality, need to also modify PageGUI
+	// for the new method to be used
 }

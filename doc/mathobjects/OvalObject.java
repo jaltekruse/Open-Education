@@ -11,18 +11,19 @@ package doc.mathobjects;
 import java.awt.Color;
 
 import doc.Page;
-import doc_gui.attributes.ColorAttribute;
-import doc_gui.attributes.IntegerAttribute;
-import doc_gui.attributes.MathObjectAttribute;
+import doc.attributes.ColorAttribute;
+import doc.attributes.IntegerAttribute;
+import doc.attributes.ListAttribute;
+import doc.attributes.MathObjectAttribute;
 
 public class OvalObject extends MathObject {
 	
-	public OvalObject(Page p, int x, int y, int width, int height, int thickness) {
+	public OvalObject(MathObjectContainer p, int x, int y, int width, int height, int thickness) {
 		super(p,x, y, width, height);
 		getAttributeWithName("thickness").setValue(thickness);
 	}
 	
-	public OvalObject(Page p) {
+	public OvalObject(MathObjectContainer p) {
 		super(p);
 		getAttributeWithName("thickness").setValue(1);
 		// TODO Auto-generated constructor stub
@@ -53,10 +54,14 @@ public class OvalObject extends MathObject {
 	
 	@Override
 	public OvalObject clone() {
-		OvalObject o = new OvalObject(getParentPage());
+		OvalObject o = new OvalObject(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){
 			o.addAttribute( mAtt.clone());
+		}
+		o.removeAllLists();
+		for ( ListAttribute list : getLists()){
+			o.addList(list.clone());
 		}
 		return o;
 	}
@@ -64,7 +69,7 @@ public class OvalObject extends MathObject {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return OVAL_OBJECT;
+		return OVAL_OBJ;
 	}
 
 }

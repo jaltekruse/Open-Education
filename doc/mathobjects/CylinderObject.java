@@ -4,10 +4,12 @@ import java.awt.Color;
 
 import doc.GridPoint;
 import doc.Page;
-import doc_gui.attributes.BooleanAttribute;
-import doc_gui.attributes.ColorAttribute;
-import doc_gui.attributes.IntegerAttribute;
-import doc_gui.attributes.MathObjectAttribute;
+import doc.attributes.AttributeException;
+import doc.attributes.BooleanAttribute;
+import doc.attributes.ColorAttribute;
+import doc.attributes.IntegerAttribute;
+import doc.attributes.ListAttribute;
+import doc.attributes.MathObjectAttribute;
 
 public class CylinderObject extends MathObject {
 
@@ -20,7 +22,7 @@ public class CylinderObject extends MathObject {
 	
 	private GridPoint pointBehindCylinder = new GridPoint(.5, .75);
 	
-	public CylinderObject(Page p){
+	public CylinderObject(MathObjectContainer p){
 		super(p);
 		getAttributeWithName("thickness").setValue(1);
 		addAction(PolygonObject.FLIP_VERTICALLY);
@@ -44,7 +46,7 @@ public class CylinderObject extends MathObject {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return CYLINDER_OBJECT;
+		return CYLINDER_OBJ;
 	}
 	
 	@Override
@@ -54,17 +56,21 @@ public class CylinderObject extends MathObject {
 				setAttributeValue("flip vertically", ! isFlippedVertically());
 			} catch (AttributeException e) {
 				// TODO Auto-generated catch block
-				System.out.println("error in CylinderGUI.performSpecialObjectAction");
+//				System.out.println("error in CylinderGUI.performSpecialObjectAction");
 			}
 		}
 	}
 	
 	@Override
 	public CylinderObject clone() {
-		CylinderObject o = new CylinderObject(getParentPage());
+		CylinderObject o = new CylinderObject(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){
 			o.addAttribute( mAtt.clone());
+		}
+		o.removeAllLists();
+		for ( ListAttribute list : getLists()){
+			o.addList(list.clone());
 		}
 		return o;
 	}

@@ -2,8 +2,8 @@ package curriculum;
 
 import java.util.Vector;
 
-import doc_gui.attributes.MathObjectAttribute;
-import doc_gui.attributes.StringAttribute;
+import doc.attributes.MathObjectAttribute;
+import doc.attributes.StringAttribute;
 
 public class Chapter {
 

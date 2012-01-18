@@ -13,17 +13,33 @@ public class ProblemGenerator {
 	private static final Function linearFunction;
 	
 	static {
-		Variable a = new Variable();
-		Variable b = new Variable();
-		Node linear = Node.parseNode("ax+b");
-		linear = linear.replace("a", a);
-		linear = linear.replace("b", b);
+		Variable a = null;
+		Variable b = null;
+		Node linear = null;
+		try {
+			a = new Variable();
+			b = new Variable();
+			linear = Node.parseNode("ax+b");
+			linear = linear.replace("a", a);
+			linear = linear.replace("b", b);
+		} catch (NodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		linearFunction = new Function(linear, a, b);
 	}
 	
 	public Equation generateLinear() {
-		Node line = linearFunction.apply(Number.get(random()), Number.get(random()));
-		return new Equation(line.simplify(), Number.get(0));
+		Node line= null;
+		try {
+			line = linearFunction.apply(Number.get(random()), Number.get(random()));
+			line = line.simplify();
+		} catch (NodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new Equation(line, Number.get(0));
 	}
 
 	private double random() {

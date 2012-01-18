@@ -313,7 +313,8 @@ public class NodeParser {
 					if (index != 0) {
 						return parse(expression, precedence, index - 1);
 					}
-					else if ( Character.isDigit(expression.charAt(index + 1))){
+					else if ( expression.length() > 1 &&
+							Character.isDigit(expression.charAt(index + 1))){
 						return parseValue(expression);
 					}
 					else{
@@ -322,7 +323,6 @@ public class NodeParser {
 				}
 			}
 		}
-		
 		return parseValue(expression);
 	}
 	

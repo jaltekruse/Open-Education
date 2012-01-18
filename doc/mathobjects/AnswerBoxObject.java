@@ -1,18 +1,22 @@
 package doc.mathobjects;
 
 import doc.Page;
-import doc_gui.attributes.IntegerAttribute;
-import doc_gui.attributes.MathObjectAttribute;
-import doc_gui.attributes.StringAttribute;
+import doc.attributes.AttributeException;
+import doc.attributes.IntegerAttribute;
+import doc.attributes.ListAttribute;
+import doc.attributes.MathObjectAttribute;
+import doc.attributes.StringAttribute;
 
 public class AnswerBoxObject extends MathObject {
 
+	public static final String FONT_SIZE = "fontSize";
+	public static final String ANSWER = "answer";
 	public AnswerBoxObject(Page p, int x, int y, int w, int h) {
 		super(p, x, y, w, h);
 		this.setStudentSelectable(true);
 	}
 	
-	public AnswerBoxObject(Page p){
+	public AnswerBoxObject(MathObjectContainer p){
 		super(p);
 		this.setStudentSelectable(true);
 	}
@@ -24,12 +28,12 @@ public class AnswerBoxObject extends MathObject {
 	@Override
 	public void addDefaultAttributes() {
 		// TODO Auto-generated method stub
-		addAttribute(new StringAttribute("answer"));
-		getAttributeWithName("answer").setValue("");
+		addAttribute(new StringAttribute(ANSWER));
+		getAttributeWithName(ANSWER).setValue("");
 		getAttributeWithName("answer").setStudentEditable(true);
-		addAttribute(new IntegerAttribute("fontSize", 1, 50));
-		getAttributeWithName("fontSize").setValue(12);
-		getAttributeWithName("fontSize").setStudentEditable(false);
+		addAttribute(new IntegerAttribute(FONT_SIZE, 1, 50));
+		getAttributeWithName(FONT_SIZE).setValue(12);
+		getAttributeWithName(FONT_SIZE).setStudentEditable(false);
 	}
 
 	public void setFontSize(int fontSize) throws AttributeException {
@@ -37,17 +41,17 @@ public class AnswerBoxObject extends MathObject {
 	}
 
 	public int getFontSize() {
-		return ((IntegerAttribute)getAttributeWithName("fontSize")).getValue();
+		return (Integer) getAttributeValue(FONT_SIZE);
 	}
 
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return ANSWER_BOX;
+		return ANSWER_BOX_OBJ;
 	}
 	
 	public String getText(){
-		return ((StringAttribute)getAttributeWithName("answer")).getValue();
+		return (String) getAttributeValue(ANSWER);
 	}
 	
 	public void setText(String s) throws AttributeException{
@@ -57,10 +61,14 @@ public class AnswerBoxObject extends MathObject {
 	@Override
 	public AnswerBoxObject clone() {
 		// TODO Auto-generated method stub
-		AnswerBoxObject o = new AnswerBoxObject(getParentPage());
+		AnswerBoxObject o = new AnswerBoxObject(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){
 			o.addAttribute( mAtt.clone());
+		}
+		o.removeAllLists();
+		for ( ListAttribute list : getLists()){
+			o.addList(list.clone());
 		}
 		return o;
 	}

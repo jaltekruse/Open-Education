@@ -8,51 +8,114 @@
 
 package doc.mathobjects;
 
+import java.util.Vector;
+
 import doc.Page;
-import doc_gui.attributes.BooleanAttribute;
-import doc_gui.attributes.DoubleAttribute;
-import doc_gui.attributes.IntegerAttribute;
-import doc_gui.attributes.MathObjectAttribute;
-import doc_gui.attributes.StringAttribute;
+import doc.attributes.AttributeException;
+import doc.attributes.BooleanAttribute;
+import doc.attributes.DoubleAttribute;
+import doc.attributes.IntegerAttribute;
+import doc.attributes.ListAttribute;
+import doc.attributes.MathObjectAttribute;
+import doc.attributes.StringAttribute;
 
 public class GraphObject extends MathObject {
 	
-	public static final String DEFAULT_GRID = "default grid";
-	public static final String ZOOM_IN = "zoom in";
-	public static final String ZOOM_OUT = "zoom out";
+	public static final String X_MIN = "xMin", Y_MIN = "yMin",
+			X_MAX = "xMax", Y_MAX = "yMax", EXPRESSION = "y=",
+			X_STEP = "xStep", Y_STEP = "yStep", FONT_SIZE = "fontSize",
+			SHOW_AXIS = "showAxis", SHOW_NUMBERS = "showNumbers",
+			SHOW_GRID = "showGrid", EXPRESSIONS = "Expressions";
 	
-	public GraphObject(Page p, int x, int y, int width, int height) {
+	public static final String DEFAULT_GRID = "default grid",
+			ZOOM_IN = "zoom in", ZOOM_OUT = "zoom out", MOVE_LEFT = "move left",
+			MOVE_RIGHT = "move right", MOVE_DOWN = "move down", MOVE_UP = "move up";
+	
+	public GraphObject(MathObjectContainer p, int x, int y, int width, int height) {
 		super(p, x, y, width, height);
 		setDefaults();
-		getAttributeWithName("y=").setValue("");
+		setStudentSelectable(true);
+		addAction(MAKE_INTO_PROBLEM);
 		addAction(DEFAULT_GRID);
-		addAction(ZOOM_IN);
-		addAction(ZOOM_OUT);
+		addStudentAction(ZOOM_IN);
+		addStudentAction(ZOOM_OUT);
+		addStudentAction(MOVE_UP);
+		addStudentAction(MOVE_DOWN);
+		addStudentAction(MOVE_LEFT);
+		addStudentAction(MOVE_RIGHT);
 //		addStudentAction("Graph point");
 	}
 	
-	public GraphObject(Page p){
+	public GraphObject(MathObjectContainer p){
 		super(p);
 		setDefaults();
-		getAttributeWithName("y=").setValue("");
-		addAction(DEFAULT_GRID);
-		addAction(ZOOM_IN);
-		addAction(ZOOM_OUT);
+		setStudentSelectable(true);
+		addAction(MAKE_INTO_PROBLEM);
+		addStudentAction(DEFAULT_GRID);
+		addStudentAction(ZOOM_IN);
+		addStudentAction(ZOOM_OUT);
+		addStudentAction(MOVE_UP);
+		addStudentAction(MOVE_DOWN);
+		addStudentAction(MOVE_LEFT);
+		addStudentAction(MOVE_RIGHT);
 //		addStudentAction("Graph point");
 	}
 	
 	public GraphObject() {
 		setDefaults();
-		getAttributeWithName("y=").setValue("");
-		addAction(DEFAULT_GRID);
-		addAction(ZOOM_IN);
-		addAction(ZOOM_OUT);
+		setStudentSelectable(true);
+		addAction(MAKE_INTO_PROBLEM);
+		addStudentAction(DEFAULT_GRID);
+		addStudentAction(ZOOM_IN);
+		addStudentAction(ZOOM_OUT);
+		addStudentAction(MOVE_UP);
+		addStudentAction(MOVE_DOWN);
+		addStudentAction(MOVE_LEFT);
+		addStudentAction(MOVE_RIGHT);
 //		addStudentAction("Graph point");
+	}
+	
+	public void setDefaults(){
+		try{
+			addList(new ListAttribute<StringAttribute>(EXPRESSIONS,
+					new StringAttribute(EXPRESSION), 3, true, false));
+			addAttribute(new DoubleAttribute(X_MIN, -7E8, 7E8, true, true));
+			getAttributeWithName(X_MIN).setValueWithString("-5");
+			addAttribute(new DoubleAttribute(X_MAX, -7E8, 7E8, true, true));
+			getAttributeWithName(X_MAX).setValueWithString("5");
+			addAttribute(new DoubleAttribute("yMin", -7E8, 7E8, true, true));
+			getAttributeWithName("yMin").setValueWithString("-5");
+			addAttribute(new DoubleAttribute("yMax", -7E8, 7E8, true, true));
+			getAttributeWithName("yMax").setValueWithString("5");
+			addAttribute(new DoubleAttribute("xStep", -3E8, 3E8, true, true));
+			getAttributeWithName("xStep").setValueWithString("1");
+			addAttribute(new DoubleAttribute("yStep", -3E8, 3E8, true, true));
+			getAttributeWithName("yStep").setValueWithString("1");
+			addAttribute(new IntegerAttribute("fontSize", 1, 20));
+			getAttributeWithName("fontSize").setValueWithString("8");
+			addAttribute(new BooleanAttribute("showAxis"));
+			getAttributeWithName("showAxis").setValue(true);
+			addAttribute(new BooleanAttribute("showNumbers"));
+			getAttributeWithName("showNumbers").setValue(true);
+			addAttribute(new BooleanAttribute("showGrid"));
+			getAttributeWithName("showGrid").setValue(true);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void performSpecialObjectAction(String s){
-		if (s.equals(DEFAULT_GRID)){
+		if (s.equals(MAKE_INTO_PROBLEM)){
+			ProblemObject newProblem = new ProblemObject(getParentContainer(), getxPos(),
+					getyPos(), getWidth(), getHeight() );
+			this.getParentContainer().getParentDoc().getDocViewerPanel().setFocusedObject(newProblem);
+			newProblem.addObjectFromPage(this);
+			getParentContainer().addObject(newProblem);
+			getParentContainer().removeObject(this);
+			return;
+		}
+		else if (s.equals(DEFAULT_GRID)){
 			setDefaults();
 		}
 		else if (s.equals(ZOOM_IN)){
@@ -61,9 +124,21 @@ public class GraphObject extends MathObject {
 		else if (s.equals(ZOOM_OUT)){
 			zoom(90);
 		}
+		else if (s.equals(MOVE_UP)){
+			shiftGraph(0, 10);
+		}
+		else if (s.equals(MOVE_DOWN)){
+			shiftGraph(0, -10);
+		}
+		else if (s.equals(MOVE_LEFT)){
+			shiftGraph(-10, 0);
+		}
+		else if (s.equals(MOVE_RIGHT)){
+			shiftGraph(10, 0);
+		}
 	}
 	
-	public void zoom(double rate){
+	private void zoom(double rate){
 		double xMin = getxMin(), yMin = getyMin(), xMax = getxMax(), yMax = getyMax();
 		
 		//hacked solution to prevent drawing the grid, the auto-rescaling of the 
@@ -87,6 +162,20 @@ public class GraphObject extends MathObject {
 		
 	}
 	
+	private void shiftGraph(int xPix, int yPix){
+		double xMin = getxMin(), yMin = getyMin(), xMax = getxMax(), yMax = getyMax();
+		double xPixel = (xMax - xMin) / getWidth();
+		double yPixel = (yMax - yMin) / getHeight();
+		try{
+			setxMin( xMin + xPix * xPixel );
+			setyMax( yMax + yPix * yPixel );
+			setyMin( yMin + yPix * yPixel );
+			setxMax( xMax + xPix * xPixel );
+		} catch (Exception ex){
+			;
+		}
+	}
+	
 	public double getxMin(){
 		return ((DoubleAttribute) getAttributeWithName("xMin")).getValue();
 	}
@@ -101,6 +190,10 @@ public class GraphObject extends MathObject {
 	
 	public double getyMax(){
 		return ((DoubleAttribute) getAttributeWithName("yMax")).getValue();
+	}
+	
+	public void addExpression(String s) throws AttributeException{
+		getListWithName(EXPRESSIONS).addValueWithString(s);
 	}
 	
 	public void setxMin(double d) throws AttributeException{
@@ -119,38 +212,14 @@ public class GraphObject extends MathObject {
 		setAttributeValue("yMax", d);
 	}
 
-
-	public void setDefaults(){
-		try{
-			addAttribute(new StringAttribute("y="));
-			addAttribute(new DoubleAttribute("xMin", -100000, 100000));
-			getAttributeWithName("xMin").setValueWithString("-5");
-			addAttribute(new DoubleAttribute("xMax", -100000, 100000));
-			getAttributeWithName("xMax").setValueWithString("5");
-			addAttribute(new DoubleAttribute("yMin", -100000, 100000));
-			getAttributeWithName("yMin").setValueWithString("-5");
-			addAttribute(new DoubleAttribute("yMax", -100000, 100000));
-			getAttributeWithName("yMax").setValueWithString("5");
-			addAttribute(new DoubleAttribute("xStep", -50000, 50000));
-			getAttributeWithName("xStep").setValueWithString("1");
-			addAttribute(new DoubleAttribute("yStep", -50000, 50000));
-			getAttributeWithName("yStep").setValueWithString("1");
-			addAttribute(new IntegerAttribute("fontSize", 1, 20));
-			getAttributeWithName("fontSize").setValueWithString("8");
-			addAttribute(new BooleanAttribute("showAxis"));
-			getAttributeWithName("showAxis").setValue(true);
-			addAttribute(new BooleanAttribute("showNumbers"));
-			getAttributeWithName("showNumbers").setValue(true);
-			addAttribute(new BooleanAttribute("showGrid"));
-			getAttributeWithName("showGrid").setValue(true);
-		}catch(Exception e){
-			e.printStackTrace();
+	public Vector<StringAttribute> getExpressions(){
+		Vector<StringAttribute> expressions = new Vector<StringAttribute>();
+		for ( Object strAtt : getListWithName(EXPRESSIONS).getValues()){
+			expressions.add((StringAttribute)strAtt);
 		}
+		return expressions;
 	}
-
-	public String getExpression(){
-		return ((StringAttribute)getAttributeWithName("y=")).getValue();
-	}
+	
 	@Override
 	public void setAttributeValue(String n, Object o) throws AttributeException{
 		if (n.equals("xMin")){
@@ -174,10 +243,14 @@ public class GraphObject extends MathObject {
 	
 	@Override
 	public GraphObject clone() {
-		GraphObject o = new GraphObject(getParentPage());
+		GraphObject o = new GraphObject(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){
 			o.addAttribute( mAtt.clone());
+		}
+		o.removeAllLists();
+		for ( ListAttribute list : getLists()){
+			o.addList(list.clone());
 		}
 		return o;
 	}
@@ -185,6 +258,6 @@ public class GraphObject extends MathObject {
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return GRAPH_OBJECT;
+		return GRAPH_OBJ;
 	}
 }

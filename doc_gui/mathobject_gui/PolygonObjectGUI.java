@@ -17,7 +17,7 @@ import java.awt.Polygon;
 
 import doc.mathobjects.PolygonObject;
 
-public class PolygonObjectGUI extends MathObjectGUI {
+public class PolygonObjectGUI extends MathObjectGUI<PolygonObject> {
 	
 	private static final int dotRadius = 3;
 	

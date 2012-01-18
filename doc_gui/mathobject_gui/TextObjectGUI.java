@@ -21,10 +21,11 @@ import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
-import doc.mathobjects.TextObject;
-import doc_gui.attributes.BooleanAttribute;
 
-public class TextObjectGUI extends MathObjectGUI{
+import doc.attributes.BooleanAttribute;
+import doc.mathobjects.TextObject;
+
+public class TextObjectGUI extends MathObjectGUI<TextObject>{
 
 
 	public void drawMathObject(TextObject object, Graphics g, Point pageOrigin,
@@ -71,6 +72,12 @@ public class TextObjectGUI extends MathObjectGUI{
 		    }
 
 			g.setFont(f);
+		}
+		else{
+			// draw the black box around all of the expressions
+			g.setColor(Color.BLACK);
+			g.drawRect(xOrigin, yOrigin , (int) (object.getWidth() * zoomLevel)
+					, (int) (object.getHeight() * zoomLevel));
 		}
 		if ( ((BooleanAttribute)object.getAttributeWithName("showBox")).getValue()){
 			g.setColor(Color.GRAY);
