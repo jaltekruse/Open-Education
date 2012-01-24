@@ -20,6 +20,8 @@ import java.awt.RenderingHints;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
+import java.util.Stack;
+import java.util.Vector;
 
 
 import javax.swing.JDesktopPane;
@@ -44,6 +46,12 @@ import doc_gui.object_panels.ObjectPropertiesFrame;
 public class DocViewerPanel extends JDesktopPane{
 
 	private Document doc;
+	private Vector<Document> actions;
+	private Vector<Document> undoneActions;
+	private static final int numUndos = 30;
+	private Document lastAction;
+	private int undoIndex;
+	private int undoStop, redoStop;
 	private float zoomLevel;
 	private static final float zoomRate = 1.1f;
 	private JScrollPane docScrollPane;
@@ -80,6 +88,12 @@ public class DocViewerPanel extends JDesktopPane{
 		tempGroup = new Grouping();
 		setPageGUI(new PageGUI(this));
 		background = new BufferedImage(10,10, 10);
+		
+		actions = new Vector<Document>();
+		undoneActions = new Vector<Document>();
+		// add the first undo state, the blank document
+		lastAction = doc;
+		addUndoState();
 
 		zoomLevel = 1;
 		currentPage = 1;
@@ -167,6 +181,42 @@ public class DocViewerPanel extends JDesktopPane{
 
 	public void setScrollBounds(int w, int h){
 		docScrollPane.setBounds(0, 0, w, h);
+	}
+
+	public void addUndoState(){
+		actions.add(lastAction);
+		if ( actions.size() > numUndos){
+			actions.remove(0);
+		}
+		lastAction = doc.clone();
+		undoneActions = new Stack<Document>();
+	}
+
+	public void undo(){
+		if ( actions.size() == 1)
+		{// the only thing left is the empty document
+			return;
+		}
+		doc = actions.remove(actions.size() - 1);
+		undoneActions.add(lastAction);
+		if ( undoneActions.size() > numUndos){
+			undoneActions.remove(0);
+		}
+		lastAction = doc.clone();
+		this.resizeViewWindow();
+	}
+
+	public void redo(){
+		if ( undoneActions.isEmpty() ){
+			return;
+		}
+		doc = undoneActions.remove(undoneActions.size() - 1);
+		actions.add(lastAction);
+		if ( actions.size() > numUndos){
+			actions.remove(0);
+		}
+		lastAction = doc.clone();
+		this.resizeViewWindow();
 	}
 
 	private JPanel makeDocPanel() {
@@ -389,14 +439,6 @@ public class DocViewerPanel extends JDesktopPane{
 						objPropsFrame.focusAttributeField(primaryAttribute);	
 					}
 				}
-				// removed expression 
-				//				else if (newFocusedObject instanceof GraphObject){
-				//					primaryAttribute = newFocusedObject.getAttributeWithName(GraphObject.EXPRESSION);
-				//					if ( ! isInStudentMode() ||
-				//							(isInStudentMode() && primaryAttribute.isStudentEditable())){
-				//						objPropsFrame.focusAttributeField(primaryAttribute);	
-				//					}
-				//				}
 				else if (newFocusedObject instanceof AnswerBoxObject){
 					primaryAttribute = newFocusedObject.getAttributeWithName(AnswerBoxObject.ANSWER);
 					if ( ! isInStudentMode() ||
@@ -448,7 +490,7 @@ public class DocViewerPanel extends JDesktopPane{
 		int pageXSize = (int) (Page.DEFAULT_PAGE_WIDTH * zoomLevel);
 		int pageYSize = (int) (Page.DEFAULT_PAGE_HEIGHT * zoomLevel);
 		int adjustedBufferSpace = (int) (DOC_BUFFER_SPACE * zoomLevel);
-		
+
 		int pagexOrigin = 0;
 		int pageyOrigin = adjustedBufferSpace;
 		if ( notebook.getDocAlignment() == OpenNotebook.ALIGN_DOCS_CENTER){
@@ -465,7 +507,7 @@ public class DocViewerPanel extends JDesktopPane{
 		}
 		PointInDocument ptInDoc = new PointInDocument();
 		ptInDoc.setOutSidePage(true);
-
+		ptInDoc.setPage(doc.getNumPages() - 1);
 		//go through all of the pages to look for collisions
 		for (int i = 0; i < doc.getNumPages(); i++){
 

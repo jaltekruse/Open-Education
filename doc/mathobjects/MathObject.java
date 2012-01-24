@@ -24,6 +24,8 @@ public abstract class MathObject {
 	private Vector<MathObjectAttribute> attributes;
 
 	private Vector<ListAttribute> lists;
+	
+	private boolean actionCancelled = false;
 
 	public static final String ANSWER_BOX_OBJ = "AnswerBox",
 			EXPRESSION_OBJ = "Expression", GRAPH_OBJ = "Graph",
@@ -51,7 +53,7 @@ public abstract class MathObject {
 			"triangle.png", "regularPolygon.png", "trapezoid.png",
 			"parallelogram.png", "arrow.png", "cube.png", "cylinder.png",
 			"numberLine.png", "graph.png", "text.png", "expression.png",
-			"cone.png", "pyramid.png", "answerBox.png", null, null, null };
+			"answerBox.png", "cone.png", "pyramid.png", null, null, null };
 
 	public static MathObject[] objects = { new RectangleObject(),
 			new OvalObject(), new TriangleObject(), new RegularPolygonObject(),
@@ -61,7 +63,7 @@ public abstract class MathObject {
 			new ExpressionObject(), new AnswerBoxObject(), null, null,
 			new Grouping(), new ProblemObject(), new GeneratedProblem() };
 
-	public static final String MAKE_SQUARE = "Make Square",
+	public static final String MAKE_SQUARE = "Make Height and Width equal",
 			MAKE_INTO_PROBLEM = "Make into Problem",
 			ADJUST_SIZE_AND_POSITION = "Adjust size and position";
 
@@ -274,6 +276,7 @@ public abstract class MathObject {
 	}
 
 	public void performAction(String s) {
+		setActionCancelled(false);
 		if (justDeleted) {
 			return;
 		}
@@ -449,5 +452,13 @@ public abstract class MathObject {
 
 	public void setJustDeleted(boolean b) {
 		justDeleted = b;
+	}
+
+	public boolean ActionWasCancelled() {
+		return actionCancelled;
+	}
+
+	protected void setActionCancelled(boolean actionCancelled) {
+		this.actionCancelled = actionCancelled;
 	}
 }

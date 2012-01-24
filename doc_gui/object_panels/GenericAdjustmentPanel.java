@@ -82,8 +82,15 @@ public class GenericAdjustmentPanel extends AdjustmentPanel{
 			@Override
 			public void focusLost(FocusEvent arg0) {
 				try {
-					mAtt.setValueWithString(field.getText());
+					if (mAtt.getParentObject() != null){
+						mAtt.getParentObject().setAttributeValueWithString(
+								mAtt.getName(), field.getText());
+					}
+					else{
+						mAtt.setValueWithString(field.getText());
+					}
 					docPanel.repaintDoc();
+					docPanel.updateObjectToolFrame();
 				} catch (AttributeException e) {
 					if (!showingDialog){
 						JOptionPane.showMessageDialog(null,

@@ -9,6 +9,7 @@
 package doc_gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -51,6 +52,7 @@ import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import doc.DatabaseOfGroupedObjects;
 import doc.Document;
 import doc.Page;
 import doc.attributes.AttributeException;
@@ -82,7 +84,6 @@ public class NotebookPanel extends SubPanel {
 	private JTabbedPane docTabs;
 	private Vector<DocTabClosePanel> tabLabels;
 	private NotebookPanel thisNotebookPanel;
-	private DocReader reader;
 
 	// flag to track if the last action that was performed was closing a
 	// tab, if the user closes the tab just before the "+" (add new doc)
@@ -90,7 +91,7 @@ public class NotebookPanel extends SubPanel {
 	// a new document to be opened immediately after closing one
 	private boolean justClosedTab;
 	private MathObject clipBoardContents;
-	JDialog sampleDialog;
+	JDialog sampleDialog, problemDialog;
 	public static final String UNTITLED_DOC = "Untitled Doc",
 			VIEW_PROBLEM_FORUMLA_MESSAGE = "This document was created for viewing a problem "
 					+ "formula from one of your other documents. "
@@ -134,8 +135,8 @@ public class NotebookPanel extends SubPanel {
 		justClosedTab = false;
 
 		setFileChooser(new JFileChooser());
-		reader = new DocReader();
 		createSampleDialog();
+		createProbelmDialog();
 
 		this.setLayout(new BorderLayout());
 
@@ -217,12 +218,13 @@ public class NotebookPanel extends SubPanel {
 	public void cut() {
 		MathObject mObj = getCurrentDocViewer().getFocusedObject();
 		if (mObj != null) {
-			setClipBoardContents(mObj);
+			setClipBoardContents(mObj.clone());
 			mObj.getParentContainer().removeObject(mObj);
 			getCurrentDocViewer().setFocusedObject(null);
 			if (mObj == getCurrentDocViewer().getTempGroup()) {
 				getCurrentDocViewer().removeTempGroup();
 			}
+			getCurrentDocViewer().addUndoState();
 			getCurrentDocViewer().repaintDoc();
 		}
 	}
@@ -262,6 +264,7 @@ public class NotebookPanel extends SubPanel {
 							JOptionPane.WARNING_MESSAGE);
 			return;
 		}
+		getCurrentDocViewer().addUndoState();
 		getCurrentDocViewer().repaintDoc();
 	}
 
@@ -279,6 +282,7 @@ public class NotebookPanel extends SubPanel {
 			mObj.setParentContainer(null);
 			mObj.setJustDeleted(true);
 			getCurrentDocViewer().setFocusedObject(null);
+			getCurrentDocViewer().addUndoState();
 			getCurrentDocViewer().repaintDoc();
 		} else if (getCurrentDocViewer().getSelectedPage() != null) {
 			deletePage();
@@ -294,6 +298,7 @@ public class NotebookPanel extends SubPanel {
 		MathObject mObj = getCurrentDocViewer().getFocusedObject();
 		if (mObj != null) {
 			mObj.getParentPage().bringObjectToFront(mObj);
+			getCurrentDocViewer().addUndoState();
 			getCurrentDocViewer().repaintDoc();
 		}
 	}
@@ -302,6 +307,7 @@ public class NotebookPanel extends SubPanel {
 		MathObject mObj = getCurrentDocViewer().getFocusedObject();
 		if (mObj != null) {
 			mObj.getParentPage().bringObjectToBack(mObj);
+			getCurrentDocViewer().addUndoState();
 			getCurrentDocViewer().repaintDoc();
 		}
 	}
@@ -310,6 +316,7 @@ public class NotebookPanel extends SubPanel {
 		MathObject mObj = getCurrentDocViewer().getFocusedObject();
 		if (mObj != null) {
 			mObj.getParentPage().sendObjectForward(mObj);
+			getCurrentDocViewer().addUndoState();
 			getCurrentDocViewer().repaintDoc();
 		}
 	}
@@ -318,8 +325,13 @@ public class NotebookPanel extends SubPanel {
 		MathObject mObj = getCurrentDocViewer().getFocusedObject();
 		if (mObj != null) {
 			mObj.getParentPage().sendObjectBackward(mObj);
+			getCurrentDocViewer().addUndoState();
 			getCurrentDocViewer().repaintDoc();
 		}
+	}
+	
+	public void closeCurrentViewer(){
+		this.closeDocViewer(getCurrentDocViewer());
 	}
 
 	public void generateWorksheet() {
@@ -328,7 +340,7 @@ public class NotebookPanel extends SubPanel {
 		Page p;
 		MathObject mObj;
 		int oldSize;
-		boolean generatedProblem = false;
+		boolean problemsGenerated = false;
 
 		for (int i = 0; i < docPages.size(); i++) {
 			pageObjects = docPages.get(i).getObjects();
@@ -337,14 +349,15 @@ public class NotebookPanel extends SubPanel {
 				mObj = pageObjects.get(j);
 				if (mObj instanceof GeneratedProblem) {
 					((GeneratedProblem) mObj).generateNewProblem();
-					generatedProblem = true;
+					problemsGenerated = true;
 					j--;
 					oldSize--;
 				}
 			}
 		}
+		getCurrentDocViewer().addUndoState();
 		getCurrentDocViewer().repaintDoc();
-		if (!generatedProblem) {
+		if (!problemsGenerated) {
 			JOptionPane
 					.showMessageDialog(
 							null,
@@ -369,13 +382,13 @@ public class NotebookPanel extends SubPanel {
 				// it places the objects in the temp group back on the page,
 				// which is not what is needed here
 				getCurrentDocViewer().setFocusedObject(newGroup);
+				getCurrentDocViewer().addUndoState();
 				getCurrentDocViewer().repaintDoc();
 			}
-
 		}
 	}
 
-	public void viewProblemGnerator(ProblemGenerator probGen) {
+	public void viewProblemGenrator(ProblemGenerator probGen) {
 		Document newDoc = new Document("Problem Generator");
 		newDoc.addBlankPage();
 		TextObject textObj = new TextObject(newDoc.getPage(0), 5 + newDoc
@@ -404,15 +417,14 @@ public class NotebookPanel extends SubPanel {
 			if (mObj instanceof Grouping) {
 				if (mObj == getCurrentDocViewer().getTempGroup()) {
 					getCurrentDocViewer().ungroupTempGroup();
-					getCurrentDocViewer().setFocusedObject(null);
-					getCurrentDocViewer().repaintDoc();
 					return;
 				} else {
 					((Grouping) mObj).unGroup();
 					mObj.getParentContainer().removeObject(mObj);
-					getCurrentDocViewer().setFocusedObject(null);
-					getCurrentDocViewer().repaintDoc();
 				}
+				getCurrentDocViewer().setFocusedObject(null);
+				getCurrentDocViewer().addUndoState();
+				getCurrentDocViewer().repaintDoc();
 			}
 
 		}
@@ -453,7 +465,7 @@ public class NotebookPanel extends SubPanel {
 			if (value == JFileChooser.APPROVE_OPTION) {
 				FileReader fileReader = new FileReader(getFileChooser()
 						.getSelectedFile());
-				addDoc(reader.readFile(fileReader, getFileChooser()
+				addDoc(openNotebook.getFileReader().readDoc(fileReader, getFileChooser()
 						.getSelectedFile().getName()));
 			}
 		} catch (Exception e) {
@@ -466,10 +478,20 @@ public class NotebookPanel extends SubPanel {
 	}
 
 	public void createSampleDialog() {
-		sampleDialog = new JDialog();
+		sampleDialog = new JDialog(openNotebook);
 		sampleDialog.add(new SampleListPanel(this));
 		sampleDialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 		sampleDialog.pack();
+	}
+	
+	public void createProbelmDialog() {
+		if (problemDialog != null){
+			problemDialog.dispose();
+		}
+		problemDialog = new JDialog(openNotebook);
+		problemDialog.add(new ProblemListPanel(this));
+		problemDialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+		problemDialog.pack();
 	}
 
 	public void setSampleDialogVisible(boolean b) {
@@ -479,9 +501,22 @@ public class NotebookPanel extends SubPanel {
 					300);
 		}
 	}
+	
+	public void setProblemDialogVisible(boolean b) {
+		problemDialog.setVisible(b);
+		if (b) {
+			problemDialog.setBounds(this.getX() + 100, this.getY() + 100, 500,
+					600);
+			problemDialog.setMinimumSize(new Dimension(300, 450));
+		}
+	}
 
 	public void disposeOfSampledialog() {
 		sampleDialog.dispose();
+	}
+	
+	public void disposeOfProblemdialog() {
+		problemDialog.dispose();
 	}
 
 	public void open(String docName) {
@@ -490,7 +525,7 @@ public class NotebookPanel extends SubPanel {
 				.getResourceAsStream("samples/" + docName);
 		InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 		try {
-			Document tempDoc = reader.readFile(inputStreamReader, docName);
+			Document tempDoc = openNotebook.getFileReader().readDoc(inputStreamReader, docName);
 			tempDoc.setFilename(docName);
 			addDoc(tempDoc);
 		} catch (Exception e) {
@@ -513,6 +548,7 @@ public class NotebookPanel extends SubPanel {
 		} else {
 			getCurrentDocViewer().getDoc().addBlankPage();
 		}
+		getCurrentDocViewer().addUndoState();
 		getCurrentDocViewer().resizeViewWindow();
 	}
 
@@ -572,11 +608,11 @@ public class NotebookPanel extends SubPanel {
 	}
 
 	public void undo() {
-
+		getCurrentDocViewer().undo();
 	}
 
 	public void redo() {
-
+		getCurrentDocViewer().redo();
 	}
 
 	public void refreshDocNameTabs() {
@@ -587,6 +623,10 @@ public class NotebookPanel extends SubPanel {
 
 	public boolean isInStudentMode() {
 		return openNotebook.isInStudentMode();
+	}
+	
+	public DatabaseOfGroupedObjects getDatabase(){
+		return openNotebook.getDatabase();
 	}
 
 	public void addDoc(Document doc) {

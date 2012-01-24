@@ -9,7 +9,7 @@ import doc.attributes.StringAttribute;
 
 public class AnswerBoxObject extends MathObject {
 
-	public static final String FONT_SIZE = "fontSize";
+	public static final String FONT_SIZE = "font size";
 	public static final String ANSWER = "answer";
 	public AnswerBoxObject(Page p, int x, int y, int w, int h) {
 		super(p, x, y, w, h);

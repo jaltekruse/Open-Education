@@ -1,5 +1,6 @@
 package doc;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 import doc.mathobjects.Grouping;
@@ -8,10 +9,23 @@ import doc.mathobjects.MathObject;
 public class DatabaseOfGroupedObjects {
 
 	private Vector<Grouping> groups;
+	private CaseInsensitiveMap tagIndex;
 	public static final String NAME = "DatabaseOfGroupedObjects";
+	
+	private class CaseInsensitiveMap extends HashMap<String, Grouping> {
+
+	    public Grouping put(String key, Grouping value) {
+	       return super.put(key.toLowerCase(), value);
+	    }
+
+	    public Grouping get(String key) {
+	       return super.get(key.toLowerCase());
+	    }
+	}
 	
 	public DatabaseOfGroupedObjects(){
 		setListOfGroupings(new Vector<Grouping>());
+		tagIndex = new CaseInsensitiveMap();
 	}
 
 	public void setListOfGroupings(Vector<Grouping> objects) {
@@ -41,11 +55,11 @@ public class DatabaseOfGroupedObjects {
 	
 	public String exportToXML(){
 		String output = "";
-		output += "<" + NAME + "\n";
+		output += "<" + NAME + ">\n";
 		for (Grouping group : groups){
 			output += group.exportToXML();
 		}
-		output += "</" + NAME + "\n";
+		output += "</" + NAME + ">\n";
 		return output;
 	}
 }

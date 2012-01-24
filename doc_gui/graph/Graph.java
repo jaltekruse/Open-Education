@@ -20,6 +20,7 @@ import doc.attributes.BooleanAttribute;
 import doc.attributes.DoubleAttribute;
 import doc.attributes.IntegerAttribute;
 import doc.mathobjects.GraphObject;
+import expression.NodeException;
 
 import tree.EvalException;
 import tree.ExpressionParser;
@@ -47,7 +48,7 @@ public class Graph {
 		freePoints = new Vector<PointOnGrid>();
 		varList = new VarStorage(new ExpressionParser());
 		cartAxis = new CartAxis(this);
-		graphCalcGraphics = new GraphCalculationGraphics(this);
+//		graphCalcGraphics = new GraphCalculationGraphics(this);
 		singleGraphs = new Vector<SingleGraph>();
 		parser = new ExpressionParser();
 	}
@@ -142,10 +143,13 @@ public class Graph {
 				hadError = true;
 			} catch (ParseException e) {
 				hadError = true;
+			} catch (NodeException e) {
+				// TODO Auto-generated catch block
+				hadError = true;
 			}
 		}
 		
-		graphCalcGraphics.drawIntegrals(g);
+//		graphCalcGraphics.drawIntegrals(g);
 		//this loop is to draw the graphs that currently have focus, so they appear over
 		//the integrals that are drawn with the line above
 		for (SingleGraph sg : singleGraphs){
@@ -156,11 +160,14 @@ public class Graph {
 					hadError = true;
 				} catch (ParseException e) {
 					hadError = true;
+				} catch (NodeException e) {
+					// TODO Auto-generated catch block
+					hadError = true;
 				}
 			}
 		}
 		
-		graphCalcGraphics.draw(g);
+//		graphCalcGraphics.draw(g);
 		
 		if (selectionGraphic != null){
 			selectionGraphic.draw(g);
@@ -177,7 +184,7 @@ public class Graph {
 				hadError = true;
 			}
 		}
-		graphCalcGraphics.drawInfoBoxes(g);
+//		graphCalcGraphics.drawInfoBoxes(g);
 		
 		g.setColor(Color.BLACK);
 		((Graphics2D)g).setStroke(new BasicStroke(2 * DOC_ZOOM_LEVEL));

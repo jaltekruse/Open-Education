@@ -10,7 +10,8 @@ import doc.attributes.UUIDAttribute;
 public class GeneratedProblem extends Grouping{
 
 	public static final String GENERATE_NEW_PROBLEM = "Gernerate new",
-			REMOVE_PROBLEM = "remove problem", UUID_STR = "uuid", VIEW_PROBLEM_FORMULA = "View problem formula";	
+			REMOVE_PROBLEM = "remove problem", UUID_STR = "uuid", 
+			VIEW_PROBLEM_FORMULA = "View problem formula";	
 	
 	public GeneratedProblem(MathObjectContainer p, UUID genID, Grouping contents){
 		super(p);
@@ -22,6 +23,10 @@ public class GeneratedProblem extends Grouping{
 		removeAllAttributes();
 		for ( MathObjectAttribute mAtt : contents.getAttributes()){
 			addAttribute(mAtt.clone());
+		}
+		removeAllLists();
+		for ( ListAttribute list : getLists()){
+			addList(list.clone());
 		}
 		addAttribute(new UUIDAttribute(UUID_STR, genID));
 		getAttributeWithName(UUID_STR).setUserEditable(false);
@@ -112,7 +117,7 @@ public class GeneratedProblem extends Grouping{
 		if (s.equals(VIEW_PROBLEM_FORMULA)){
 			getParentContainer().getParentDoc().
 				getDocViewerPanel().getNotebook().getNotebookPanel().
-				viewProblemGnerator(getParentDoc().getGeneratorWithID(getUUID()));
+				viewProblemGenrator(getParentDoc().getGeneratorWithID(getUUID()));
 		}
 	}
 	
@@ -126,6 +131,7 @@ public class GeneratedProblem extends Grouping{
 	}
 	@Override
 	public GeneratedProblem clone() {
+		
 		GeneratedProblem o = new GeneratedProblem(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){
@@ -136,6 +142,7 @@ public class GeneratedProblem extends Grouping{
 			o.addList(list.clone());
 		}
 		for ( MathObject mObj : getObjects()){
+			mObj.setParentContainer(null);
 			o.addObjectFromPage(mObj.clone());
 		}
 		return o;

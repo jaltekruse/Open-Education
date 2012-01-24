@@ -27,7 +27,17 @@ public class KeyboardShortcuts {
 				// TODO Auto-generated method stub
 				notebookPanel.save();
 			}
-		});  
+		});
+		
+		notebookPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control W")
+				, "closeCurrent");
+		notebookPanel.getActionMap().put("closeCurrent", new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				notebookPanel.closeCurrentViewer();
+			}
+		});
 
 		notebookPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control O")
 				, "open");

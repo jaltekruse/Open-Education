@@ -76,6 +76,7 @@ public class StringAdjustmentPanel extends AdjustmentPanel<StringAttribute>{
 					else{
 						mAtt.getParentObject().setAttributeValue(mAtt.getName(), textArea.getText());
 					}
+					docPanel.addUndoState();
 					docPanel.repaintDoc();
 				} catch (AttributeException e) {
 					if (!showingDialog){
@@ -105,6 +106,7 @@ public class StringAdjustmentPanel extends AdjustmentPanel<StringAttribute>{
 						else{
 							mAtt.getParentObject().setAttributeValue(mAtt.getName(), textArea.getText());
 						}
+						docPanel.addUndoState();
 						docPanel.repaintDoc();
 					} catch (AttributeException e) {
 						// TODO Auto-generated catch block
@@ -125,9 +127,11 @@ public class StringAdjustmentPanel extends AdjustmentPanel<StringAttribute>{
 				// TODO Auto-generated method stub
 				if (arg0.getKeyCode() == KeyEvent.VK_ENTER){
 					String s = textArea.getText();
+					int caretPos = textArea.getCaretPosition() - 1;
 					s = s.substring(0,
 							textArea.getCaretPosition() - 1) + s.substring(textArea.getCaretPosition());
 					textArea.setText(s);
+					textArea.setCaretPosition(caretPos);
 				}
 			}
 

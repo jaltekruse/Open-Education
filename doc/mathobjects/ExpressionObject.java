@@ -40,7 +40,7 @@ public class ExpressionObject extends MathObject {
 							OTHER_OPERATIONS = "Other operations",
 							UNDO_STEP = "Undo Step";
 	
-	public static String		EXPRESSION = "expression",		FONT_SIZE = "fontSize",
+	public static String		EXPRESSION = "expression",		FONT_SIZE = "font size",
 			STEPS = "steps",	FILL_COLOR = "fill color";
 			
 	
@@ -137,6 +137,7 @@ public class ExpressionObject extends MathObject {
 					"There is no expression to work with, enter one in the box below.",
 					"Warning",
 					JOptionPane.WARNING_MESSAGE);
+			setActionCancelled(true);
 			return;
 		}
 		else if (s.equals(UNDO_STEP)){
@@ -154,6 +155,7 @@ public class ExpressionObject extends MathObject {
 				JOptionPane.showMessageDialog(null,
 						"No steps to undo.", "Warning",
 						JOptionPane.WARNING_MESSAGE);
+				setActionCancelled(true);
 			}
 			return;
 		}
@@ -165,10 +167,11 @@ public class ExpressionObject extends MathObject {
 						null, "Enter a variable to replace.", null,
 						JOptionPane.PLAIN_MESSAGE, null, null, null);
 				if ( variableStr == null){
+					setActionCancelled(true);
 					return;
 				}
 				if ( variableStr.length() != 1 || ! Character.isLetter(variableStr.charAt(0))){
-					JOptionPane.showMessageDialog(null, "Need to enter a single character.",
+					JOptionPane.showMessageDialog(null, "Need to enter a single letter.",
 							"Warning", JOptionPane.WARNING_MESSAGE);
 				}
 			} while(variableStr.length() != 1 || ! Character.isLetter(variableStr.charAt(0)));
@@ -180,6 +183,7 @@ public class ExpressionObject extends MathObject {
 						"Enter a value or expression to substitute in.",
 						null, JOptionPane.PLAIN_MESSAGE, null, null, lastEx);
 				if ( lastEx == null){
+					setActionCancelled(true);
 					return;
 				}
 				try{
@@ -199,9 +203,11 @@ public class ExpressionObject extends MathObject {
 						getAttributeWithName(STEPS).getValue().toString()
 						+ newNode.toStringRepresentation() + ";");
 			} catch (NodeException e) {
-				// TODO Auto-generated catch block
+				// this should not throw an error, as both the expression and the one being
+				// Substituted have both been checked for validity
 				JOptionPane.showMessageDialog(null, "Error with expression.",
 						"Warning", JOptionPane.WARNING_MESSAGE);
+				setActionCancelled(true);
 			}
 			return;
 		}
@@ -213,6 +219,7 @@ public class ExpressionObject extends MathObject {
 						"Modify the expression.", null,
 						JOptionPane.PLAIN_MESSAGE, null, null, lastEx);
 				if (lastEx == null || lastEx.equals("")){
+					setActionCancelled(true);
 					return;
 				}
 				Node newNode = null;
@@ -237,6 +244,7 @@ public class ExpressionObject extends MathObject {
 						"Type the entire next line.", null,
 						JOptionPane.PLAIN_MESSAGE, null, null, lastEx);
 				if (lastEx == null || lastEx.equals("")){
+					setActionCancelled(true);
 					return;
 				}
 				Node newNode = null;
@@ -354,6 +362,7 @@ public class ExpressionObject extends MathObject {
 					"Previous expression has an error.",
 					"Error",
 					JOptionPane.ERROR_MESSAGE);
+			setActionCancelled(true);
 			return;
 		}
 		if ( ! (n instanceof Expression && ((Expression)n).getOperator() instanceof Operator.Equals) ){
@@ -362,6 +371,7 @@ public class ExpressionObject extends MathObject {
 					"Expression requires an equal sign for that operation",
 					"Error",
 					JOptionPane.ERROR_MESSAGE);
+			setActionCancelled(true);
 			return;
 		}
 		Expression ex = (Expression) n;
@@ -376,6 +386,7 @@ public class ExpressionObject extends MathObject {
 			                    operations,
 			                    "sqrt");
 			if (op == null || op.equals("")){
+				setActionCancelled(true);
 				return;
 			}
 			Operator o = null;
@@ -464,11 +475,11 @@ public class ExpressionObject extends MathObject {
 		String lastEx = "";
 		Node newNode = null;
 		while( ! validEx ){
-			lastEx = (String)JOptionPane.showInputDialog(null,
-					"Enter a value or expression to substitute in.",
+			lastEx = (String)JOptionPane.showInputDialog(null, message,
 					null, JOptionPane.PLAIN_MESSAGE, null, null, lastEx);
 			if ( lastEx == null){
-				break;
+				setActionCancelled(true);
+				return;
 			}
 			try{
 				newNode = Node.parseNode(lastEx);
@@ -520,11 +531,11 @@ public class ExpressionObject extends MathObject {
 		String lastEx = "";
 		Node newNode = null;
 		while( ! validEx ){
-			lastEx = (String)JOptionPane.showInputDialog(null,
-					"Enter a value or expression to substitute in.",
+			lastEx = (String)JOptionPane.showInputDialog(null, message,
 					null, JOptionPane.PLAIN_MESSAGE, null, null, lastEx);
 			if ( lastEx == null){
-				break;
+				setActionCancelled(true);
+				return;
 			}
 			try{
 				newNode = Node.parseNode(lastEx);

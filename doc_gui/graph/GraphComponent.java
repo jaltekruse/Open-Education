@@ -12,6 +12,8 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+
+import expression.NodeException;
 import tree.EvalException;
 import tree.ParseException;
 
@@ -168,7 +170,7 @@ public abstract class GraphComponent {
 		g2d.setStroke(new BasicStroke());
 	}
 	
-	public abstract void draw(Graphics g) throws EvalException, ParseException;
+	public abstract void draw(Graphics g) throws EvalException, ParseException, NodeException;
 	
 	public Graph getGraph(){
 		return graph;

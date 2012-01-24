@@ -19,17 +19,16 @@ import javax.swing.JComponent;
 public class OCButton extends JButton {
 
 	/**
-	 * An OCButton is the standard object for a button on the interface.
-	 * The constructor takes various attributes for using a GridBagConstraints
-	 * object. The default action associated with an OCButton is to append
-	 * the text on the button to the currently selected OCTextfield. This can
-	 * be changed by overriding the associatedAction method. 
+	 * An OCButton is the standard object for a button on the interface. The
+	 * constructor takes various attributes for using a GridBagConstraints
+	 * object. Its action can be changed by overriding the associatedAction
+	 * method.
 	 */
 	private static final long serialVersionUID = 1L;
 	private String s;
 	private GridBagConstraints bCon;
 	private JComponent comp;
-	
+
 	public OCButton(String str, int gridwidth, int gridheight, int gridx,
 			int gridy, JComponent comp) {
 
@@ -53,9 +52,9 @@ public class OCButton extends JButton {
 
 		comp.add(this, bCon);
 	}
-	
-	public OCButton(Icon bi, String tip, int gridwidth, int gridheight, int gridx,
-			int gridy, JComponent comp) {
+
+	public OCButton(Icon bi, String tip, int gridwidth, int gridheight,
+			int gridx, int gridy, JComponent comp) {
 
 		super(bi);
 		this.comp = comp;
@@ -78,8 +77,8 @@ public class OCButton extends JButton {
 		comp.add(this, bCon);
 	}
 
-	public OCButton(boolean hasInsets, String str, int gridwidth, int gridheight, int gridx,
-			int gridy, JComponent comp) {
+	public OCButton(boolean hasInsets, String str, int gridwidth,
+			int gridheight, int gridx, int gridy, JComponent comp) {
 
 		super(str);
 		this.comp = comp;
@@ -92,8 +91,7 @@ public class OCButton extends JButton {
 		bCon.gridwidth = gridwidth;
 		bCon.gridx = gridx;
 		bCon.gridy = gridy;
-		if (hasInsets)
-		{
+		if (hasInsets) {
 			bCon.insets = new Insets(2, 2, 2, 2);
 		}
 		this.addActionListener(new ActionListener() {
@@ -104,10 +102,10 @@ public class OCButton extends JButton {
 
 		comp.add(this, bCon);
 	}
-	
-	public OCButton(String str, String tip, int gridwidth, int gridheight, int gridx,
-			int gridy, JComponent comp) {
-		
+
+	public OCButton(String str, String tip, int gridwidth, int gridheight,
+			int gridx, int gridy, JComponent comp) {
+
 		super(str);
 		this.comp = comp;
 		s = str;
@@ -125,18 +123,19 @@ public class OCButton extends JButton {
 				associatedAction();
 			}
 		});
-		
+
 		this.setToolTipText(tip);
 
 		comp.add(this, bCon);
 	}
 
-	public void removeInsets(){
+	public void removeInsets() {
 		comp.remove(this);
 		bCon.insets = null;
 		comp.add(this, bCon);
 	}
-	
-	public void associatedAction(){	}
+
+	public void associatedAction() {
+	}
 
 }

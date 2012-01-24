@@ -21,32 +21,21 @@ import doc.attributes.MathObjectAttribute;
  */
 public class RectangleObject extends PolygonObject {
 	
+	private static final GridPoint[] vertices = {new GridPoint(0, 0), new GridPoint(1, 0),
+		new GridPoint(1, 1), new GridPoint(0, 1)};
+	
 	public RectangleObject(MathObjectContainer p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h, t);
-		addInitialPoints();
 	}
 	
 	public RectangleObject(MathObjectContainer p){
 		super(p);
-		addInitialPoints();
 	}
 
-	public RectangleObject() {
-		addInitialPoints();
-	}
-
-	@Override
-	public void addInitialPoints() {
-		addVertex(new GridPoint(0, 0));
-		addVertex(new GridPoint(1, 0));
-		addVertex(new GridPoint(1, 1));
-		addVertex(new GridPoint(0, 1));
-	}
+	public RectangleObject() {}
 	
 	@Override
-	public void addDefaultAttributes() {
-		
-	}
+	public void addDefaultAttributes() {}
 	
 	@Override
 	public RectangleObject clone() {
@@ -66,5 +55,10 @@ public class RectangleObject extends PolygonObject {
 	public String getType() {
 		// TODO Auto-generated method stub
 		return RECTANGLE;
+	}
+
+	@Override
+	public GridPoint[] getVertices() {
+		return vertices;
 	}
 }

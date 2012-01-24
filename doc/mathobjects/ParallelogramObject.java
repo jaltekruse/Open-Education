@@ -7,29 +7,21 @@ import doc.attributes.MathObjectAttribute;
 
 public class ParallelogramObject extends PolygonObject {
 
+	private static final GridPoint[] vertices = {new GridPoint(.25, 0), new GridPoint(1, 0),
+		new GridPoint(.75, 1), new GridPoint(0, 1)};
+	
 	public ParallelogramObject(MathObjectContainer p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h, t);
-		addInitialPoints();
 		addAction(PolygonObject.FLIP_VERTICALLY);
 	}
 	
 	public ParallelogramObject(MathObjectContainer p){
 		super(p);
-		addInitialPoints();
 		addAction(PolygonObject.FLIP_VERTICALLY);
 	}
 
 	public ParallelogramObject() {
-		addInitialPoints();
 		addAction(PolygonObject.FLIP_VERTICALLY);
-	}
-
-	@Override
-	public void addInitialPoints() {
-		addVertex(new GridPoint(.25, 0));
-		addVertex(new GridPoint(1, 0));
-		addVertex(new GridPoint(.75, 1));
-		addVertex(new GridPoint(0, 1));
 	}
 	
 	@Override
@@ -56,5 +48,11 @@ public class ParallelogramObject extends PolygonObject {
 			o.addList(list.clone());
 		}
 		return o;
+	}
+
+	@Override
+	public GridPoint[] getVertices() {
+		// TODO Auto-generated method stub
+		return vertices;
 	}
 }

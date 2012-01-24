@@ -51,6 +51,7 @@ import doc.mathobjects.MathObjectContainer;
 import doc.mathobjects.NumberLineObject;
 import doc.mathobjects.OvalObject;
 import doc.mathobjects.ParallelogramObject;
+import doc.mathobjects.PolygonObject;
 import doc.mathobjects.ProblemGenerator;
 import doc.mathobjects.ProblemObject;
 import doc.mathobjects.RectangleObject;
@@ -65,7 +66,7 @@ public class DocReader extends DefaultHandler {
 	private Document doc;
 	private Page page;
 	private Vector<Grouping> containerStack;
-	private boolean DEBUG = true;
+	private boolean DEBUG = false;
 
 	// objects added to Groupings ( or subclasses of Grouping ) need to have their attributes 
 	// read in before being added, so their positions can be calculated relative
@@ -76,9 +77,10 @@ public class DocReader extends DefaultHandler {
 	// thinking of making it a vector of vectors
 	private Vector<Vector<MathObject>> objectsInGroup;
 
+	private DatabaseOfGroupedObjects database;
 	private MathObject mObj;
 	private ListAttribute list;
-	boolean hadAttributeError, foundBadTag, readingGenerators, readingList;
+	boolean hadAttributeError, foundBadTag, readingGenerators, readingList, readingProblemDatabase;
 	int versionNumber;
 	String badTag;
 	String attributeNameInError;
@@ -97,9 +99,20 @@ public class DocReader extends DefaultHandler {
 		attributeValueInError = null;
 	}
 
-	public Document readFile (InputStreamReader file, String docName) throws SAXException, IOException{
+	public DatabaseOfGroupedObjects readDatabase(InputStreamReader file)
+			throws SAXException, IOException{
+		readFile(file, "");
+		return database;
+	}
 
+	public Document readDoc (InputStreamReader file, String docName) throws SAXException, IOException{
+		readFile(file, docName);
+		return doc;
+	}
+
+	public void readFile (InputStreamReader file, String docName) throws SAXException, IOException{
 		doc = null;
+		readingProblemDatabase = false;
 		page = null;
 		mObj = null;
 		hadAttributeError = false;
@@ -121,8 +134,11 @@ public class DocReader extends DefaultHandler {
 
 		reader.parse(new InputSource(file));
 		try { 
-			if (doc == null){
+			if ( doc == null && ! readingProblemDatabase ){
 				throw new IOException("improper document format");
+			}
+			if ( database == null && readingProblemDatabase){
+				throw new IOException("improper problem database format");	
 			}
 			if (hadAttributeError){
 				throw new IOException("improper document format, error with attribute '" + 
@@ -132,12 +148,11 @@ public class DocReader extends DefaultHandler {
 			if (foundBadTag){
 				throw new IOException("found bad tag, " + badTag);
 			}
-			return doc;
 		} catch (IOException e){
 			e.printStackTrace();
 
 			OldReader oldReader = new OldReader();
-			return oldReader.readFile(file);
+			doc = oldReader.readFile(file);
 		}
 	}
 
@@ -162,6 +177,11 @@ public class DocReader extends DefaultHandler {
 			doc.setAuthor(atts.getValue(Document.AUTHOR));
 			return;
 		}
+		else if ( qName.equals(DatabaseOfGroupedObjects.NAME)){
+			database = new DatabaseOfGroupedObjects();
+			readingProblemDatabase = true;
+			return;
+		}
 		else if (qName.equals(Document.GENERATORS)){
 			readingGenerators = true;
 			return;
@@ -171,6 +191,9 @@ public class DocReader extends DefaultHandler {
 			{// grab the list from the current object with the specified name
 				readingList = true;
 				list = mObj.getListWithName(atts.getValue(ListAttribute.NAME));
+				if ( DEBUG ){
+					System.out.println("list added: " + list);
+				}
 				if ( list == null){
 					foundBadTag = true;
 					badTag = "Had problem finding list in object";
@@ -193,13 +216,13 @@ public class DocReader extends DefaultHandler {
 				return;
 			}
 		}
-		else if (doc != null){
+		else if (doc != null || readingProblemDatabase){
 			if (qName.equals("Page")){
 				page = new Page(doc);
 				doc.addPage(page);
 				return;
 			}
-			if (page != null || readingGenerators){
+			if (page != null || readingGenerators || readingProblemDatabase){
 				if (mObj != null){
 					if ( DEBUG ){
 						System.out.println("in object, should be finding attributes");
@@ -245,9 +268,11 @@ public class DocReader extends DefaultHandler {
 							// TODO Auto-generated catch block
 							if (DEBUG){
 								System.out.println("Generator UUID already in use");
-
 							}
 						}
+					}
+					else if ( readingProblemDatabase ){
+						database.addGrouping((Grouping) mObj);
 					}
 					else{
 						page.addObject(mObj);
@@ -295,14 +320,15 @@ public class DocReader extends DefaultHandler {
 					.addValueWithString(atts.getValue("value"));
 					return true;
 				}
-				if ( mObj.getAttributeWithName(atts.getValue(MathObjectAttribute.NAME)) == null){
+				String attName = subInOldName(atts.getValue(MathObjectAttribute.NAME));
+				if ( mObj.getAttributeWithName(attName) == null){
 					// this attribute is no longer used in this object, ignore it
 					// this is an attribute, so still return true, otherwise the parent
 					// method will try to read it as a MathObject
 					return true;
 				}
 				mObj.setAttributeValueWithString(
-						atts.getValue(MathObjectAttribute.NAME),
+						attName,
 						atts.getValue(MathObjectAttribute.VALUE));
 				return true;
 			} catch (AttributeException e) {
@@ -311,8 +337,8 @@ public class DocReader extends DefaultHandler {
 					System.out.println(e.getMessage());
 				}
 				hadAttributeError = true;
-				attributeNameInError = atts.getValue("name");
-				attributeValueInError = atts.getValue("value");
+				attributeNameInError = atts.getValue(MathObjectAttribute.NAME);
+				attributeValueInError = atts.getValue(MathObjectAttribute.VALUE);
 				objectWithError = mObj.getClass().getSimpleName();
 				justAddedAttribute = false;
 				return false;
@@ -331,6 +357,37 @@ public class DocReader extends DefaultHandler {
 			justAddedAttribute = false;
 			return false;
 		}
+	}
+
+	public String subInOldName(String s){
+		if ( s.equals("fontSize"))
+		{// this works for everything the had the old font size name
+			// and was replaced by the new one
+			// including graphs and number lines
+			return TextObject.FONT_SIZE;
+		}
+		else if ( s.equals("numSides")){
+			return RegularPolygonObject.NUM_SIDES;
+		}
+		else if ( s.equals("showBox")){
+			return TextObject.SHOW_BOX;
+		}
+		else if ( s.equals("showAxis")){
+			return GraphObject.SHOW_AXIS;
+		}
+		else if ( s.equals("showNumbers")){
+			return GraphObject.SHOW_NUMBERS;
+		}
+		else if ( s.equals("showGrid")){
+			return GraphObject.SHOW_GRID;
+		}
+		else if ( s.equals("thickness")){
+			return PolygonObject.LINE_THICKNESS;
+		}
+		else{
+			return s;
+		}
+
 	}
 
 	@Override
@@ -353,7 +410,7 @@ public class DocReader extends DefaultHandler {
 		else if (qName.equals(ListAttribute.LIST)){
 			readingList = false;
 		}
-		else if (qName.equals("OpenNotebookDoc")){
+		else if (qName.equals(Document.OPEN_NOTEBOOK_DOC)){
 		}
 		else if (qName.equals(Document.GENERATORS)){
 			readingGenerators = false;

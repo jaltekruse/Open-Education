@@ -12,6 +12,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Vector;
 
+import expression.NodeException;
+
 import tree.EvalException;
 import tree.ParseException;
 
@@ -29,7 +31,7 @@ public abstract class SingleGraph extends GraphComponent {
 	}
 
 	@Override
-	public abstract void draw(Graphics g) throws EvalException, ParseException;
+	public abstract void draw(Graphics g) throws EvalException, ParseException, NodeException;
 
 	public void setColor(Color color) {
 		this.color = color;

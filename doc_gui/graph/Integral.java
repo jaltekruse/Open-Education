@@ -10,7 +10,9 @@ package doc_gui.graph;
 
 import java.util.Vector;
 
-import tree.EvalException;
+import expression.Node;
+import expression.NodeException;
+
 
 public class Integral extends GraphCalculation {
 
@@ -18,14 +20,13 @@ public class Integral extends GraphCalculation {
 		super(g, graphs, s);
 		double result;
 		try {
-			result = ((GraphWithExpression)graphs.get(0)).getExpression().integrate(
-					getSelection().getStart(), getSelection().getEnd(),"x", "y").toDec().getValue();
+			result = Node.parseNode(((GraphWithExpression)graphs.get(0)).getFuncEqtn()).integrate(
+					getSelection().getStart(), getSelection().getEnd(),"x", "y").getValue();
 			setResult(result);
-		} catch (EvalException e) {
+		} catch (NodeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// TODO Auto-generated constructor stub
 	}
 
 }

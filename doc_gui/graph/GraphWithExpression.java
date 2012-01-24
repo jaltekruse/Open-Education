@@ -10,11 +10,12 @@ package doc_gui.graph;
 
 import java.awt.Color;
 import java.awt.Graphics;
+
+import expression.Node;
+import expression.NodeException;
+
 import tree.EvalException;
-import tree.Expression;
-import tree.ExpressionParser;
 import tree.ParseException;
-import tree.Var;
 
 public class GraphWithExpression extends SingleGraph{
 
@@ -27,19 +28,17 @@ public class GraphWithExpression extends SingleGraph{
 	private String funcEqtn;
 	private boolean graphing;
 	private boolean connected;
-	private Var independentVar;
-	private Var dependentVar;
-	private ExpressionParser parser;
-	private Expression expression;
+	private String independentVar;
+	private String dependentVar;
+	private Node expression;
 	
 	/**
 	 * The default constructor, set the equation equal to an empty string,
 	 * makes it not currently graphing, integral and tracing values are
 	 * false.
 	 */
-	public GraphWithExpression(ExpressionParser ep, Graph g, Color c) {
+	public GraphWithExpression( Graph g, Color c) {
 		super(g);
-		setParser(ep);
 		funcEqtn = "";
 		graphing = false;
 		connected = true;
@@ -48,17 +47,15 @@ public class GraphWithExpression extends SingleGraph{
 		setDependentVar("y");
 	}
 	
-	public GraphWithExpression(String s, ExpressionParser ep,
-			Graph g, Color c) throws ParseException {
+	public GraphWithExpression(String s, Graph g, Color c) throws NodeException {
 		super(g);
-		setParser(ep);
 		funcEqtn = s;
 		graphing = false;
 		connected = true;
 		setColor(c);
 		setIndependentVar("x");
 		setDependentVar("y");
-		expression = parser.ParseExpression(funcEqtn);
+		expression = Node.parseNode(s);
 	}
 	
 	/**
@@ -77,27 +74,23 @@ public class GraphWithExpression extends SingleGraph{
 	 * @param derive - boolean for deriving
 	 * @param dervative - the point to derive at
 	 * @param c - a color to display the function with
+	 * @throws NodeException 
 	 */
-	public GraphWithExpression(ExpressionParser exParser, Graph g, String eqtn,
-			String ind, String dep, boolean connected, Color c) {
+	public GraphWithExpression(Graph g, String eqtn,
+			String ind, String dep, boolean connected, Color c) throws NodeException {
 		super(g);
-		setParser(exParser);
 		setIndependentVar(ind);
 		setDependentVar(dep);
 		graphing = true;
 		this.connected = connected;
 		funcEqtn = eqtn;
 		setColor(c);
-		try {
-			expression = parser.ParseExpression(funcEqtn);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		expression = Node.parseNode(eqtn);
 	}
 
-	public void setFuncEqtn(String s) {
+	public void setFuncEqtn(String s) throws NodeException {
 		funcEqtn = s;
+		expression = Node.parseNode(s);
 	}
 
 	public String getFuncEqtn() {
@@ -111,29 +104,21 @@ public class GraphWithExpression extends SingleGraph{
 	public boolean isGraphing() {
 		return graphing;
 	}
-
-	public void setIndependentVar(Var independentVar) {
-		this.independentVar = independentVar;
-	}
 	
 	public void setIndependentVar(String varName) {
-		independentVar = getParser().getVarList().storeVar(varName);
+		independentVar = varName;
 	}
 	
 	public void setDependentVar(String varName) {
-		dependentVar = getParser().getVarList().storeVar(varName);
+		dependentVar = varName;
 	}
 
 
-	public Var getIndependentVar() {
+	public String getIndependentVar() {
 		return independentVar;
 	}
-
-	public void setDependentVar(Var dependentVar) {
-		this.dependentVar = dependentVar;
-	}
-
-	public Var getDependentVar() {
+	
+	public String getDependentVar() {
 		return dependentVar;
 	}
 
@@ -146,24 +131,8 @@ public class GraphWithExpression extends SingleGraph{
 	}
 
 	@Override
-	public void draw(Graphics g) throws EvalException, ParseException {
+	public void draw(Graphics g) throws EvalException, ParseException, NodeException {
 		// TODO Auto-generated method stub
 		
-	}
-
-	public void setParser(ExpressionParser parser) {
-		this.parser = parser;
-	}
-
-	public ExpressionParser getParser() {
-		return parser;
-	}
-
-	public void setExpression(Expression expression) {
-		this.expression = expression;
-	}
-
-	public Expression getExpression() {
-		return expression;
 	}
 }

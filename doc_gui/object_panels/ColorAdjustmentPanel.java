@@ -71,6 +71,7 @@ public class ColorAdjustmentPanel extends AdjustmentPanel<ColorAttribute>{
 					mAtt.setValue(Color.WHITE);
 					colorLabel.setBackground(mAtt.getValue());
 					ColorAdjustmentPanel.this.repaint();
+					docPanel.addUndoState();
 					docPanel.repaintDoc();
 					docPanel.updateObjectToolFrame();
 
@@ -79,6 +80,7 @@ public class ColorAdjustmentPanel extends AdjustmentPanel<ColorAttribute>{
 					mAtt.setValue(null);
 					colorLabel.setBackground(mAtt.getValue());
 					ColorAdjustmentPanel.this.repaint();
+					docPanel.addUndoState();
 					docPanel.repaintDoc();
 					docPanel.updateObjectToolFrame();
 				}
@@ -108,6 +110,7 @@ public class ColorAdjustmentPanel extends AdjustmentPanel<ColorAttribute>{
 				else{
 					checkbox.setSelected(false);
 				}
+				docPanel.addUndoState();
 				docPanel.repaint();
 			}
 

@@ -79,8 +79,8 @@ public class TextObjectGUI extends MathObjectGUI<TextObject>{
 			g.drawRect(xOrigin, yOrigin , (int) (object.getWidth() * zoomLevel)
 					, (int) (object.getHeight() * zoomLevel));
 		}
-		if ( ((BooleanAttribute)object.getAttributeWithName("showBox")).getValue()){
-			g.setColor(Color.GRAY);
+		if ( ((BooleanAttribute)object.getAttributeWithName(TextObject.SHOW_BOX)).getValue()){
+			g.setColor(Color.BLACK);
 			g.drawRect(xOrigin, yOrigin, width, height);
 		}
 	}

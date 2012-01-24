@@ -20,36 +20,31 @@ public class OvalObject extends MathObject {
 	
 	public OvalObject(MathObjectContainer p, int x, int y, int width, int height, int thickness) {
 		super(p,x, y, width, height);
-		getAttributeWithName("thickness").setValue(thickness);
+		getAttributeWithName(PolygonObject.LINE_THICKNESS).setValue(thickness);
 	}
 	
 	public OvalObject(MathObjectContainer p) {
 		super(p);
-		getAttributeWithName("thickness").setValue(1);
-		// TODO Auto-generated constructor stub
 	}
 
-	public OvalObject() {
-		// TODO Auto-generated constructor stub
-		getAttributeWithName("thickness").setValue(1);
-	}
+	public OvalObject() {}
 
 	public void setThickness(int t) {
-		getAttributeWithName("thickness").setValue(t);
+		getAttributeWithName(PolygonObject.LINE_THICKNESS).setValue(t);
 	}
 
 	public int getThickness() {
-		return ((IntegerAttribute)getAttributeWithName("thickness")).getValue();
+		return ((IntegerAttribute)getAttributeWithName(PolygonObject.LINE_THICKNESS)).getValue();
 	}
 
 	@Override
 	public void addDefaultAttributes() {
-		addAttribute(new IntegerAttribute("thickness", 1, 20));
-		addAttribute(new ColorAttribute("fill color"));
+		addAttribute(new IntegerAttribute(PolygonObject.LINE_THICKNESS, 1, 1, 20));
+		addAttribute(new ColorAttribute(PolygonObject.FILL_COLOR));
 	}
 	
 	public Color getColor(){
-		return ((ColorAttribute)getAttributeWithName("fill color")).getValue();
+		return ((ColorAttribute)getAttributeWithName(PolygonObject.FILL_COLOR)).getValue();
 	}
 	
 	@Override

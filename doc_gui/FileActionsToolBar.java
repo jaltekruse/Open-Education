@@ -47,15 +47,15 @@ public class FileActionsToolBar extends JToolBar {
 				}
 			};
 			
-			ImageIcon pagePropsIcon = notebookPanel.getIcon("img/pageProperties.png");
-			
-			OCButton pagePropsButton = new OCButton(pagePropsIcon, "Doc Properties", 1, 1, 2, 0, this){
-				
-				@Override
-				public void associatedAction(){
-					notebookPanel.showDocProperties();
-				}
-			};
+//			ImageIcon pagePropsIcon = notebookPanel.getIcon("img/pageProperties.png");
+//			
+//			OCButton pagePropsButton = new OCButton(pagePropsIcon, "Doc Properties", 1, 1, 2, 0, this){
+//				
+//				@Override
+//				public void associatedAction(){
+//					notebookPanel.showDocProperties();
+//				}
+//			};
 		}
 		
 		ImageIcon zoomInIcon = notebookPanel.getIcon("img/zoomIn.png");
@@ -78,21 +78,23 @@ public class FileActionsToolBar extends JToolBar {
 			}
 		};
 //		if ( ! notebookPanel.isInStudentMode()){
-//			ImageIcon undoIcon = notebookPanel.getIcon("img/undo.png");
-//			
-//			OCButton undoButton = new OCButton(undoIcon, "Undo", 1, 1, 3, 0, this){
-//				
-//				public void associatedAction(){
-//				}
-//			};
-//			
-//			ImageIcon redoIcon = notebookPanel.getIcon("img/redo.png");
-//			
-//			OCButton redoButton = new OCButton(redoIcon, "Redo", 1, 1, 3, 0, this){
-//				
-//				public void associatedAction(){
-//				}
-//			};
+			ImageIcon undoIcon = notebookPanel.getIcon("img/undo.png");
+			
+			OCButton undoButton = new OCButton(undoIcon, "Undo", 1, 1, 3, 0, this){
+				
+				public void associatedAction(){
+					notebookPanel.undo();
+				}
+			};
+			
+			ImageIcon redoIcon = notebookPanel.getIcon("img/redo.png");
+			
+			OCButton redoButton = new OCButton(redoIcon, "Redo", 1, 1, 3, 0, this){
+				
+				public void associatedAction(){
+					notebookPanel.redo();
+				}
+			};
 //		}
 		
 		ImageIcon printIcon = notebookPanel.getIcon("img/print.png");
@@ -118,7 +120,7 @@ public class FileActionsToolBar extends JToolBar {
 		}
 		
 		
-		OCButton sampleDocs = new OCButton("Sample Docs", "Sample Documents",
+		OCButton sampleDocs = new OCButton("<html><font size=-1>Tutorials/<br>Samples</font><html>", "Sample Documents",
 				1, 1, 3, 0, this){
 			
 			@Override

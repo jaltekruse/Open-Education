@@ -109,6 +109,27 @@ public class Document {
 	public void setFilename(String s) {
 		getAttributeWithName(FILENAME).setValue(s);
 	}
+	
+	public Document clone(){
+		Document newDoc = new Document(new String(getName()));
+		newDoc.attributes = new Vector<MathObjectAttribute>();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			newDoc.addAttribute(mAtt.clone());
+		}
+		for ( ProblemGenerator gen : generators){
+			try {
+				newDoc.addGenerator(gen.clone());
+			} catch (Exception e) {
+				System.out.println("UUID already in use.");
+			}
+		}
+		for ( Page p : pages){
+			newDoc.addPage(p.clone());
+		}
+		
+		newDoc.setDocViewerPanel(getDocViewerPanel());
+		return newDoc;
+	}
 
 	public String getName() {
 		return ((StringAttribute)getAttributeWithName(FILENAME)).getValue();
@@ -173,9 +194,14 @@ public class Document {
 		return pages.get(index);
 	}
 	
+	public Page getLastPage(){
+		return pages.get(pages.size() - 1);
+	}
+	
 	public void addPage(Page p){
 		if ( ! pages.contains(p)){
 			pages.add(p);
+			p.setParentDoc(this);
 		}
 		else{
 //			System.out.println("Page is already contained in specified document");

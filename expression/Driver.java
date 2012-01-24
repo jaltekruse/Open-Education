@@ -19,11 +19,14 @@ public class Driver {
 //		System.out.println(g.generateLinear());
 
 		try {
-			System.out.println(Node.parseNode("a*sin(x)"));
+			Node n = Node.parseNode("1/a");
+			n = n.replace("a", new Number(-10));
+			System.out.println(n.toStringRepresentation());
+			System.out.println(n.numericSimplify().toStringRepresentation());
 			System.out.println(
 					Node.parseNode("a(x+c)^2+b").replace("a", new Number(0)).toStringRepresentation());
 
-			Node n = Node.parseNode("3+5+4");
+			n = Node.parseNode("3+5+4");
 			System.out.println( ((Expression)n).getChildren().size() );
 		}catch (NodeException e1) {
 			// TODO Auto-generated catch block

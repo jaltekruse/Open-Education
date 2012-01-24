@@ -38,11 +38,13 @@ public class BooleanAdjustmentPanel extends AdjustmentPanel<BooleanAttribute>{
 				if (e.getStateChange() == ItemEvent.SELECTED){
 					mAtt.setValue(true);
 					docPanel.repaintDoc();
+					docPanel.addUndoState();
 					docPanel.updateObjectToolFrame();
 				}
 				else{
 					mAtt.setValue(false);
 					docPanel.repaintDoc();
+					docPanel.addUndoState();
 					docPanel.updateObjectToolFrame();
 				}
 			}

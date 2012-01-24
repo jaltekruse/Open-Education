@@ -24,21 +24,19 @@ public class CylinderObject extends MathObject {
 	
 	public CylinderObject(MathObjectContainer p){
 		super(p);
-		getAttributeWithName("thickness").setValue(1);
 		addAction(PolygonObject.FLIP_VERTICALLY);
 	}
 	
 	public CylinderObject(){
-		getAttributeWithName("thickness").setValue(1);
 		addAction(PolygonObject.FLIP_VERTICALLY);
 	}
 	
 	@Override
 	public void addDefaultAttributes() {
 		// TODO Auto-generated method stub
-		addAttribute(new IntegerAttribute("thickness", 1, 20));
-		addAttribute(new ColorAttribute("fill color", null));
-		BooleanAttribute flipped = new BooleanAttribute("flip vertically", false);
+		addAttribute(new IntegerAttribute(PolygonObject.LINE_THICKNESS, 1, 1, 20));
+		addAttribute(new ColorAttribute(PolygonObject.FILL_COLOR, null));
+		BooleanAttribute flipped = new BooleanAttribute(PolygonObject.FLIP_VERTICALLY, false);
 		flipped.setUserEditable(false);
 		addAttribute(flipped);
 	}
@@ -53,7 +51,7 @@ public class CylinderObject extends MathObject {
 	public void performSpecialObjectAction(String s){
 		if (s.equals(PolygonObject.FLIP_VERTICALLY)){
 			try {
-				setAttributeValue("flip vertically", ! isFlippedVertically());
+				setAttributeValue(PolygonObject.FLIP_VERTICALLY, ! isFlippedVertically());
 			} catch (AttributeException e) {
 				// TODO Auto-generated catch block
 //				System.out.println("error in CylinderGUI.performSpecialObjectAction");
@@ -76,7 +74,7 @@ public class CylinderObject extends MathObject {
 	}
 	
 	public boolean isFlippedVertically(){
-		return ((BooleanAttribute)getAttributeWithName("flip vertically")).getValue();
+		return ((BooleanAttribute)getAttributeWithName(PolygonObject.FLIP_VERTICALLY)).getValue();
 	}
 
 	public void setSide1pts(GridPoint[] side1pts) {
@@ -96,11 +94,11 @@ public class CylinderObject extends MathObject {
 	}
 	
 	public int getThickness(){
-		return ((IntegerAttribute)getAttributeWithName("thickness")).getValue();
+		return ((IntegerAttribute)getAttributeWithName(PolygonObject.LINE_THICKNESS)).getValue();
 	}
 	
 	public Color getColor(){
-		return ((ColorAttribute)getAttributeWithName("fill color")).getValue();
+		return ((ColorAttribute)getAttributeWithName(PolygonObject.FILL_COLOR)).getValue();
 	}
 
 	public void setInsideEdgeOfDisk(GridPoint insideEdgeOfDisk) {

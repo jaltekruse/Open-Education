@@ -8,7 +8,7 @@
 
 package doc;
 
-public class GridPoint {
+public class GridPoint implements Cloneable {
 
 	double x, y;
 	
@@ -34,6 +34,11 @@ public class GridPoint {
 	
 	public double gety(){
 		return y;
+	}
+	
+	@Override
+	public GridPoint clone(){
+		return new GridPoint(x, y);
 	}
 	
 	@Override

@@ -23,9 +23,9 @@ public class GraphObject extends MathObject {
 	
 	public static final String X_MIN = "xMin", Y_MIN = "yMin",
 			X_MAX = "xMax", Y_MAX = "yMax", EXPRESSION = "y=",
-			X_STEP = "xStep", Y_STEP = "yStep", FONT_SIZE = "fontSize",
-			SHOW_AXIS = "showAxis", SHOW_NUMBERS = "showNumbers",
-			SHOW_GRID = "showGrid", EXPRESSIONS = "Expressions";
+			X_STEP = "xStep", Y_STEP = "yStep", FONT_SIZE = "font size",
+			SHOW_AXIS = "show axis", SHOW_NUMBERS = "show numbers",
+			SHOW_GRID = "show grid", EXPRESSIONS = "Expressions";
 	
 	public static final String DEFAULT_GRID = "default grid",
 			ZOOM_IN = "zoom in", ZOOM_OUT = "zoom out", MOVE_LEFT = "move left",
@@ -35,35 +35,23 @@ public class GraphObject extends MathObject {
 		super(p, x, y, width, height);
 		setDefaults();
 		setStudentSelectable(true);
-		addAction(MAKE_INTO_PROBLEM);
-		addAction(DEFAULT_GRID);
-		addStudentAction(ZOOM_IN);
-		addStudentAction(ZOOM_OUT);
-		addStudentAction(MOVE_UP);
-		addStudentAction(MOVE_DOWN);
-		addStudentAction(MOVE_LEFT);
-		addStudentAction(MOVE_RIGHT);
-//		addStudentAction("Graph point");
+		addGraphActions();
 	}
 	
 	public GraphObject(MathObjectContainer p){
 		super(p);
 		setDefaults();
 		setStudentSelectable(true);
-		addAction(MAKE_INTO_PROBLEM);
-		addStudentAction(DEFAULT_GRID);
-		addStudentAction(ZOOM_IN);
-		addStudentAction(ZOOM_OUT);
-		addStudentAction(MOVE_UP);
-		addStudentAction(MOVE_DOWN);
-		addStudentAction(MOVE_LEFT);
-		addStudentAction(MOVE_RIGHT);
-//		addStudentAction("Graph point");
+		addGraphActions();
 	}
 	
 	public GraphObject() {
 		setDefaults();
 		setStudentSelectable(true);
+		addGraphActions();
+	}
+	
+	private void addGraphActions(){
 		addAction(MAKE_INTO_PROBLEM);
 		addStudentAction(DEFAULT_GRID);
 		addStudentAction(ZOOM_IN);

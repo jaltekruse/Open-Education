@@ -37,8 +37,7 @@ public class ObjectToolBar extends JToolBar {
 				continue;
 			}
 			if (s.equals(MathObject.CONE_OBJECT)
-					|| s.equals(MathObject.PYRAMID_OBJECT)
-					|| s.equals(MathObject.ANSWER_BOX_OBJ)) {
+					|| s.equals(MathObject.PYRAMID_OBJECT)) {
 				// these objects have not been created yet, they will be added
 				// soon
 				continue;
@@ -57,14 +56,32 @@ public class ObjectToolBar extends JToolBar {
 				}
 			};
 		}
-		objButton = new OCButton("Answer Box", "Add Answer box", 1, 1, 0, 0,
-				this) {
-
+//		objButton = new OCButton("Answer Box", "Add Answer box", 1, 1, 0, 0,
+//				this) {
+//
+//			@Override
+//			public void associatedAction() {
+//				// pass even down to current doc window for placing a mathObj
+//				notebookPanel.getCurrentDocViewer().createMathObject(
+//						new AnswerBoxObject());
+//			}
+//		};
+//		OCButton generateButton = new OCButton("Generate Problems", "Generate Probelms",
+//				1, 1, 3, 0, this){
+//			
+//			@Override
+//			public void associatedAction(){
+//				notebookPanel.createProbelmDialog();
+//				notebookPanel.setProblemDialogVisible(true);
+//			}
+//		};
+		
+		OCButton cloneButton = new OCButton("Generate Problems", "Generate Probelms",
+				1, 1, 3, 0, this){
+			
 			@Override
-			public void associatedAction() {
-				// pass even down to current doc window for placing a mathObj
-				notebookPanel.getCurrentDocViewer().createMathObject(
-						new AnswerBoxObject());
+			public void associatedAction(){
+				notebookPanel.addDoc(notebookPanel.getCurrentDocViewer().getDoc().clone());
 			}
 		};
 	}

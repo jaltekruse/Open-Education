@@ -15,4 +15,6 @@ public interface ProblemGenerator {
 	public void setParentDocument(Document doc);
 	
 	public Document getParentDoc();
+	
+	public ProblemGenerator clone();
 }

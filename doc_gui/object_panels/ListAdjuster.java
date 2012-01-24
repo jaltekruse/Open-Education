@@ -120,6 +120,7 @@ public class ListAdjuster extends JPanel{
 					{// forces the object property frame to be layed out again
 						docPanel.setFocusedObject(lAtt.getParentObject());
 					}
+					docPanel.addUndoState();
 					docPanel.updateObjectToolFrame();
 					docPanel.repaint();
 				} catch (AttributeException e) {

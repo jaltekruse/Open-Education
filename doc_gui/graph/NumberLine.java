@@ -45,10 +45,10 @@ public class NumberLine {
 		}
 		graph.FONT_SIZE = 8;
 
-		graph.X_MIN = ((DoubleAttribute)gObj.getAttributeWithName("min")).getValue();
-		graph.X_MAX = ((DoubleAttribute)gObj.getAttributeWithName("max")).getValue();
-		graph.X_STEP = ((DoubleAttribute)gObj.getAttributeWithName("step")).getValue();
-		graph.FONT_SIZE = ((IntegerAttribute)gObj.getAttributeWithName("fontSize")).getValue();
+		graph.X_MIN = ((DoubleAttribute)gObj.getAttributeWithName(NumberLineObject.MIN)).getValue();
+		graph.X_MAX = ((DoubleAttribute)gObj.getAttributeWithName(NumberLineObject.MAX)).getValue();
+		graph.X_STEP = ((DoubleAttribute)gObj.getAttributeWithName(NumberLineObject.STEP)).getValue();
+		graph.FONT_SIZE = ((IntegerAttribute)gObj.getAttributeWithName(NumberLineObject.FONT_SIZE)).getValue();
 		graph.Y_MIN = -3;
 		graph.Y_MAX = 3;
 		graph.X_PIXEL = (graph.X_MAX - graph.X_MIN) / graph.X_SIZE;

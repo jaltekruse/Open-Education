@@ -12,88 +12,75 @@ import java.util.Vector;
 
 import doc.GridPoint;
 import doc.Page;
+import doc.attributes.EnumeratedAttribute;
 import doc.attributes.ListAttribute;
 import doc.attributes.MathObjectAttribute;
 
 public class TriangleObject extends PolygonObject {
 	
-	public static final String MAKE_RIGHT_TRIANGLE = "make right triangle";
+	public static final String MAKE_RIGHT_TRIANGLE = "make right triangle",
+			MAKE_ISOSCELES_TRIANGLE = "make isosceles triangle";
+	public static final String ISOSCELES = "isosoceles", RIGHT = "right",
+			TRIANGLE_TYPE = "triangle type"; 
+	private String[] triangleTypes = { ISOSCELES, RIGHT };
 	
-	public static final String MAKE_ISOSCELES_TRIANGLE = "make isosceles triangle";
+	private static final GridPoint[] rightVertices = {
+		new GridPoint(0, 0), new GridPoint(0, 1), new GridPoint(1, 1)
+	};
+	
+	private static final GridPoint[] isosocelesVertices = {
+		new GridPoint(.5, 0), new GridPoint(0, 1), new GridPoint(1, 1)
+	};
 		
 	public TriangleObject(MathObjectContainer p){
 		super(p);
-		addInitialPoints();
-		addAction(PolygonObject.FLIP_VERTICALLY);
-		addAction(PolygonObject.FLIP_HORIZONTALLY);
-		addAction(MAKE_RIGHT_TRIANGLE);
-		addAction(MAKE_ISOSCELES_TRIANGLE);
+		addTriangleActions();
+		addTriangleAttributes();
 	}
 	
 	public TriangleObject(MathObjectContainer p, int x, int y, int w, int h, int thickness) {
 		super(p, x, y, w, h, thickness);
-		addInitialPoints();
-		addAction(PolygonObject.FLIP_VERTICALLY);
-		addAction(PolygonObject.FLIP_HORIZONTALLY);
-		addAction(MAKE_RIGHT_TRIANGLE);
-		addAction(MAKE_ISOSCELES_TRIANGLE);
+		addTriangleActions();
+		addTriangleAttributes();
 	}
 
 	public TriangleObject() {
-		addInitialPoints();
+		addTriangleActions();
+		addTriangleAttributes();
+	}
+	
+	private void addTriangleActions(){
 		addAction(PolygonObject.FLIP_VERTICALLY);
 		addAction(PolygonObject.FLIP_HORIZONTALLY);
 		addAction(MAKE_RIGHT_TRIANGLE);
 		addAction(MAKE_ISOSCELES_TRIANGLE);
 	}
 	
-	@Override
-	public void addInitialPoints() {
-		// TODO Auto-generated method stub
-		addVertex(new GridPoint(.5, 0));
-		addVertex(new GridPoint(0, 1));
-		addVertex(new GridPoint(1, 1));
+	private void addTriangleAttributes(){
+		addAttribute(new EnumeratedAttribute(TRIANGLE_TYPE, ISOSCELES, false, triangleTypes));
 	}
 	
 	@Override
-	public void addDefaultAttributes() {
+	protected void addDefaultAttributes() {
 		
 	}
 	
 	@Override
 	public void performSpecialObjectAction(String s){
 		if (s.equals(FLIP_HORIZONTALLY)){
-			flipHorizontally();
+			getAttributeWithName(HORIZONTALLY_FLIPPED).setValue( ! (Boolean)
+					getAttributeWithName(HORIZONTALLY_FLIPPED).getValue());
 		}
 		else if (s.equals(FLIP_VERTICALLY)){
-			flipVertically();
+			getAttributeWithName(VERTICALLY_FLIPPED).setValue( ! (Boolean)
+					getAttributeWithName(VERTICALLY_FLIPPED).getValue());
 		}
 		else if(s.equals(MAKE_RIGHT_TRIANGLE)){
-			makeRightTriangle();
+			getAttributeWithName(TRIANGLE_TYPE).setValue(RIGHT);
 		}
 		else if(s.equals(MAKE_ISOSCELES_TRIANGLE)){
-			makeIsoscelesTriangle();
+			getAttributeWithName(TRIANGLE_TYPE).setValue(ISOSCELES);
 		}
-	}
-	
-	private void makeRightTriangle(){
-		Vector<GridPoint> verticies = getVertices();
-		verticies.get(0).setx(0);
-		verticies.get(0).sety(0);
-		verticies.get(1).setx(0);
-		verticies.get(1).sety(1);
-		verticies.get(2).setx(1);
-		verticies.get(2).sety(1);
-	}
-	
-	private void makeIsoscelesTriangle(){
-		Vector<GridPoint> verticies = getVertices();
-		verticies.get(0).setx(.5);
-		verticies.get(0).sety(0);
-		verticies.get(1).setx(1);
-		verticies.get(1).sety(1);
-		verticies.get(2).setx(0);
-		verticies.get(2).sety(1);
 	}
 	
 	@Override
@@ -114,6 +101,20 @@ public class TriangleObject extends PolygonObject {
 	public String getType() {
 		// TODO Auto-generated method stub
 		return TRIANGLE_OBJ;
+	}
+
+	@Override
+	public GridPoint[] getVertices() {
+		// TODO Auto-generated method stub
+		if ( getAttributeWithName(TRIANGLE_TYPE).getValue().equals(ISOSCELES)){
+			return isosocelesVertices;
+		}
+		else if (getAttributeWithName(TRIANGLE_TYPE).getValue().equals(RIGHT)){
+			return rightVertices;
+		}
+		else{
+			return null;
+		}
 	}
 	
 	

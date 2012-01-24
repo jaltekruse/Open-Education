@@ -17,39 +17,33 @@ import doc.attributes.MathObjectAttribute;
 
 public class NumberLineObject extends MathObject {
 	
+	public static final String MIN = "min", MAX = "max", STEP = "step", FONT_SIZE = "font size";
 	public NumberLineObject(MathObjectContainer p, int x, int y, int w, int h) {
 		super(p, x, y, w, h);
 		setVerticallyResizable(false);
-		getAttributeWithName("min").setValue(-5.0);
-		getAttributeWithName("max").setValue(5.0);
-		getAttributeWithName("step").setValue(1.0);
-		getAttributeWithName("fontSize").setValue(8);
+
 	}
 	
 	public NumberLineObject(MathObjectContainer p){
 		super(p);
 		setVerticallyResizable(false);
-		getAttributeWithName("min").setValue(-5.0);
-		getAttributeWithName("max").setValue(5.0);
-		getAttributeWithName("step").setValue(1.0);
-		getAttributeWithName("fontSize").setValue(8);
 	}
 
 	public NumberLineObject() {
 		setVerticallyResizable(false);
-		getAttributeWithName("min").setValue(-5.0);
-		getAttributeWithName("max").setValue(5.0);
-		getAttributeWithName("step").setValue(1.0);
-		getAttributeWithName("fontSize").setValue(8);
 	}
 
 	@Override
 	public void addDefaultAttributes() {
 		// TODO Auto-generated method stub
-		addAttribute(new DoubleAttribute("min", -10000, 10000));
-		addAttribute(new DoubleAttribute("max", -10000, 10000));
-		addAttribute(new DoubleAttribute("step", 0, 5000));
-		addAttribute(new IntegerAttribute("fontSize", 1, 20));
+		addAttribute(new DoubleAttribute(MIN, -10000, 10000));
+		addAttribute(new DoubleAttribute(MAX, -10000, 10000));
+		addAttribute(new DoubleAttribute(STEP, 0, 5000));
+		addAttribute(new IntegerAttribute(FONT_SIZE, 1, 20));
+		getAttributeWithName(MIN).setValue(-5.0);
+		getAttributeWithName(MAX).setValue(5.0);
+		getAttributeWithName(STEP).setValue(1.0);
+		getAttributeWithName(FONT_SIZE).setValue(8);
 	}
 
 	@Override

@@ -118,7 +118,26 @@ public class NodeParser {
 	
 	public Node parseNode(String expression) throws NodeException {
 		expression = format(expression);
+		expression = checkParens(expression);
 		return parse(expression);
+	}
+	
+	public String checkParens(String s){
+		int parenMatcher = 0;
+		for (int i = 0; i < s.length(); i++){
+			if (s.charAt(i) == '('){
+				parenMatcher++;
+			}
+			else if  (s.charAt(i) == ')'){
+				parenMatcher--;
+			}
+		}
+		if ( parenMatcher == 1){
+			return s + ")";
+		}
+		else{
+			return s;
+		}
 	}
 	
 	private String format(String expression) {

@@ -18,6 +18,7 @@ import doc.attributes.StringAttribute;
 import doc.mathobjects.GraphObject;
 import doc_gui.graph.Graph;
 import doc_gui.graph.GraphedCartFunction;
+import expression.NodeException;
 
 import tree.EvalException;
 import tree.ExpressionParser;
@@ -25,13 +26,15 @@ import tree.ParseException;
 
 public class GraphObjectGUI extends MathObjectGUI<GraphObject> {
 
-	Graph graph;
+	private Graph graph;
+	private ExpressionParser parser;
 	
 	public static final Color[] graphColors = {Color.BLUE, Color.GREEN.darker(),
 		Color.RED.darker()};
 	
 	public GraphObjectGUI(){
 		graph = new Graph();
+		parser = new ExpressionParser();
 	}
 	
 	public void drawMathObject(GraphObject object, Graphics g,
@@ -45,14 +48,13 @@ public class GraphObjectGUI extends MathObjectGUI<GraphObject> {
 		
 		graph.removeAllSingleGraphs();
 		int colorIndex = 0;
-		ExpressionParser parser = new ExpressionParser();
 		boolean hadError = false;
 		for ( StringAttribute ex : object.getExpressions()){
 			if ( ! ex.getValue().equals("")){
 				try {
-					graph.AddGraph(new GraphedCartFunction("y=" + ex.getValue(),
-							parser, graph, graphColors[colorIndex]));
-				} catch (ParseException e) {
+					graph.AddGraph(new GraphedCartFunction(graph, "y=" + ex.getValue(),"x", "y", true,
+							graphColors[colorIndex]));
+				} catch (NodeException e) {
 					// TODO Auto-generated catch block
 					hadError = true;
 				}

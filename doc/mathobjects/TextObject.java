@@ -19,8 +19,8 @@ import doc.attributes.StringAttribute;
 public class TextObject extends MathObject {
 	
 	public static final String TEXT = "text";
-	public static final String FONT_SIZE = "fontSize";
-	public static final String SHOW_BOX = "showBox";
+	public static final String FONT_SIZE = "font size";
+	public static final String SHOW_BOX = "show border";
 	
 	public TextObject(MathObjectContainer p) {
 		super(p);

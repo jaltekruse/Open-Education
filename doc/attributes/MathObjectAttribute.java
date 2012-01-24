@@ -177,7 +177,7 @@ public abstract class MathObjectAttribute<K> {
 			a = new VariableNameAttribute( new String (this.getName() ),
 					((VariableNameAttribute) this).getValue());
 		}
-		else if (this instanceof VariableNameAttribute){
+		else if (this instanceof EnumeratedAttribute){
 			a = new EnumeratedAttribute( new String (this.getName() ),
 					((EnumeratedAttribute) this).getValue(),
 					((EnumeratedAttribute)this).getPossibleValues().clone());

@@ -73,6 +73,8 @@ public class EnumeratedAdjuster extends AdjustmentPanel<EnumeratedAttribute>{
 				@Override
 				public void actionPerformed(ActionEvent ev) {
 					mAtt.setValue((String)valueChoices.getSelectedItem());
+					docPanel.addUndoState();
+					docPanel.repaint();
 				}
 
 			});

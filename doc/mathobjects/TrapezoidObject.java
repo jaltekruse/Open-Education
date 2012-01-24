@@ -15,29 +15,21 @@ import doc.attributes.MathObjectAttribute;
 
 public class TrapezoidObject extends PolygonObject {
 
+	private static final GridPoint[] vertices = {new GridPoint(.25, 0),
+		new GridPoint(.75, 0), new GridPoint(1, 1),new GridPoint(0, 1)};
+	
 	public TrapezoidObject(MathObjectContainer p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h, t);
-		addInitialPoints();
 		addAction(PolygonObject.FLIP_VERTICALLY);
 	}
 	
 	public TrapezoidObject(MathObjectContainer p){
 		super(p);
-		addInitialPoints();
 		addAction(PolygonObject.FLIP_VERTICALLY);
 	}
 
 	public TrapezoidObject() {
-		addInitialPoints();
 		addAction(PolygonObject.FLIP_VERTICALLY);
-	}
-
-	@Override
-	public void addInitialPoints() {
-		addVertex(new GridPoint(.25, 0));
-		addVertex(new GridPoint(.75, 0));
-		addVertex(new GridPoint(1, 1));
-		addVertex(new GridPoint(0, 1));
 	}
 	
 	@Override
@@ -63,6 +55,12 @@ public class TrapezoidObject extends PolygonObject {
 	public String getType() {
 		// TODO Auto-generated method stub
 		return TRAPEZOID_OBJ;
+	}
+
+	@Override
+	public GridPoint[] getVertices() {
+		// TODO Auto-generated method stub
+		return vertices;
 	}
 
 }

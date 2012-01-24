@@ -15,6 +15,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 
+import doc.GridPoint;
 import doc.mathobjects.PolygonObject;
 
 public class PolygonObjectGUI extends MathObjectGUI<PolygonObject> {
@@ -35,9 +36,11 @@ public class PolygonObjectGUI extends MathObjectGUI<PolygonObject> {
 		g2d.setStroke(new BasicStroke(thickness));
 		
 		Polygon p = new Polygon();
-		for (int i = 0; i < object.getVertices().size(); i++){
-			p.addPoint((int) (object.getVertices().get(i).getx() * width) + xOrigin,
-					(int) (object.getVertices().get(i).gety() * height) + yOrigin);
+		
+		GridPoint[] points = object.getAdjustedVertices();
+		for (int i = 0; i < points.length; i++){
+			p.addPoint((int) (points[i].getx() * width) + xOrigin,
+					(int) (points[i].gety() * height) + yOrigin);
 		}
 		
 		if (object.getColor() != null){

@@ -143,7 +143,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 			graphNavScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 			graphNavScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
 			graphNavScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-			graphTabs.add("Nav", graphNavScrollPane);
+			graphTabs.add("Navigation", graphNavScrollPane);
 			graphTabs.add("Grid", graphGrid);
 			panel = graphNav;
 		}
@@ -183,14 +183,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						object.performAction(s);
-						// the order of these next two lines is important,
-						// some properties, such as with the graph are adjusted
-						// when the document redraws itself
-						docPanel.repaint();
-						ObjectPropertiesFrame.this.revalidate();
-						ObjectPropertiesFrame.this.update();
-						ObjectPropertiesFrame.this.repaint();
+						buttonAction(s);
 					}
 				});
 			}
@@ -247,7 +240,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
-					object.performAction(s);
+					buttonAction(s);
 					docPanel.repaint();
 					thisFrame.update();
 				}
@@ -332,64 +325,34 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		pic = getIconForAction(ExpressionObject.ADD_TO_BOTH_SIDES);
 		OCButton add = new OCButton(pic, ExpressionObject.ADD_TO_BOTH_SIDES, 1, 1, 0, 1, newPanel){
 			public void associatedAction(){
-				object.performAction(ExpressionObject.ADD_TO_BOTH_SIDES);
-				// the order of these next two lines is important,
-				// some properties, such as with the graph are adjusted
-				// when the document redraws itself
-				docPanel.repaint();
-				ObjectPropertiesFrame.this.update();
-				ObjectPropertiesFrame.this.repaint();
+				buttonAction(ExpressionObject.ADD_TO_BOTH_SIDES);
 			}
 		};
 		add.setMargin(new Insets(0, 0, 0, 0));
 		pic = getIconForAction(ExpressionObject.SUBTRACT_FROM_BOTH_SIDES);
 		OCButton subtract = new OCButton(pic, ExpressionObject.SUBTRACT_FROM_BOTH_SIDES, 1, 1, 1, 1, newPanel){
 			public void associatedAction(){
-				object.performAction(ExpressionObject.SUBTRACT_FROM_BOTH_SIDES);
-				// the order of these next two lines is important,
-				// some properties, such as with the graph are adjusted
-				// when the document redraws itself
-				docPanel.repaint();
-				ObjectPropertiesFrame.this.update();
-				ObjectPropertiesFrame.this.repaint();
+				buttonAction(ExpressionObject.SUBTRACT_FROM_BOTH_SIDES);
 			}
 		};
 		subtract.setMargin(new Insets(0, 0, 0, 0));
 		pic = getIconForAction(ExpressionObject.MULTIPLY_BOTH_SIDES);
 		OCButton multiply = new OCButton(pic, ExpressionObject.MULTIPLY_BOTH_SIDES, 1, 1, 2, 1, newPanel){
 			public void associatedAction(){
-				object.performAction(ExpressionObject.MULTIPLY_BOTH_SIDES);
-				// the order of these next two lines is important,
-				// some properties, such as with the graph are adjusted
-				// when the document redraws itself
-				docPanel.repaint();
-				ObjectPropertiesFrame.this.update();
-				ObjectPropertiesFrame.this.repaint();
+				buttonAction(ExpressionObject.MULTIPLY_BOTH_SIDES);
 			}
 		};
 		multiply.setMargin(new Insets(0, 0, 0, 0));
 		pic = getIconForAction(ExpressionObject.DIVIDE_BOTH_SIDES);
 		OCButton divide = new OCButton(pic, ExpressionObject.DIVIDE_BOTH_SIDES, 1, 1, 3, 1, newPanel){
 			public void associatedAction(){
-				object.performAction(ExpressionObject.DIVIDE_BOTH_SIDES);
-				// the order of these next two lines is important,
-				// some properties, such as with the graph are adjusted
-				// when the document redraws itself
-				docPanel.repaint();
-				ObjectPropertiesFrame.this.update();
-				ObjectPropertiesFrame.this.repaint();
+				buttonAction(ExpressionObject.DIVIDE_BOTH_SIDES);
 			}
 		};
 		divide.setMargin(new Insets(0, 0, 0, 0));
 		OCButton down = new OCButton(ExpressionObject.OTHER_OPERATIONS, 4, 1, 0, 2, newPanel){
 			public void associatedAction(){
-				object.performAction(ExpressionObject.OTHER_OPERATIONS);
-				// the order of these next two lines is important,
-				// some properties, such as with the graph are adjusted
-				// when the document redraws itself
-				docPanel.repaint();
-				ObjectPropertiesFrame.this.update();
-				ObjectPropertiesFrame.this.repaint();
+				buttonAction(ExpressionObject.OTHER_OPERATIONS);
 			}
 		};
 		return newPanel;
@@ -403,52 +366,28 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		pic = getIconForAction(GraphObject.MOVE_UP);
 		OCButton up = new OCButton(pic, GraphObject.MOVE_UP, 1, 1, 1, 0, newPanel){
 			public void associatedAction(){
-				object.performAction(GraphObject.MOVE_UP);
-				// the order of these next two lines is important,
-				// some properties, such as with the graph are adjusted
-				// when the document redraws itself
-				docPanel.repaint();
-				ObjectPropertiesFrame.this.update();
-				ObjectPropertiesFrame.this.repaint();
+				buttonAction(GraphObject.MOVE_UP);
 			}
 		};
 		up.setMargin(new Insets(0, 0, 0, 0));
 		pic = getIconForAction(GraphObject.MOVE_LEFT);
 		OCButton left = new OCButton(pic, GraphObject.MOVE_LEFT, 1, 1, 0, 1, newPanel){
 			public void associatedAction(){
-				object.performAction(GraphObject.MOVE_LEFT);
-				// the order of these next two lines is important,
-				// some properties, such as with the graph are adjusted
-				// when the document redraws itself
-				docPanel.repaint();
-				ObjectPropertiesFrame.this.update();
-				ObjectPropertiesFrame.this.repaint();
+				buttonAction(GraphObject.MOVE_LEFT);
 			}
 		};
 		left.setMargin(new Insets(0, 0, 0, 0));
 		pic = getIconForAction(GraphObject.MOVE_RIGHT);
 		OCButton right = new OCButton(pic, GraphObject.MOVE_RIGHT, 1, 1, 2, 1, newPanel){
 			public void associatedAction(){
-				object.performAction(GraphObject.MOVE_RIGHT);
-				// the order of these next two lines is important,
-				// some properties, such as with the graph are adjusted
-				// when the document redraws itself
-				docPanel.repaint();
-				ObjectPropertiesFrame.this.update();
-				ObjectPropertiesFrame.this.repaint();
+				buttonAction(GraphObject.MOVE_RIGHT);
 			}
 		};
 		right.setMargin(new Insets(0, 0, 0, 0));
 		pic = getIconForAction(GraphObject.MOVE_DOWN);
 		OCButton down = new OCButton(pic, GraphObject.MOVE_DOWN, 1, 1, 1, 2, newPanel){
 			public void associatedAction(){
-				object.performAction(GraphObject.MOVE_DOWN);
-				// the order of these next two lines is important,
-				// some properties, such as with the graph are adjusted
-				// when the document redraws itself
-				docPanel.repaint();
-				ObjectPropertiesFrame.this.update();
-				ObjectPropertiesFrame.this.repaint();
+				buttonAction(GraphObject.MOVE_DOWN);
 			}
 		};
 		down.setMargin(new Insets(0, 0, 0, 0));
@@ -469,6 +408,9 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		// the order of these next two lines is important,
 		// some properties, such as with the graph are adjusted
 		// when the document redraws itself
+		if ( ! object.ActionWasCancelled()){
+			docPanel.addUndoState();
+		}
 		docPanel.repaint();
 		ObjectPropertiesFrame.this.update();
 		ObjectPropertiesFrame.this.repaint();

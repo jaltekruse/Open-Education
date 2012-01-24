@@ -86,10 +86,26 @@ public class Page implements MathObjectContainer{
 		
 		if ( ! objects.contains(mObj)){
 			objects.add(mObj);
+			mObj.setParentContainer(this);
+			return true;
 		}
 
 		return false;
 		//throw error? the object would not fit within the printable page with the current position and dimensions
+	}
+	
+	public Page clone(){
+		Page newPage = new Page(getParentDoc());
+		MathObject mObj;
+		for ( int i = 0; i < objects.size() ; i++){
+			mObj = objects.get(i);
+			newPage.addObject(mObj.clone());
+		}
+		newPage.xMargin = xMargin;
+		newPage.yMargin = yMargin;
+		newPage.pageHeight = pageHeight;
+		newPage.pageWidth = pageWidth;
+		return newPage;
 	}
 	
 	public void bringObjectToFront(MathObject mObj){

@@ -13,148 +13,131 @@ import java.util.Vector;
 
 import doc.GridPoint;
 import doc.Page;
+import doc.attributes.BooleanAttribute;
 import doc.attributes.ColorAttribute;
 import doc.attributes.GridPointAttribute;
 import doc.attributes.IntegerAttribute;
 import doc.attributes.MathObjectAttribute;
 
 public abstract class PolygonObject extends MathObject {
-	
-	
-	public static final String FLIP_HORIZONTALLY = "flip horizontally";
-	
-	public static final String FLIP_VERTICALLY = "flip vertically";
-	
-	public static final String ROTATE_CLOCKWISE_90 = "rotate clockwise (90)";
-	
+
+
+	public static final String FLIP_HORIZONTALLY = "flip horizontally", 
+			FLIP_VERTICALLY = "flip vertically", ROTATE_CLOCKWISE_90 = "rotate clockwise (90)";
+	public static final String LINE_THICKNESS = "line thickness", FILL_COLOR = "fill color",
+			HORIZONTALLY_FLIPPED = "horizontally flipped", VERTICALLY_FLIPPED = "vertically flipped";
+
 	public PolygonObject(MathObjectContainer p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h);
-		addAttribute(new IntegerAttribute("thickness", 1, 20));
-		addAttribute(new ColorAttribute("fill color"));
-		getAttributeWithName("thickness").setValue(t);
+		addPolygonAttributes();
+		getAttributeWithName(LINE_THICKNESS).setValue(t);
 	}
-	
+
 	public PolygonObject(MathObjectContainer p){
 		super(p);
-		addAttribute(new IntegerAttribute("thickness", 1, 20));
-		addAttribute(new ColorAttribute("fill color"));
-		getAttributeWithName("thickness").setValue(1);
+		addPolygonAttributes();
 	}
-	
+
 	public PolygonObject(){
-		addAttribute(new IntegerAttribute("thickness", 1, 20));
-		addAttribute(new ColorAttribute("fill color"));
-		getAttributeWithName("thickness").setValue(1);
+		addPolygonAttributes();
 	}
 	
-	public abstract void addInitialPoints();
-	
+	private void addPolygonAttributes(){
+		addAttribute(new IntegerAttribute(LINE_THICKNESS, 1, 1, 20));
+		addAttribute(new ColorAttribute(FILL_COLOR));
+		addAttribute(new BooleanAttribute(HORIZONTALLY_FLIPPED, false, false));
+		getAttributeWithName(HORIZONTALLY_FLIPPED).setValue(false);
+		addAttribute(new BooleanAttribute(VERTICALLY_FLIPPED, false, false));
+		getAttributeWithName(VERTICALLY_FLIPPED).setValue(false);
+	}
+
 	public Color getColor(){
-		return ((ColorAttribute)getAttributeWithName("fill color")).getValue();
+		return ((ColorAttribute)getAttributeWithName(FILL_COLOR)).getValue();
 	}
-	
+
 	@Override
 	public void performSpecialObjectAction(String s){
 		if (s.equals(FLIP_HORIZONTALLY)){
-			flipHorizontally();
+			getAttributeWithName(HORIZONTALLY_FLIPPED).setValue( ! (Boolean)
+					getAttributeWithName(HORIZONTALLY_FLIPPED).getValue());
 		}
 		else if (s.equals(FLIP_VERTICALLY)){
-			flipVertically();
+			getAttributeWithName(VERTICALLY_FLIPPED).setValue( ! (Boolean)
+					getAttributeWithName(VERTICALLY_FLIPPED).getValue());
 		}
-	}
-	
-	protected void flipHorizontally(){
-		GridPoint p;
-		
-		for (MathObjectAttribute mAtt : getAttributes()){
-			if (mAtt instanceof GridPointAttribute){
-//			for (GridPoint p : points){
-				p = ((GridPointAttribute)mAtt).getValue();
-				if (p.getx() < .5){
-					p.setx(p.getx() + 2 * (.5 - p.getx()));
-				}
-				else if (p.getx() > .5){
-					p.setx(p.getx() + 2 * (.5 - p.getx()));
-				}
-				else{
-					//x is .5, should not be shifted
-				}
-			}
-		}
-	}
-	
-	protected void flipVertically(){
-		GridPoint p;
-//		
-		for (MathObjectAttribute mAtt : getAttributes()){
-			if (mAtt instanceof GridPointAttribute){
-//		for (GridPoint p : points){
-				p = ((GridPointAttribute)mAtt).getValue();
-				if (p.gety() < .5){
-					p.sety(p.gety() + 2 * (.5 - p.gety()));
-				}
-				else if (p.gety() > .5){
-					p.sety(p.gety() + 2 * (.5 - p.gety()));
-				}
-				else{
-					//y is .5, should not be shifted
-				}
-			}
-		}
-	}
-	
-	public Vector<GridPoint> getVertices(){
-		Vector<GridPoint> pts = new Vector<GridPoint>();
-		for (MathObjectAttribute mAtt : getAttributes()){
-			if (mAtt instanceof GridPointAttribute){
-				pts.add(((GridPointAttribute)mAtt).getValue());
-			}
-		}
-		return pts;
-//		return points;
-	}
-	
-	public void removeAllVertices(){
-		for (int i = 0; i < getAttributes().size(); i++){
-			MathObjectAttribute mAtt = getAttributes().get(i);
-			if (mAtt instanceof GridPointAttribute){
-				removeAttribute(mAtt);
-				i--;
-			}
-		}
-	}
-	
-	public void addVertex(GridPoint p){
-//		points.add(p);
-		int index = countVertices() + 1;
-		String name = "point" + index;
-		GridPointAttribute point = new GridPointAttribute(name, 0.0, 1.0, 0.0, 1.0);
-		point.setUserEditable(false);
-		addAttribute(point);
-		getAttributeWithName(name).setValue(p);
-	}
-	
-	public void addVertexBeforePos(GridPoint p, int pos){
-		//have to adjust the list positions of the subsequent points
 	}
 
-	public int countVertices(){
-		int n = 0;
-		for (MathObjectAttribute mAtt : getAttributes()){
-			if (mAtt instanceof GridPointAttribute){
-				n++;
+	protected GridPoint[] flipHorizontally(GridPoint[] points){
+		
+		GridPoint[] flipped = new GridPoint[points.length];
+
+		int i = 0;
+		for (GridPoint p : points){
+			if (p.getx() < .5){
+				flipped[i] = new GridPoint(p.getx() + 2 * (.5 - p.getx()), p.gety());
 			}
+			else if (p.getx() > .5){
+				flipped[i] = new GridPoint(p.getx() + 2 * (.5 - p.getx()), p.gety());
+			}
+			else{
+				//x is .5, should not be shifted
+			}
+			i++;
 		}
-		return n;
-//		return points.size();
+		return flipped;
+	}
+
+	protected GridPoint[] flipVertically(GridPoint[] points){
+		
+		GridPoint[] flipped = new GridPoint[points.length];
+		
+		int i = 0;
+		for (GridPoint p : points){
+			if (p.gety() < .5){
+				flipped[i] = new GridPoint(p.getx(), p.gety() + 2 * (.5 - p.gety()));
+			}
+			else if (p.gety() > .5){
+				flipped[i] = new GridPoint(p.getx(), p.gety() + 2 * (.5 - p.gety()));
+			}
+			else{
+				//y is .5, should not be shifted
+			}
+			i++;
+		}
+		return flipped;
 	}
 	
+	public GridPoint[] getAdjustedVertices(){
+		GridPoint[] points = getVertices();
+		if ( this.isFlippedHorizontally() ){
+			points = flipHorizontally(points);
+		}
+		if (this.isFlippedVertically()){
+			points = flipVertically(points);
+		}
+		return points;
+	}
+
+	protected abstract GridPoint[] getVertices();
+
+	public int countVertices(){
+		return getVertices().length;	
+	}
+	
+	public boolean isFlippedVertically(){
+		return (Boolean) getAttributeWithName(VERTICALLY_FLIPPED).getValue();
+	}
+	
+	public boolean isFlippedHorizontally(){
+		return (Boolean) getAttributeWithName(HORIZONTALLY_FLIPPED).getValue();
+	}
+
 	public void setThickness(int t) {
-		getAttributeWithName("thickness").setValue(t);
+		getAttributeWithName(LINE_THICKNESS).setValue(t);
 	}
 
 	public int getThickness() {
-		return ((IntegerAttribute)getAttributeWithName("thickness")).getValue();
+		return ((IntegerAttribute)getAttributeWithName(LINE_THICKNESS)).getValue();
 	}
 
 }

@@ -6,34 +6,23 @@ import doc.attributes.ListAttribute;
 import doc.attributes.MathObjectAttribute;
 
 public class ArrowObject extends PolygonObject {
+	
+	private static GridPoint[] vertices = {new GridPoint(0, .25), new GridPoint(.75, .25),
+		new GridPoint(.75, 0), new GridPoint(1, .5), new GridPoint(.75, 1),
+		new GridPoint(.75, .75), new GridPoint(0, .75) };
 
 	public ArrowObject(MathObjectContainer p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h, t);
-		addInitialPoints();
 		addAction(PolygonObject.FLIP_HORIZONTALLY);
 	}
 	
 	public ArrowObject(MathObjectContainer p){
 		super(p);
-		addInitialPoints();
 		addAction(PolygonObject.FLIP_HORIZONTALLY);
 	}
 
 	public ArrowObject() {
-		addInitialPoints();
 		addAction(PolygonObject.FLIP_HORIZONTALLY);
-	}
-	
-	@Override
-	public void addInitialPoints() {
-		// TODO Auto-generated method stub
-		addVertex(new GridPoint(0, .25));
-		addVertex(new GridPoint(.75, .25));
-		addVertex(new GridPoint(.75, 0));
-		addVertex(new GridPoint(1, .5));
-		addVertex(new GridPoint(.75, 1));
-		addVertex(new GridPoint(.75, .75));
-		addVertex(new GridPoint(0, .75));
 	}
 
 	@Override
@@ -60,6 +49,12 @@ public class ArrowObject extends PolygonObject {
 			o.addList(list.clone());
 		}
 		return o;
+	}
+
+	@Override
+	public GridPoint[] getVertices() {
+		// TODO Auto-generated method stub
+		return vertices;
 	}
 
 }
