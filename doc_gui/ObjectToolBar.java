@@ -76,13 +76,13 @@ public class ObjectToolBar extends JToolBar {
 //			}
 //		};
 		
-		OCButton cloneButton = new OCButton("Generate Problems", "Generate Probelms",
-				1, 1, 3, 0, this){
-			
-			@Override
-			public void associatedAction(){
-				notebookPanel.addDoc(notebookPanel.getCurrentDocViewer().getDoc().clone());
-			}
-		};
+//		OCButton cloneButton = new OCButton("Generate Problems", "Generate Probelms",
+//				1, 1, 3, 0, this){
+//			
+//			@Override
+//			public void associatedAction(){
+//				notebookPanel.addDoc(notebookPanel.getCurrentDocViewer().getDoc().clone());
+//			}
+//		};
 	}
 }
