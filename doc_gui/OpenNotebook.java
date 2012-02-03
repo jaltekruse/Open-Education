@@ -11,7 +11,6 @@ package doc_gui;
 
 import java.awt.Container;
 import java.awt.Dimension;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ComponentEvent;
@@ -20,23 +19,18 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-import javax.swing.JApplet;
-
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 
-import org.xml.sax.SAXException;
-
-import doc.DatabaseOfGroupedObjects;
+import doc.Document;
+import doc.ProblemDatabase;
 import doc.xml.DocReader;
 
 
@@ -55,15 +49,15 @@ public class OpenNotebook extends JFrame{
 	 */
 	private static final long serialVersionUID = -5614406937717777249L;
 	private static OpenNotebook application;
-	private boolean inStudentMode;
+	private static boolean inStudentMode;
 	private static JFileChooser fileChooser;
 	private static DocReader reader;
-	private static DatabaseOfGroupedObjects database;
+	private static ProblemDatabase database;
 	private static NotebookPanel notebookPanel;
 	public static final int ALIGN_DOCS_LEFT = 1, ALIGN_DOCS_RIGHT = 2, ALIGN_DOCS_CENTER = 3;
 	private static String ourNodeName = "/doc_gui";
 	private static Preferences prefs = Preferences.userRoot().node(ourNodeName);;
-	private static final String DATABASE_PATH = "databasePath";
+	private static final String DATABASE_PATH = "databasePath", USER_NAME = "userName";
 	private static final String BACKING_STORE_AVAIL = "BackingStoreAvail";
 	private static final String DATABASE_FILENAME = "ProblemDatabase";
 
@@ -105,6 +99,10 @@ public class OpenNotebook extends JFrame{
 				if ( application.getWidth() > 1100){
 					application.setDocAlignment(ALIGN_DOCS_CENTER);
 				}
+				if ( application.getWidth() <= 1100){
+					application.setDocAlignment(ALIGN_DOCS_RIGHT);
+				}
+
 			}
 			@Override
 			public void componentShown(ComponentEvent arg0) {}
@@ -114,40 +112,55 @@ public class OpenNotebook extends JFrame{
 
 		application.addWindowListener( createWindowListener());
 
-		
+		// this sets the application to student mode
+		// the main interface is added in the setter
+		Object[] options = {"Student", "Teacher"};
+		int n = JOptionPane.showOptionDialog(application,
+				"Which mode would you like to run?",
+				"Mode Seletion",
+				JOptionPane.YES_NO_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				options,
+				options[1]);
+
+		database = new ProblemDatabase();
+		if (n == -1){
+			application.dispose();
+			return;
+		}
+		else if ( n == 1){
+			application.setInStudentMode(false);
+		}
+		else{
+			application.setInStudentMode(true);
+		}
+
+		application.pack();
+		application.setVisible(true);
+
 		if ( preferencesDirectorySet()){
 			readProblemDatabase();
 		}
 		else{
 			setPreferencesDirectory();
-			database = new DatabaseOfGroupedObjects();
+			database = new ProblemDatabase();
+			if (application.inStudentMode()){
+				notebookPanel.open("Student Mode Tutorial");
+			}
+			else{
+				notebookPanel.open("Teacher Mode Tutorial");
+			}
 		}
-		
-		// this sets the application to student mode
-		// the main interface is added in the setter
-		Object[] options = {"Student", "Teacher"};
- 		int n = JOptionPane.showOptionDialog(application,
-		    "Which mode would you like to run?",
-		    "Mode Seletion",
-		    JOptionPane.YES_NO_CANCEL_OPTION,
-		    JOptionPane.QUESTION_MESSAGE,
-		    null,
-		    options,
-		    options[1]);
- 		
- 		if (n == -1){
- 			application.dispose();
- 			return;
- 		}
- 		else if ( n == 1){
- 			application.setInStudentMode(false);
- 		}
- 		else{
- 			application.setInStudentMode(true);
- 		}
+		if ( ! userNameSet() ){
+			setUserName();
+		}
+		Document.setProblemDatabase(database);
+	}
 
-		application.pack();
-		application.setVisible(true);
+	private static boolean inStudentMode() {
+		// TODO Auto-generated method stub
+		return inStudentMode;
 	}
 
 	private static WindowListener createWindowListener() {
@@ -159,7 +172,7 @@ public class OpenNotebook extends JFrame{
 			public void windowClosed(WindowEvent arg0) {}
 			@Override
 			public void windowClosing(WindowEvent arg0) {
-				quit();
+				notebookPanel.quit();
 			}
 			@Override
 			public void windowDeactivated(WindowEvent arg0) {}
@@ -174,28 +187,16 @@ public class OpenNotebook extends JFrame{
 	}
 
 	public static void quit(){
-		Object[] options = {"Quit", "Cancel"};
-		int n = JOptionPane.showOptionDialog(application,
-				"If you have any unsaved changes they will be lost.\n" +
-						"Are you sure you want to quit?",
-						"Data May Be Lost",
-						JOptionPane.YES_NO_CANCEL_OPTION,
-						JOptionPane.WARNING_MESSAGE,
-						null,
-						options,
-						options[1]);
 
-		if (n == 0){ 
-			File export = new File(getPreferencesPath());
-			if ( ! export.exists() ){
-				export.mkdir();
-			}
-			exportDatabase();
-			application.dispose();
+		File export = new File(getPreferencesPath());
+		if ( ! export.exists() ){
+			export.mkdir();
 		}
-		else{} // user clicked cancel, don't do anything
+		exportDatabase();
+		application.dispose();
+
 	}
-	
+
 	private static void readProblemDatabase(){
 		FileReader fileReader;
 		try {
@@ -203,7 +204,7 @@ public class OpenNotebook extends JFrame{
 			database = reader.readDatabase(fileReader);
 		} catch (Exception e){
 			e.printStackTrace();
-			database = new DatabaseOfGroupedObjects();
+			database = new ProblemDatabase();
 			JOptionPane.showMessageDialog(null, "An error occured finding problem Database,\n" +
 					"try using the \"Set Preferences Directory\" option\n" +
 					"in the Edit menu to resolve the issue.",
@@ -254,6 +255,18 @@ public class OpenNotebook extends JFrame{
 		}
 		return true;
 	}
+	
+	public static boolean userNameSet(){
+		String userName = prefs.get(USER_NAME, null);
+		if ( userName == null){
+			return false;
+		}
+		return true;
+	}
+	
+	public String getUserName(){
+		return prefs.get(USER_NAME, null);
+ 	}
 
 	private static boolean backingStoreAvailable() {
 		try {
@@ -285,6 +298,27 @@ public class OpenNotebook extends JFrame{
 			prefs.put(DATABASE_PATH, newPath);
 		}
 
+		try {
+			prefs.flush();
+		} catch (BackingStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void setUserName(){
+		String name = (String)JOptionPane.showInputDialog(
+				null,
+				"Etner your name.",
+				"Enter you name, as you would like it to appear in the\n" +
+				"Database if you want to publish problems. If you do not\n" +
+				"want your anem shown leave it blank." +
+				"",
+				JOptionPane.PLAIN_MESSAGE,
+				null,
+				null,
+				null);
+		prefs.put(USER_NAME, name);
 		try {
 			prefs.flush();
 		} catch (BackingStoreException e) {
@@ -327,7 +361,7 @@ public class OpenNotebook extends JFrame{
 		return inStudentMode;
 	}
 
-	public DatabaseOfGroupedObjects getDatabase(){
+	public ProblemDatabase getDatabase(){
 		return application.database;
 	}
 

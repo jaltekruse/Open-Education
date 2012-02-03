@@ -25,7 +25,7 @@ private int space;
 			super.getRootNodeGraphic().getGraphics().setColor(Color.black);
 		}
 		
-		int buffer = (int) ( 2 * getRootNodeGraphic().getSizeAdjustment() );
+		int buffer = (int) ( 2 * getRootNodeGraphic().getFontSizeAdjustment() * getRootNodeGraphic().DOC_ZOOM_LEVEL );
 		int x = symbolX1 + buffer;
 		int y = getY1() + getHeight() / 2 -  ( ( space - buffer ) / 2 );
 		super.getRootNodeGraphic().getGraphics().fillOval(x, y, space - 2 * buffer, space - 2 * buffer);
@@ -142,7 +142,7 @@ private int space;
 		g.setFont(f);
 		setFont(f);
 		
-		space = (int) (6 * super.getRootNodeGraphic().getSizeAdjustment());
+		space = (int) (6 * super.getRootNodeGraphic().getFontSizeAdjustment() * getRootNodeGraphic().DOC_ZOOM_LEVEL );
 		
 		Node tempLeft = (super.getValue()).getChild(0);
 		Node tempRight = (super.getValue()).getChild(1);

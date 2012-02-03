@@ -13,8 +13,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.util.Vector;
 
-import tree.Decimal;
-
 public class CartAxis extends GraphComponent{
 
 	public CartAxis(Graph g) {
@@ -30,80 +28,69 @@ public class CartAxis extends GraphComponent{
 
 		g.setFont(g.getFont().deriveFont(graph.FONT_SIZE * graph.DOC_ZOOM_LEVEL));
 
-		try {
-			//these four statements are for resizing the grid after zooming
-			if((graph.X_MAX-graph.X_MIN)/graph.X_STEP >= 16)
+		//these four statements are for resizing the grid after zooming
+		if((graph.X_MAX-graph.X_MIN)/graph.X_STEP >= 20)
+		{
+			if ((graph.X_MAX-graph.X_MIN)/20 > 1)
 			{
-				if ((graph.X_MAX-graph.X_MIN)/14 > 1)
-				{
-					graph.varList.setVarVal("xStep", new Decimal((int)(graph.X_MAX-graph.X_MIN)/14));
-					graph.X_STEP = graph.varList.getVarVal("xStep").toDec().getValue();
-				}
-				else
-				{
-					for (int i = 0; i < 25; i ++){
-						if ((graph.X_MAX-graph.X_MIN)/20/Math.pow(.5, i) < .7){
-							graph.varList.setVarVal("xStep", new Decimal(Math.pow(.5, i)));
-							graph.X_STEP = graph.varList.getVarVal("xStep").toDec().getValue();
-						}
-					}
-				}
+				graph.X_STEP = (int)((graph.X_MAX-graph.X_MIN)/14);
 			}
-
-			else if((graph.X_MAX-graph.X_MIN)/graph.X_STEP <= 10){
-				if ((graph.X_MAX-graph.X_MIN)/10 > 1)
-				{
-					graph.varList.setVarVal("xStep", new Decimal((int)(graph.X_MAX-graph.X_MIN)/10));
-					graph.X_STEP = graph.varList.getVarVal("xStep").toDec().getValue();
-				}
-				else
-				{
-					for (int i = 0; i < 25; i ++){
-						if ((graph.X_MAX-graph.X_MIN)/20 < Math.pow(.5, i)){
-							graph.varList.setVarVal("xStep", new Decimal(Math.pow(.5, i)));
-							graph.X_STEP = graph.varList.getVarVal("xStep").toDec().getValue();
-						}
-					}
-				}
-			}
-
-			if((graph.Y_MAX-graph.Y_MIN)/graph.Y_STEP >= 16)
+			else
 			{
-				if ((graph.Y_MAX-graph.Y_MIN)/14 > 1)
-				{
-					graph.varList.setVarVal("yStep", new Decimal((int)(graph.Y_MAX-graph.Y_MIN)/14));
-					graph.Y_STEP = graph.varList.getVarVal("yStep").toDec().getValue();
-				}
-				else
-				{
-					for (int i = 0; i < 25; i ++){
-						if ((graph.Y_MAX-graph.Y_MIN)/20/Math.pow(.5, i) < .7){
-							graph.varList.setVarVal("yStep", new Decimal(Math.pow(.5, i)));
-							graph.Y_STEP = graph.varList.getVarVal("xStep").toDec().getValue();
-						}
+				for (int i = 0; i < 25; i ++){
+					if ((graph.X_MAX-graph.X_MIN)/20/Math.pow(.5, i) < .7){
+						graph.X_STEP = Math.pow(.5, i);
 					}
 				}
 			}
-
-			else if((graph.Y_MAX-graph.Y_MIN)/graph.Y_STEP <= 10){
-				if ((graph.Y_MAX-graph.Y_MIN)/10 > 1)
-				{
-					graph.varList.setVarVal("yStep", new Decimal((int)(graph.Y_MAX-graph.Y_MIN)/10));
-					graph.Y_STEP = graph.varList.getVarVal("yStep").toDec().getValue();
-				}
-				else
-				{
-					for (int i = 0; i < 25; i ++){
-						if ((graph.Y_MAX-graph.Y_MIN)/20 < Math.pow(.5, i)){
-							graph.varList.setVarVal("yStep", new Decimal(Math.pow(.5, i)));
-							graph.Y_STEP = graph.varList.getVarVal("xStep").toDec().getValue();
-						}
-					}
-				}
-			}
-		}catch(Exception e){
-			e.printStackTrace();
 		}
+
+		else if((graph.X_MAX-graph.X_MIN)/graph.X_STEP < 14){
+			if ((graph.X_MAX-graph.X_MIN)/14 > 1)
+			{
+				graph.X_STEP = (int)((graph.X_MAX-graph.X_MIN)/10);
+			}
+			else
+			{
+				for (int i = 0; i < 25; i ++){
+					if ((graph.X_MAX-graph.X_MIN)/20 < Math.pow(.5, i)){
+						graph.X_STEP = Math.pow(.5, i);
+					}
+				}
+			}
+		}
+
+		if((graph.Y_MAX-graph.Y_MIN)/graph.Y_STEP >= 20)
+		{
+			if ((graph.Y_MAX-graph.Y_MIN)/20 > 1)
+			{
+				graph.Y_STEP = (int)((graph.Y_MAX-graph.Y_MIN)/14);
+			}
+			else
+			{
+				for (int i = 0; i < 25; i ++){
+					if ((graph.Y_MAX-graph.Y_MIN)/20/Math.pow(.5, i) < .7){
+						graph.Y_STEP = Math.pow(.5, i);
+					}
+				}
+			}
+		}
+
+		else if((graph.Y_MAX-graph.Y_MIN)/graph.Y_STEP < 14){
+			if ((graph.Y_MAX-graph.Y_MIN)/14 > 1)
+			{
+				graph.Y_STEP = (int)((graph.Y_MAX-graph.Y_MIN)/10);
+			}
+			else
+			{
+				for (int i = 0; i < 25; i ++){
+					if ((graph.Y_MAX-graph.Y_MIN)/20 < Math.pow(.5, i)){
+						graph.Y_STEP = Math.pow(.5, i);
+					}
+				}
+			}
+		}
+
 
 		// finds the fist factor of the graph.Y_STEP on the screen
 		// used to draw the first dash mark on the y-axis
@@ -121,15 +108,15 @@ public class CartAxis extends GraphComponent{
 				setLineSize(1);
 				drawLineSeg(graph.X_MIN, tempY, graph.X_MAX, tempY, Color.GRAY, g);
 			}
-			if(tempY%(2 * graph.Y_STEP) == 0 && tempY != 0){
+			if(tempY%(graph.Y_STEP) == 0 && tempY != 0){
 				yNumbers.add(tempY);
 			}
 			if (graph.SHOW_AXIS){
 				setLineSize(graph.LINE_SIZE_DEFAULT);
 				g.setColor(Color.BLACK);
 				if (graph.X_MIN <= 0 && graph.X_MAX >= 0){
-				drawLineSeg(2 * graph.LINE_SIZE * graph.X_PIXEL, tempY, -2 * graph.LINE_SIZE
-						* graph.X_PIXEL, tempY, Color.BLACK, g);
+					drawLineSeg(1.5 * graph.LINE_SIZE * graph.DOC_ZOOM_LEVEL * graph.X_PIXEL, tempY, -1.5 * graph.LINE_SIZE
+							* graph.DOC_ZOOM_LEVEL * graph.X_PIXEL, tempY, Color.BLACK, g);
 				}
 				else if (graph.X_MIN >= 0){
 					drawLineSeg(0, tempY, 2 * graph.LINE_SIZE * graph.X_PIXEL, tempY, Color.BLACK, g);
@@ -150,22 +137,6 @@ public class CartAxis extends GraphComponent{
 
 		int tempWidth;
 
-		graph.NUM_FREQ = 1;
-		int tempFreq;
-		do{
-			String ptText = doubleToString(tempX, graph.X_STEP);
-			tempWidth = g.getFontMetrics().stringWidth(ptText) + 4;
-			if(tempWidth > (int) ((graph.X_MAX-graph.X_MIN)/(graph.X_STEP * graph.NUM_FREQ) * graph.X_PIXEL)){
-				tempFreq = (int) Math.round(((graph.X_MAX-graph.X_MIN)
-						/(graph.X_STEP))/((graph.X_SIZE)/tempWidth));
-				tempFreq++;
-				if (tempFreq > graph.NUM_FREQ){
-					graph.NUM_FREQ = tempFreq;
-				}
-			}
-			tempX += graph.X_STEP;
-		}while (tempX <= graph.X_MAX);
-		
 		tempX = (int) (graph.X_MIN / graph.X_STEP);
 		tempX *= graph.X_STEP;
 		while (tempX <= graph.X_MAX) {
@@ -173,7 +144,7 @@ public class CartAxis extends GraphComponent{
 				setLineSize(1);
 				drawLineSeg(tempX, graph.Y_MIN, tempX, graph.Y_MAX, Color.GRAY, g);
 			}
-			if(tempX%(graph.NUM_FREQ * graph.X_STEP) == 0 && tempX != 0)
+			if(tempX%(graph.X_STEP) == 0 && tempX != 0)
 			{//if its reached a place where a number should be drawn
 				xNumbers.add(tempX);
 			}
@@ -182,8 +153,8 @@ public class CartAxis extends GraphComponent{
 				setLineSize(graph.LINE_SIZE_DEFAULT);
 				g.setColor(Color.BLACK);
 				if (graph.Y_MIN <= 0 && graph.Y_MAX >= 0) {
-					drawLineSeg(tempX, 2 * graph.LINE_SIZE * graph.Y_PIXEL, tempX, -2
-							* graph.LINE_SIZE * graph.Y_PIXEL, Color.BLACK, g);
+					drawLineSeg(tempX, 1.5 * graph.LINE_SIZE * graph.DOC_ZOOM_LEVEL * graph.Y_PIXEL, tempX, 
+							-1.5 * graph.LINE_SIZE * graph.DOC_ZOOM_LEVEL * graph.Y_PIXEL, Color.BLACK, g);
 				}
 				else if( graph.Y_MIN >= 0){
 					ptOn(tempX, graph.Y_MIN, g);
@@ -196,9 +167,53 @@ public class CartAxis extends GraphComponent{
 		}
 
 		if (graph.SHOW_NUMBERS){
+
+			// run through all of the x numbers to find the longest one and 
+			// set the number frequency appropriately
+			// the frequency is shared by the x and y axis, except where the graph is
+			// very long and short
+			int tempFreq = 1, longestWidth = 0;
+			int xNumFreq = 1;
+			int currentSpace;
+			String ptText;
+
+			for (Double d : xNumbers){
+				ptText = doubleToString(d, graph.X_STEP);
+				tempWidth = g.getFontMetrics().stringWidth(ptText) + (int) (6 * graph.DOC_ZOOM_LEVEL);
+				if ( tempWidth > longestWidth){
+					longestWidth = tempWidth;
+				}
+			}
+			currentSpace = (int) (graph.X_SIZE / ((graph.X_MAX-graph.X_MIN)/(graph.X_STEP * xNumFreq)));
+			if(longestWidth > currentSpace){
+				tempFreq = (int) Math.round( ((graph.X_MAX-graph.X_MIN)
+						/ graph.X_STEP) / (graph.X_SIZE / (double)longestWidth) );
+				tempFreq++;
+				if (tempFreq > xNumFreq){
+					xNumFreq = tempFreq;
+				}
+			}
+			int yNumFreq;
+			int fontHeight = g.getFontMetrics().getHeight() + (int) (6 * graph.DOC_ZOOM_LEVEL);
+			currentSpace = (int) (graph.Y_SIZE / ((graph.Y_MAX-graph.Y_MIN)/(graph.Y_STEP * xNumFreq)));
+			if ( fontHeight > currentSpace)
+			{// the graph is too short to have the y number share their number frequency with the x's
+				yNumFreq = (int) Math.round(((graph.Y_MAX-graph.Y_MIN)
+						/graph.Y_STEP)/((graph.Y_SIZE)/fontHeight));
+				yNumFreq++;
+			}
+			else{// the number frequency from the x calculation will work for the y numbers
+				yNumFreq = xNumFreq;
+			}
+
 			//draw y numbers on top, so the lines don't draw over them
 			for (Double d : yNumbers){
-				String ptText = doubleToString(d, graph.X_STEP);
+				if ( ! numbersClose(d %( graph.Y_STEP * yNumFreq), graph.Y_STEP * yNumFreq) &&
+						! numbersClose(d %( graph.Y_STEP * yNumFreq), 0) )
+				{// this number should not be drawn
+					continue;
+				}
+				ptText = doubleToString(d, graph.X_STEP);
 				width = g.getFontMetrics().stringWidth(ptText);
 				g.setColor(Color.white);
 				if ( ! (gridyToScreen(d) - (height/2) - numberInset < graph.Y_PIC_ORIGIN ||
@@ -222,7 +237,7 @@ public class CartAxis extends GraphComponent{
 						g.drawString(ptText, gridxToScreen(graph.X_MIN) + numberAndAxisSpace + numberInset,
 								gridyToScreen(d) + height/2 );
 					}
-	
+
 					else if (graph.X_MIN <= 0 && graph.X_MAX >= 0 &&
 							! (gridxToScreen(0) - width - numberInset
 									- numberAndAxisSpace < graph.X_PIC_ORIGIN))
@@ -248,7 +263,13 @@ public class CartAxis extends GraphComponent{
 
 			//draw x numbers on top, so the lines don't draw over them
 			for (Double d : xNumbers){
-				String ptText = doubleToString(d, graph.X_STEP);
+				if ( ! numbersClose(d %( graph.X_STEP * xNumFreq), graph.X_STEP * xNumFreq) &&
+						! numbersClose(d %( graph.X_STEP * xNumFreq), 0) )
+				{// this number should not be drawn
+					continue;
+				}
+
+				ptText = doubleToString(d, graph.X_STEP);
 				width = g.getFontMetrics().stringWidth(ptText);
 				g.setColor(Color.white);
 				if ( ! (gridxToScreen(d) - (width/2) - numberInset < graph.X_PIC_ORIGIN ||
@@ -306,14 +327,14 @@ public class CartAxis extends GraphComponent{
 
 		g.setFont(oldFont);
 	}
-	
+
 	private boolean numbersClose(double num1, double num2){
 		if ( Math.abs( num1 - num2) < .00001){
 			return true;
 		}
 		return false;
 	}
-	
+
 	private String doubleToString(double d, double round){
 		String ptText;
 		if ( numbersClose(d % round, 0)){

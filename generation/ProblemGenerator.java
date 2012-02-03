@@ -1,8 +1,13 @@
 package generation;
 
-import expression.*;
-import expression.Number;
 import java.util.Random;
+
+import expression.Equation;
+import expression.Function;
+import expression.Node;
+import expression.NodeException;
+import expression.Number;
+import expression.Variable;
 
 public class ProblemGenerator {
 

@@ -1,35 +1,32 @@
 package doc_gui;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
+import javax.swing.Scrollable;
 
-import doc.attributes.StringAttribute;
-import doc.mathobjects.Grouping;
+import doc.mathobjects.ProblemGenerator;
 
 public class ProblemListPanel extends JPanel {
 
@@ -43,19 +40,22 @@ public class ProblemListPanel extends JPanel {
 	private static final String[] frequencies = { LOW, AVERAGE, HIGH };
 	private JPanel problemList;
 	private JScrollPane scrollPane;
+	private Vector<ProblemGenerator> selectedProblems;
+	private Vector<Integer> selectedFrequencies;
+	private Vector<ProblemGenerator> problemsMatchingSearch;
 
 	public ProblemListPanel(NotebookPanel notebook) {
 		notebookPanel = notebook;
-		this.addComponentListener(new ComponentListener(){
+		selectedProblems = new Vector<ProblemGenerator>();
+		selectedFrequencies = new Vector<Integer>();
+		addComponentListener(new ComponentListener(){
 			@Override
 			public void componentHidden(ComponentEvent arg0) {}
 			@Override
 			public void componentMoved(ComponentEvent arg0) {}
 			@Override
 			public void componentResized(ComponentEvent arg0) {
-				problemList.setPreferredSize(new Dimension(scrollPane.getViewport().getWidth(),
-						scrollPane.getViewport().getHeight()));
-				problemList.revalidate();
+				adjustProblemList();
 			}
 			@Override
 			public void componentShown(ComponentEvent arg0) {}
@@ -100,53 +100,93 @@ public class ProblemListPanel extends JPanel {
 		con.gridy++;
 		con.insets = new Insets(0, 0, 0, 0);
 		scrollPane = new JScrollPane(problemList);
-//		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setWheelScrollingEnabled(true);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(12);
+		problemList.revalidate();
 		add( scrollPane, con);
-		revalidate();
+		con.gridy++;
+		con.weighty = 0;
+		con.fill = GridBagConstraints.NONE;
+		con.anchor = GridBagConstraints.LINE_END;
+		con.insets = new Insets(5, 5, 0, 0);
+		JButton generationButton = new JButton("Generate Probelms");
+		add(generationButton, con);
+		generationButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent ev) {
+				if ( selectedProblems.size() == 0){
+					JOptionPane.showMessageDialog(null,
+							"No problems are selected.",
+							"Error",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				int num = getNumberFromUser();
+				if ( num == -1){// user cancelled the action
+					return;
+				}
+				notebookPanel.getCurrentDocViewer().getDoc().generateProblems(
+						selectedProblems, selectedFrequencies, num);
+				notebookPanel.getCurrentDocViewer().addUndoState();
+			}
+			
+		});
 	}
 
 	public JPanel createPanelForProblems() {
-		JPanel panel = new JPanel();
+		ProblemList panel = new ProblemList();
 		GridBagConstraints con = new GridBagConstraints();
-		JLabel label;
-		float fontSize;
 		JComboBox frequencyChoices;
 		JCheckBox checkbox;
 		Component[] othersInRow = new Component[2];;
 		
-		int numProblemsToShow = notebookPanel.getDatabase().getGroupings().size();
+		int numProblemsToShow = notebookPanel.getDatabase().getAllProblems().size();
 		if (numProblemsToShow > 20) {// limit the number of problems in the list
 			// to 20 at a time
 			numProblemsToShow = 20;
 		}
 		con.gridy = 0;
-		for ( final Grouping g : notebookPanel.getDatabase().getGroupings()) {
-			panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-			panel.setLayout(new GridBagLayout());
-			
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+		panel.setLayout(new GridBagLayout());
+		for ( final ProblemGenerator g : notebookPanel.getDatabase().getAllProblems()) {
+		
 			// add checkbox
-			con.fill = GridBagConstraints.HORIZONTAL;
+			con.fill = GridBagConstraints.NONE;
 			con.gridx = 0;
-			con.weightx = .01;
+			con.weightx = 0;
+			con.insets = new Insets(0,0,0,0);
 			checkbox = new JCheckBox();
-			checkbox.addActionListener(new ActionListener(){
+			checkbox.addItemListener(new ItemListener(){
+
 				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					
+				public void itemStateChanged(ItemEvent ev) {
+					if ( ev.getStateChange() == ItemEvent.SELECTED){
+						selectedFrequencies.add(10);
+						selectedProblems.add(g);
+					}
+					else{
+						selectedFrequencies.remove(selectedProblems.indexOf(g));
+						selectedProblems.remove(g);
+					}
 				}
+				
 			});
 			frequencyChoices = new JComboBox(frequencies);
 			panel.add(checkbox, con);
 			othersInRow[0] = checkbox;
 			othersInRow[1] = frequencyChoices;		
 			
+			con.fill = GridBagConstraints.HORIZONTAL;
+			con.insets = new Insets(0,5,0,0);
 			con.weightx = 1;
 			con.gridx = 1;
 			panel.add(new ProblemDescriptionPanel(g, othersInRow), con);
 			
 			// add frequency selection menu
+			con.fill = GridBagConstraints.NONE;
 			con.gridx = 2;
-			con.weightx = .01;
+			con.weightx = 0;
 			con.insets = new Insets(0, 5, 0, 5);
 			frequencyChoices.setSelectedItem(AVERAGE);
 			panel.add(frequencyChoices, con);
@@ -156,15 +196,73 @@ public class ProblemListPanel extends JPanel {
 		return panel;
 	}
 	
+	public void adjustProblemList(){
+		problemList.setPreferredSize(new Dimension(scrollPane.getViewport().getWidth(),
+				problemList.getHeight()));
+		problemList.revalidate();
+	}
+	
+	private class ProblemList extends JPanel implements Scrollable{
+		@Override
+		public Dimension getPreferredScrollableViewportSize() {
+			return null;
+		}
+		@Override
+		public int getScrollableBlockIncrement(Rectangle arg0, int arg1,
+				int arg2) { return 16;}
+		@Override
+		public boolean getScrollableTracksViewportHeight() { return false;}
+		@Override
+		public boolean getScrollableTracksViewportWidth() {
+			return true;
+		}
+		@Override
+		public int getScrollableUnitIncrement(Rectangle arg0, int arg1, int arg2)
+		{return 0;}	
+	}
+	
+	private int getNumberFromUser(){
+		int number = 0;
+		do {
+			String num = (String)JOptionPane.showInputDialog(
+					null,
+					"Number of problems",
+					"Number of problems.",
+					JOptionPane.PLAIN_MESSAGE,
+					null,
+					null,
+					null);
+			if (num == null)
+			{// the user hit cancel or the exit button on the dialog
+				return -1;
+			}
+			try{
+				number = Integer.parseInt(num);
+				if (number < 1 || number > 50){
+					JOptionPane.showMessageDialog(null,
+							"Input must be an integer between 1 and 50",
+							"Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			} catch ( Exception e){
+				JOptionPane.showMessageDialog(null,
+						"Input must be an integer between 1 and 50",
+						"Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		} while ( number < 1 || number > 50);
+		return number;
+	}
+	
 	private class ProblemDescriptionPanel extends JPanel{
 		
 		private int height;
-		private Grouping group;
+		private ProblemGenerator problem;
 		private Component[] othersInRow;
 		
 		
-		public ProblemDescriptionPanel(final Grouping group, final Component[] othersInRow){
-			this.group = group;
+		public ProblemDescriptionPanel(final ProblemGenerator problem, final Component[] othersInRow){
+			this.problem = problem;
 			this.othersInRow = othersInRow;
 			height = 50;
 			GridBagConstraints con = new GridBagConstraints();
@@ -176,7 +274,7 @@ public class ProblemListPanel extends JPanel {
 			this.setLayout(new GridBagLayout());
 			
 			// add problem name label
-			label = new JLabel(group.getName());
+			label = new JLabel(problem.getName());
 			fontSize = label.getFont().getSize();
 			label.setHorizontalTextPosition(JLabel.LEFT);
 			label.setVerticalTextPosition(JLabel.BOTTOM);
@@ -188,24 +286,28 @@ public class ProblemListPanel extends JPanel {
 			
 			// add problem author label
 			con.gridx++;
-			con.weightx = .3;
-			label = new JLabel(group.getAuthor());
+			con.weightx = .1;
+			con.fill = GridBagConstraints.NONE;
+			con.anchor = GridBagConstraints.LINE_END;
+			label = new JLabel(problem.getAuthor());
 			label.setFont(label.getFont().deriveFont( fontSize * 0.8f));
 			label.setHorizontalTextPosition(JLabel.RIGHT);
 			label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
 			this.add(label, con);
 			
 			// add problem tags label
+			con.fill = GridBagConstraints.HORIZONTAL;
 			con.gridx = 0;
 			con.gridy = 1;
 			con.gridwidth = 2;
+			con.anchor = GridBagConstraints.LINE_START;
 			String tags = "Tags: ";
 			int i = 0;
-			for (   ; i < group.getTags().getValues().size() - 1; i++){
-				tags += group.getTags().getValue(i).getValue() + ", ";
+			for (   ; i < problem.getTags().getValues().size() - 1; i++){
+				tags += problem.getTags().getValue(i).getValue() + ", ";
 			}
-			if ( group.getTags().getValues().size() > 0){
-				tags += group.getTags().getValue(i).getValue();
+			if ( problem.getTags().getValues().size() > 0){
+				tags += problem.getTags().getValue(i).getValue();
 			}
 			label = new JLabel(tags);
 			label.setFont(label.getFont().deriveFont( fontSize * 0.8f));
@@ -217,8 +319,10 @@ public class ProblemListPanel extends JPanel {
 		public Dimension getPreferredSize(){
 			int width = scrollPane.getViewport().getWidth();
 			for (Component comp : othersInRow){
-				width -= comp.getWidth();
+				width -= comp.getPreferredSize().getWidth();
 			}
+			// subtract a bit of extra space for borders
+			width -= 40;
 			return new Dimension( width, height );
 		}
 		
@@ -226,8 +330,10 @@ public class ProblemListPanel extends JPanel {
 		public Dimension getMinimumSize(){
 			int width = scrollPane.getViewport().getWidth();
 			for (Component comp : othersInRow){
-				width -= comp.getWidth();
+				width -= comp.getMinimumSize().getWidth();
 			}
+			// subtract a bit of extra space for borders
+			width -= 40;
 			return new Dimension( width, height );
 		}
 		

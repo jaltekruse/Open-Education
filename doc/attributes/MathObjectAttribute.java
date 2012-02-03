@@ -9,25 +9,12 @@
 package doc.attributes;
 
 import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.UUID;
 
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
 import doc.GridPoint;
 import doc.mathobjects.MathObject;
-import doc_gui.DocViewerPanel;
 
 public abstract class MathObjectAttribute<K> {
 
@@ -179,7 +166,7 @@ public abstract class MathObjectAttribute<K> {
 		}
 		else if (this instanceof EnumeratedAttribute){
 			a = new EnumeratedAttribute( new String (this.getName() ),
-					((EnumeratedAttribute) this).getValue(),
+					new String(((EnumeratedAttribute) this).getValue()),
 					((EnumeratedAttribute)this).getPossibleValues().clone());
 		}
 		else if (this instanceof DoubleAttribute){

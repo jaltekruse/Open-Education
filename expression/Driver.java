@@ -19,6 +19,17 @@ public class Driver {
 //		System.out.println(g.generateLinear());
 
 		try {
+			VarList varList = new VarList();
+			varList.setIdentifierValue("x", new Number(5));
+			varList.setIdentifierValue("y", new Number(2));
+			Node node = Node.parseNode("2x+3x+5");
+			Node node2 = Node.parseNode("2");
+			System.out.println(node.multiplyByNode(node2).toStringRepresentation());
+			System.out.println(Expression.staggerAddition(node.splitOnAddition()).toStringRepresentation());
+			System.out.println(varList.evaluate(node));
+			node = Node.parseNode("3+5");
+			System.out.println(node.numericSimplify().toStringRepresentation());
+			System.out.println(node.numericSimplify().toStringRepresentation());
 			Node n = Node.parseNode("1/a");
 			n = n.replace("a", new Number(-10));
 			System.out.println(n.toStringRepresentation());

@@ -16,16 +16,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.Vector;
 
+import tree.EvalException;
+import tree.ExpressionParser;
+import tree.ParseException;
 import doc.attributes.BooleanAttribute;
 import doc.attributes.DoubleAttribute;
 import doc.attributes.IntegerAttribute;
 import doc.mathobjects.GraphObject;
 import expression.NodeException;
-
-import tree.EvalException;
-import tree.ExpressionParser;
-import tree.ParseException;
-import tree.VarStorage;
 
 public class Graph {
 	
@@ -34,7 +32,6 @@ public class Graph {
 	public float DOC_ZOOM_LEVEL;
 	public boolean SHOW_GRID, SHOW_AXIS, SHOW_NUMBERS;
 	public int X_SIZE, Y_SIZE, LINE_SIZE, LINE_SIZE_DEFAULT = 2, NUM_FREQ, X_PIC_ORIGIN, Y_PIC_ORIGIN, FONT_SIZE;
-	public VarStorage varList;
 //	private BufferedImage graphPic;
 	private Vector<SingleGraph> singleGraphs;
 	private Vector<PointOnGrid> freePoints;
@@ -46,7 +43,6 @@ public class Graph {
 	
 	public Graph(){
 		freePoints = new Vector<PointOnGrid>();
-		varList = new VarStorage(new ExpressionParser());
 		cartAxis = new CartAxis(this);
 //		graphCalcGraphics = new GraphCalculationGraphics(this);
 		singleGraphs = new Vector<SingleGraph>();
@@ -54,23 +50,23 @@ public class Graph {
 	}
 	
 	public void repaint(Graphics g, int xSize, int ySize) throws EvalException, ParseException{
-		try {
-			X_MIN = varList.getVarVal("xMin").toDec().getValue();
-			X_MAX = varList.getVarVal("xMax").toDec().getValue();
-			Y_MIN = varList.getVarVal("yMin").toDec().getValue();
-			Y_MAX = varList.getVarVal("yMax").toDec().getValue();
-			X_STEP = varList.getVarVal("xStep").toDec().getValue();
-			Y_STEP = varList.getVarVal("yStep").toDec().getValue();
-			THETA_MIN = varList.getVarVal("thetaMin").toDec().getValue();
-			THETA_MAX = varList.getVarVal("thetaMax").toDec().getValue();
-			THETA_STEP = varList.getVarVal("thetaStep").toDec().getValue();
-			SHOW_GRID = true;
-			SHOW_AXIS = true;
-		} catch (EvalException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		repaint(g, xSize, ySize, 1, 0, 0, null);
+//		try {
+//			X_MIN = varList.getVarVal("xMin").toDec().getValue();
+//			X_MAX = varList.getVarVal("xMax").toDec().getValue();
+//			Y_MIN = varList.getVarVal("yMin").toDec().getValue();
+//			Y_MAX = varList.getVarVal("yMax").toDec().getValue();
+//			X_STEP = varList.getVarVal("xStep").toDec().getValue();
+//			Y_STEP = varList.getVarVal("yStep").toDec().getValue();
+//			THETA_MIN = varList.getVarVal("thetaMin").toDec().getValue();
+//			THETA_MAX = varList.getVarVal("thetaMax").toDec().getValue();
+//			THETA_STEP = varList.getVarVal("thetaStep").toDec().getValue();
+//			SHOW_GRID = true;
+//			SHOW_AXIS = true;
+//		} catch (EvalException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		repaint(g, xSize, ySize, 1, 0, 0, null);
 	}
 	
 	public void pullVarsFromGraphObject(GraphObject gObj, int xSize, int ySize){
@@ -230,14 +226,14 @@ public class Graph {
 	}
 	
 	public void shiftGraph(int xPix, int yPix){
-		try{
-			varList.updateVarVal("xMin", (xPix)*X_PIXEL);
-			varList.updateVarVal("xMax", (xPix)*X_PIXEL);
-			varList.updateVarVal("yMin", (yPix)*Y_PIXEL);
-			varList.updateVarVal("yMax", (yPix)*Y_PIXEL);
-		} catch (Exception ex){
-			;
-		}
+//		try{
+//			varList.updateVarVal("xMin", (xPix)*X_PIXEL);
+//			varList.updateVarVal("xMax", (xPix)*X_PIXEL);
+//			varList.updateVarVal("yMin", (yPix)*Y_PIXEL);
+//			varList.updateVarVal("yMax", (yPix)*Y_PIXEL);
+//		} catch (Exception ex){
+//			;
+//		}
 	}
 	
 	public void removeSingleGraph(SingleGraph s){
@@ -254,10 +250,10 @@ public class Graph {
 	}
 	
 	public void zoom(double rate) throws EvalException{
-		X_MIN = varList.getVarVal("xMin").toDec().getValue();
-		X_MAX = varList.getVarVal("xMax").toDec().getValue();
-		Y_MIN = varList.getVarVal("yMin").toDec().getValue();
-		Y_MAX = varList.getVarVal("yMax").toDec().getValue();
+//		X_MIN = varList.getVarVal("xMin").toDec().getValue();
+//		X_MAX = varList.getVarVal("xMax").toDec().getValue();
+//		Y_MIN = varList.getVarVal("yMin").toDec().getValue();
+//		Y_MAX = varList.getVarVal("yMax").toDec().getValue();
 		
 		//hacked solution to prevent drawing the grid, the auto-rescaling of the 
 		//grid stops working after the numbers get too big
@@ -268,17 +264,17 @@ public class Graph {
 			}
 		}
 		
-		varList.updateVarVal("xMin", -1 * (X_MAX-X_MIN)*(100-rate)/100);
-		varList.updateVarVal("xMax", (X_MAX-X_MIN)*(100-rate)/100);
-		varList.updateVarVal("yMin", -1 * (Y_MAX-Y_MIN)*(100-rate)/100);
-		varList.updateVarVal("yMax", (Y_MAX-Y_MIN)*(100-rate)/100);
+//		varList.updateVarVal("xMin", -1 * (X_MAX-X_MIN)*(100-rate)/100);
+//		varList.updateVarVal("xMax", (X_MAX-X_MIN)*(100-rate)/100);
+//		varList.updateVarVal("yMin", -1 * (Y_MAX-Y_MIN)*(100-rate)/100);
+//		varList.updateVarVal("yMax", (Y_MAX-Y_MIN)*(100-rate)/100);
 	}
 	
 	public void zoomMouseRelative(double rate, int mouseX, int mouseY) throws EvalException{
-		X_MIN = varList.getVarVal("xMin").toDec().getValue();
-		X_MAX = varList.getVarVal("xMax").toDec().getValue();
-		Y_MIN = varList.getVarVal("yMin").toDec().getValue();
-		Y_MAX = varList.getVarVal("yMax").toDec().getValue();
+//		X_MIN = varList.getVarVal("xMin").toDec().getValue();
+//		X_MAX = varList.getVarVal("xMax").toDec().getValue();
+//		Y_MIN = varList.getVarVal("yMin").toDec().getValue();
+//		Y_MAX = varList.getVarVal("yMax").toDec().getValue();
 		double xRatio = mouseX/X_SIZE;
 		double yRatio = mouseY/Y_SIZE;
 		
@@ -291,10 +287,10 @@ public class Graph {
 			}
 		}
 		
-		varList.updateVarVal("xMin", -1 * (X_MAX-X_MIN)*(100-rate)/100);
-		varList.updateVarVal("xMax", (X_MAX-X_MIN)*(100-rate)/100);
-		varList.updateVarVal("yMin", -1 * (Y_MAX-Y_MIN)*(100-rate)/100);
-		varList.updateVarVal("yMax", (Y_MAX-Y_MIN)*(100-rate)/100);
+//		varList.updateVarVal("xMin", -1 * (X_MAX-X_MIN)*(100-rate)/100);
+//		varList.updateVarVal("xMax", (X_MAX-X_MIN)*(100-rate)/100);
+//		varList.updateVarVal("yMin", -1 * (Y_MAX-Y_MIN)*(100-rate)/100);
+//		varList.updateVarVal("yMax", (Y_MAX-Y_MIN)*(100-rate)/100);
 	}
 	
 	public void setLineSize(int sizeInPixels) {

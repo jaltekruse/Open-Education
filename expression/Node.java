@@ -11,7 +11,7 @@ public abstract class Node implements Cloneable {
 
 	private Node parentNode;
 
-	private RootNode rootNode;
+	private VarList varList;
 
 	private static final Comparator<Node> standardComparator = 
 			new Comparator<Node>() {
@@ -54,6 +54,58 @@ public abstract class Node implements Cloneable {
 	 * @return An altered {@code Node} with no references to the original.
 	 */
 	public abstract Node replace(Identifier identifier, Node node);
+
+	public Node addNodeToExpression(Node n){
+		if ( n instanceof Expression){
+			n.setDisplayParentheses(true);
+		}
+		try {
+			return new Expression(new Operator.Addition(), (Node) cloneNode(), n.cloneNode());
+		}catch (NodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public Node subtractNodeFromExpression(Node n){
+		if ( n instanceof Expression){
+			n.setDisplayParentheses(true);
+		}
+		try {
+			return new Expression(new Operator.Subtraction(), cloneNode(), n.cloneNode());
+		}catch (NodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Node multiplyByNode(Node n){
+		if ( n instanceof Expression){
+			n.setDisplayParentheses(true);
+		}
+		try {
+			return new Expression(new Operator.Multiplication(), n.cloneNode(),  cloneNode());
+		}catch (NodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Node divideByNode(Node n){
+		if ( n instanceof Expression){
+			n.setDisplayParentheses(true);
+		}
+		try {
+			return new Expression(new Operator.Division(), (Node) cloneNode(), n.cloneNode());
+		}catch (NodeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	public Node replace(String id, Node node) throws NodeException {
 		return replace(new Identifier(id), node);
@@ -152,7 +204,7 @@ public abstract class Node implements Cloneable {
 				}
 			}
 			ex = this.cloneNode();
-			ex = ex.replace(new Identifier(indVar), new Number(d));
+			ex = ex.replace(new Identifier(indVar), new Number(d + xChange));
 			ex = ex.numericSimplify();
 			if ( ex instanceof Expression){
 				if ( ((Expression)ex).getOperator() instanceof Operator.Equals){
@@ -261,11 +313,11 @@ public abstract class Node implements Cloneable {
 		return parentNode;
 	}
 
-	public void setRootNode(RootNode rootNode) {
-		this.rootNode = rootNode;
+	public void setRootNode(VarList varList) {
+		this.varList = varList;
 	}
 
-	public RootNode getRootNode() {
-		return rootNode;
+	public VarList getRootNode() {
+		return varList;
 	}
 }

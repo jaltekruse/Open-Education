@@ -1,11 +1,10 @@
 package doc.mathobjects;
 
 import java.awt.Color;
+
 import doc.GridPoint;
-import doc.Page;
 import doc.attributes.BooleanAttribute;
 import doc.attributes.ColorAttribute;
-import doc.attributes.EnumeratedAttribute;
 import doc.attributes.IntegerAttribute;
 import doc.attributes.ListAttribute;
 import doc.attributes.MathObjectAttribute;

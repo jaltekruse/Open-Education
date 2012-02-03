@@ -9,12 +9,11 @@
 package math_rendering;
 
 import java.awt.Color;
-
 import java.awt.Font;
 import java.awt.Graphics;
 
-import expression.Node;
 import expression.Expression;
+import expression.Node;
 
 public class ImpliedMultGraphic extends BinExpressionGraphic {
 
@@ -147,7 +146,7 @@ private int space;
 		g.setFont(f);
 		setFont(f);
 		
-		space = (int) (3 * super.getRootNodeGraphic().getSizeAdjustment());
+		space = (int) (3 * super.getRootNodeGraphic().getFontSizeAdjustment());
 		
 		Node tempLeft = (super.getValue()).getChild(0);
 		Node tempRight = (super.getValue()).getChild(1);

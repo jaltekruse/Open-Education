@@ -14,9 +14,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.util.Vector;
 
-import expression.Expression;
 import expression.Node;
-import expression.Operator;
 
 public class ParenGraphic extends NodeGraphic<Node> {
 
@@ -39,8 +37,8 @@ public class ParenGraphic extends NodeGraphic<Node> {
 			super.getRootNodeGraphic().getGraphics().setColor(Color.black);
 		}
 		
-		super.getRootNodeGraphic().getGraphics().setStroke(new BasicStroke(
-				(int) (1 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL)));
+		getRootNodeGraphic().getGraphics().setStroke(new BasicStroke(
+				(int) (1 * getRootNodeGraphic().DOC_ZOOM_LEVEL * getRootNodeGraphic().getFontSizeAdjustment())));
 		super.getRootNodeGraphic().getGraphics().drawArc(getX1(), getY1(),
 				widthParens * 2, getY2() - getY1(), 90, 180);
 		super.getRootNodeGraphic().getGraphics().drawArc(getX2() - widthParens * 2,
@@ -267,10 +265,9 @@ public class ParenGraphic extends NodeGraphic<Node> {
 		overhang = (int) (3 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
 		widthParens = 3;
 		
-		// The call to getChild() skips the first paren inside of the operator, the parens are needed to have
-		// an expression inside of a UnaryOp, but they are not usually displayed
-		// if a user wants to show parens, the can use  two pairs of parens: sqrt((5/6))
 		Node tempChild = super.getValue();
+		// prevent the call below to make a NodeGrpahic from making an infinite number of parenthesis
+		// as the displayParenthesis flag is used to determine if a set of parens should be added
 		tempChild.setDisplayParentheses(false);
 		NodeGraphic childValGraphic = null;
 		

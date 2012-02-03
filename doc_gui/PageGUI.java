@@ -16,9 +16,20 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-
 import doc.Page;
-import doc.mathobjects.*;
+import doc.mathobjects.AnswerBoxObject;
+import doc.mathobjects.CubeObject;
+import doc.mathobjects.CylinderObject;
+import doc.mathobjects.ExpressionObject;
+import doc.mathobjects.GraphObject;
+import doc.mathobjects.Grouping;
+import doc.mathobjects.MathObject;
+import doc.mathobjects.NumberLineObject;
+import doc.mathobjects.OvalObject;
+import doc.mathobjects.PolygonObject;
+import doc.mathobjects.RectangleObject;
+import doc.mathobjects.TextObject;
+import doc.mathobjects.TriangleObject;
 import doc_gui.mathobject_gui.AnswerBoxGUI;
 import doc_gui.mathobject_gui.CubeObjectGUI;
 import doc_gui.mathobject_gui.CylinderObjectGUI;
@@ -268,8 +279,8 @@ public class PageGUI {
 
 	public void drawPageWithDecorations(Graphics g, Page p, Point pageOrigin, Rectangle visiblePageSection,
 			float zoomLevel){
-		int adjustedWidth = (int) (Page.DEFAULT_PAGE_WIDTH * zoomLevel);
-		int adjustedHeight = (int) (Page.DEFAULT_PAGE_HEIGHT * zoomLevel);
+		int adjustedWidth = (int) (p.getWidth() * zoomLevel);
+		int adjustedHeight = (int) (p.getHeight() * zoomLevel);
 
 		int pageXOrigin = (int) pageOrigin.getX();
 		int pageYOrigin = (int) pageOrigin.getY();
@@ -283,7 +294,7 @@ public class PageGUI {
 		g.fillRect(pageXOrigin, pageYOrigin, adjustedWidth, adjustedHeight);
 
 		//draw gray box to show margins
-		int adjustedMargin = (int) (Page.DEFAULT_MARGIN * zoomLevel);
+		int adjustedMargin = (int) (p.getxMargin()* zoomLevel);
 		printableXOrigin = pageXOrigin + adjustedMargin;
 		printableYOrigin = pageYOrigin + adjustedMargin;
 		g.setColor(Color.GRAY.brighter());

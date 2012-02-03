@@ -1,7 +1,6 @@
 package doc.mathobjects;
 
 import doc.GridPoint;
-import doc.Page;
 import doc.attributes.ListAttribute;
 import doc.attributes.MathObjectAttribute;
 

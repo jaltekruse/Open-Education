@@ -1,17 +1,22 @@
-<OpenNotebookDoc version="0.1" filename="Linear Graphs" author="null" date="1/18/2012">
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenNotebookDoc version="0.1" filename="Linear Graphs" author="null" date="2/2/2012">
 <generators>
-<Problem>
+<VarInsertionProblem>
 <int name="xPos" value="160"/>
 <int name="yPos" value="2"/>
 <int name="width" value="146"/>
 <int name="height" value="171"/>
 <string name="group name" value=""/>
-<string name="tags(separate by commas)" value=""/>
+<string name="directions" value=""/>
 <string name="author" value=""/>
 <date name="date" value="11/3/2011"/>
-<string name="scripts" value="m=randomInt(-4,4); b=randomInt(-4,4)"/>
 <uuid name="uuid" value="c04bf207-46bc-4316-86d7-424ffa00d01f"/>
-<Graph>
+<list name="tags" type="string" childName="">
+<entry v=""/>
+</list><list name="scripts" type="string" childName="">
+<entry v="m=randomInt(-4,4)"/>
+<entry v=" b=randomInt(-4,4)"/>
+</list><Graph>
 <int name="xPos" value="160"/>
 <int name="yPos" value="2"/>
 <int name="width" value="146"/>
@@ -35,9 +40,9 @@
 <int name="width" value="141"/>
 <int name="height" value="30"/>
 <string name="answer" value=""/>
-<int name="fontSize" value="12"/>
+<int name="font size" value="12"/>
 </AnswerBox>
-</Problem>
+</VarInsertionProblem>
 </generators>
 <Page>
 <Text>
@@ -46,8 +51,8 @@
 <int name="width" value="471"/>
 <int name="height" value="31"/>
 <string name="text" value="Write the equations of the linear graphs below."/>
-<int name="fontSize" value="12"/>
-<boolean name="showBox" value="false"/>
+<int name="font size" value="12"/>
+<boolean name="show border" value="false"/>
 </Text>
 <AnswerBox>
 <int name="xPos" value="432"/>
@@ -55,7 +60,7 @@
 <int name="width" value="138"/>
 <int name="height" value="42"/>
 <string name="answer" value=""/>
-<int name="fontSize" value="12"/>
+<int name="font size" value="12"/>
 </AnswerBox>
 <Text>
 <int name="xPos" value="43"/>
@@ -63,8 +68,8 @@
 <int name="width" value="378"/>
 <int name="height" value="24"/>
 <string name="text" value="Linear Formulas from Graphs"/>
-<int name="fontSize" value="20"/>
-<boolean name="showBox" value="false"/>
+<int name="font size" value="20"/>
+<boolean name="show border" value="false"/>
 </Text>
 <Text>
 <int name="xPos" value="42"/>
@@ -72,8 +77,8 @@
 <int name="width" value="220"/>
 <int name="height" value="21"/>
 <string name="text" value="Sample Worksheet"/>
-<int name="fontSize" value="20"/>
-<boolean name="showBox" value="false"/>
+<int name="font size" value="20"/>
+<boolean name="show border" value="false"/>
 </Text>
 <Text>
 <int name="xPos" value="431"/>
@@ -81,19 +86,16 @@
 <int name="width" value="132"/>
 <int name="height" value="22"/>
 <string name="text" value="Name:"/>
-<int name="fontSize" value="12"/>
-<boolean name="showBox" value="false"/>
+<int name="font size" value="12"/>
+<boolean name="show border" value="false"/>
 </Text>
 <GeneratedProblem>
 <int name="xPos" value="232"/>
 <int name="yPos" value="343"/>
 <int name="width" value="146"/>
 <int name="height" value="171"/>
-<string name="group name" value=""/>
-<string name="tags(separate by commas)" value=""/>
-<string name="author" value=""/>
-<date name="date" value="1/18/2012"/>
 <uuid name="uuid" value="c04bf207-46bc-4316-86d7-424ffa00d01f"/>
+<int name="difficulty" value="0"/>
 <Graph>
 <int name="xPos" value="232"/>
 <int name="yPos" value="343"/>
@@ -110,7 +112,7 @@
 <boolean name="showNumbers" value="true"/>
 <boolean name="showGrid" value="true"/>
 <list name="Expressions" type="string" childName="y=">
-<entry v="1x+-4"/>
+<entry v="-4x+1"/>
 </list></Graph>
 <AnswerBox>
 <int name="xPos" value="232"/>
@@ -118,7 +120,7 @@
 <int name="width" value="141"/>
 <int name="height" value="30"/>
 <string name="answer" value=""/>
-<int name="fontSize" value="12"/>
+<int name="font size" value="12"/>
 </AnswerBox>
 </GeneratedProblem>
 <GeneratedProblem>
@@ -126,11 +128,8 @@
 <int name="yPos" value="343"/>
 <int name="width" value="146"/>
 <int name="height" value="171"/>
-<string name="group name" value=""/>
-<string name="tags(separate by commas)" value=""/>
-<string name="author" value=""/>
-<date name="date" value="1/18/2012"/>
 <uuid name="uuid" value="c04bf207-46bc-4316-86d7-424ffa00d01f"/>
+<int name="difficulty" value="0"/>
 <Graph>
 <int name="xPos" value="403"/>
 <int name="yPos" value="343"/>
@@ -147,7 +146,7 @@
 <boolean name="showNumbers" value="true"/>
 <boolean name="showGrid" value="true"/>
 <list name="Expressions" type="string" childName="y=">
-<entry v="1x+-2"/>
+<entry v="2x+1"/>
 </list></Graph>
 <AnswerBox>
 <int name="xPos" value="403"/>
@@ -155,7 +154,7 @@
 <int name="width" value="141"/>
 <int name="height" value="30"/>
 <string name="answer" value=""/>
-<int name="fontSize" value="12"/>
+<int name="font size" value="12"/>
 </AnswerBox>
 </GeneratedProblem>
 <GeneratedProblem>
@@ -163,11 +162,8 @@
 <int name="yPos" value="534"/>
 <int name="width" value="146"/>
 <int name="height" value="171"/>
-<string name="group name" value=""/>
-<string name="tags(separate by commas)" value=""/>
-<string name="author" value=""/>
-<date name="date" value="1/18/2012"/>
 <uuid name="uuid" value="c04bf207-46bc-4316-86d7-424ffa00d01f"/>
+<int name="difficulty" value="0"/>
 <Graph>
 <int name="xPos" value="232"/>
 <int name="yPos" value="534"/>
@@ -184,7 +180,7 @@
 <boolean name="showNumbers" value="true"/>
 <boolean name="showGrid" value="true"/>
 <list name="Expressions" type="string" childName="y=">
-<entry v="-1x+1"/>
+<entry v="-3x+2"/>
 </list></Graph>
 <AnswerBox>
 <int name="xPos" value="232"/>
@@ -192,7 +188,7 @@
 <int name="width" value="141"/>
 <int name="height" value="30"/>
 <string name="answer" value=""/>
-<int name="fontSize" value="12"/>
+<int name="font size" value="12"/>
 </AnswerBox>
 </GeneratedProblem>
 <GeneratedProblem>
@@ -200,11 +196,8 @@
 <int name="yPos" value="534"/>
 <int name="width" value="146"/>
 <int name="height" value="171"/>
-<string name="group name" value=""/>
-<string name="tags(separate by commas)" value=""/>
-<string name="author" value=""/>
-<date name="date" value="1/18/2012"/>
 <uuid name="uuid" value="c04bf207-46bc-4316-86d7-424ffa00d01f"/>
+<int name="difficulty" value="0"/>
 <Graph>
 <int name="xPos" value="403"/>
 <int name="yPos" value="534"/>
@@ -221,7 +214,7 @@
 <boolean name="showNumbers" value="true"/>
 <boolean name="showGrid" value="true"/>
 <list name="Expressions" type="string" childName="y=">
-<entry v="4x+-3"/>
+<entry v="2x+3"/>
 </list></Graph>
 <AnswerBox>
 <int name="xPos" value="403"/>
@@ -229,7 +222,7 @@
 <int name="width" value="141"/>
 <int name="height" value="30"/>
 <string name="answer" value=""/>
-<int name="fontSize" value="12"/>
+<int name="font size" value="12"/>
 </AnswerBox>
 </GeneratedProblem>
 <GeneratedProblem>
@@ -237,11 +230,8 @@
 <int name="yPos" value="343"/>
 <int name="width" value="146"/>
 <int name="height" value="171"/>
-<string name="group name" value=""/>
-<string name="tags(separate by commas)" value=""/>
-<string name="author" value=""/>
-<date name="date" value="1/18/2012"/>
 <uuid name="uuid" value="c04bf207-46bc-4316-86d7-424ffa00d01f"/>
+<int name="difficulty" value="0"/>
 <Graph>
 <int name="xPos" value="61"/>
 <int name="yPos" value="343"/>
@@ -266,7 +256,7 @@
 <int name="width" value="141"/>
 <int name="height" value="30"/>
 <string name="answer" value=""/>
-<int name="fontSize" value="12"/>
+<int name="font size" value="12"/>
 </AnswerBox>
 </GeneratedProblem>
 <GeneratedProblem>
@@ -274,11 +264,8 @@
 <int name="yPos" value="534"/>
 <int name="width" value="146"/>
 <int name="height" value="171"/>
-<string name="group name" value=""/>
-<string name="tags(separate by commas)" value=""/>
-<string name="author" value=""/>
-<date name="date" value="1/18/2012"/>
 <uuid name="uuid" value="c04bf207-46bc-4316-86d7-424ffa00d01f"/>
+<int name="difficulty" value="0"/>
 <Graph>
 <int name="xPos" value="61"/>
 <int name="yPos" value="534"/>
@@ -295,7 +282,7 @@
 <boolean name="showNumbers" value="true"/>
 <boolean name="showGrid" value="true"/>
 <list name="Expressions" type="string" childName="y=">
-<entry v="3x+-3"/>
+<entry v="-4x+-1"/>
 </list></Graph>
 <AnswerBox>
 <int name="xPos" value="61"/>
@@ -303,7 +290,7 @@
 <int name="width" value="141"/>
 <int name="height" value="30"/>
 <string name="answer" value=""/>
-<int name="fontSize" value="12"/>
+<int name="font size" value="12"/>
 </AnswerBox>
 </GeneratedProblem>
 <GeneratedProblem>
@@ -311,11 +298,8 @@
 <int name="yPos" value="152"/>
 <int name="width" value="146"/>
 <int name="height" value="171"/>
-<string name="group name" value=""/>
-<string name="tags(separate by commas)" value=""/>
-<string name="author" value=""/>
-<date name="date" value="1/18/2012"/>
 <uuid name="uuid" value="c04bf207-46bc-4316-86d7-424ffa00d01f"/>
+<int name="difficulty" value="0"/>
 <Graph>
 <int name="xPos" value="61"/>
 <int name="yPos" value="152"/>
@@ -332,7 +316,7 @@
 <boolean name="showNumbers" value="true"/>
 <boolean name="showGrid" value="true"/>
 <list name="Expressions" type="string" childName="y=">
-<entry v="-1x+3"/>
+<entry v="3x+-2"/>
 </list></Graph>
 <AnswerBox>
 <int name="xPos" value="61"/>
@@ -340,7 +324,7 @@
 <int name="width" value="141"/>
 <int name="height" value="30"/>
 <string name="answer" value=""/>
-<int name="fontSize" value="12"/>
+<int name="font size" value="12"/>
 </AnswerBox>
 </GeneratedProblem>
 <GeneratedProblem>
@@ -348,11 +332,8 @@
 <int name="yPos" value="152"/>
 <int name="width" value="146"/>
 <int name="height" value="171"/>
-<string name="group name" value=""/>
-<string name="tags(separate by commas)" value=""/>
-<string name="author" value=""/>
-<date name="date" value="1/18/2012"/>
 <uuid name="uuid" value="c04bf207-46bc-4316-86d7-424ffa00d01f"/>
+<int name="difficulty" value="0"/>
 <Graph>
 <int name="xPos" value="232"/>
 <int name="yPos" value="152"/>
@@ -369,7 +350,7 @@
 <boolean name="showNumbers" value="true"/>
 <boolean name="showGrid" value="true"/>
 <list name="Expressions" type="string" childName="y=">
-<entry v="2x+1"/>
+<entry v="1x+3"/>
 </list></Graph>
 <AnswerBox>
 <int name="xPos" value="232"/>
@@ -377,7 +358,7 @@
 <int name="width" value="141"/>
 <int name="height" value="30"/>
 <string name="answer" value=""/>
-<int name="fontSize" value="12"/>
+<int name="font size" value="12"/>
 </AnswerBox>
 </GeneratedProblem>
 <GeneratedProblem>
@@ -385,11 +366,8 @@
 <int name="yPos" value="152"/>
 <int name="width" value="146"/>
 <int name="height" value="171"/>
-<string name="group name" value=""/>
-<string name="tags(separate by commas)" value=""/>
-<string name="author" value=""/>
-<date name="date" value="1/18/2012"/>
 <uuid name="uuid" value="c04bf207-46bc-4316-86d7-424ffa00d01f"/>
+<int name="difficulty" value="0"/>
 <Graph>
 <int name="xPos" value="403"/>
 <int name="yPos" value="152"/>
@@ -406,7 +384,7 @@
 <boolean name="showNumbers" value="true"/>
 <boolean name="showGrid" value="true"/>
 <list name="Expressions" type="string" childName="y=">
-<entry v="-3x+-1"/>
+<entry v="3x+3"/>
 </list></Graph>
 <AnswerBox>
 <int name="xPos" value="403"/>
@@ -414,7 +392,7 @@
 <int name="width" value="141"/>
 <int name="height" value="30"/>
 <string name="answer" value=""/>
-<int name="fontSize" value="12"/>
+<int name="font size" value="12"/>
 </AnswerBox>
 </GeneratedProblem>
 </Page>

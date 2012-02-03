@@ -1,4 +1,4 @@
-package doc_gui.object_panels;
+package doc_gui.attribute_panels;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -22,7 +22,6 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import doc.attributes.AttributeException;
-import doc.attributes.MathObjectAttribute;
 import doc.attributes.StringAttribute;
 import doc_gui.DocViewerPanel;
 
@@ -63,30 +62,12 @@ public class StringAdjustmentPanel extends AdjustmentPanel<StringAttribute>{
 
 			@Override
 			public void focusGained(FocusEvent arg0) {
-				// TODO Auto-generated method stub
-
+				
 			}
 
 			@Override
 			public void focusLost(FocusEvent arg0) {
-				try {
-					if ( mAtt.getParentObject() == null ){
-						mAtt.setValue(textArea.getText());
-					}
-					else{
-						mAtt.getParentObject().setAttributeValue(mAtt.getName(), textArea.getText());
-					}
-					docPanel.addUndoState();
-					docPanel.repaintDoc();
-				} catch (AttributeException e) {
-					if (!showingDialog){
-						JOptionPane.showMessageDialog(null,
-								e.getMessage(),
-								"Error",
-								JOptionPane.ERROR_MESSAGE);
-						showingDialog = false;
-					}
-				}
+				applyPanelValueToObject();
 			}
 
 		});
@@ -99,26 +80,7 @@ public class StringAdjustmentPanel extends AdjustmentPanel<StringAttribute>{
 			public void keyPressed(KeyEvent ev) {
 				// TODO Auto-generated method stub
 				if (ev.getKeyCode() == KeyEvent.VK_ENTER){
-					try {
-						if ( mAtt.getParentObject() == null ){
-							mAtt.setValue(textArea.getText());
-						}
-						else{
-							mAtt.getParentObject().setAttributeValue(mAtt.getName(), textArea.getText());
-						}
-						docPanel.addUndoState();
-						docPanel.repaintDoc();
-					} catch (AttributeException e) {
-						// TODO Auto-generated catch block
-						if (!showingDialog){
-							showingDialog = true;
-							JOptionPane.showMessageDialog(null,
-									e.getMessage(),
-									"Error",
-									JOptionPane.ERROR_MESSAGE);
-							showingDialog = false;
-						}
-					}
+					applyPanelValueToObject();
 				}
 			}
 
@@ -211,13 +173,17 @@ public class StringAdjustmentPanel extends AdjustmentPanel<StringAttribute>{
 
 	@Override
 	public void applyPanelValueToObject() {
-		// TODO Auto-generated method stub
 		try {
-			if ( mAtt.getParentObject() == null ){
+			if ( mAtt.getParentObject() == null && ! mAtt.getValue().equals(textArea.getText())){
 				mAtt.setValue(textArea.getText());
+				docPanel.addUndoState();
 			}
 			else{
-				mAtt.getParentObject().setAttributeValue(mAtt.getName(), textArea.getText());
+				if ( ! mAtt.getValue().equals(textArea.getText()) &&
+						mAtt.getParentObject().setAttributeValue(mAtt.getName(), textArea.getText()))
+				{// if setting the value was successful
+					docPanel.addUndoState();
+				}
 			}
 			docPanel.repaintDoc();
 		} catch (AttributeException e) {
@@ -225,8 +191,7 @@ public class StringAdjustmentPanel extends AdjustmentPanel<StringAttribute>{
 			if (!showingDialog){
 				showingDialog = true;
 				JOptionPane.showMessageDialog(null,
-						e.getMessage(),
-						"Error",
+						e.getMessage(), "Error",
 						JOptionPane.ERROR_MESSAGE);
 				showingDialog = false;
 			}

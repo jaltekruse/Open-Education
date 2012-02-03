@@ -17,8 +17,8 @@ import javax.swing.event.MouseInputListener;
 
 import doc.Page;
 import doc.PointInDocument;
-import doc.mathobjects.MathObject;
 import doc.mathobjects.Grouping;
+import doc.mathobjects.MathObject;
 import doc.mathobjects.RectangleObject;
 import doc_gui.mathobject_gui.MathObjectGUI;
 
@@ -39,7 +39,6 @@ public class DocMouseListener implements MouseInputListener{
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
 		docPanel.requestFocus();
 
 		boolean clickHandled = false, requiresRedraw = false;
@@ -72,7 +71,6 @@ public class DocMouseListener implements MouseInputListener{
 						mObj != docPanel.getFocusedObject())
 				{// the click occurred within an object, that was not already selected
 					if (mObj instanceof Grouping && docPanel.isInStudentMode()){
-						// TODO change this to fit new group structure
 						for (MathObject subObj : ((Grouping)mObj).getObjects()){
 							objRect = new Rectangle(subObj.getxPos(), subObj.getyPos(),
 									subObj.getWidth(),subObj.getHeight());
@@ -156,7 +154,6 @@ public class DocMouseListener implements MouseInputListener{
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
 		docPanel.requestFocus();
 		draggingDot = false;
 
@@ -208,7 +205,6 @@ public class DocMouseListener implements MouseInputListener{
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 		if (objPlacementRequiresMouseDrag)
 		{// the mouse was pressed, but not dragged to set an objects size
@@ -243,9 +239,7 @@ public class DocMouseListener implements MouseInputListener{
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
 		docPanel.requestFocus();
-		PointInDocument docPt = docPanel.panelPt2DocPt(e.getX(), e.getY());
 
 		if (dragMouseToPlaceObj(e)){
 			return;
@@ -289,13 +283,11 @@ public class DocMouseListener implements MouseInputListener{
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -602,7 +594,6 @@ public class DocMouseListener implements MouseInputListener{
 
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 	}
 
 	public int getCurrentDragDot(){

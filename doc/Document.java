@@ -8,131 +8,184 @@
 
 package doc;
 
+import java.util.Random;
 import java.util.UUID;
 import java.util.Vector;
-
 
 import doc.attributes.Date;
 import doc.attributes.DateAttribute;
 import doc.attributes.MathObjectAttribute;
 import doc.attributes.StringAttribute;
+import doc.mathobjects.GeneratedProblem;
+import doc.mathobjects.MathObject;
 import doc.mathobjects.ProblemGenerator;
 import doc_gui.DocViewerPanel;
-import doc_gui.DocumentException;
 
 public class Document {
-	
-	//will likely want to make standard database of concepts, which will be pulled down
-	// and stored in application, to prevent misspellings and different terminology for
-	//the same concept cluttering the database
+
+	/**
+	 * The standard 8.5 inch page width. Given as an integer, 612, in the
+	 * standard user space 72 dpi.
+	 */
+	public static final int DEFAULT_PAGE_WIDTH = 612;
+
+	/**
+	 * The standard 11 inch page height. Given as an integer, 792, in the
+	 * standard user space 72 dpi.
+	 */
+	public static final int DEFAULT_PAGE_HEIGHT = 792;
+
+	/**
+	 * The standard half-inch page margin. Given as an integer, 36, in the
+	 * standard user space 72 dpi.
+	 */
+	public static final int DEFAULT_MARGIN = 36;
+
+	private int orientation;
+	public static final int PORTRAIT = 1;
+	public static final int LANDSCAPE = 2;
+	private int xMargin, yMargin, pageWidth, pageHeight;
+
+	// will likely want to make standard database of concepts, which will be
+	// pulled down
+	// and stored in application, to prevent misspellings and different
+	// terminology for
+	// the same concept cluttering the database
 	private Vector<String> subjectsCovered;
-	
-	//actual values stored in MathObjectAttribute objects these are standard
-	//strings for the 'name' fields of those attributes
-	public static final String FILENAME = "filename", HEADER = "header", FOOTER = "footer", 
-			AUTHOR = "author", DATE = "date", AUTHOR_ID = "authorID", GENERATORS = "generators",
+
+	// actual values stored in MathObjectAttribute objects these are standard
+	// strings for the 'name' fields of those attributes
+	public static final String FILENAME = "filename", HEADER = "header",
+			FOOTER = "footer", AUTHOR = "author", DATE = "date",
+			AUTHOR_ID = "authorID", GENERATORS = "generators",
 			OPEN_NOTEBOOK_DOC = "OpenNotebookDoc";
-	
+
 	private Vector<Page> pages;
-	
 	private Vector<ProblemGenerator> generators;
-	
 	private Vector<ProblemGenerator> problemGenerators;
-	
-	//this should not be exported to files, it is a bridge between the front end and back end
+
+	// this should not be exported to files, it is a bridge between the front
+	// end and back end
 	private DocViewerPanel docPanel;
 	
-	//stores all of the data for the document, allows for easy creation of a
-	//panel for setting document properties, just like the MathObject properties panel
+	private static ProblemDatabase problemDatabase;
+
+	// stores all of the data for the document, allows for easy creation of a
+	// panel for setting document properties, just like the MathObject
+	// properties panel
 	private Vector<MathObjectAttribute> attributes;
-	
-	public Document(String name){
+
+	// used for automatically laying out problems on a document and giving them
+	// extra space
+	private static final int bufferSpace = 20;
+
+	// cloned versions of previous documents are used for the undo/redo stack
+	// to maintain what object had focus at each undo state, it is stored here
+	// and when a document is cloned, the cloned equivalent is set as the
+	// focused object of the clone. The actual handling of focusing while
+	// clicking on the interface is handled in the front-end in DocViewerPanel
+	private MathObject lastFocused;
+
+	private static final Random random = new Random();
+
+	public Document(String name) {
 		attributes = new Vector<MathObjectAttribute>();
 		generators = new Vector<ProblemGenerator>();
 		addAttributes();
 		pages = new Vector<Page>();
 		subjectsCovered = new Vector<String>();
 		getAttributeWithName(FILENAME).setValue(name);
+		pageWidth = DEFAULT_PAGE_WIDTH;
+		pageHeight = DEFAULT_PAGE_HEIGHT;
+		xMargin = DEFAULT_MARGIN;
+		yMargin = DEFAULT_MARGIN;
 	}
-	
-	private void addAttributes(){
+
+	private void addAttributes() {
 		addAttribute(new StringAttribute(FILENAME));
 		addAttribute(new StringAttribute(AUTHOR));
 		addAttribute(new DateAttribute(DATE));
 	}
-	
-	private MathObjectAttribute getAttributeWithName(String n){
-		for (MathObjectAttribute mathAtt : attributes){
-			if (mathAtt.getName().equals(n)){
+
+	private MathObjectAttribute getAttributeWithName(String n) {
+		for (MathObjectAttribute mathAtt : attributes) {
+			if (mathAtt.getName().equals(n)) {
 				return mathAtt;
 			}
 		}
 		return null;
 	}
-	
-	public Vector<MathObjectAttribute> getAttributes(){
+
+	public Vector<MathObjectAttribute> getAttributes() {
 		return attributes;
 	}
-	
-	private void addAttribute(MathObjectAttribute mAtt){
-		for (MathObjectAttribute mathAtt : attributes){
-			if (mathAtt.getName().equals(mAtt.getName())){
+
+	private void addAttribute(MathObjectAttribute mAtt) {
+		for (MathObjectAttribute mathAtt : attributes) {
+			if (mathAtt.getName().equals(mAtt.getName())) {
 				return;
 			}
 		}
 		attributes.add(mAtt);
 	}
-	
+
 	public Vector<ProblemGenerator> getGenerators() {
 		return generators;
 	}
-	
-	public ProblemGenerator getGeneratorWithID(UUID id){
-		for ( ProblemGenerator gen : generators){
-			if ( gen.getUUID().compareTo(id) == 0){
+
+	public ProblemGenerator getGeneratorWithID(UUID id) {
+		for (ProblemGenerator gen : generators) {
+			if (gen.getUUID().compareTo(id) == 0) {
 				return gen;
 			}
 		}
-		return null;
+		return getProblemDatabase().getProblemWithUUID(id);
 	}
-	
-	public void addGenerator(ProblemGenerator generator) throws Exception{
-		for ( ProblemGenerator gen : generators){
-			if ( gen.getUUID().compareTo(generator.getUUID()) == 0){
+
+	public void addGenerator(ProblemGenerator generator) throws Exception {
+		for (ProblemGenerator gen : generators) {
+			if (gen.getUUID().compareTo(generator.getUUID()) == 0) {
 				throw new Exception("UUID already in use");
 			}
 		}
-		generator.setParentDocument(this);
+		generator.setProblemHoldingDocument(this);
 		generators.add(generator);
 	}
-	
+
 	public void setFilename(String s) {
 		getAttributeWithName(FILENAME).setValue(s);
 	}
-	
-	public Document clone(){
+
+	public Document clone() {
 		Document newDoc = new Document(new String(getName()));
 		newDoc.attributes = new Vector<MathObjectAttribute>();
-		for ( MathObjectAttribute mAtt : getAttributes()){
+		MathObject lastWithFocus = this.getLastFocused();
+		for (MathObjectAttribute mAtt : getAttributes()) {
 			newDoc.addAttribute(mAtt.clone());
 		}
-		for ( ProblemGenerator gen : generators){
+		for (ProblemGenerator gen : generators) {
 			try {
 				newDoc.addGenerator(gen.clone());
 			} catch (Exception e) {
 				System.out.println("UUID already in use.");
 			}
 		}
-		for ( Page p : pages){
+		for (Page p : pages) {
 			newDoc.addPage(p.clone());
 		}
-		
+
+		// the last focused member of this document is used to pass back
+		// its cloned version from the page cloning method
+		newDoc.setLastFocused(this.getLastFocused());
+		// the last focused object is saved at the beginning of the method
+		// to prevent being overridden as described in the above comment
+		// this.setLastFocused(lastWithFocus);
 		newDoc.setDocViewerPanel(getDocViewerPanel());
 		return newDoc;
 	}
 
 	public String getName() {
-		return ((StringAttribute)getAttributeWithName(FILENAME)).getValue();
+		return ((StringAttribute) getAttributeWithName(FILENAME)).getValue();
 	}
 
 	public void setSubjectsCovered(Vector<String> subjectsCovered) {
@@ -148,94 +201,233 @@ public class Document {
 	}
 
 	public String getAuthor() {
-		return ((StringAttribute)getAttributeWithName(AUTHOR)).getValue();
+		return ((StringAttribute) getAttributeWithName(AUTHOR)).getValue();
 	}
-	
-	public void setDate(int d, int m, int y){
-		String date = "(" + m + "/" + d + "/" + y + ")";
-		
+
+	public PointInDocument findFirstWhitespace() {
+		Page lastPageWithStuff = getPage(0);
+		for (Page p : getPages()) {
+			if (p.getObjects().size() > 0) {
+				lastPageWithStuff = p;
+			}
+		}
+		int lastObjectYPos = getyMargin() + 10;
+		for (MathObject mObj : lastPageWithStuff.getObjects()) {
+			if (mObj.getyPos() + mObj.getHeight() > lastObjectYPos) {
+				lastObjectYPos = mObj.getyPos() + mObj.getHeight();
+			}
+		}
+		return new PointInDocument(getPageIndex(lastPageWithStuff), getxMargin() + 10,
+				lastObjectYPos + 10);
 	}
-	
-	public Date getDate(){
-		return ((DateAttribute)getAttributeWithName(DATE)).getValue();
+
+	public void generateProblems(Vector<ProblemGenerator> generators,
+			Vector<Integer> frequencies, int number) {
+		GeneratedProblem[] newProblems = new GeneratedProblem[number];
+		int difficulty;
+		for (ProblemGenerator gen : generators){
+			gen.setProblemHoldingDocument(this);
+		}
+		for (int i = 0; i < number; i++) {
+			if (i < number / 3.0) {
+				difficulty = ProblemGenerator.EASY;
+			} else if (i < number * (2.0 / 3)) {
+				difficulty = ProblemGenerator.MEDIUM;
+			} else {
+				difficulty = ProblemGenerator.HARD;
+			}
+			newProblems[i] = generators.get(pickRandomIndex(frequencies))
+					.generateProblem(difficulty);
+		}
+		layoutObjects(newProblems);
+		docPanel.repaintDoc();
 	}
-	
-	public String exportToXML(){
+
+	private int pickRandomIndex(Vector<Integer> frequencies) {
+		int total = 0;
+		for (int i = 0; i < frequencies.size(); i++) {
+			total += frequencies.get(i);
+		}
+		int chosen = random.nextInt(total) + 1;
+		total = 0;
+		for (int i = 0; i < frequencies.size(); i++) {
+			if (chosen > total && chosen <= total + frequencies.get(i)) {
+				return i;
+			}
+			total += frequencies.get(i);
+		}
+		// this next line should never be reached
+		System.out.println("this line should never be reached");
+		return 1;
+	}
+
+	public void layoutObjects(MathObject[] objects) {
+
+		PointInDocument pt = findFirstWhitespace();
+
+		int greatestWidth = 0, greatestHeight = 0;
+		for (MathObject mObj : objects) {
+			if (mObj.getWidth() > greatestWidth) {
+				greatestWidth = mObj.getWidth();
+			}
+			if (mObj.getHeight() > greatestHeight) {
+				greatestHeight = mObj.getHeight();
+			}
+		}
+
+		int numColumns = ((getWidth() - 2 * getxMargin() - bufferSpace) / (greatestWidth + bufferSpace));
+		int totalExtraSpace = ((getWidth() - 2 * getxMargin() - bufferSpace) % (greatestWidth + bufferSpace));
+
+		int extraColumnSpace = totalExtraSpace / (numColumns + 1);
+		int currColumn = 0;
+		int curryPos = pt.getyPos();
+		Page currentPage = getPage(pt.getPage());
+
+		for (MathObject mObj : objects) {
+			mObj.setxPos(currentPage.getxMargin() + bufferSpace
+					+ extraColumnSpace + currColumn
+					* (greatestWidth + bufferSpace + extraColumnSpace));
+			mObj.setyPos(curryPos);
+			
+			mObj.setParentContainer(currentPage);
+			if (!mObj.isOnPage()) {
+				if (currentPage.getParentDoc().getNumPages() < currentPage
+						.getParentDoc().getPageIndex(currentPage) + 2) 
+				{// a page must be added to add the objects
+					currentPage.getParentDoc().addBlankPage();
+					currentPage = currentPage.getParentDoc().getPage(
+							currentPage.getParentDoc().getNumPages() - 1);
+					currentPage.getParentDoc().getDocViewerPanel()
+							.resizeViewWindow();
+				} else {// there is a next page on the document that the new
+						// objects can be added to
+					currentPage = currentPage.getParentDoc().getPage(
+							currentPage.getParentDoc()
+									.getPageIndex(currentPage) + 1);
+				}
+
+				curryPos = currentPage.getyMargin() + bufferSpace;
+				mObj.setyPos(curryPos);
+			}
+			currentPage.addObject(mObj);
+			mObj.setParentContainer(currentPage);
+			currColumn++;
+			if (currColumn > numColumns - 1) {
+				curryPos += greatestHeight + bufferSpace;
+				currColumn = 0;
+			}
+		}
+	}
+
+	public void setWidth(int pageWidth) {
+		this.pageWidth = pageWidth;
+	}
+
+	public int getWidth() {
+		return pageWidth;
+	}
+
+	public void setHeight(int pageHeight) {
+		this.pageHeight = pageHeight;
+	}
+
+	public int getHeight() {
+		return pageHeight;
+	}
+
+	public void setxMargin(int xMargin) {
+		this.xMargin = xMargin;
+	}
+
+	public int getxMargin() {
+		return xMargin;
+	}
+
+	public void setyMargin(int yMargin) {
+		this.yMargin = yMargin;
+	}
+
+	public int getyMargin() {
+		return yMargin;
+	}
+
+	public Date getDate() {
+		return ((DateAttribute) getAttributeWithName(DATE)).getValue();
+	}
+
+	public String exportToXML() {
 		String output = "";
-//		output += "<?XML version=\"1.0\" encoding=\"\"?>\n";
-		output += "<" + OPEN_NOTEBOOK_DOC + " " + "version=\"0.1\" " + FILENAME + "=\""
-				+ getName() + "\" " + AUTHOR + "=\"" + getAuthor()				
+		output += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+		output += "<" + OPEN_NOTEBOOK_DOC + " " + "version=\"0.1\" " + FILENAME
+				+ "=\"" + getName() + "\" " + AUTHOR + "=\"" + getAuthor()
 				+ "\" " + DATE + "=\"" + getDate() + "\">\n";
-		for (String s : subjectsCovered){
+		for (String s : subjectsCovered) {
 			output += "<subject name=\"" + s + "\"></subject>";
 		}
 		output += "<" + GENERATORS + ">\n";
-		for ( ProblemGenerator gen : generators){
+		for (ProblemGenerator gen : generators) {
 			output += gen.exportToXML();
 		}
 		output += "</" + GENERATORS + ">\n";
-		for (Page p : pages){
+		for (Page p : pages) {
 			output += p.exportToXML();
 		}
 		output += "</" + OPEN_NOTEBOOK_DOC + ">";
 		return output;
 	}
-	
+
 	/**
-	 * Returns a page object stored at the given index. The indices start at 1.
-	 * @param index - the index of the page to retrieve
+	 * Returns a page object stored at the given index. The indices start at 0.
+	 * 
+	 * @param index
+	 *            - the index of the page to retrieve
 	 * @return the page object at the selected index
 	 */
-	public Page getPage(int index)
-	{
-		if (index < 0 || index > pages.size() - 1){
+	public Page getPage(int index) {
+		if (index < 0 || index > pages.size() - 1) {
 			return null;
 		}
 		return pages.get(index);
 	}
-	
-	public Page getLastPage(){
+
+	public Page getLastPage() {
 		return pages.get(pages.size() - 1);
 	}
-	
-	public void addPage(Page p){
-		if ( ! pages.contains(p)){
+
+	public void addPage(Page p) {
+		if (!pages.contains(p)) {
 			pages.add(p);
 			p.setParentDoc(this);
-		}
-		else{
-//			System.out.println("Page is already contained in specified document");
+		} else {
+			// System.out.println("Page is already contained in specified document");
 		}
 	}
-	
-	public void removePage(Page p){
-		if ( pages.contains(p)){
+
+	public void removePage(Page p) {
+		if (pages.contains(p)) {
 			pages.remove(p);
-		}
-		else{
-//			System.out.println("Page is not contained in specified document");
+		} else {
+			// System.out.println("Page is not contained in specified document");
 		}
 	}
-	
-	public int getNumPages(){
+
+	public int getNumPages() {
 		return pages.size();
 	}
-	
-	public void addBlankPage(){
+
+	public void addBlankPage() {
 		pages.add(new Page(this));
 	}
-	
-	public int getPageIndex(Page p){
-		
-		int index = pages.indexOf(p);
-		return index;
+
+	public int getPageIndex(Page p) {
+		return pages.indexOf(p);
 	}
-	
-	public Vector<Page> getPages(){
+
+	public Vector<Page> getPages() {
 		return pages;
 	}
-	
-	public int lastPageIndex(){
+
+	public int lastPageIndex() {
 		return pages.size() + 1;
 	}
 
@@ -253,6 +445,22 @@ public class Document {
 
 	public void setProblemGenerators(Vector<ProblemGenerator> problemGenerators) {
 		this.problemGenerators = problemGenerators;
+	}
+
+	public MathObject getLastFocused() {
+		return lastFocused;
+	}
+
+	public void setLastFocused(MathObject lastFocused) {
+		this.lastFocused = lastFocused;
+	}
+
+	public static ProblemDatabase getProblemDatabase() {
+		return problemDatabase;
+	}
+
+	public static void setProblemDatabase(ProblemDatabase problemDatabase) {
+		Document.problemDatabase = problemDatabase;
 	}
 
 }

@@ -151,7 +151,7 @@ public class BinExpressionGraphic extends ExpressionGraphic{
 		g.setFont(f);
 		setFont(f);
 		
-		space = (int) (4 * getRootNodeGraphic().getSizeAdjustment());
+		space = (int) (4 * getRootNodeGraphic().getFontSizeAdjustment());
 		
 		Node tempLeft = (super.getValue()).getChild(0);
 		Node tempRight = (super.getValue()).getChild(1);

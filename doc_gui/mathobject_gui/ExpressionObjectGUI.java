@@ -16,14 +16,12 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.Vector;
 
+import math_rendering.RootNodeGraphic;
+import tree.ExpressionParser;
+import doc.attributes.StringAttribute;
 import doc.mathobjects.ExpressionObject;
 import expression.Node;
 import expression.NodeException;
-
-import math_rendering.RootNodeGraphic;
-
-import tree.ExpressionParser;
-import tree.ParseException;
 
 public class ExpressionObjectGUI extends MathObjectGUI<ExpressionObject> {
 
@@ -82,13 +80,10 @@ public class ExpressionObjectGUI extends MathObjectGUI<ExpressionObject> {
 				greatestWidth = errorMessageWidth;
 			}
 
-			String stepsString = object.getAttributeWithName("steps").getValue().toString();
-			String[] steps = {};
-			if ( ! stepsString.equals("") ){
-				steps = stepsString.split(";");
-			}
-
-			for (String s : steps){
+			String s;
+			for (StringAttribute mAtt : (Vector<StringAttribute>)
+					object.getListWithName(ExpressionObject.STEPS).getValues()){
+				s = mAtt.getValue();
 				currentIndex++;
 				totalHeight += stepBufferSpace;
 				try{
@@ -114,9 +109,12 @@ public class ExpressionObjectGUI extends MathObjectGUI<ExpressionObject> {
 			}
 			if ( object.getColor() != null){
 				g.setColor(object.getColor());
-				g.fillRect(xOrigin, yOrigin, greatestWidth + 2 * outerBufferSpace,
-						totalHeight + 2 * outerBufferSpace);
 			}
+			else{
+				g.setColor(Color.white);
+			}
+			g.fillRect(xOrigin, yOrigin, greatestWidth + 2 * outerBufferSpace,
+					totalHeight + 2 * outerBufferSpace);
 			g.setColor(Color.BLACK);
 			int index = 0;
 			for (RootNodeGraphic r : expressions){
@@ -161,7 +159,7 @@ public class ExpressionObjectGUI extends MathObjectGUI<ExpressionObject> {
 		int height = (int) (object.getHeight() * zoomLevel);
 		int fontSize = (int) (object.getFontSize() * zoomLevel);
 		int bufferSpace = (int) (5 * zoomLevel);
-		
+
 		// if any of the steps cannot be rendered, this information will allow
 		// space to be left to print an error message in its place
 		g.setFont(new Font("SansSerif", 0, fontSize));

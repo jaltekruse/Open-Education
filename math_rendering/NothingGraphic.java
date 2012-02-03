@@ -10,14 +10,10 @@ package math_rendering;
 
 import java.awt.BasicStroke;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.util.Vector;
 
 import expression.EmptyValue;
-
-import tree.MissingValue;
-import tree.Expression;
 
 public class NothingGraphic extends NodeGraphic<EmptyValue> {
 

@@ -96,6 +96,10 @@ public class Number extends Value implements Comparable<Number> {
 		return new Number(- getValue());
 	}
 	
+	public Number abs() {
+		return new Number(Math.abs(getValue()));
+	}
+	
 	public Number log() {
 		return new Number(Math.log10(getValue()));
 	}

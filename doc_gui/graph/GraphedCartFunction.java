@@ -12,6 +12,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.GeneralPath;
 
 import expression.Expression;
 import expression.Identifier;
@@ -77,14 +78,7 @@ public class GraphedCartFunction extends GraphWithExpression {
 		int tempLineSize = graph.LINE_SIZE;
 
 		double lastX = 0, lastY = 0, currX = 0, currY = 0;
-
-		//		Expression expression = getParser().ParseExpression(getFuncEqtn());
-		//		getParser().VARLIST.setVarVal(getIndependentVar(), new Decimal(graph.X_MIN));
-		//		lastX = getParser().getVarList().getVarVal(
-		//				getIndependentVar().getName()).toDec().getValue();
-		//		lastY = getParser().getVarList().getVarVal(
-		//				getDependentVar().getName()).toDec().getValue();
-
+		
 		Node origionalEx = null;
 		Node ex;
 		try {
@@ -100,8 +94,10 @@ public class GraphedCartFunction extends GraphWithExpression {
 					}
 				}
 			}
-			if (gridxToScreen(lastX) <= graph.X_SIZE &&  gridxToScreen(lastX) >= 0
-					&& gridyToScreen(lastY) <= graph.Y_SIZE && gridyToScreen(lastY) >= 0)
+			if (gridxToScreen(lastX) <= graph.X_SIZE + graph.X_PIC_ORIGIN &&  
+					gridxToScreen(lastX) >= + graph.X_PIC_ORIGIN
+					&& gridyToScreen(lastY) <= graph.Y_SIZE + graph.Y_PIC_ORIGIN 
+					&& gridyToScreen(lastY) >= + graph.Y_PIC_ORIGIN)
 			{//if the current point is on the screen, add it to the list of points
 				addPt(gridxToScreen(lastX), gridyToScreen(lastY));
 			}
@@ -112,7 +108,10 @@ public class GraphedCartFunction extends GraphWithExpression {
 		}
 		currX = graph.X_MIN;
 
+		boolean validExpression;
+
 		for (int i = 1; i < graph.X_SIZE; i += 1) {
+			validExpression = false;
 			try {
 				currX = currX + graph.X_PIXEL;
 				ex = origionalEx.cloneNode();
@@ -128,38 +127,22 @@ public class GraphedCartFunction extends GraphWithExpression {
 				if ( ((Expression)ex).getOperator() instanceof Operator.Equals){
 					if ( ((Expression)ex).getChild(1) instanceof Number){
 						currY = ((Number)((Expression)ex).getChild(1)).getValue();
+						validExpression = true;
 					}
-					else{
-						lastX = currX;
-						lastY = graph.Y_MIN;
-						continue;
-					}
-				}
-				else{
-					lastX = currX;
-					lastY = graph.Y_MIN;
-					continue;
 				}
 			}
-			else{
+			else if ( ! validExpression ){
 				lastX = currX;
 				lastY = graph.Y_MIN;
 				continue;
 			}
-			//			getParser().VARLIST.updateVarVal(getIndependentVar().getName(), graph.X_PIXEL);
-			//			expression.eval();
-			//			currX = getParser().getVarList().getVarVal(
-			//					getIndependentVar().getName()).toDec().getValue();
-			//			currY = getParser().getVarList().getVarVal(
-			//					getDependentVar().getName()).toDec().getValue();
-			
+
 			if (gridxToScreen(currX) <= graph.X_SIZE + graph.X_PIC_ORIGIN
 					&&  gridxToScreen(currX) >= graph.X_PIC_ORIGIN
 					&& gridyToScreen(currY) <= graph.Y_SIZE + graph.Y_PIC_ORIGIN
 					&& gridyToScreen(currY) >= graph.Y_PIC_ORIGIN)
 			{//if the current point is on the screen, add it to the list of points
 				addPt(gridxToScreen(currX), gridyToScreen(currY));
-				//					System.out.println("currPt on screen");
 				if (lastY <= graph.Y_MIN){
 					addPt(gridxToScreen(lastX), graph.Y_SIZE + graph.Y_PIC_ORIGIN);
 				}
@@ -173,7 +156,6 @@ public class GraphedCartFunction extends GraphWithExpression {
 					&& gridyToScreen(lastY) >= graph.Y_PIC_ORIGIN)
 			{//if the current point is on the screen, add it to the list of points
 				addPt(gridxToScreen(lastX), gridyToScreen(lastY));
-				//					System.out.println("currPt on screen");
 				if (currY <= graph.Y_MIN){
 					addPt(gridxToScreen(lastX), graph.Y_SIZE + graph.Y_PIC_ORIGIN);
 				}
@@ -192,29 +174,25 @@ public class GraphedCartFunction extends GraphWithExpression {
 				//the top, add the two to the list of points
 				addPt(gridxToScreen(lastX), 0 + graph.Y_PIC_ORIGIN);
 				addPt(gridxToScreen(currX), graph.Y_SIZE + graph.Y_PIC_ORIGIN);
-				//					System.out.println("curr off bottom");
-			}
-
-			if (isConnected()){
-				drawLineSeg(lastX, lastY, currX, currY, getColor(), g);
 			}
 
 			lastX = currX;
 			lastY = currY;
 		}
-		//			if (isConnected()){
-		//				int lastxPt, lastyPt,currxPt, curryPt;
-		//				g.setColor(getColor());
-		//				g2d.setStroke(new BasicStroke(graph.LINE_SIZE * graph.DOC_ZOOM_LEVEL));
-		//				for ( int i = 0; i < super.getxVals().size() - 1; i++){
-		//					lastxPt = super.getxVals().get(i);
-		//					lastyPt = super.getyVals().get(i);
-		//					currxPt = super.getxVals().get(i + 1);
-		//					curryPt = super.getyVals().get(i + 1);
-		//					
-		//						g2d.drawLine(lastxPt, lastyPt, currxPt, curryPt);
-		//					}
-		//			}
+
+		g2d.setStroke(new BasicStroke(graph.LINE_SIZE * graph.DOC_ZOOM_LEVEL,
+				BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+		if ( this.getxVals().size() > 0){
+			GeneralPath polyline = 
+					new GeneralPath(GeneralPath.WIND_EVEN_ODD, this.getxVals().size());
+	
+			polyline.moveTo (this.getxVals().get(0), this.getyVals().get(0));
+	
+			for (int i = 1; i < this.getxVals().size(); i++) {
+				polyline.lineTo( getxVals().get(i), getyVals().get(i));
+			};
+			g2d.draw(polyline);
+		}
 		graph.LINE_SIZE = 2;
 		g2d.setStroke(new BasicStroke(1));
 	}

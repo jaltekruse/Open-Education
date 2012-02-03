@@ -21,10 +21,10 @@ public abstract class MathObject {
 
 	protected MathObjectContainer parentContainer;
 
-	private Vector<MathObjectAttribute> attributes;
+	private Vector<MathObjectAttribute<?>> attributes;
 
-	private Vector<ListAttribute> lists;
-	
+	private Vector<ListAttribute<?>> lists;
+
 	private boolean actionCancelled = false;
 
 	public static final String ANSWER_BOX_OBJ = "AnswerBox",
@@ -33,20 +33,20 @@ public abstract class MathObject {
 			RECTANGLE = "Rectangle", TEXT_OBJ = "Text",
 			TRIANGLE_OBJ = "Triangle", TRAPEZOID_OBJ = "Trapezoid",
 			PARALLELOGRAM_OBJ = "Parallelogram", CUBE_OBJECT = "Cube",
-			GROUPING = "Grouping", PROBLEM_OBJ = "Problem",
+			GROUPING = "Grouping", VAR_INSERTION_PROBLEM = "VarInsertionProblem",
 			CYLINDER_OBJ = "Cylinder", CONE_OBJECT = "Cone",
 			REGULAR_POLYGON_OBJECT = "RegularPolygon", ARROW_OBJECT = "Arrow",
 			PYRAMID_OBJECT = "Pyramid", GENERATED_PROBLEM = "GeneratedProblem";
 
 	// the order of these three arrays is very important, they are parallel
 	// arrays used to create new instances of objects when all you have is
-	// the type string they also are used to generate the toolbar for creating
+	// the type string. They also are used to generate the toolbar for creating
 	// new objects
 	public static final String[] objectTypes = { RECTANGLE, OVAL_OBJ,
 			TRIANGLE_OBJ, REGULAR_POLYGON_OBJECT, TRAPEZOID_OBJ,
 			PARALLELOGRAM_OBJ, ARROW_OBJECT, CUBE_OBJECT, CYLINDER_OBJ,
 			NUMBER_LINE, GRAPH_OBJ, TEXT_OBJ, EXPRESSION_OBJ, ANSWER_BOX_OBJ,
-			CONE_OBJECT, PYRAMID_OBJECT, GROUPING, PROBLEM_OBJ,
+			CONE_OBJECT, PYRAMID_OBJECT, GROUPING, VAR_INSERTION_PROBLEM,
 			GENERATED_PROBLEM };
 
 	public static final String[] imgFilenames = { "rectangle.png", "oval.png",
@@ -55,13 +55,13 @@ public abstract class MathObject {
 			"numberLine.png", "graph.png", "text.png", "expression.png",
 			"answerBox.png", "cone.png", "pyramid.png", null, null, null };
 
-	public static MathObject[] objects = { new RectangleObject(),
+	public static final MathObject[] objects = { new RectangleObject(),
 			new OvalObject(), new TriangleObject(), new RegularPolygonObject(),
 			new TrapezoidObject(), new ParallelogramObject(),
 			new ArrowObject(), new CubeObject(), new CylinderObject(),
 			new NumberLineObject(), new GraphObject(), new TextObject(),
 			new ExpressionObject(), new AnswerBoxObject(), null, null,
-			new Grouping(), new ProblemObject(), new GeneratedProblem() };
+			new Grouping(), new VariableValueInsertionProblem(), new GeneratedProblem() };
 
 	public static final String MAKE_SQUARE = "Make Height and Width equal",
 			MAKE_INTO_PROBLEM = "Make into Problem",
@@ -84,9 +84,9 @@ public abstract class MathObject {
 	private boolean justDeleted = false;
 
 	public MathObject() {
-		attributes = new Vector<MathObjectAttribute>();
+		attributes = new Vector<MathObjectAttribute<?>>();
 		actions = new Vector<String>();
-		lists = new Vector<ListAttribute>();
+		lists = new Vector<ListAttribute<?>>();
 		studentActions = new Vector<String>();
 
 		setHorizontallyResizable(true);
@@ -99,47 +99,19 @@ public abstract class MathObject {
 		getAttributeWithName(Y_POS).setValue(1);
 		getAttributeWithName(WIDTH).setValue(1);
 		getAttributeWithName(HEIGHT).setValue(1);
-		studentSelectable = false;
 	}
 
 	public MathObject(MathObjectContainer c) {
+		this();
 		setParentContainer(c);
-		attributes = new Vector<MathObjectAttribute>();
-		actions = new Vector<String>();
-		lists = new Vector<ListAttribute>();
-		studentActions = new Vector<String>();
-
-		setHorizontallyResizable(true);
-		setVerticallyResizable(true);
-
-		addAction(MAKE_SQUARE);
-		addGenericDefaultAttributes();
-		addDefaultAttributes();
-		getAttributeWithName(X_POS).setValue(1);
-		getAttributeWithName(Y_POS).setValue(1);
-		getAttributeWithName(WIDTH).setValue(1);
-		getAttributeWithName(HEIGHT).setValue(1);
-		studentSelectable = false;
 	}
 
 	public MathObject(MathObjectContainer c, int x, int y, int w, int h) {
-		setParentContainer(c);
-		attributes = new Vector<MathObjectAttribute>();
-		actions = new Vector<String>();
-		lists = new Vector<ListAttribute>();
-		studentActions = new Vector<String>();
-
-		setHorizontallyResizable(true);
-		setVerticallyResizable(true);
-
-		addAction(MAKE_SQUARE);
-		addGenericDefaultAttributes();
-		addDefaultAttributes();
+		this(c);
 		getAttributeWithName(X_POS).setValue(x);
 		getAttributeWithName(Y_POS).setValue(y);
 		getAttributeWithName(WIDTH).setValue(w);
 		getAttributeWithName(HEIGHT).setValue(h);
-		studentSelectable = false;
 	}
 
 	public void addGenericDefaultAttributes() {
@@ -149,7 +121,17 @@ public abstract class MathObject {
 		addAttribute(new IntegerAttribute(HEIGHT, 1, 790, false, false));
 	}
 
-	protected abstract void addDefaultAttributes();
+	/**
+	 * Method to add attributes in subclasses of {@code MathObject}. Is
+	 * automatically called by MathObject constructor. Only works for classes
+	 * directly inheriting from {@code MathObject} as additional attributes
+	 * added in the classes between {@code MathObject} and the class at the
+	 * bottom of the inheritance tree will not be added, as their versions of
+	 * this method will be overridden by the ones below them in the inheritance
+	 * tree.
+	 */
+	protected void addDefaultAttributes() {
+	}
 
 	public abstract String getType();
 
@@ -232,11 +214,11 @@ public abstract class MathObject {
 	public abstract MathObject clone();
 
 	public void removeAllAttributes() {
-		attributes = new Vector<MathObjectAttribute>();
+		attributes = new Vector<MathObjectAttribute<?>>();
 	}
 
 	public void removeAllLists() {
-		lists = new Vector<ListAttribute>();
+		lists = new Vector<ListAttribute<?>>();
 	}
 
 	public boolean removeAction(String s) {
@@ -271,8 +253,11 @@ public abstract class MathObject {
 			if (pageRect.contains(objRect)) {
 				return true;
 			}
+			return false;
 		}
-		return false;
+		else{
+			return false;
+		}
 	}
 
 	public void performAction(String s) {
@@ -335,20 +320,20 @@ public abstract class MathObject {
 		return ((IntegerAttribute) getAttributeWithName(Y_POS)).getValue();
 	}
 
-	public void setAttributes(Vector<MathObjectAttribute> attributes) {
+	public void setAttributes(Vector<MathObjectAttribute<?>> attributes) {
 		this.attributes = attributes;
 	}
 
-	public Vector<MathObjectAttribute> getAttributes() {
+	public Vector<MathObjectAttribute<?>> getAttributes() {
 		return attributes;
 	}
 
-	public Vector<ListAttribute> getLists() {
+	public Vector<ListAttribute<?>> getLists() {
 		return lists;
 	}
 
-	public ListAttribute getListWithName(String n) {
-		for (ListAttribute list : lists) {
+	public ListAttribute<?> getListWithName(String n) {
+		for (ListAttribute<?> list : lists) {
 			if (list.getName().equals(n)) {
 				return list;
 			}
@@ -392,8 +377,10 @@ public abstract class MathObject {
 		setAttributeValue(s, getAttributeWithName(s).readValueFromString(val));
 	}
 
-	public void setAttributeValue(String n, Object o) throws AttributeException {
+	public boolean setAttributeValue(String n, Object o)
+			throws AttributeException {
 		getAttributeWithName(n).setValue(o);
+		return true;
 	}
 
 	public boolean addAttribute(MathObjectAttribute a) {
@@ -454,7 +441,7 @@ public abstract class MathObject {
 		justDeleted = b;
 	}
 
-	public boolean ActionWasCancelled() {
+	public boolean actionWasCancelled() {
 		return actionCancelled;
 	}
 

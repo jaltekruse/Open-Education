@@ -21,7 +21,7 @@ public class NodeParser {
 	private boolean identifiersAsVariables = false;
 	
 	private List<String> functions =
-			Arrays.asList("log", "sin", "cos", "tan",
+			Arrays.asList("abs", "log", "sin", "cos", "tan",
 					"sqrt", "cbrt", "root", "ln", "randomInt", "random");
 	
 	private List<String> nonFunctionalIdentifiers = 
@@ -287,6 +287,8 @@ public class NodeParser {
 					else if (symbol.equalsIgnoreCase("randomInt")){
 						o = new Operator.RandomIntGenerator();
 					}
+					else if (symbol.equalsIgnoreCase("abs"))
+						o = new Operator.AbsoluteValue();
 					else if (symbol.equalsIgnoreCase("ln"))
 						o = new Operator.NaturalLog();
 					else if (symbol.equals("sin"))
@@ -301,6 +303,9 @@ public class NodeParser {
 						o = new Operator.CubeRoot();
 					else if (symbol.equals("root"))
 						o = new Operator.Root();
+					if ( children.size() == 1){
+						children.get(0).setDisplayParentheses(true);
+					}
 					return new Expression(o, children);
 				}
 			}

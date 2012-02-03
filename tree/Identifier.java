@@ -8,16 +8,16 @@
 
 package tree;
 
-public class Var extends Expression implements ValueWithName {
+public class Identifier extends Expression{
 
 	private String name;
 	private Number value;
 	private boolean isMaster;
 	
-	public Var(){
+	public Identifier(){
 	}
 	
-	public Var(String s, Number n) {
+	public Identifier(String s, Number n) {
 		name = s;
 		value = n;
 	}
@@ -75,8 +75,8 @@ public class Var extends Expression implements ValueWithName {
 	@Override
 	public Expression assign(Expression e) throws EvalException {
 	// TODO Auto-generated method stub
-		if (e instanceof Var){
-			return setValue(((Var) e).getValue());
+		if (e instanceof Identifier){
+			return setValue(((Identifier) e).getValue());
 		}
 		else
 		{

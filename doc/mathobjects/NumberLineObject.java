@@ -8,7 +8,6 @@
 
 package doc.mathobjects;
 
-import doc.Page;
 import doc.attributes.DoubleAttribute;
 import doc.attributes.IntegerAttribute;
 import doc.attributes.ListAttribute;

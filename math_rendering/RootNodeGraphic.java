@@ -14,11 +14,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.Vector;
 
+import tree.Expression;
 import expression.Node;
 import expression.NodeException;
 import expression.Number;
-
-import tree.Expression;
 
 public class RootNodeGraphic{
 
@@ -49,8 +48,8 @@ public class RootNodeGraphic{
 		smallFont = new Font("SansSerif", 0, (int) (defaultBigFontSize * (4.0/5)) );
 	}
 	
-	public float getSizeAdjustment(){
-		return (bigFontSize + 0.0f )/ defaultBigFontSize;
+	public float getFontSizeAdjustment(){
+		return ((float)bigFontSize)/ defaultBigFontSize;
 	}
 	
 	public void draw() throws NodeException{

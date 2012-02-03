@@ -1,18 +1,21 @@
-<OpenNotebookDoc version="0.1" filename="Problem Generation Tutorial" author="" date="1/24/2012">
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenNotebookDoc version="0.1" filename="Problem Generation Tutorial" author="" date="2/2/2012">
 <generators>
-<Problem>
+<VarInsertionProblem>
 <int name="xPos" value="69"/>
 <int name="yPos" value="593"/>
 <int name="width" value="232"/>
 <int name="height" value="126"/>
 <string name="group name" value=""/>
+<string name="directions" value=""/>
 <string name="author" value=""/>
 <date name="date" value="1/18/2012"/>
-<uuid name="groupUUID" value="089ba320-dad0-4897-ad37-854be60a820f"/>
-<string name="scripts" value="a=randomInt(3,10); b=randomInt(2,10);"/>
 <uuid name="uuid" value="9e74a597-c005-3cf6-0c2b-6f92c8fc4798"/>
 <list name="tags" type="string" childName="">
 <entry v=""/>
+</list><list name="scripts" type="string" childName="">
+<entry v="a=randomInt(3,10)"/>
+<entry v=" b=randomInt(2,10)"/>
 </list><Text>
 <int name="xPos" value="202"/>
 <int name="yPos" value="697"/>
@@ -51,45 +54,49 @@
 <int name="font size" value="12"/>
 <boolean name="show border" value="false"/>
 </Text>
-</Problem>
-<Problem>
+</VarInsertionProblem>
+<VarInsertionProblem>
 <int name="xPos" value="61"/>
 <int name="yPos" value="677"/>
 <int name="width" value="37"/>
 <int name="height" value="20"/>
 <string name="group name" value=""/>
+<string name="directions" value=""/>
 <string name="author" value=""/>
 <date name="date" value="1/18/2012"/>
-<uuid name="groupUUID" value="089ba320-dad0-4897-ad37-854be60a820f"/>
-<string name="scripts" value="x=5"/>
 <uuid name="uuid" value="b61008b4-14f9-6392-f156-d26e17044f8d"/>
 <list name="tags" type="string" childName="">
 <entry v=""/>
+</list><list name="scripts" type="string" childName="">
+<entry v="x=5"/>
 </list><Expression>
 <int name="xPos" value="61"/>
 <int name="yPos" value="677"/>
 <int name="width" value="37"/>
 <int name="height" value="20"/>
 <string name="expression" value="3xX"/>
-<string name="steps" value=""/>
 <int name="font size" value="12"/>
 <color name="fill color" value="null"/>
 <list name="steps" type="string" childName="val">
 </list></Expression>
-</Problem>
-<Problem>
+</VarInsertionProblem>
+<VarInsertionProblem>
 <int name="xPos" value="362"/>
 <int name="yPos" value="463"/>
 <int name="width" value="192"/>
 <int name="height" value="227"/>
 <string name="group name" value=""/>
+<string name="directions" value=""/>
 <string name="author" value=""/>
 <date name="date" value="11/3/2011"/>
-<uuid name="groupUUID" value="089ba320-dad0-4897-ad37-854be60a820f"/>
-<string name="scripts" value="l = randomInt(15,35); w=randomInt(8,18); d=randomInt(3,11); z=l*w*d;"/>
 <uuid name="uuid" value="ad26ae86-fdc1-1c69-5690-128b88714b0f"/>
 <list name="tags" type="string" childName="">
 <entry v=""/>
+</list><list name="scripts" type="string" childName="">
+<entry v="l = randomInt(15,35)"/>
+<entry v=" w=randomInt(8,18)"/>
+<entry v=" d=randomInt(3,11)"/>
+<entry v=" z=l*w*d"/>
 </list><Cube>
 <int name="xPos" value="363"/>
 <int name="yPos" value="572"/>
@@ -153,20 +160,22 @@
 <int name="font size" value="12"/>
 <boolean name="show border" value="false"/>
 </Text>
-</Problem>
-<Problem>
+</VarInsertionProblem>
+<VarInsertionProblem>
 <int name="xPos" value="69"/>
 <int name="yPos" value="593"/>
 <int name="width" value="232"/>
 <int name="height" value="126"/>
 <string name="group name" value=""/>
+<string name="directions" value=""/>
 <string name="author" value=""/>
 <date name="date" value="1/23/2012"/>
-<uuid name="groupUUID" value="99612f3e-9983-5535-db02-622fc86b48e1"/>
-<string name="scripts" value="a=randomInt(3,10); b=randomInt(2,10);"/>
 <uuid name="uuid" value="a9805977-d7d4-b576-4479-e6bd1dbb4f1c"/>
 <list name="tags" type="string" childName="">
 <entry v=""/>
+</list><list name="scripts" type="string" childName="">
+<entry v="a=randomInt(3,10)"/>
+<entry v=" b=randomInt(2,10)"/>
 </list><Text>
 <int name="xPos" value="202"/>
 <int name="yPos" value="697"/>
@@ -205,7 +214,7 @@
 <int name="font size" value="12"/>
 <boolean name="show border" value="false"/>
 </Text>
-</Problem>
+</VarInsertionProblem>
 </generators>
 <Page>
 <Text>
@@ -249,7 +258,7 @@
 <int name="yPos" value="421"/>
 <int name="width" value="530"/>
 <int name="height" value="143"/>
-<string name="text" value="You will see a box entitled scripts appear in the properties frame. This is where you will define how variables are generated. Formulas must take the form of &quot;a=mathematical expression&quot; where the variable name is on the left side. You can use any of the standard operators (+,-,/,*,^) in addition to trig functions, log, ln, and sqrt. To introduce random values into your problems you can use the function randomInt(a,b) where a and b are two numbers you provide as upper and lower bounds for random integer generation. The example from the top of the document has been turned into a problem below and scripts for generating &quot;a&quot; and &quot;b&quot; have been added. You can see in the example that there must be a semi-colon at the end of each expression."/>
+<string name="text" value="You will see a box entitled scripts appear in the properties frame. This is where you will define how variables are generated. Formulas must take the form of &quot;a=mathematical expression&quot; where the variable name is on the left side. You can use any of the standard operators (+,-,/,*,^) in addition to trig functions, log, ln, and sqrt. To introduce random values into your problems you can use the function randomInt(a,b) where a and b are two numbers you provide as upper and lower bounds for random integer generation. The example from the top of the document has been turned into a problem below and scripts for generating &quot;a&quot; and &quot;b&quot; have been added. To add a new script just click the &quot;Add new&quot; button at the bottom of the properties frame."/>
 <int name="font size" value="12"/>
 <boolean name="show border" value="false"/>
 </Text>
@@ -257,7 +266,7 @@
 <int name="xPos" value="41"/>
 <int name="yPos" value="278"/>
 <int name="width" value="526"/>
-<int name="height" value="121"/>
+<int name="height" value="99"/>
 <string name="text" value="To create a problem, you must have at least one graph, one equation, or a group containing two or more objects. To make a group, click and drag your mouse; when the rectangle trailing your mouse contacts an object it will be added to the group and highlighted with a blue rectangle. Try selecting the objects in the above problem. In the pop-up frame for a grouping you will see several buttons to change the alignment of the objects in the group. For now we are most interested in the button that says &quot;Make into problem.&quot; Click it to change your group into a problem."/>
 <int name="font size" value="12"/>
 <boolean name="show border" value="false"/>
@@ -271,19 +280,21 @@
 <int name="font size" value="12"/>
 <boolean name="show border" value="false"/>
 </Text>
-<Problem>
+<VarInsertionProblem>
 <int name="xPos" value="69"/>
 <int name="yPos" value="593"/>
 <int name="width" value="232"/>
 <int name="height" value="126"/>
 <string name="group name" value=""/>
+<string name="directions" value=""/>
 <string name="author" value=""/>
 <date name="date" value="1/23/2012"/>
-<uuid name="groupUUID" value="99612f3e-9983-5535-db02-622fc86b48e1"/>
-<string name="scripts" value="a=randomInt(3,10); b=randomInt(2,10);"/>
 <uuid name="uuid" value="a9805977-d7d4-b576-4479-e6bd1dbb4f1c"/>
 <list name="tags" type="string" childName="">
 <entry v=""/>
+</list><list name="scripts" type="string" childName="">
+<entry v="a=randomInt(3,10)"/>
+<entry v=" b=randomInt(2,10)"/>
 </list><Text>
 <int name="xPos" value="202"/>
 <int name="yPos" value="697"/>
@@ -322,7 +333,7 @@
 <int name="font size" value="12"/>
 <boolean name="show border" value="false"/>
 </Text>
-</Problem>
+</VarInsertionProblem>
 <Text>
 <int name="xPos" value="449"/>
 <int name="yPos" value="247"/>
@@ -363,19 +374,23 @@
 </Text>
 </Page>
 <Page>
-<Problem>
+<VarInsertionProblem>
 <int name="xPos" value="362"/>
 <int name="yPos" value="463"/>
 <int name="width" value="192"/>
 <int name="height" value="227"/>
 <string name="group name" value=""/>
+<string name="directions" value=""/>
 <string name="author" value=""/>
 <date name="date" value="11/3/2011"/>
-<uuid name="groupUUID" value="089ba320-dad0-4897-ad37-854be60a820f"/>
-<string name="scripts" value="l=randomInt(15,35); w=randomInt(8,18); d=randomInt(3,11); z=l*w*d;"/>
 <uuid name="uuid" value="ad26ae86-fdc1-1c69-5690-128b88714b0f"/>
 <list name="tags" type="string" childName="">
 <entry v=""/>
+</list><list name="scripts" type="string" childName="">
+<entry v="l=randomInt(15,35)"/>
+<entry v=" w=randomInt(8,18)"/>
+<entry v=" d=randomInt(3,11)"/>
+<entry v=" z=l*w*d"/>
 </list><Cube>
 <int name="xPos" value="363"/>
 <int name="yPos" value="572"/>
@@ -439,13 +454,13 @@
 <int name="font size" value="12"/>
 <boolean name="show border" value="false"/>
 </Text>
-</Problem>
+</VarInsertionProblem>
 <Text>
 <int name="xPos" value="45"/>
 <int name="yPos" value="449"/>
 <int name="width" value="263"/>
 <int name="height" value="200"/>
-<string name="text" value="To the right is an example of using random numbers, as well as a mathematical expression, to generate a problem. Click on the problem to view its scripts. You can see that three random numbers are generated and then they are multiplied together to calculate the volume of the pool. The problem generation function will insert values into text boxes where it finds the letters surrounded by non-alphabetic characters. Just be careful using a variable named &quot;a&quot; if you use the word &quot;a&quot; in your text, as both will be replaced. "/>
+<string name="text" value="To the right is an example of using random numbers as well as a mathematical expression to generate a problem. Click on the problem to view its scripts. You can see that three random numbers are generated and then they are multiplied together to calculate the volume of the pool. The problem generation function will insert values into text boxes where it finds the letters surrounded by non-alphabetic characters. Just be careful using a variable named &quot;a&quot; if you use the word &quot;a&quot; in your text, as both will be replaced. "/>
 <int name="font size" value="12"/>
 <boolean name="show border" value="false"/>
 </Text>

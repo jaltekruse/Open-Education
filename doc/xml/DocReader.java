@@ -8,13 +8,9 @@
 
 package doc.xml;
 
-import java.util.Vector;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Vector;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -23,42 +19,29 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import doc.DatabaseOfGroupedObjects;
 import doc.Document;
 import doc.Page;
+import doc.ProblemDatabase;
 import doc.attributes.AttributeException;
-import doc.attributes.BooleanAttribute;
-import doc.attributes.ColorAttribute;
-import doc.attributes.DateAttribute;
-import doc.attributes.DoubleAttribute;
-import doc.attributes.EmailAttribute;
-import doc.attributes.GridPointAttribute;
-import doc.attributes.IntegerAttribute;
 import doc.attributes.ListAttribute;
 import doc.attributes.MathObjectAttribute;
-import doc.attributes.StringAttribute;
-import doc.attributes.UUIDAttribute;
 import doc.mathobjects.AnswerBoxObject;
-import doc.mathobjects.ArrowObject;
 import doc.mathobjects.CubeObject;
-import doc.mathobjects.CylinderObject;
 import doc.mathobjects.ExpressionObject;
-import doc.mathobjects.GeneratedProblem;
 import doc.mathobjects.GraphObject;
 import doc.mathobjects.Grouping;
 import doc.mathobjects.MathObject;
-import doc.mathobjects.MathObjectContainer;
 import doc.mathobjects.NumberLineObject;
 import doc.mathobjects.OvalObject;
 import doc.mathobjects.ParallelogramObject;
 import doc.mathobjects.PolygonObject;
 import doc.mathobjects.ProblemGenerator;
-import doc.mathobjects.ProblemObject;
 import doc.mathobjects.RectangleObject;
 import doc.mathobjects.RegularPolygonObject;
 import doc.mathobjects.TextObject;
 import doc.mathobjects.TrapezoidObject;
 import doc.mathobjects.TriangleObject;
+import doc.mathobjects.VariableValueInsertionProblem;
 
 
 public class DocReader extends DefaultHandler {
@@ -77,7 +60,13 @@ public class DocReader extends DefaultHandler {
 	// thinking of making it a vector of vectors
 	private Vector<Vector<MathObject>> objectsInGroup;
 
-	private DatabaseOfGroupedObjects database;
+	// to import data stored that was as a string, that should have been stored
+	// as a list all along, there are a few hacks where the string attribute
+	// should be added to the object
+	// this list holds the list names, so they are not reset when the list is found later
+	private Vector<String> overridenLists;
+
+	private ProblemDatabase database;
 	private MathObject mObj;
 	private ListAttribute list;
 	boolean hadAttributeError, foundBadTag, readingGenerators, readingList, readingProblemDatabase;
@@ -99,7 +88,7 @@ public class DocReader extends DefaultHandler {
 		attributeValueInError = null;
 	}
 
-	public DatabaseOfGroupedObjects readDatabase(InputStreamReader file)
+	public ProblemDatabase readDatabase(InputStreamReader file)
 			throws SAXException, IOException{
 		readFile(file, "");
 		return database;
@@ -127,6 +116,7 @@ public class DocReader extends DefaultHandler {
 
 		containerStack = new Vector<Grouping>();
 		objectsInGroup = new Vector<Vector<MathObject>>();
+		overridenLists = new Vector<String>();
 
 		XMLReader reader = XMLReaderFactory.createXMLReader();
 		reader.setContentHandler(this);
@@ -177,8 +167,8 @@ public class DocReader extends DefaultHandler {
 			doc.setAuthor(atts.getValue(Document.AUTHOR));
 			return;
 		}
-		else if ( qName.equals(DatabaseOfGroupedObjects.NAME)){
-			database = new DatabaseOfGroupedObjects();
+		else if ( qName.equals(ProblemDatabase.NAME)){
+			database = new ProblemDatabase();
 			readingProblemDatabase = true;
 			return;
 		}
@@ -189,26 +179,30 @@ public class DocReader extends DefaultHandler {
 		else if (qName.equals(ListAttribute.LIST)){
 			if (mObj != null)
 			{// grab the list from the current object with the specified name
-				readingList = true;
-				list = mObj.getListWithName(atts.getValue(ListAttribute.NAME));
+				list = mObj.getListWithName(atts.getValue("name"));
+				if (list != null && ! overridenLists.contains(atts.getValue(ListAttribute.NAME)))
+				{// the object had a list with the given name
+					list.removeAll();
+					readingList = true;
+				}
 				if ( DEBUG ){
 					System.out.println("list added: " + list);
 				}
-				if ( list == null){
-					foundBadTag = true;
-					badTag = "Had problem finding list in object";
-					return;
-				}
-				list.removeAll();
 				return;
 			}
 		}
-		else if ( readingList && qName.equals(ListAttribute.ENTRY)){
+		else if ( qName.equals(ListAttribute.ENTRY)){
+			if ( ! readingList )
+			{// this is an entry for a list that is currently not in use
+				if ( DEBUG ){
+					System.out.println("  found entry tag, but not reading a list");
+				}
+				return;
+			}
 			try {
 				list.addValueWithString(atts.getValue(ListAttribute.VAL));
 				return;
 			} catch (AttributeException e) {
-				// TODO Auto-generated catch block
 				hadAttributeError = true;
 				attributeNameInError = atts.getValue("name");
 				attributeValueInError = atts.getValue("value");
@@ -239,7 +233,14 @@ public class DocReader extends DefaultHandler {
 					System.out.println("tag was not attribute " + qName);
 				}
 				mObj = MathObject.getNewInstance(qName);
+				if ( mObj == null){
+					mObj = readOldObjectName(qName);
+				}
 				if ( mObj != null){
+					if ( DEBUG ){
+						System.out.println();
+						System.out.println("added Object: " + mObj.getClass().getSimpleName());
+					}
 					if (page != null){
 						mObj.setParentContainer(page);
 					}
@@ -251,7 +252,7 @@ public class DocReader extends DefaultHandler {
 				}
 
 				if ( containerStack.size() > 0)
-				{// if a tag was found in a group, there is an object in a group
+				{// if an object tag was found in a group, there is an object in a group
 					if (mObj != null){
 						objectsInGroup.get(objectsInGroup.size() - 1 ).add(mObj);
 						if (mObj instanceof Grouping){
@@ -265,14 +266,13 @@ public class DocReader extends DefaultHandler {
 						try {
 							doc.addGenerator( (ProblemGenerator) mObj );
 						} catch (Exception e) {
-							// TODO Auto-generated catch block
 							if (DEBUG){
 								System.out.println("Generator UUID already in use");
 							}
 						}
 					}
 					else if ( readingProblemDatabase ){
-						database.addGrouping((Grouping) mObj);
+						database.addProblem((VariableValueInsertionProblem) mObj);
 					}
 					else{
 						page.addObject(mObj);
@@ -296,8 +296,12 @@ public class DocReader extends DefaultHandler {
 					"To see if it is an attribute");
 		}
 
-		if (MathObjectAttribute.isAttributeType(qName))
+		if (MathObjectAttribute.isAttributeType(qName) ||
+				MathObjectAttribute.isAttributeType(subInOldAttributeTag(qName)))
 		{
+			if (DEBUG){
+				System.out.println("found att name " + qName);
+			}
 			// if code is needed when an MathObjectAttribte tag is found
 		}
 		else{
@@ -318,9 +322,36 @@ public class DocReader extends DefaultHandler {
 					mObj.getListWithName(GraphObject.EXPRESSIONS).removeAll();
 					mObj.getListWithName(GraphObject.EXPRESSIONS)
 					.addValueWithString(atts.getValue("value"));
+					overridenLists.add(GraphObject.EXPRESSIONS);
 					return true;
 				}
-				String attName = subInOldName(atts.getValue(MathObjectAttribute.NAME));
+				if ( mObj instanceof ExpressionObject && atts.getValue(
+						"name").equalsIgnoreCase(ExpressionObject.STEPS))
+				{// temporary fix to import documents with old expressions
+					mObj.getListWithName(ExpressionObject.STEPS).removeAll();
+					if ( ! atts.getValue("value").equals("")){
+						String[] steps = atts.getValue("value").split(";");
+						overridenLists.add(ExpressionObject.STEPS);
+						for (String s : steps){
+							mObj.getListWithName(ExpressionObject.STEPS).addValueWithString(s);
+						}
+					}
+					return true;
+				}
+				if ( mObj instanceof VariableValueInsertionProblem && atts.getValue(
+						"name").equalsIgnoreCase(VariableValueInsertionProblem.SCRIPTS))
+				{// temporary fix to import documents with old problems
+					mObj.getListWithName(VariableValueInsertionProblem.SCRIPTS).removeAll();
+					if ( ! atts.getValue("value").equals("")){
+						String[] scripts = atts.getValue("value").split(";");
+						overridenLists.add(VariableValueInsertionProblem.SCRIPTS);
+						for (String s : scripts){
+							mObj.getListWithName(VariableValueInsertionProblem.SCRIPTS).addValueWithString(s);
+						}
+					}
+					return true;
+				}
+				String attName = subInOldAttributeName(atts.getValue(MathObjectAttribute.NAME));
 				if ( mObj.getAttributeWithName(attName) == null){
 					// this attribute is no longer used in this object, ignore it
 					// this is an attribute, so still return true, otherwise the parent
@@ -332,7 +363,6 @@ public class DocReader extends DefaultHandler {
 						atts.getValue(MathObjectAttribute.VALUE));
 				return true;
 			} catch (AttributeException e) {
-				// TODO Auto-generated catch block
 				if (DEBUG){
 					System.out.println(e.getMessage());
 				}
@@ -359,7 +389,36 @@ public class DocReader extends DefaultHandler {
 		}
 	}
 
-	public String subInOldName(String s){
+	@Override
+	public void endElement(String uri, String localName, String qName){
+		if (MathObject.isMathObjectType(qName)){
+			mObj = null;
+			overridenLists = new Vector<String>();
+		}
+		if (qName.equals(MathObject.GROUPING) ||
+				qName.equals(MathObject.VAR_INSERTION_PROBLEM) ||
+				qName.equals("Problem") ||
+				qName.equals(MathObject.GENERATED_PROBLEM)){
+			for ( MathObject mathObj : objectsInGroup.get(objectsInGroup.size() - 1)){
+				containerStack.get(containerStack.size() - 1).addObjectFromPage(mathObj);
+			}
+			objectsInGroup.remove(objectsInGroup.size() - 1);
+			containerStack.remove(containerStack.get(containerStack.size() - 1));
+		}
+		if (qName.equals("Page")){
+			page = null;
+		}
+		else if (qName.equals(ListAttribute.LIST)){
+			readingList = false;
+		}
+		else if (qName.equals(Document.OPEN_NOTEBOOK_DOC)){
+		}
+		else if (qName.equals(Document.GENERATORS)){
+			readingGenerators = false;
+		}
+	}
+
+	public String subInOldAttributeName(String s){
 		if ( s.equals("fontSize"))
 		{// this works for everything the had the old font size name
 			// and was replaced by the new one
@@ -384,36 +443,45 @@ public class DocReader extends DefaultHandler {
 		else if ( s.equals("thickness")){
 			return PolygonObject.LINE_THICKNESS;
 		}
+		else if (s.equals( "tags(seperate with commas")){
+			return VariableValueInsertionProblem.TAGS;
+		}
 		else{
 			return s;
 		}
-
 	}
 
-	@Override
-	public void endElement(String uri, String localName, String qName){
-		if (MathObject.isMathObjectType(qName)){
-			mObj = null;
+	public String subInOldAttributeTag(String s){
+		if ( s.equals("BooleanAttribute"))
+		{// this works for everything the had the old font size name
+			// and was replaced by the new one
+			// including graphs and number lines
+			return MathObjectAttribute.BOOLEAN_ATTRIBUTE;
 		}
-		if (qName.equals(MathObject.GROUPING) ||
-				qName.equals(MathObject.PROBLEM_OBJ) ||
-				qName.equals(MathObject.GENERATED_PROBLEM)){
-			for ( MathObject mathObj : objectsInGroup.get(objectsInGroup.size() - 1)){
-				containerStack.get(containerStack.size() - 1).addObjectFromPage(mathObj);
-			}
-			objectsInGroup.remove(objectsInGroup.size() - 1);
-			containerStack.remove(containerStack.get(containerStack.size() - 1));
+		else if ( s.equals("DoubleAttribute")){
+			return MathObjectAttribute.DOUBLE_ATTRIBUTE;
 		}
-		if (qName.equals("Page")){
-			page = null;
+		else if ( s.equals("GridPointAttribute")){
+			return MathObjectAttribute.GRID_POINT_ATTRIBUTE;
 		}
-		else if (qName.equals(ListAttribute.LIST)){
-			readingList = false;
+		else if ( s.equals("IntegerAttribute")){
+			return MathObjectAttribute.INTEGER_ATTRIBUTE;
 		}
-		else if (qName.equals(Document.OPEN_NOTEBOOK_DOC)){
+		else if ( s.equals("StringAttribute")){
+			return MathObjectAttribute.STRING_ATTRIBUTE;
 		}
-		else if (qName.equals(Document.GENERATORS)){
-			readingGenerators = false;
+		else{
+			return s;
 		}
+	}
+
+	public MathObject readOldObjectName(String qName){
+		MathObject mObj = null;
+		// DO NOT GET RID OF THIS!! IT WAS A RECENT CHANGE AND IS NEEDED TO IMPORT
+		// RECENTLY CREATED DOCUMENTS
+		if (qName.equals("Problem")){
+			mObj = new VariableValueInsertionProblem();
+		}
+		return mObj;
 	}
 }

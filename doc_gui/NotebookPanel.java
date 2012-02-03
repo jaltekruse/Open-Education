@@ -10,63 +10,52 @@ package doc_gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-
-import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.util.Random;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import doc.DatabaseOfGroupedObjects;
 import doc.Document;
 import doc.Page;
+import doc.ProblemDatabase;
 import doc.attributes.AttributeException;
-import doc.mathobjects.GraphObject;
+import doc.attributes.Date;
+import doc.mathobjects.GeneratedProblem;
 import doc.mathobjects.Grouping;
 import doc.mathobjects.MathObject;
-import doc.mathobjects.GeneratedProblem;
-import doc.mathobjects.OvalObject;
 import doc.mathobjects.ProblemGenerator;
-import doc.mathobjects.ProblemObject;
-import doc.mathobjects.RectangleObject;
 import doc.mathobjects.TextObject;
-import doc.mathobjects.TriangleObject;
-import doc.xml.DocReader;
+import expression.Node;
+import expression.NodeException;
 
 /**
  * Used to display the main panel of the interface. Major components include a
@@ -123,7 +112,6 @@ public class NotebookPanel extends SubPanel {
 		openDocs.add(new DocViewerPanel(doc, getTopLevelContainer(),
 				openNotebook.isInStudentMode(), openNotebook));
 		docTabs.add(openDocs.get(0), openDocs.get(0).getDoc().getName());
-
 	}
 
 	public NotebookPanel(OpenNotebook openbook) {
@@ -197,7 +185,7 @@ public class NotebookPanel extends SubPanel {
 						tempDoc.addBlankPage();
 						addDoc(tempDoc);
 					} else {// the last tab in the list was closed, set selected
-							// tab to new last tab
+						// tab to new last tab
 						docTabs.setSelectedIndex(docTabs.getTabCount() - 2);
 					}
 				}
@@ -257,19 +245,64 @@ public class NotebookPanel extends SubPanel {
 			getCurrentDocViewer().setFocusedObject(newObj);
 		} else {
 			JOptionPane
-					.showMessageDialog(
-							null,
-							"Please select a page, or an object on the desired page first.",
-							"Select Location for Paste",
-							JOptionPane.WARNING_MESSAGE);
+			.showMessageDialog(
+					null,
+					"Please select a page, or an object on the desired page first.",
+					"Select Location for Paste",
+					JOptionPane.WARNING_MESSAGE);
 			return;
 		}
 		getCurrentDocViewer().addUndoState();
 		getCurrentDocViewer().repaintDoc();
 	}
 
-	public void quit() {
-		OpenNotebook.quit();
+	public void quit(){
+		boolean hasUnsavedChanges = false;
+		Vector<Integer> unsavedIndeces = new Vector<Integer>();
+		int index = 0;
+		for ( DocViewerPanel dvp : this.openDocs){
+			if ( dvp.hasBeenModfiedSinceSave()){
+				hasUnsavedChanges = true;
+				// add this index to a list of unsaved ones
+				// add one to each to have the numbers start at
+				// 1 instead of 0
+				unsavedIndeces.add(index + 1);
+			}
+			index++;
+		}
+		if ( ! hasUnsavedChanges){
+			// this will close the entire application, since there are no
+			// unsaved changes
+			openNotebook.quit();
+			return;
+		}
+		 
+		String tabs = null;
+		String message;
+		if ( unsavedIndeces.size() == 1){
+			tabs = "Tab: ";
+			message = "You have unsaved changes in the tab listed below.\n";
+		}
+		else{
+			tabs = "Tabs: ";
+			message = "You have unsaved changes in the tabs listed below.\n";
+		}
+		for ( int i = 0; i < unsavedIndeces.size() - 1; i++){
+			tabs += unsavedIndeces.get(i) + ", ";
+		}
+		tabs += unsavedIndeces.get(unsavedIndeces.size() - 1);
+		Object[] options = {"Quit", "Cancel"};
+		int n = JOptionPane.showOptionDialog(openNotebook,
+				message + "Are you sure you want to quit?\n" + tabs,
+						"Important Data May Be Lost",
+						JOptionPane.YES_NO_CANCEL_OPTION,
+						JOptionPane.ERROR_MESSAGE,
+						null, options, options[1]);
+
+		if (n == 0){ 
+			openNotebook.quit();
+		}
+		else{} // user clicked cancel, don't do anything
 	}
 
 	public void delete() {
@@ -329,42 +362,49 @@ public class NotebookPanel extends SubPanel {
 			getCurrentDocViewer().repaintDoc();
 		}
 	}
-	
+
 	public void closeCurrentViewer(){
 		this.closeDocViewer(getCurrentDocViewer());
 	}
 
 	public void generateWorksheet() {
-		Vector<Page> docPages = getCurrentDocViewer().getDoc().getPages();
-		Vector<MathObject> pageObjects;
-		Page p;
-		MathObject mObj;
-		int oldSize;
-		boolean problemsGenerated = false;
+		
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				Vector<Page> docPages = getCurrentDocViewer().getDoc().getPages();
+				Vector<MathObject> pageObjects;
+				Page p;
+				MathObject mObj;
+				int oldSize;
+				boolean problemsGenerated = false;
 
-		for (int i = 0; i < docPages.size(); i++) {
-			pageObjects = docPages.get(i).getObjects();
-			oldSize = pageObjects.size();
-			for (int j = 0; j < oldSize; j++) {
-				mObj = pageObjects.get(j);
-				if (mObj instanceof GeneratedProblem) {
-					((GeneratedProblem) mObj).generateNewProblem();
-					problemsGenerated = true;
-					j--;
-					oldSize--;
+				for (int i = 0; i < docPages.size(); i++) {
+					pageObjects = docPages.get(i).getObjects();
+					oldSize = pageObjects.size();
+					for (int j = 0; j < oldSize; j++) {
+						mObj = pageObjects.get(j);
+						if (mObj instanceof GeneratedProblem) {
+							((GeneratedProblem) mObj).generateNewProblem();
+							problemsGenerated = true;
+							j--;
+							oldSize--;
+						}
+					}
 				}
-			}
-		}
-		getCurrentDocViewer().addUndoState();
-		getCurrentDocViewer().repaintDoc();
-		if (!problemsGenerated) {
-			JOptionPane
+				getCurrentDocViewer().addUndoState();
+				getCurrentDocViewer().repaintDoc();
+				if (!problemsGenerated) {
+					JOptionPane
 					.showMessageDialog(
 							null,
-							"No generated problems were found to replace. To see some\ngenerated problems try opening a sample document.",
+							"No generated problems were found to replace. To see some" +
+							"\ngenerated problems try opening a sample document.",
 							"No Problems Generated",
 							JOptionPane.WARNING_MESSAGE);
-		}
+				}
+			}
+		});
+
 	}
 
 	public void group() {
@@ -372,7 +412,7 @@ public class NotebookPanel extends SubPanel {
 			MathObject mObj = getCurrentDocViewer().getFocusedObject();
 			if (mObj == getCurrentDocViewer().getTempGroup()) {
 				getCurrentDocViewer().getTempGroup().getParentContainer()
-						.removeObject(mObj);
+				.removeObject(mObj);
 				MathObject newGroup = getCurrentDocViewer().getTempGroup()
 						.clone();
 				mObj.getParentContainer().addObject(newGroup);
@@ -391,24 +431,99 @@ public class NotebookPanel extends SubPanel {
 	public void viewProblemGenrator(ProblemGenerator probGen) {
 		Document newDoc = new Document("Problem Generator");
 		newDoc.addBlankPage();
-		TextObject textObj = new TextObject(newDoc.getPage(0), 5 + newDoc
-				.getPage(0).getyMargin(), 5 + newDoc.getPage(0).getxMargin(),
-				newDoc.getPage(0).getWidth() - 2
-						* newDoc.getPage(0).getxMargin(), 100, 12,
+		Page page = newDoc.getPage(0);
+		TextObject textObj = new TextObject(page, 5 + page.getyMargin(),
+				5 + newDoc.getPage(0).getxMargin(), page.getWidth() - 2
+				* page.getxMargin(), 150, 12,
 				VIEW_PROBLEM_FORUMLA_MESSAGE);
 		try {
 			textObj.setAttributeValue(TextObject.SHOW_BOX, false);
 		} catch (AttributeException e) {
-			// TODO Auto-generated catch block
 			// should not happen
 		}
 		newDoc.getPage(0).addObject(textObj);
 		MathObject newProb = ((MathObject) probGen).clone();
 		newProb.setParentContainer(newDoc.getPage(0));
-		newProb.setyPos(200);
-		newProb.setxPos(80 + newDoc.getPage(0).getxMargin());
+		newProb.setyPos( page.getxMargin() + 165);
+		newProb.setxPos( (newDoc.getPage(0).getWidth() - 2 * page.getxMargin()
+				- newProb.getWidth() ) / 2 + page.getxMargin());
 		newDoc.getPage(0).addObject(newProb);
 		this.addDoc(newDoc);
+	}
+	
+	public Node getExpressionFromUser(String message){
+		String lastEx = "";
+		Node newNode = null;
+		while( true ){
+			lastEx = (String)JOptionPane.showInputDialog(openNotebook, message,
+					null, JOptionPane.PLAIN_MESSAGE, null, null, lastEx);
+			if ( lastEx == null){
+				return null;
+			}
+			try{
+				newNode = Node.parseNode(lastEx);
+				return newNode;
+			} catch (NodeException e) {
+				JOptionPane.showMessageDialog(null, "Error with expression.",
+						"Warning", JOptionPane.WARNING_MESSAGE);
+			}
+
+		}
+	}
+	
+	public void addProbelmToDatabase(ProblemGenerator problem){
+		JTextField problemName = new JTextField();
+		JTextField author = new JTextField(openNotebook.getUserName());
+		JTextField date = new JTextField(new Date().toString());
+		JTextArea directions = new JTextArea(3,10);
+		directions.setWrapStyleWord(true);
+		directions.setLineWrap(true);
+		JTextArea tags = new JTextArea(3,10);
+		tags.setWrapStyleWord(true);
+		tags.setLineWrap(true);
+		final JComponent[] inputs = new JComponent[] {
+		                new JLabel("Problem Name"),
+		                problemName,
+		                new JLabel("Author"),
+		                author,
+		                new JLabel("Date (mm/dd/yyyy)"),
+		                date,
+		                new JLabel("Directions"),
+		                new JScrollPane(directions),
+		                new JLabel("Tags (Seperate with Commas)"),
+		                new JScrollPane( tags),
+		};
+		while (true){
+			JOptionPane.showMessageDialog(openNotebook, 
+					inputs, "Enter Problem Details", JOptionPane.PLAIN_MESSAGE);
+			
+			if ( problemName.getText().equals("")){
+				JOptionPane.showMessageDialog(null, "Name cannot be blank.",
+						"Warning", JOptionPane.WARNING_MESSAGE);
+				continue;
+			}
+			problem.setName(problemName.getText());
+			problem.setAuthor(author.getText());
+			try {
+				problem.setAttributeValueWithString(ProblemGenerator.DATE, date.getText());
+			} catch (AttributeException e) {
+				JOptionPane.showMessageDialog(null, "Improper date format.",
+						"Warning", JOptionPane.WARNING_MESSAGE);
+				continue;
+			}
+			problem.setDirections(directions.getText());
+			problem.getListWithName(ProblemGenerator.TAGS).removeAll();
+			for ( String s : tags.getText().split("[\\s,;]+")){
+				try {
+					problem.getListWithName(ProblemGenerator.TAGS).addValueWithString(s);
+				} catch (AttributeException e) {
+					// should not be a problem, as it is just storing strings in the list
+				}
+			}
+			break;
+		}
+		
+		openNotebook.getDatabase().addProblem(problem);
 	}
 
 	public void ungroup() {
@@ -442,6 +557,10 @@ public class NotebookPanel extends SubPanel {
 				refreshDocNameTabs();
 				f = new BufferedWriter(new FileWriter(file));
 				f.write(getCurrentDocViewer().getDoc().exportToXML());
+
+				// tell the current viewer that the document was just saved
+				// to avoid unneeded prompts to save when closing
+				getCurrentDocViewer().setCurrentStateAsLastSaved();
 				f.flush();
 				f.close();
 			}
@@ -473,7 +592,7 @@ public class NotebookPanel extends SubPanel {
 			JOptionPane.showMessageDialog(null,
 					"Error opening file, please send it to the lead developer at\n"
 							+ "dev@open-math.com to help with debugging",
-					"Error", JOptionPane.ERROR_MESSAGE);
+							"Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -483,15 +602,19 @@ public class NotebookPanel extends SubPanel {
 		sampleDialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 		sampleDialog.pack();
 	}
-	
+
 	public void createProbelmDialog() {
 		if (problemDialog != null){
 			problemDialog.dispose();
 		}
 		problemDialog = new JDialog(openNotebook);
-		problemDialog.add(new ProblemListPanel(this));
+		ProblemListPanel listPanel = new ProblemListPanel(this);
+		problemDialog.add(listPanel);
 		problemDialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 		problemDialog.pack();
+		problemDialog.setMinimumSize(new Dimension(300, 450));
+		listPanel.adjustProblemList();
+		problemDialog.validate();
 	}
 
 	public void setSampleDialogVisible(boolean b) {
@@ -501,20 +624,18 @@ public class NotebookPanel extends SubPanel {
 					300);
 		}
 	}
-	
+
 	public void setProblemDialogVisible(boolean b) {
+		problemDialog.setBounds( (int) this.getLocationOnScreen().getX(),
+				(int) this.getLocationOnScreen().getY(), 450,
+				600);
 		problemDialog.setVisible(b);
-		if (b) {
-			problemDialog.setBounds(this.getX() + 100, this.getY() + 100, 500,
-					600);
-			problemDialog.setMinimumSize(new Dimension(300, 450));
-		}
 	}
 
 	public void disposeOfSampledialog() {
 		sampleDialog.dispose();
 	}
-	
+
 	public void disposeOfProblemdialog() {
 		problemDialog.dispose();
 	}
@@ -533,7 +654,7 @@ public class NotebookPanel extends SubPanel {
 			JOptionPane.showMessageDialog(null,
 					"Error opening file, please send it to the lead developer at\n"
 							+ "dev@open-math.com to help with debugging",
-					"Error", JOptionPane.ERROR_MESSAGE);
+							"Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
@@ -575,16 +696,18 @@ public class NotebookPanel extends SubPanel {
 		PrinterJob job = PrinterJob.getPrinterJob();
 
 		Paper paper = new Paper();
-		paper.setImageableArea(Page.DEFAULT_MARGIN, Page.DEFAULT_MARGIN,
-				Page.DEFAULT_PAGE_WIDTH - 2 * Page.DEFAULT_MARGIN,
-				Page.DEFAULT_PAGE_HEIGHT - 2 * Page.DEFAULT_MARGIN);
-		paper.setSize(Page.DEFAULT_PAGE_WIDTH, Page.DEFAULT_PAGE_HEIGHT);
+		Document doc = getCurrentDocViewer().getDoc();
+		paper.setImageableArea(doc.getxMargin(), doc.getyMargin(),
+				doc.getWidth() - 2 * doc.getxMargin(),
+				doc.getHeight() - 2 * doc.getyMargin());
+		paper.setSize(doc.getWidth(), doc.getHeight());
 
 		PageFormat pf = job.defaultPage();
 
 		pf.setPaper(paper);
 
 		job.setPrintable(docPrinter, pf);
+		job.setJobName(getCurrentDocViewer().getDoc().getName());
 		boolean ok = job.printDialog();
 		if (ok) {
 			try {
@@ -624,8 +747,8 @@ public class NotebookPanel extends SubPanel {
 	public boolean isInStudentMode() {
 		return openNotebook.isInStudentMode();
 	}
-	
-	public DatabaseOfGroupedObjects getDatabase(){
+
+	public ProblemDatabase getDatabase(){
 		return openNotebook.getDatabase();
 	}
 
@@ -675,16 +798,18 @@ public class NotebookPanel extends SubPanel {
 			return;
 		}
 
-		// open popup to see ask if user wants to save recent changes
-		Object[] options = { "Close", "Cancel" };
-		int n = JOptionPane.showOptionDialog(this,
-				"If you have any unsaved changes they will be lost.\n"
-						+ "Would you like to continue closing this tab?",
-				"Close Tab", JOptionPane.YES_NO_CANCEL_OPTION,
-				JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+		if ( docPanel.hasBeenModfiedSinceSave() ){
+			// open popup to see ask if user wants to save recent changes
+			Object[] options = { "Close", "Cancel" };
+			int n = JOptionPane.showOptionDialog(this,
+					"Changes have been made to this document since you last saved.\n"
+							+ "Would you like to continue closing this tab?",
+							"Important Data May Be Lost", JOptionPane.YES_NO_CANCEL_OPTION,
+							JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 
-		if (n == 1) {// the user clicked cancel, do not close the tab
-			return;
+			if (n == 1) {// the user clicked cancel, do not close the tab
+				return;
+			}
 		}
 
 		openDocs.remove(docPanel);

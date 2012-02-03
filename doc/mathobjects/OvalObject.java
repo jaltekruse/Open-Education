@@ -10,7 +10,6 @@ package doc.mathobjects;
 
 import java.awt.Color;
 
-import doc.Page;
 import doc.attributes.ColorAttribute;
 import doc.attributes.IntegerAttribute;
 import doc.attributes.ListAttribute;

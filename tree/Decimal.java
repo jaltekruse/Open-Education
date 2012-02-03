@@ -57,9 +57,9 @@ public class Decimal extends Number
 		{
 			return new Decimal(value * Fraction.frac2Dec(((Fraction)e)).value);
 		}
-		else if (e instanceof Var)
+		else if (e instanceof Identifier)
 		{
-			return multiply(((Var)e).getValue());
+			return multiply(((Identifier)e).getValue());
 		}
 		else if (e instanceof Constant)
 		{
@@ -83,9 +83,9 @@ public class Decimal extends Number
 		{
 			return new Decimal(value + Fraction.frac2Dec(((Fraction)e)).value);
 		}
-		else if (e instanceof Var)
+		else if (e instanceof Identifier)
 		{
-			return add(((Var)e).getValue());
+			return add(((Identifier)e).getValue());
 		}
 		else if (e instanceof Constant)
 		{
@@ -109,9 +109,9 @@ public class Decimal extends Number
 		{
 			return new Decimal(value - Fraction.frac2Dec(((Fraction)e)).value);
 		}
-		else if (e instanceof Var)
+		else if (e instanceof Identifier)
 		{
-			return subtract(((Var)e).getValue());
+			return subtract(((Identifier)e).getValue());
 		}
 		else if (e instanceof Constant)
 		{
@@ -135,9 +135,9 @@ public class Decimal extends Number
 		{
 			return new Decimal(value / Fraction.frac2Dec(((Fraction)e)).value);
 		}
-		else if (e instanceof Var)
+		else if (e instanceof Identifier)
 		{
-			return divide(((Var)e).getValue());
+			return divide(((Identifier)e).getValue());
 		}
 		else if (e instanceof Constant)
 		{
@@ -161,9 +161,9 @@ public class Decimal extends Number
 		{
 			return new Decimal((Math.pow(value, Fraction.frac2Dec(((Fraction)e)).value)));
 		}
-		else if (e instanceof Var)
+		else if (e instanceof Identifier)
 		{
-			return divide(((Var)e).getValue());
+			return divide(((Identifier)e).getValue());
 		}
 		else if (e instanceof Constant)
 		{

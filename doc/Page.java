@@ -17,30 +17,6 @@ import doc.mathobjects.MathObjectContainer;
 
 public class Page implements MathObjectContainer{
 	
-	/**
-	 * The standard 8.5 inch page width. Given as an integer, 612, in the standard
-	 * user space 72 dpi.
-	 */
-	public static final int DEFAULT_PAGE_WIDTH = 612;
-	
-	/**
-	 * The standard 11 inch page height. Given as an integer, 792, in the standard
-	 * user space 72 dpi.
-	 */
-	public static final int DEFAULT_PAGE_HEIGHT = 792;
-	
-	/**
-	 * The standard half-inch page margin. Given as an integer, 36, in the standard
-	 * user space 72 dpi.
-	 */
-	public static final int DEFAULT_MARGIN = 36;
-
-	private int orientation;
-	public static final int PORTRAIT = 1;
-	public static final int LANDSCAPE = 2;
-	
-	private int xMargin, yMargin, pageWidth, pageHeight;
-	
 	private Vector<MathObject> objects;
 	
 	private Document parentDoc;
@@ -48,10 +24,6 @@ public class Page implements MathObjectContainer{
 	public Page(Document doc){
 		setObjects(new Vector<MathObject>());
 		setParentDoc(doc);
-		xMargin = DEFAULT_MARGIN;
-		yMargin = DEFAULT_MARGIN;
-		pageWidth = DEFAULT_PAGE_WIDTH;
-		pageHeight = DEFAULT_PAGE_HEIGHT;
 	}
 
 	public void setObjects(Vector<MathObject> objects) {
@@ -97,14 +69,15 @@ public class Page implements MathObjectContainer{
 	public Page clone(){
 		Page newPage = new Page(getParentDoc());
 		MathObject mObj;
+		MathObject clone;
 		for ( int i = 0; i < objects.size() ; i++){
 			mObj = objects.get(i);
-			newPage.addObject(mObj.clone());
+			clone = mObj.clone();
+			if ( mObj == getParentDoc().getLastFocused()){
+				getParentDoc().setLastFocused(clone);
+			}
+			newPage.addObject(clone);
 		}
-		newPage.xMargin = xMargin;
-		newPage.yMargin = yMargin;
-		newPage.pageHeight = pageHeight;
-		newPage.pageWidth = pageWidth;
 		return newPage;
 	}
 	
@@ -188,36 +161,18 @@ public class Page implements MathObjectContainer{
 		return output;
 	}
 
-	public void setWidth(int pageWidth) {
-		this.pageWidth = pageWidth;
-	}
-
 	public int getWidth() {
-		return pageWidth;
-	}
-
-	public void setHeight(int pageHeight) {
-		this.pageHeight = pageHeight;
+		return getParentDoc().getWidth();
 	}
 
 	public int getHeight() {
-		return pageHeight;
+		return getParentDoc().getHeight();
 	}
-
-	public void setxMargin(int xMargin) {
-		this.xMargin = xMargin;
-	}
-
 	public int getxMargin() {
-		return xMargin;
+		return getParentDoc().getxMargin();
 	}
-
-	public void setyMargin(int yMargin) {
-		this.yMargin = yMargin;
-	}
-
 	public int getyMargin() {
-		return yMargin;
+		return getParentDoc().getyMargin();
 	}
 
 	public void setParentDoc(Document parentDoc) {

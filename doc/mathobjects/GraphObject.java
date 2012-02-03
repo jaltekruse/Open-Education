@@ -10,7 +10,6 @@ package doc.mathobjects;
 
 import java.util.Vector;
 
-import doc.Page;
 import doc.attributes.AttributeException;
 import doc.attributes.BooleanAttribute;
 import doc.attributes.DoubleAttribute;
@@ -95,7 +94,7 @@ public class GraphObject extends MathObject {
 	@Override
 	public void performSpecialObjectAction(String s){
 		if (s.equals(MAKE_INTO_PROBLEM)){
-			ProblemObject newProblem = new ProblemObject(getParentContainer(), getxPos(),
+			VariableValueInsertionProblem newProblem = new VariableValueInsertionProblem(getParentContainer(), getxPos(),
 					getyPos(), getWidth(), getHeight() );
 			this.getParentContainer().getParentDoc().getDocViewerPanel().setFocusedObject(newProblem);
 			newProblem.addObjectFromPage(this);
@@ -209,7 +208,7 @@ public class GraphObject extends MathObject {
 	}
 	
 	@Override
-	public void setAttributeValue(String n, Object o) throws AttributeException{
+	public boolean setAttributeValue(String n, Object o) throws AttributeException{
 		if (n.equals("xMin")){
 			if (o instanceof Double){
 				if (((Double)o) < 
@@ -222,6 +221,7 @@ public class GraphObject extends MathObject {
 			}
 		}
 		getAttributeWithName(n).setValue(o);
+		return true;
 	}
 
 	@Override

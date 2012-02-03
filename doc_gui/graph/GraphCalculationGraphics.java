@@ -17,8 +17,8 @@ import java.util.Vector;
 
 import tree.Decimal;
 import tree.EvalException;
-import tree.Number;
 import tree.Expression;
+import tree.Number;
 
 public class GraphCalculationGraphics extends GraphComponent {
 

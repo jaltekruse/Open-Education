@@ -9,15 +9,11 @@
 package doc.mathobjects;
 
 import java.awt.Color;
-import java.util.Vector;
 
 import doc.GridPoint;
-import doc.Page;
 import doc.attributes.BooleanAttribute;
 import doc.attributes.ColorAttribute;
-import doc.attributes.GridPointAttribute;
 import doc.attributes.IntegerAttribute;
-import doc.attributes.MathObjectAttribute;
 
 public abstract class PolygonObject extends MathObject {
 

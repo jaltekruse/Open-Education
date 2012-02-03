@@ -13,8 +13,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-
-import doc.Page;
 import doc.PointInDocument;
 import doc.mathobjects.MathObject;
 import doc_gui.DocMouseListener;
@@ -248,8 +246,8 @@ public abstract class MathObjectGUI<K extends MathObject>{
 			Point pageOrigin, float zoomLevel, int xBoxOffset, int yBoxOffset){
 		object.setxPos((int) ( (clickPos.getX() - pageOrigin.getX() - xBoxOffset * zoomLevel) / zoomLevel ));
 		object.setyPos((int) ( (clickPos.getY() - pageOrigin.getY() - yBoxOffset * zoomLevel) / zoomLevel ));
-		if (object.getxPos() + object.getWidth() > Page.DEFAULT_PAGE_WIDTH){
-			object.setxPos(Page.DEFAULT_PAGE_WIDTH - object.getWidth());
+		if (object.getxPos() + object.getWidth() > object.getParentPage().getWidth()){
+			object.setxPos(object.getParentPage().getWidth() - object.getWidth());
 		}
 		else if (object.getxPos() < 0){
 			object.setxPos( 0 );
@@ -257,8 +255,8 @@ public abstract class MathObjectGUI<K extends MathObject>{
 		if (object.getyPos() < 0){
 			object.setyPos( 0 );
 		}
-		else if (object.getyPos() + object.getHeight() > Page.DEFAULT_PAGE_HEIGHT){
-			object.setyPos(Page.DEFAULT_PAGE_HEIGHT - object.getHeight());
+		else if (object.getyPos() + object.getHeight() > object.getParentPage().getHeight()){
+			object.setyPos(object.getParentPage().getHeight() - object.getHeight());
 		}
 	}
 	

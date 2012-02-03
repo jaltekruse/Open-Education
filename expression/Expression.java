@@ -497,6 +497,39 @@ public class Expression extends Node {
 		return id;
 	}
 	
+	public Node multiplyByNode(Node n){
+		Vector<Node> newChildren = new Vector<Node>();
+		if ( n instanceof Expression && 
+				! (((Expression)n).getOperator() instanceof Operator.Multiplication)){
+			n.setDisplayParentheses(true);
+		}
+		for ( Node node : this.splitOnAddition()){
+			try {
+				newChildren.add( new Expression(new Operator.Multiplication(), n.cloneNode(), node.cloneNode()));
+			} catch (NodeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return Expression.staggerAddition(newChildren);
+	}
+	
+	public Node divideByNode(Node n){
+		Vector<Node> newChildren = new Vector<Node>();
+		if ( n instanceof Expression){
+			n.setDisplayParentheses(true);
+		}
+		for ( Node node : this.splitOnAddition()){
+			try {
+				newChildren.add( new Expression(new Operator.Division(), node.cloneNode(), n.cloneNode()));
+			} catch (NodeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return Expression.staggerAddition(newChildren);
+	}
+	
 	@Override
 	public Vector<Node> splitOnAddition() {
 		Vector<Node> terms = new Vector<Node>();

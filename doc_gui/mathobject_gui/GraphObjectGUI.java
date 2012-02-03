@@ -20,21 +20,15 @@ import doc_gui.graph.Graph;
 import doc_gui.graph.GraphedCartFunction;
 import expression.NodeException;
 
-import tree.EvalException;
-import tree.ExpressionParser;
-import tree.ParseException;
-
 public class GraphObjectGUI extends MathObjectGUI<GraphObject> {
 
 	private Graph graph;
-	private ExpressionParser parser;
 	
-	public static final Color[] graphColors = {Color.BLUE, Color.GREEN.darker(),
-		Color.RED.darker()};
+	public static final Color[] graphColors = {Color.BLUE.darker().darker(), Color.GREEN.darker().darker(),
+		Color.RED.darker().darker()};
 	
 	public GraphObjectGUI(){
 		graph = new Graph();
-		parser = new ExpressionParser();
 	}
 	
 	public void drawMathObject(GraphObject object, Graphics g,

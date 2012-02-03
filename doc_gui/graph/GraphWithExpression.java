@@ -11,11 +11,10 @@ package doc_gui.graph;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import expression.Node;
-import expression.NodeException;
-
 import tree.EvalException;
 import tree.ParseException;
+import expression.Node;
+import expression.NodeException;
 
 public class GraphWithExpression extends SingleGraph{
 

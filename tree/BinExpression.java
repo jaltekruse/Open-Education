@@ -146,7 +146,7 @@ public class BinExpression extends Expression {
 		
 		Expression leftVal = null;
 		if (leftChild != null){
-			if (op == Operator.ASSIGN && leftChild instanceof Var){
+			if (op == Operator.ASSIGN && leftChild instanceof Identifier){
 				leftVal = leftChild;
 			}
 			else{

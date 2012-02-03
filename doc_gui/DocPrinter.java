@@ -9,8 +9,10 @@
 package doc_gui;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
@@ -26,9 +28,15 @@ public class DocPrinter implements Printable{
     PrinterException {
     	
     	Page p;
-		p = doc.getPage(page + 1);
+		p = doc.getPage(page);
+		
+		if ( p == null){
+			return NO_SUCH_PAGE;
+		}
 
         PageGUI pageDrawer = new PageGUI();
+        Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
         pageDrawer.drawPage(g, p, new Point(0,0), new Rectangle( p.getWidth(), p.getHeight()), 1);
         

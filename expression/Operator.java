@@ -545,6 +545,23 @@ public abstract class Operator {
 		}
 	}
 	
+	public static class AbsoluteValue extends UnaryFunction {
+		@Override
+		public String getSymbol() {
+			return "abs";
+		}
+		
+		@Override
+		public Number evaluate(Number a) {
+			return a.abs();
+		}
+
+		@Override
+		public Operator clone() {
+			return new AbsoluteValue();
+		}
+	}
+	
 	public static void throwBadArguments() throws NodeException {
 		throw new NodeException("Incorrect number of arguments");
 	}

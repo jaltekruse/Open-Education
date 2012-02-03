@@ -2,7 +2,8 @@ package curriculum;
 
 import java.util.Vector;
 
-import doc.attributes.*;
+import doc.attributes.MathObjectAttribute;
+import doc.attributes.StringAttribute;
 
 public class Book {
 	

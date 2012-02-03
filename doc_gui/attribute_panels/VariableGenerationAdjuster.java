@@ -1,4 +1,6 @@
-package doc_gui.object_panels;
+package doc_gui.attribute_panels;
+
+import javax.swing.JPanel;
 
 public class VariableGenerationAdjuster extends JPanel{
 	

@@ -67,7 +67,7 @@ public class AnswerBoxGUI extends MathObjectGUI<AnswerBoxObject> {
 			g.setColor(new Color(230, 230, 255));
 			g.fillRect(xOrigin, yOrigin, width, height);
 		}
-		g.setColor(Color.GRAY);
+		g.setColor(Color.BLACK);
 		g.drawRect(xOrigin, yOrigin, width, height);
 	}
 }

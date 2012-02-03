@@ -3,7 +3,6 @@ package doc.mathobjects;
 import java.awt.Color;
 
 import doc.GridPoint;
-import doc.Page;
 import doc.attributes.AttributeException;
 import doc.attributes.BooleanAttribute;
 import doc.attributes.ColorAttribute;

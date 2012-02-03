@@ -11,7 +11,6 @@ package doc_gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -23,7 +22,6 @@ import java.awt.image.BufferedImage;
 import java.util.Stack;
 import java.util.Vector;
 
-
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
@@ -33,25 +31,20 @@ import javax.swing.WindowConstants;
 import doc.Document;
 import doc.Page;
 import doc.PointInDocument;
-import doc.attributes.MathObjectAttribute;
-import doc.mathobjects.AnswerBoxObject;
-import doc.mathobjects.ExpressionObject;
 import doc.mathobjects.GraphObject;
-import doc.mathobjects.MathObject;
 import doc.mathobjects.Grouping;
+import doc.mathobjects.MathObject;
 import doc.mathobjects.RectangleObject;
-import doc.mathobjects.TextObject;
-import doc_gui.object_panels.ObjectPropertiesFrame;
+import doc_gui.attribute_panels.ObjectPropertiesFrame;
 
 public class DocViewerPanel extends JDesktopPane{
 
 	private Document doc;
+	private Document lastSavedDoc;
 	private Vector<Document> actions;
 	private Vector<Document> undoneActions;
 	private static final int numUndos = 30;
 	private Document lastAction;
-	private int undoIndex;
-	private int undoStop, redoStop;
 	private float zoomLevel;
 	private static final float zoomRate = 1.1f;
 	private JScrollPane docScrollPane;
@@ -73,7 +66,7 @@ public class DocViewerPanel extends JDesktopPane{
 	private JPanel docPanel;
 	private DocMouseListener docMouse;
 	private RectangleObject selectionRect;
-	//used for creating a group while the selection rectangle is being drawn
+	// used for creating a group while the selection rectangle is being drawn
 	private Grouping tempGroup;
 	private boolean isInStudentMode;
 	private OpenNotebook notebook;
@@ -92,8 +85,9 @@ public class DocViewerPanel extends JDesktopPane{
 		actions = new Vector<Document>();
 		undoneActions = new Vector<Document>();
 		// add the first undo state, the blank document
-		lastAction = doc;
-		addUndoState();
+		lastAction = doc.clone();
+//		addUndoState();
+		lastSavedDoc = lastAction;
 
 		zoomLevel = 1;
 		currentPage = 1;
@@ -144,30 +138,17 @@ public class DocViewerPanel extends JDesktopPane{
 		this.add(databaseFrame);
 
 		this.addComponentListener(new ComponentListener(){
-
 			@Override
-			public void componentHidden(ComponentEvent arg0) {
-				// TODO Auto-generated method stub
-
-			}
-
+			public void componentHidden(ComponentEvent arg0) {}
 			@Override
-			public void componentMoved(ComponentEvent arg0) {
-				// TODO Auto-generated method stub
-
-			}
-
+			public void componentMoved(ComponentEvent arg0) {}
 			@Override
 			public void componentResized(ComponentEvent arg0) {
 				// TODO Auto-generated method stub
 				setScrollBounds(DocViewerPanel.this.getWidth(), DocViewerPanel.this.getHeight());
 			}
-
 			@Override
-			public void componentShown(ComponentEvent arg0) {
-				// TODO Auto-generated method stub
-
-			}
+			public void componentShown(ComponentEvent arg0) {}
 		});
 
 		this.add(docScrollPane);
@@ -188,20 +169,22 @@ public class DocViewerPanel extends JDesktopPane{
 		if ( actions.size() > numUndos){
 			actions.remove(0);
 		}
+		doc.setLastFocused(getFocusedObject());
 		lastAction = doc.clone();
 		undoneActions = new Stack<Document>();
 	}
 
 	public void undo(){
-		if ( actions.size() == 1)
-		{// the only thing left is the empty document
+		if ( actions.size() == 0)
+		{// there are no more actions to undo
 			return;
 		}
-		doc = actions.remove(actions.size() - 1);
 		undoneActions.add(lastAction);
 		if ( undoneActions.size() > numUndos){
 			undoneActions.remove(0);
 		}
+		doc = actions.remove(actions.size() - 1);
+		this.setFocusedObject(doc.getLastFocused());
 		lastAction = doc.clone();
 		this.resizeViewWindow();
 	}
@@ -210,13 +193,22 @@ public class DocViewerPanel extends JDesktopPane{
 		if ( undoneActions.isEmpty() ){
 			return;
 		}
-		doc = undoneActions.remove(undoneActions.size() - 1);
 		actions.add(lastAction);
+		doc = undoneActions.remove(undoneActions.size() - 1);
+		this.setFocusedObject(doc.getLastFocused());
 		if ( actions.size() > numUndos){
 			actions.remove(0);
 		}
 		lastAction = doc.clone();
 		this.resizeViewWindow();
+	}
+	
+	public void setCurrentStateAsLastSaved(){
+		lastSavedDoc = lastAction;
+	}
+	
+	public boolean hasBeenModfiedSinceSave(){
+		return (lastSavedDoc != lastAction);
 	}
 
 	private JPanel makeDocPanel() {
@@ -238,8 +230,8 @@ public class DocViewerPanel extends JDesktopPane{
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 				//pixels needed to render a page, and the minimum border space around it
-				int pageXSize = (int) (Page.DEFAULT_PAGE_WIDTH * zoomLevel);
-				int pageYSize = (int) (Page.DEFAULT_PAGE_HEIGHT * zoomLevel);
+				int pageXSize = (int) (getDoc().getWidth() * zoomLevel);
+				int pageYSize = (int) (getDoc().getHeight() * zoomLevel);
 
 				Rectangle viewPortRect = new Rectangle( (int) docScrollPane.getViewport().getViewPosition().getX(),
 						(int) docScrollPane.getViewport().getViewPosition().getY(),
@@ -305,8 +297,8 @@ public class DocViewerPanel extends JDesktopPane{
 	public void resizeViewWindow(){
 
 		//pixels needed to render a page
-		int pageXSize = (int) (Page.DEFAULT_PAGE_WIDTH * zoomLevel);
-		int pageYSize = (int) (Page.DEFAULT_PAGE_HEIGHT * zoomLevel);
+		int pageXSize = (int) (getDoc().getWidth() * zoomLevel);
+		int pageYSize = (int) (getDoc().getHeight() * zoomLevel);
 		int adjustedBufferSpace = (int) (DOC_BUFFER_SPACE * zoomLevel);
 
 		//space needed including gray boarders around pages
@@ -421,35 +413,14 @@ public class DocViewerPanel extends JDesktopPane{
 	public void setFocusedObject(MathObject newFocusedObject) {
 		if (newFocusedObject != null){
 			if ( ! isInStudentMode() || (isInStudentMode() && newFocusedObject.isStudentSelectable())){
-				this.focusedObject = newFocusedObject;
-				objPropsFrame.generatePanel(newFocusedObject);
+				focusedObject = newFocusedObject;
+				objPropsFrame.generatePanel(focusedObject);
+				objPropsFrame.revalidate();
 				objPropsFrame.setVisible(true);
-				MathObjectAttribute primaryAttribute;
-				if (newFocusedObject instanceof TextObject){
-					primaryAttribute = newFocusedObject.getAttributeWithName(TextObject.TEXT);
-					if ( ! isInStudentMode() ||
-							(isInStudentMode() && primaryAttribute.isStudentEditable())){
-						objPropsFrame.focusAttributeField(primaryAttribute);	
-					}
-				}
-				else if (newFocusedObject instanceof ExpressionObject){
-					primaryAttribute = newFocusedObject.getAttributeWithName(ExpressionObject.EXPRESSION);
-					if ( ! isInStudentMode() ||
-							(isInStudentMode() && primaryAttribute.isStudentEditable())){
-						objPropsFrame.focusAttributeField(primaryAttribute);	
-					}
-				}
-				else if (newFocusedObject instanceof AnswerBoxObject){
-					primaryAttribute = newFocusedObject.getAttributeWithName(AnswerBoxObject.ANSWER);
-					if ( ! isInStudentMode() ||
-							(isInStudentMode() && primaryAttribute.isStudentEditable())){
-						objPropsFrame.focusAttributeField(primaryAttribute);	
-					}
-				}
-
-				if ( objPropsFrame.getHeight() + objPropsFrame.getX() > this.getHeight() - 30){
+				objPropsFrame.focusPrimaryAttributeField();
+				if ( objPropsFrame.getHeight() + objPropsFrame.getY() > this.getHeight() - 30){
 					objPropsFrame.setBounds(objPropsFrame.getX(), objPropsFrame.getY(),
-							objPropsFrame.getWidth() + 35, this.getHeight() - objPropsFrame.getX() - 30);
+							objPropsFrame.getWidth() + 35, this.getHeight() - objPropsFrame.getY() - 30);
 				}
 				setSelectedPage(null);
 				if (tempGroup != null && newFocusedObject != tempGroup){
@@ -487,8 +458,8 @@ public class DocViewerPanel extends JDesktopPane{
 
 	public PointInDocument panelPt2DocPt(int x, int y){
 		//pixels needed to render a page, and the minimum border space around it
-		int pageXSize = (int) (Page.DEFAULT_PAGE_WIDTH * zoomLevel);
-		int pageYSize = (int) (Page.DEFAULT_PAGE_HEIGHT * zoomLevel);
+		int pageXSize = (int) (getDoc().getWidth() * zoomLevel);
+		int pageYSize = (int) (getDoc().getHeight() * zoomLevel);
 		int adjustedBufferSpace = (int) (DOC_BUFFER_SPACE * zoomLevel);
 
 		int pagexOrigin = 0;
@@ -549,8 +520,8 @@ public class DocViewerPanel extends JDesktopPane{
 		doc.getPage(pageIndex);
 
 		//pixels needed to render a page, and the minimum border space around it
-		int pageXSize = (int) (Page.DEFAULT_PAGE_WIDTH * zoomLevel);
-		int pageYSize = (int) (Page.DEFAULT_PAGE_HEIGHT * zoomLevel);
+		int pageXSize = (int) (getDoc().getWidth() * zoomLevel);
+		int pageYSize = (int) (getDoc().getHeight() * zoomLevel);
 		int adjustedBufferSpace = (int) (DOC_BUFFER_SPACE * zoomLevel);
 
 		if ( notebook.getDocAlignment() == OpenNotebook.ALIGN_DOCS_CENTER){
@@ -573,13 +544,6 @@ public class DocViewerPanel extends JDesktopPane{
 		Point pageOrigin = getPageOrigin(mObj.getParentPage());
 		return new Point( (int) (pageOrigin.getX() + mObj.getxPos() * zoomLevel)
 				, (int) (pageOrigin.getY() + mObj.getyPos() * zoomLevel));
-	}
-
-	public void showDatabase(){
-		databaseFrame.getContentPane().removeAll();
-		databaseFrame.getContentPane().add(new DatabasePanel(notebook.getDatabase(), this));
-		databaseFrame.pack();
-		databaseFrame.setVisible(true);
 	}
 
 	public Point getPageOrigin(Page p){
@@ -624,5 +588,9 @@ public class DocViewerPanel extends JDesktopPane{
 
 	public OpenNotebook getNotebook() {
 		return notebook;
+	}
+	
+	public NotebookPanel getNotebookPanel(){
+		return notebook.getNotebookPanel();
 	}
 }

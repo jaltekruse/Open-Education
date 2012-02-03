@@ -36,8 +36,8 @@ public class NegationGraphic extends UnaryExpressionGraphic {
 			super.getRootNodeGraphic().getGraphics().fillRect(symbolX1, symbolY1, symbolX2 - symbolX1, symbolY2 - symbolY1);
 			super.getRootNodeGraphic().getGraphics().setColor(Color.black);
 		}
-		super.getRootNodeGraphic().getGraphics().setStroke(new BasicStroke(
-				(int) (1 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL)));
+		getRootNodeGraphic().getGraphics().setStroke(new BasicStroke(
+				(int) (1 * getRootNodeGraphic().DOC_ZOOM_LEVEL * getRootNodeGraphic().getFontSizeAdjustment())));
 		super.getRootNodeGraphic().getGraphics().drawLine(symbolX1 + 
 				(int) Math.round(((symbolX2 - symbolX1) - space) * .1),
 				symbolY1 + (int) Math.round((symbolY2 - symbolY1) * .4),

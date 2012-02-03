@@ -1,6 +1,5 @@
 package doc.attributes;
 
-import java.util.Vector;
 
 public class VariableValueGenerator extends MathObjectAttribute {
 	

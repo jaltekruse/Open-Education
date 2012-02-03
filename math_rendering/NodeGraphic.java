@@ -13,13 +13,13 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.util.Vector;
 
+import expression.EmptyValue;
+import expression.Expression;
 import expression.Identifier;
 import expression.Node;
 import expression.NodeException;
 import expression.Number;
-import expression.Expression;
 import expression.Operator;
-import expression.EmptyValue;
 
 public abstract class NodeGraphic<E extends Node> {
 	
@@ -134,6 +134,9 @@ public abstract class NodeGraphic<E extends Node> {
 			Expression ex = (Expression) n;
 			if (ex.getOperator() instanceof Operator.BinaryOperator){
 				if (ex.getOperator() instanceof Operator.Exponent){
+					// skip the parenthesis around the upper child, as their smaller size
+					// shows they must be evaluated first
+					((Expression) n).getChild(1).setDisplayParentheses(false);
 					return new ExponentGraphic((Expression)n, getRootNodeGraphic());
 				}
 				if (ex.getOperator() instanceof Operator.Division){
@@ -156,10 +159,16 @@ public abstract class NodeGraphic<E extends Node> {
 			else if (ex.getOperator() instanceof Operator.Function){
 				if (ex.getOperator() instanceof Operator.UnaryFunction){
 					if (ex.getOperator() instanceof Operator.SquareRoot){
+						// have the radical skip the parenthesis
+						((Expression) n).getChild(0).setDisplayParentheses(false);
 						return new RadicalGraphic((Expression)n, getRootNodeGraphic());
 					}
 					else if (ex.getOperator() instanceof Operator.Negation ){
 						return new NegationGraphic((Expression)n, getRootNodeGraphic());
+					}
+					else if (ex.getOperator() instanceof Operator.AbsoluteValue){
+						((Expression) n).getChild(0).setDisplayParentheses(false);
+						return new AbsoluteValueGraphic((Expression)n,getRootNodeGraphic());
 					}
 					return new UnaryExpressionGraphic((Expression)n, getRootNodeGraphic());
 				}

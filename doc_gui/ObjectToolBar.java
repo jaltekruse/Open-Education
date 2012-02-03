@@ -3,21 +3,7 @@ package doc_gui;
 import javax.swing.ImageIcon;
 import javax.swing.JToolBar;
 
-import doc.mathobjects.AnswerBoxObject;
-import doc.mathobjects.ArrowObject;
-import doc.mathobjects.CubeObject;
-import doc.mathobjects.CylinderObject;
-import doc.mathobjects.ExpressionObject;
-import doc.mathobjects.GraphObject;
 import doc.mathobjects.MathObject;
-import doc.mathobjects.NumberLineObject;
-import doc.mathobjects.OvalObject;
-import doc.mathobjects.ParallelogramObject;
-import doc.mathobjects.RectangleObject;
-import doc.mathobjects.RegularPolygonObject;
-import doc.mathobjects.TextObject;
-import doc.mathobjects.TrapezoidObject;
-import doc.mathobjects.TriangleObject;
 
 public class ObjectToolBar extends JToolBar {
 
@@ -30,7 +16,7 @@ public class ObjectToolBar extends JToolBar {
 
 		for (final String s : MathObject.objectTypes) {
 			if (s.equals(MathObject.GROUPING)
-					|| s.equals(MathObject.PROBLEM_OBJ)
+					|| s.equals(MathObject.VAR_INSERTION_PROBLEM)
 					|| s.equals(MathObject.GENERATED_PROBLEM)) {
 				// all classes that extend grouping cannot be created with a
 				// button and mouse drag they do not need buttons
@@ -56,27 +42,18 @@ public class ObjectToolBar extends JToolBar {
 				}
 			};
 		}
-//		objButton = new OCButton("Answer Box", "Add Answer box", 1, 1, 0, 0,
-//				this) {
-//
-//			@Override
-//			public void associatedAction() {
-//				// pass even down to current doc window for placing a mathObj
-//				notebookPanel.getCurrentDocViewer().createMathObject(
-//						new AnswerBoxObject());
-//			}
-//		};
-//		OCButton generateButton = new OCButton("Generate Problems", "Generate Probelms",
-//				1, 1, 3, 0, this){
-//			
-//			@Override
-//			public void associatedAction(){
-//				notebookPanel.createProbelmDialog();
-//				notebookPanel.setProblemDialogVisible(true);
-//			}
-//		};
 		
-//		OCButton cloneButton = new OCButton("Generate Problems", "Generate Probelms",
+		OCButton generateButton = new OCButton("Generate Problems", "Generate Problems",
+				1, 1, 3, 0, this){
+			
+			@Override
+			public void associatedAction(){
+				notebookPanel.createProbelmDialog();
+				notebookPanel.setProblemDialogVisible(true);
+			}
+		};
+		
+//		OCButton cloneButton = new OCButton("Clonse Doc", "Clone Doc",
 //				1, 1, 3, 0, this){
 //			
 //			@Override

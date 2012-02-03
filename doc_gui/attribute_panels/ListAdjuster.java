@@ -1,13 +1,9 @@
-package doc_gui.object_panels;
+package doc_gui.attribute_panels;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -15,12 +11,10 @@ import java.io.IOException;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -36,6 +30,7 @@ public class ListAdjuster extends JPanel{
 	protected DocViewerPanel docPanel;
 	protected JPanel parentPanel;
 	protected boolean expanded;
+	protected AdjustmentPanel last;
 
 	protected boolean showingDialog;
 
@@ -96,11 +91,12 @@ public class ListAdjuster extends JPanel{
 		for ( MathObjectAttribute mAtt : (Vector<MathObjectAttribute>) lAtt.getValues()){
 			JPanel p = new JPanel();
 			p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
-			p.add(ObjectPropertiesFrame.getAdjuster(mAtt, docPanel, p));
+			last = ObjectPropertiesFrame.getAdjuster(mAtt, docPanel, p);
+			p.add(last);
 			p.add(Box.createRigidArea(new Dimension(3,0)));
 			JButton button = new JButton("x");
 			button.setMargin(new Insets(0, 0, 0, 0));
-			button.addActionListener(new AddButtonListener(index));
+			button.addActionListener(new CloseButtonListener(index));
 			button.setMaximumSize(new Dimension(15,15));
 			p.add(button);
 			p.add(Box.createRigidArea(new Dimension(3,0)));
@@ -120,7 +116,6 @@ public class ListAdjuster extends JPanel{
 					{// forces the object property frame to be layed out again
 						docPanel.setFocusedObject(lAtt.getParentObject());
 					}
-					docPanel.addUndoState();
 					docPanel.updateObjectToolFrame();
 					docPanel.repaint();
 				} catch (AttributeException e) {
@@ -141,11 +136,11 @@ public class ListAdjuster extends JPanel{
 		this.revalidate();
 	}
 	
-	private class AddButtonListener implements ActionListener{
+	private class CloseButtonListener implements ActionListener{
 
 		private int index;
 		
-		public AddButtonListener(int i){
+		public CloseButtonListener(int i){
 			index = i;
 		}
 		
@@ -196,7 +191,7 @@ public class ListAdjuster extends JPanel{
 	}
 	
 	public void focusAttributField(){
-		
+		last.focusAttributField();
 	}
 	
 	public ListAttribute getList(){

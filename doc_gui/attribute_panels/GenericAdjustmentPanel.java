@@ -1,4 +1,4 @@
-package doc_gui.object_panels;
+package doc_gui.attribute_panels;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -21,7 +21,7 @@ import doc_gui.DocViewerPanel;
 public class GenericAdjustmentPanel extends AdjustmentPanel{
 
 	private JTextField field;
-	
+
 	private static Formatter formatter;
 
 	public GenericAdjustmentPanel(MathObjectAttribute mAtt,
@@ -107,27 +107,7 @@ public class GenericAdjustmentPanel extends AdjustmentPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					if (mAtt.getParentObject() != null){
-						mAtt.getParentObject().setAttributeValueWithString(
-								mAtt.getName(), field.getText());
-					}
-					else{
-						mAtt.setValueWithString(field.getText());
-					}
-					docPanel.repaintDoc();
-					docPanel.updateObjectToolFrame();
-				} catch (AttributeException e) {
-					// TODO Auto-generated catch block
-					if (!showingDialog){
-						showingDialog = true;
-						JOptionPane.showMessageDialog(null,
-								e.getMessage(),
-								"Error",
-								JOptionPane.ERROR_MESSAGE);
-						showingDialog = false;
-					}
-				}
+				applyPanelValueToObject();
 			}
 
 		});
@@ -135,9 +115,17 @@ public class GenericAdjustmentPanel extends AdjustmentPanel{
 
 	@Override
 	public void applyPanelValueToObject() {
-		// TODO Auto-generated method stub
 		try {
-			mAtt.setValueWithString(field.getText());
+			if ( mAtt.getParentObject() == null)
+			{// the attribute has no parent, but its value did change
+				System.out.println("parent is null");
+				mAtt.setValueWithString(field.getText());
+				docPanel.addUndoState();
+			}
+			else{
+				mAtt.getParentObject().setAttributeValueWithString(mAtt.getName(), field.getText());
+				docPanel.addUndoState();
+			}
 			if ( mAtt.getValue() instanceof Double){
 				if (mAtt.getValue().toString().length() > 5){
 					field.setText(String.format("%.5G", mAtt.getValue()));

@@ -192,8 +192,8 @@ public class ExponentGraphic extends BinExpressionGraphic {
 
 		g.setFont(f);
 		
-		spaceBetweenBaseAndSuper = (int) (4 * getRootNodeGraphic().getSizeAdjustment());
-		extraShiftUp = (int) (2 * getRootNodeGraphic().getSizeAdjustment());
+		spaceBetweenBaseAndSuper = (int) (4 * getRootNodeGraphic().getFontSizeAdjustment());
+		extraShiftUp = (int) (2 * getRootNodeGraphic().getFontSizeAdjustment());
 		
 		
 		Node tempLeft = (super.getValue()).getChild(0);

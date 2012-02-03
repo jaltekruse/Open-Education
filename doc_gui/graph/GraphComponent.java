@@ -13,9 +13,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-import expression.NodeException;
 import tree.EvalException;
 import tree.ParseException;
+import expression.NodeException;
 
 public abstract class GraphComponent {
 
@@ -26,7 +26,7 @@ public abstract class GraphComponent {
 	}
 	
 	protected int gridxToScreen(double x){
-		return (int) ((x - graph.X_MIN) / graph.X_PIXEL) + graph.X_PIC_ORIGIN;
+		return (int) Math.round((x - graph.X_MIN) / graph.X_PIXEL) + graph.X_PIC_ORIGIN;
 	}
 	
 	protected double screenxToGrid(int x){
@@ -38,7 +38,7 @@ public abstract class GraphComponent {
 	}
 	
 	protected int gridyToScreen(double y){
-		return (graph.Y_SIZE) - (int) ((y - graph.Y_MIN) / graph.Y_PIXEL)
+		return (graph.Y_SIZE) - (int) Math.round((y - graph.Y_MIN) / graph.Y_PIXEL)
 				+ graph.Y_PIC_ORIGIN;
 	}
 	

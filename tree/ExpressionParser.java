@@ -8,7 +8,7 @@
 
 package tree;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class ExpressionParser {
 	
@@ -17,12 +17,6 @@ public class ExpressionParser {
 	
 	//temporary storage for values found that have not been attached to an expression 
 	private ArrayList<Expression> vals;
-	
-	//persistent storage of variables, for more info see Var and Varstorage classes
-	public VarStorage VARLIST;
-	
-	//persistent storage of constants, for more info see Constant and ConstantStorage classes
-	public ConstantStorage CONSTLIST;
 	
 	private int currCharNum;
 	private char currChar;
@@ -50,8 +44,6 @@ public class ExpressionParser {
 	public ExpressionParser() {
 		lengthLast = 0;
 		vals = new ArrayList<Expression>();
-		VARLIST = new VarStorage(this);
-		CONSTLIST = new ConstantStorage();
 		angleUnits = RAD;
 		
 		//associates this object with all of the Decimal objects, so they can
@@ -432,22 +424,8 @@ public class ExpressionParser {
 			//will solve function algebraically, not quite done yet...
 		}
 		else{
-			Constant tempElm = (Constant) CONSTLIST.findIfStored(varElm);
-			if (tempElm != null){ //if name associated with a current Constant
-				//make another constant with the same name
-				tempElm = new Constant(tempElm.getName(), null);
-				addValue(tempElm);
-				return;
-			}
+			addValue( new Identifier(varElm, null) );
 			
-			// temporarily only allow single character variables, need to find a good way
-			// to allow words in expressions without hurting functionality
-			varElm = varElm.charAt(0) + "";
-			lengthLast = 1;
-			Var newVar = VARLIST.storeVar(varElm, null);
-			newVar = new Var(newVar.getName(), null);
-			newVar.setMaster(false);
-			addValue(newVar);
 		}
 	}
 	
@@ -760,16 +738,6 @@ public class ExpressionParser {
 	 */
 	public int getLengthLast(){
 		return lengthLast;
-	}
-
-	public VarStorage getVarList() {
-		// TODO Auto-generated method stub
-		return VARLIST;
-	}
-
-	public ConstantStorage getConstantList() {
-		// TODO Auto-generated method stub
-		return CONSTLIST;
 	}
 
 	public void setAngleUnits(int i) {

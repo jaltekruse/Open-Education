@@ -12,10 +12,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Vector;
 
-import expression.NodeException;
-
 import tree.EvalException;
 import tree.ParseException;
+import expression.NodeException;
 
 public abstract class SingleGraph extends GraphComponent {
 	

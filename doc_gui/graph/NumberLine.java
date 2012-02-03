@@ -7,10 +7,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 
-import tree.Decimal;
 import tree.EvalException;
 import tree.ParseException;
-
 import doc.attributes.DoubleAttribute;
 import doc.attributes.IntegerAttribute;
 import doc.mathobjects.NumberLineObject;
@@ -63,6 +61,14 @@ public class NumberLine {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		pushValsToNumberLineObject(gObj);
+	}
+	
+	public void pushValsToNumberLineObject(NumberLineObject gObj){
+		((DoubleAttribute)gObj.getAttributeWithName("min")).setValue(graph.X_MIN);
+		((DoubleAttribute)gObj.getAttributeWithName("max")).setValue(graph.X_MAX);
+		((DoubleAttribute)gObj.getAttributeWithName("step")).setValue(graph.X_STEP);
+		((IntegerAttribute)gObj.getAttributeWithName("font size")).setValue(graph.FONT_SIZE);
 	}
 
 	private class NumberLineComponent extends GraphComponent{
@@ -79,44 +85,36 @@ public class NumberLine {
 
 			g.setFont(g.getFont().deriveFont(graph.FONT_SIZE * graph.DOC_ZOOM_LEVEL));
 
-			try {
-				//these four statements are for resizing the grid after zooming
-				if((graph.X_MAX-graph.X_MIN)/graph.X_STEP >= 24)
+			//these four statements are for resizing the grid after zooming
+			if((graph.X_MAX-graph.X_MIN)/graph.X_STEP >= 14)
+			{
+				if ((graph.X_MAX-graph.X_MIN)/14 > 1)
 				{
-					if ((graph.X_MAX-graph.X_MIN)/18 > 1)
-					{
-						graph.varList.setVarVal("xStep", new Decimal((int)(graph.X_MAX-graph.X_MIN)/20));
-						graph.X_STEP = graph.varList.getVarVal("xStep").toDec().getValue();
-					}
-					else
-					{
-						for (int i = 0; i < 25; i ++){
-							if ((graph.X_MAX-graph.X_MIN)/20/Math.pow(.5, i) < .7){
-								graph.varList.setVarVal("xStep", new Decimal(Math.pow(.5, i)));
-								graph.X_STEP = graph.varList.getVarVal("xStep").toDec().getValue();
-							}
+					graph.X_STEP = (int)((graph.X_MAX-graph.X_MIN)/10);
+				}
+				else
+				{
+					for (int i = 0; i < 25; i ++){
+						if ((graph.X_MAX-graph.X_MIN)/20/Math.pow(.5, i) < .7){
+							graph.X_STEP = Math.pow(.5, i);
 						}
 					}
 				}
+			}
 
-				else if((graph.X_MAX-graph.X_MIN)/graph.X_STEP < 3){
-					if ((graph.X_MAX-graph.X_MIN)/10 > 1)
-					{
-						graph.varList.setVarVal("xStep", new Decimal((int)(graph.X_MAX-graph.X_MIN)/10));
-						graph.X_STEP = graph.varList.getVarVal("xStep").toDec().getValue();
-					}
-					else
-					{
-						for (int i = 0; i < 25; i ++){
-							if ((graph.X_MAX-graph.X_MIN)/20 < Math.pow(.5, i)){
-								graph.varList.setVarVal("xStep", new Decimal(Math.pow(.5, i)));
-								graph.X_STEP = graph.varList.getVarVal("xStep").toDec().getValue();
-							}
+			else if((graph.X_MAX-graph.X_MIN)/graph.X_STEP < 6){
+				if ((graph.X_MAX-graph.X_MIN)/6 > 1)
+				{
+					graph.X_STEP = (int)((graph.X_MAX-graph.X_MIN)/10);
+				}
+				else
+				{
+					for (int i = 0; i < 25; i ++){
+						if ((graph.X_MAX-graph.X_MIN)/20 < Math.pow(.5, i)){
+							graph.X_STEP = Math.pow(.5, i);
 						}
 					}
 				}
-			}catch(Exception e){
-				e.printStackTrace();
 			}
 
 			int width;

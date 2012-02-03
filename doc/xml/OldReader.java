@@ -11,9 +11,9 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import doc.DatabaseOfGroupedObjects;
 import doc.Document;
 import doc.Page;
+import doc.ProblemDatabase;
 import doc.attributes.AttributeException;
 import doc.attributes.BooleanAttribute;
 import doc.attributes.DoubleAttribute;
@@ -40,7 +40,7 @@ public class OldReader extends DefaultHandler {
 	private Document doc;
 	private Page page;
 	private Grouping group;
-	private DatabaseOfGroupedObjects database;
+	private ProblemDatabase database;
 	MathObject mObj;
 
 	private Vector<Grouping> containerStack;
@@ -268,7 +268,7 @@ public class OldReader extends DefaultHandler {
 			mObj = null;
 		}
 		if (qName.equals(MathObject.GROUPING) ||
-				qName.equals(MathObject.PROBLEM_OBJ) ){
+				qName.equals(MathObject.VAR_INSERTION_PROBLEM) ){
 			group = null;
 		}
 		if (qName.equals("Page")){

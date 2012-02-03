@@ -52,8 +52,8 @@ public class DivisionGraphic extends BinExpressionGraphic {
 						symbolY1, symbolX2 - symbolX1, symbolY2 - symbolY1);
 				super.getRootNodeGraphic().getGraphics().setColor(Color.black);
 			}
-			super.getRootNodeGraphic().getGraphics().setStroke(new BasicStroke(
-					(int) (1 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL)));
+			getRootNodeGraphic().getGraphics().setStroke(new BasicStroke(
+					(int) (1 * getRootNodeGraphic().DOC_ZOOM_LEVEL * getRootNodeGraphic().getFontSizeAdjustment())));
 			super.getRootNodeGraphic().getGraphics().drawLine(symbolX1, symbolY1 + spaceAroundBar + 1, symbolX2, 
 					symbolY1 + spaceAroundBar + 1); 
 			super.getRootNodeGraphic().getGraphics().setStroke(new BasicStroke());
@@ -208,8 +208,8 @@ public class DivisionGraphic extends BinExpressionGraphic {
 		g.setFont(f);
 		setFont(f);
 		
-		sizeOverhang = (int) (3 * getRootNodeGraphic().getSizeAdjustment());
-		spaceAroundBar = (int) (5 * getRootNodeGraphic().getSizeAdjustment());
+		sizeOverhang = (int) (3 * getRootNodeGraphic().getFontSizeAdjustment());
+		spaceAroundBar = (int) (5 * getRootNodeGraphic().getFontSizeAdjustment());
 		
 		Node tempLeft = (super.getValue()).getChild(0);
 		Node tempRight = (super.getValue()).getChild(1);
@@ -263,6 +263,8 @@ public class DivisionGraphic extends BinExpressionGraphic {
 		}
 		else if (style == Style.HORIZONTAL){
 			
+			// prevent parenthesis from displaying if not used twice to show they are explicitly wanted
+			tempLeft.setDisplayParentheses(false);
 			leftValGraphic = makeNodeGraphic(tempLeft);
 			
 			leftSize = leftValGraphic.requestSize(g, f, x1, y1);
@@ -270,6 +272,8 @@ public class DivisionGraphic extends BinExpressionGraphic {
 			
 			//other if statements for checking the left, decimal, imaginary, other val types
 			
+			// prevent parenthesis from displaying if not used twice to show they are explicitly wanted
+			tempRight.setDisplayParentheses(false);
 			rightValGraphic = makeNodeGraphic(tempRight);
 			
 			rightSize = rightValGraphic.requestSize(g, f, symbolX2, y1);

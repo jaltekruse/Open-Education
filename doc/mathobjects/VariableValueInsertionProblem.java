@@ -1,73 +1,36 @@
 package doc.mathobjects;
 
-import java.util.UUID;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
-import doc.Document;
 import doc.Page;
 import doc.attributes.AttributeException;
 import doc.attributes.ListAttribute;
 import doc.attributes.MathObjectAttribute;
 import doc.attributes.StringAttribute;
-import doc.attributes.UUIDAttribute;
-import doc_gui.DocumentException;
-import expression.*;
+import expression.Expression;
+import expression.Identifier;
+import expression.Node;
+import expression.NodeException;
 import expression.Number;
+import expression.Operator;
 
-public class ProblemObject extends Grouping implements ProblemGenerator {
+public class VariableValueInsertionProblem extends ProblemGenerator {
 
-	public static final String REMOVE_PROBLEM = "Remove problem", GENERATE_NEW = "Generate problems";
-	public static final String SCRIPTS = "scripts", UUID_STR = "uuid", TAGS = "tags(seperate with commas)";
 	private static final int bufferSpace = 20;
 	// store the parent document, allows access to document attributes from problems that
 	// are in the list of generators but not on the page
 
-	private Document parentDocument;
-
-	public ProblemObject(MathObjectContainer p, int x, int y, int w, int h) {
+	public VariableValueInsertionProblem(MathObjectContainer p, int x, int y, int w, int h) {
 		super(p, x, y, w, h);
-		addAttribute(new StringAttribute(SCRIPTS));
-		addAttribute(new UUIDAttribute(UUID_STR));
-		getAttributeWithName(UUID_STR).setUserEditable(false);
-		getAttributeWithName(UUID_STR).setValue(UUID.randomUUID());
-		getAttributeWithName(SCRIPTS).setValue("");
-		addProblemActions();
 	}
 
-	public ProblemObject(MathObjectContainer p){
+	public VariableValueInsertionProblem(MathObjectContainer p){
 		super(p);
-		addAttribute(new StringAttribute(SCRIPTS));
-		addAttribute(new UUIDAttribute(UUID_STR));
-		getAttributeWithName(UUID_STR).setUserEditable(false);
-		getAttributeWithName(UUID_STR).setValue(UUID.randomUUID());
-		getAttributeWithName(SCRIPTS).setValue("");
-		addProblemActions();
 	}
 
-	public ProblemObject() {
-		addAttribute(new StringAttribute(SCRIPTS));
-		getAttributeWithName(SCRIPTS).setValue("");
-		addAttribute(new UUIDAttribute(UUID_STR));
-		getAttributeWithName(UUID_STR).setUserEditable(false);
-		getAttributeWithName(UUID_STR).setValue(UUID.randomUUID());
-		addProblemActions();
-	}
-	
-	private void addProblemActions(){
-		removeAction(MathObject.MAKE_INTO_PROBLEM);
-		removeAction(Grouping.BRING_TO_LEFT);
-		removeAction(Grouping.BRING_TO_TOP);
-		removeAction(Grouping.BRING_TO_RIGHT);
-		removeAction(Grouping.BRING_TO_BOTTOM);
-		addAction(REMOVE_PROBLEM);
-		addAction(GENERATE_NEW);
-	}
-
-	public String getScripts(){
-		return ((StringAttribute)getAttributeWithName(SCRIPTS)).getValue();
-	}
+	public VariableValueInsertionProblem() {}
 
 	@Override
 	public void performSpecialObjectAction(String s) {
@@ -94,7 +57,7 @@ public class ProblemObject extends Grouping implements ProblemGenerator {
 			}
 		}
 		else if (s.equals(STORE_IN_DATABASE)){
-			getParentContainer().getParentDoc().getDocViewerPanel().getNotebook().getDatabase().addGrouping(this);
+			getParentContainer().getParentDoc().getDocViewerPanel().getNotebookPanel().addProbelmToDatabase(this.clone());
 		}
 		else if (s.equals(GENERATE_NEW)){
 			int number = 0;
@@ -130,8 +93,18 @@ public class ProblemObject extends Grouping implements ProblemGenerator {
 
 			int greatestWidth = 0, greatestHeight = 0;
 			Vector<GeneratedProblem> newProblems = new Vector<GeneratedProblem>();
+			int difficulty;
 			for (int i = 0; i < number; i++){
-				GeneratedProblem newProb = generateProblem();
+				if ( i < number / 3){
+					difficulty = EASY;
+				}
+				else if ( i < number * (2/3)){
+					difficulty = MEDIUM;
+				}
+				else{
+					difficulty = HARD;
+				}
+				GeneratedProblem newProb = generateProblem(difficulty);
 				newProblems.add(newProb);
 				if (newProb.getWidth() > greatestWidth){
 					greatestWidth = newProb.getWidth();
@@ -161,11 +134,11 @@ public class ProblemObject extends Grouping implements ProblemGenerator {
 			int curryPos = getyPos() + getHeight() + bufferSpace;
 			Page currentPage = getParentPage();
 
-			for (Grouping g : newProblems){
-				g.setxPos(currentPage.getxMargin() + bufferSpace + extraColumnSpace + 
+			for (MathObject mObj : newProblems){
+				mObj.setxPos(currentPage.getxMargin() + bufferSpace + extraColumnSpace + 
 						currColumn * (greatestWidth + bufferSpace + extraColumnSpace));
-				g.setyPos(curryPos);
-				if ( ! g.isOnPage()){
+				mObj.setyPos(curryPos);
+				if ( ! mObj.isOnPage()){
 						if ( currentPage.getParentDoc().getNumPages() < currentPage.getParentDoc().getPageIndex(currentPage) + 2)
 						{// a new page must be added to add the objects
 							currentPage.getParentDoc().addBlankPage();
@@ -178,10 +151,10 @@ public class ProblemObject extends Grouping implements ProblemGenerator {
 						}
 
 						curryPos = currentPage.getyMargin() + bufferSpace;
-						g.setyPos(curryPos);
+						mObj.setyPos(curryPos);
 				}
-				currentPage.addObject(g);
-				g.setParentContainer(currentPage);
+				currentPage.addObject(mObj);
+				mObj.setParentContainer(currentPage);
 				currColumn++;
 				if (currColumn > numColumns - 1){
 					curryPos += greatestHeight + bufferSpace;
@@ -197,7 +170,6 @@ public class ProblemObject extends Grouping implements ProblemGenerator {
 
 		String exString, textString = null;
 		Node expression;
-		Character prevChar, postChar;
 		
 		if (newObj instanceof Grouping){
 			Grouping newGroup = (Grouping) newObj.clone();
@@ -273,31 +245,29 @@ public class ProblemObject extends Grouping implements ProblemGenerator {
 				}
 				((TextObject) newObj).setText(textString);
 			} catch (AttributeException e) {
-				// TODO Auto-generated catch block
 				// should not be thrown, as a text object can have any string as its child
 				System.out.println("error that should not happen in ProblemObject");
 			} catch (NodeException e) {
-				// TODO Auto-generated catch block
 				System.out.println("node error that should not happen in ProblemObject");
 			}
 		}
 		return newObj;
 	}
 
-	public GeneratedProblem generateProblem(){
+	public GeneratedProblem generateProblem(int difficulty){
 		Grouping newProblem = new Grouping(getParentContainer(), getxPos(),
 				getyPos() + getHeight() + bufferSpace, getWidth(), getHeight());
-		String scriptsString = getScripts();
-		String[] scripts = scriptsString.split(";");
+		String s;
 		Node n =  null;
 		Vector<String> varNames = new Vector<String>();
 		Vector<Number> varVals = new Vector<Number>();
-		for (String str : scripts){
-			if (str == null || str.equals("")){
+		for (StringAttribute strAtt : (Vector<StringAttribute>) getScripts().getValues()){
+			s = strAtt.getValue();
+			if (s == null || s.equals("")){
 				continue;
 			}
 			try {
-				n = Node.parseNode(str);
+				n = Node.parseNode(s);
 
 				//sub in variables already assigned in previous scripts
 				for ( int i = 0 ; i < varNames.size(); i++){
@@ -343,11 +313,13 @@ public class ProblemObject extends Grouping implements ProblemGenerator {
 
 			//expressions can change their bounds when the random values are substituted in
 			//this line sets the bounds to the actual space it takes to render them
-			if ( getParentContainer() != null){
+			if ( getParentContainer() != null)
+			{// if this problem formula is in the background storage for a document
 				getParentDoc().getDocViewerPanel().drawObjectInBackgorund(newObj);
 			}
-			else{
-				getParentDocument().getDocViewerPanel().drawObjectInBackgorund(newObj);
+			else
+			{// if this problem formula is actually on a document
+				getProblemHoldingDocument().getDocViewerPanel().drawObjectInBackgorund(newObj);
 			}
 			newObj.setParentContainer(newProblem.getParentContainer());
 			newProblem.addObjectFromPage(newObj);
@@ -357,14 +329,14 @@ public class ProblemObject extends Grouping implements ProblemGenerator {
 	}
 
 	@Override
-	public ProblemObject clone() {
-		ProblemObject o = new ProblemObject(getParentContainer());
+	public VariableValueInsertionProblem clone() {
+		VariableValueInsertionProblem o = new VariableValueInsertionProblem(getParentContainer());
 		o.removeAllAttributes();
-		for ( MathObjectAttribute mAtt : getAttributes()){
+		for ( MathObjectAttribute<?> mAtt : getAttributes()){
 			o.addAttribute( mAtt.clone());
 		}
 		o.removeAllLists();
-		for ( ListAttribute list : getLists()){
+		for ( ListAttribute<?> list : getLists()){
 			o.addList(list.clone());
 		}
 		for ( MathObject mObj : getObjects()){
@@ -376,21 +348,6 @@ public class ProblemObject extends Grouping implements ProblemGenerator {
 
 	@Override
 	public String getType() {
-		// TODO Auto-generated method stub
-		return PROBLEM_OBJ;
-	}
-
-	@Override
-	public UUID getUUID() {
-		// TODO Auto-generated method stub
-		return ((UUIDAttribute)getAttributeWithName(UUID_STR)).getValue();
-	}
-
-	public Document getParentDocument() {
-		return parentDocument;
-	}
-
-	public void setParentDocument(Document parentDocument) {
-		this.parentDocument = parentDocument;
+		return VAR_INSERTION_PROBLEM;
 	}
 }

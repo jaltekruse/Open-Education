@@ -8,10 +8,7 @@
 
 package doc.mathobjects;
 
-import java.util.Vector;
-
 import doc.GridPoint;
-import doc.Page;
 import doc.attributes.EnumeratedAttribute;
 import doc.attributes.ListAttribute;
 import doc.attributes.MathObjectAttribute;

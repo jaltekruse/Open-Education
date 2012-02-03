@@ -27,30 +27,28 @@ public class RadicalGraphic extends UnaryExpressionGraphic {
 		super(v, compExGraphic);
 		setMostInnerSouth(this);
 		setMostInnerNorth(this);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void draw() {
-		
 		
 		if (isSelected()){
 			super.getRootNodeGraphic().getGraphics().setColor(getSelectedColor());
 			super.getRootNodeGraphic().getGraphics().fillRect(symbolX1, symbolY1, symbolX2 - symbolX1, symbolY2 - symbolY1);
 			super.getRootNodeGraphic().getGraphics().setColor(Color.black);
 		}
-		super.getRootNodeGraphic().getGraphics().setStroke(new BasicStroke(
-				(int) (1 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL)));
-		super.getRootNodeGraphic().getGraphics().drawLine(symbolX1, symbolY2 - heightLeadingTail + lengthLittleTail,
+		getRootNodeGraphic().getGraphics().setStroke(new BasicStroke(
+				(int) (1 * getRootNodeGraphic().DOC_ZOOM_LEVEL * getRootNodeGraphic().getFontSizeAdjustment())));
+		getRootNodeGraphic().getGraphics().drawLine(symbolX1, symbolY2 - heightLeadingTail + lengthLittleTail,
 				symbolX1 + 3, symbolY2 - heightLeadingTail);
-		super.getRootNodeGraphic().getGraphics().drawLine(symbolX1 + 3, symbolY2 - heightLeadingTail,
+		getRootNodeGraphic().getGraphics().drawLine(symbolX1 + 3, symbolY2 - heightLeadingTail,
 				symbolX1 + (int) Math.round(0.5 * widthFront), symbolY2);
-		super.getRootNodeGraphic().getGraphics().drawLine(symbolX1 + (int) Math.round(0.5 * widthFront),
+		getRootNodeGraphic().getGraphics().drawLine(symbolX1 + (int) Math.round(0.5 * widthFront),
 				symbolY2, symbolX1 + widthFront, symbolY1);
-		super.getRootNodeGraphic().getGraphics().drawLine(symbolX1 + widthFront, symbolY1, 
+		getRootNodeGraphic().getGraphics().drawLine(symbolX1 + widthFront, symbolY1, 
 				symbolX2, symbolY1);
-		super.getRootNodeGraphic().getGraphics().drawLine(symbolX2, symbolY1, symbolX2, symbolY1 + 5);
-		super.getRootNodeGraphic().getGraphics().setStroke(new BasicStroke());
+		getRootNodeGraphic().getGraphics().drawLine(symbolX2, symbolY1, symbolX2, symbolY1 + lengthLittleTail);
+		getRootNodeGraphic().getGraphics().setStroke(new BasicStroke());
 	}
 	
 	@Override
@@ -70,11 +68,14 @@ public class RadicalGraphic extends UnaryExpressionGraphic {
 		g.setFont(f);
 		setFont(f);
 		
-		space = (int) (4 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
-		widthFront = (int) (8 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
-		heightLeadingTail = (int) (8 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
-		lengthLittleTail = (int) (3 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
+		space = (int) (4 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL * getRootNodeGraphic().getFontSizeAdjustment());
+		widthFront = (int) (8 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL* getRootNodeGraphic().getFontSizeAdjustment());
+		heightLeadingTail = (int) (6 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL* getRootNodeGraphic().getFontSizeAdjustment());
+		lengthLittleTail = (int) (3 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL* getRootNodeGraphic().getFontSizeAdjustment());
 		
+		// The call to getChild() skips the first paren inside of the operator, the parens are needed to have
+		// an expression inside of a UnaryOp, but they are not usually displayed
+		// if a user wants to show parens, the can use  two pairs of parens: sqrt((5/6))
 		Node tempChild = super.getValue().getChild(0);
 		NodeGraphic childValGraphic = null;
 		int[] childSize = {0,0};
@@ -124,7 +125,7 @@ public class RadicalGraphic extends UnaryExpressionGraphic {
 		super.setY1(y1);
 		super.setX2(x1 + totalSize[0]);
 		super.setY2(y1 + totalSize[1]);
-		// TODO Auto-generated method stub
+		
 		return totalSize;
 	}
 

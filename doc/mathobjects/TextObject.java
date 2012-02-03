@@ -8,7 +8,6 @@
 
 package doc.mathobjects;
 
-import doc.Page;
 import doc.attributes.AttributeException;
 import doc.attributes.BooleanAttribute;
 import doc.attributes.IntegerAttribute;

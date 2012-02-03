@@ -13,7 +13,6 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
-import doc.Page;
 import doc.attributes.AttributeException;
 import doc.attributes.ColorAttribute;
 import doc.attributes.IntegerAttribute;
@@ -29,31 +28,27 @@ import expression.Operator.Multiplication;
 public class ExpressionObject extends MathObject {
 
 	public static String	COMBINE_LIKE_TERMS = "Combine like terms",
-							SIMPLIFY = "Simplify",
-							ADD_TO_BOTH_SIDES = "Add to both sides",
-							SUBTRACT_FROM_BOTH_SIDES = "Subtract from both sides",
-							MULTIPLY_BOTH_SIDES = "Multiply both sides",
-							DIVIDE_BOTH_SIDES = "Divide both sides",
-							SUB_IN_VALUE = "Substitute in value",
-							MODIFY_EXPRESSION = "Modify Expression",
-							MANUALLY_TYPE_STEP = "Manually type step",
-							OTHER_OPERATIONS = "Other operations",
-							UNDO_STEP = "Undo Step";
-	
+	SIMPLIFY = "Simplify",
+	ADD_TO_BOTH_SIDES = "Add to both sides",
+	SUBTRACT_FROM_BOTH_SIDES = "Subtract from both sides",
+	MULTIPLY_BOTH_SIDES = "Multiply both sides",
+	DIVIDE_BOTH_SIDES = "Divide both sides",
+	SUB_IN_VALUE = "Substitute in value",
+	MODIFY_EXPRESSION = "Modify Expression",
+	MANUALLY_TYPE_STEP = "Manually type step",
+	OTHER_OPERATIONS = "Other operations",
+	UNDO_STEP = "Undo Step";
+
 	public static String		EXPRESSION = "expression",		FONT_SIZE = "font size",
-			STEPS = "steps",	FILL_COLOR = "fill color";
-			
-	
+	STEPS = "steps",	FILL_COLOR = "fill color";
+
+
 	public ExpressionObject(MathObjectContainer p, int x, int y, int w, int h) {
 		super(p, x, y, w, h);
 		setStudentSelectable(true);
 		setVerticallyResizable(false);
 		setHorizontallyResizable(false);
 		setExpressionActions();
-		getAttributeWithName(EXPRESSION).setValue("");
-		getAttributeWithName(STEPS).setValue("");
-		getAttributeWithName(FONT_SIZE).setValue(12);
-		getAttributeWithName(FILL_COLOR).setValue(null);
 	}
 
 	public ExpressionObject(MathObjectContainer p){
@@ -62,10 +57,6 @@ public class ExpressionObject extends MathObject {
 		setVerticallyResizable(false);
 		setHorizontallyResizable(false);
 		setExpressionActions();
-		getAttributeWithName(EXPRESSION).setValue("");
-		getAttributeWithName(STEPS).setValue("");
-		getAttributeWithName(FONT_SIZE).setValue(12);
-		getAttributeWithName(FILL_COLOR).setValue(null);
 	}
 
 	public ExpressionObject() {
@@ -73,17 +64,13 @@ public class ExpressionObject extends MathObject {
 		setVerticallyResizable(false);
 		setHorizontallyResizable(false);
 		setExpressionActions();
-		getAttributeWithName(EXPRESSION).setValue("");
-		getAttributeWithName(STEPS).setValue("");
-		getAttributeWithName(FONT_SIZE).setValue(12);
-		getAttributeWithName(FILL_COLOR).setValue(null);
 	}
-	
+
 	private void setExpressionActions(){
 		removeAction(MAKE_SQUARE);
 		addAction(MathObject.MAKE_INTO_PROBLEM);
-//		addStudentAction(COMBINE_LIKE_TERMS);
-//		addStudentAction(SIMPLIFY);
+		//		addStudentAction(COMBINE_LIKE_TERMS);
+		//		addStudentAction(SIMPLIFY);
 		addStudentAction(ADD_TO_BOTH_SIDES);
 		addStudentAction(SUBTRACT_FROM_BOTH_SIDES);
 		addStudentAction(MULTIPLY_BOTH_SIDES);
@@ -98,14 +85,15 @@ public class ExpressionObject extends MathObject {
 	@Override
 	protected void addDefaultAttributes() {
 		addAttribute(new StringAttribute(EXPRESSION));
-		StringAttribute steps = new StringAttribute(STEPS, false);
 		addList(new ListAttribute<StringAttribute>(STEPS, new StringAttribute("val"), false));
-		addAttribute(steps);
 		addAttribute(new IntegerAttribute(FONT_SIZE, 1, 50));
 		addAttribute(new ColorAttribute(FILL_COLOR));
+		getAttributeWithName(EXPRESSION).setValue("");
+		getAttributeWithName(FONT_SIZE).setValue(12);
+		getAttributeWithName(FILL_COLOR).setValue(null);
 	}
-	
-	public void setAttributeValue(String n, Object o) throws AttributeException{
+
+	public boolean setAttributeValue(String n, Object o) throws AttributeException{
 		if (n.equals(EXPRESSION)){
 			if ( ! o.equals(getAttributeWithName(EXPRESSION).getValue()))
 			{// if the value of the expression is different
@@ -113,25 +101,20 @@ public class ExpressionObject extends MathObject {
 				// expression is selected when an expression object gains focus
 				// and it tries to set the value when the input field loses focus
 				// thus selecting and de-selecting an expression would always result in
-				// a loss of the steps
-				getAttributeWithName(STEPS).setValue("");
+				// a loss of the steps without this check
 				getListWithName(STEPS).removeAll();
+			}
+			else
+			{// the expression was attempting to be set, but it matched the previous one
+				return false;
 			}
 		}
 		getAttributeWithName(n).setValue(o);
+		return true;
 	}
 
 	public void performSpecialObjectAction(String s){
-		if (s.equals(MAKE_INTO_PROBLEM)){
-			ProblemObject newProblem = new ProblemObject(getParentContainer(), getxPos(),
-					getyPos(), getWidth(), getHeight() );
-			this.getParentContainer().getParentDoc().getDocViewerPanel().setFocusedObject(newProblem);
-			newProblem.addObjectFromPage(this);
-			getParentContainer().addObject(newProblem);
-			getParentContainer().removeObject(this);
-			return;
-		}
-		else if ( ((StringAttribute)getAttributeWithName(EXPRESSION)).getValue() == null || 
+		if ( ((StringAttribute)getAttributeWithName(EXPRESSION)).getValue() == null || 
 				((StringAttribute)getAttributeWithName(EXPRESSION)).getValue().equals("") ){
 			JOptionPane.showMessageDialog(null,
 					"There is no expression to work with, enter one in the box below.",
@@ -140,16 +123,19 @@ public class ExpressionObject extends MathObject {
 			setActionCancelled(true);
 			return;
 		}
+		if (s.equals(MAKE_INTO_PROBLEM)){
+			VariableValueInsertionProblem newProblem = new VariableValueInsertionProblem(getParentContainer(), getxPos(),
+					getyPos(), getWidth(), getHeight() );
+			this.getParentContainer().getParentDoc().getDocViewerPanel().setFocusedObject(newProblem);
+			newProblem.addObjectFromPage(this);
+			getParentContainer().addObject(newProblem);
+			getParentContainer().removeObject(this);
+			return;
+		}
 		else if (s.equals(UNDO_STEP)){
-			if ( ! ((StringAttribute)getAttributeWithName(STEPS)).getValue().equals("")){
-				String stepsString = getAttributeWithName(STEPS).getValue().toString();
-				String[] steps;
-				steps = stepsString.split(";");
-				String newSteps = "";
-				for (int i = 0; i < steps.length - 1; i++){
-					newSteps += steps[i] + ";";
-				}
-				getAttributeWithName(STEPS).setValue(newSteps);
+			int size = getListWithName(STEPS).getValues().size();
+			if ( size > 0){
+				getListWithName(STEPS).getValues().remove(size - 1);
 			}
 			else{
 				JOptionPane.showMessageDialog(null,
@@ -175,36 +161,23 @@ public class ExpressionObject extends MathObject {
 							"Warning", JOptionPane.WARNING_MESSAGE);
 				}
 			} while(variableStr.length() != 1 || ! Character.isLetter(variableStr.charAt(0)));
-			
-			boolean validEx = false;
-			String lastEx = "";
-			while( ! validEx ){
-				lastEx = (String)JOptionPane.showInputDialog(null,
-						"Enter a value or expression to substitute in.",
-						null, JOptionPane.PLAIN_MESSAGE, null, null, lastEx);
-				if ( lastEx == null){
-					setActionCancelled(true);
-					return;
-				}
-				try{
-					substitute = Node.parseNode(lastEx);
-					validEx = true;
-				} catch (NodeException e) {
-					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(null, "Error with expression.",
-							"Warning", JOptionPane.WARNING_MESSAGE);
-				}
-				
+
+			Node newNode = this.getParentPage().getParentDoc().getDocViewerPanel()
+					.getNotebook().getNotebookPanel().getExpressionFromUser("Modify the expression.");
+			if ( newNode == null){
+				setActionCancelled(true);
+				return;
 			}
 			substitute.setDisplayParentheses(true);
 			try {
-				Node newNode = Node.parseNode(getLastStep()).replace(variableStr, substitute);
-				getAttributeWithName(STEPS).setValue(
-						getAttributeWithName(STEPS).getValue().toString()
-						+ newNode.toStringRepresentation() + ";");
+				getListWithName(STEPS).addValueWithString(newNode.toStringRepresentation());
 			} catch (NodeException e) {
 				// this should not throw an error, as both the expression and the one being
 				// Substituted have both been checked for validity
+				JOptionPane.showMessageDialog(null, "Error with expression.",
+						"Warning", JOptionPane.WARNING_MESSAGE);
+				setActionCancelled(true);
+			} catch (AttributeException e) {
 				JOptionPane.showMessageDialog(null, "Error with expression.",
 						"Warning", JOptionPane.WARNING_MESSAGE);
 				setActionCancelled(true);
@@ -212,149 +185,49 @@ public class ExpressionObject extends MathObject {
 			return;
 		}
 		else if (s.equals(MODIFY_EXPRESSION)){
-			boolean validEx = false;
-			String lastEx = getLastStep();
-			while( ! validEx ){
-				lastEx = (String)JOptionPane.showInputDialog( null,
-						"Modify the expression.", null,
-						JOptionPane.PLAIN_MESSAGE, null, null, lastEx);
-				if (lastEx == null || lastEx.equals("")){
-					setActionCancelled(true);
-					return;
-				}
-				Node newNode = null;
-				try {
-					newNode = Node.parseNode(lastEx);
-					getAttributeWithName(STEPS).setValue(
-							getAttributeWithName(STEPS).getValue().toString()
-							+ newNode.toStringRepresentation() + ";");
-					return;
-				} catch (NodeException e) {
-					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(null, "Error with expression.",
-							"Warning", JOptionPane.WARNING_MESSAGE);
-				}
+			
+			Node newNode = this.getParentPage().getParentDoc().getDocViewerPanel()
+					.getNotebook().getNotebookPanel().getExpressionFromUser("Modify the expression.");
+			if ( newNode == null){
+				setActionCancelled(true);
+				return;
+			}
+			try {
+				getListWithName(STEPS).addValueWithString(newNode.toStringRepresentation());
+				return;
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "Error with expression.",
+						"Warning", JOptionPane.WARNING_MESSAGE);
 			}
 		}
 		else if (s.equals(MANUALLY_TYPE_STEP)){
-			boolean validEx = false;
-			String lastEx = "";
-			while( ! validEx ){
-				lastEx = (String)JOptionPane.showInputDialog( null,
-						"Type the entire next line.", null,
-						JOptionPane.PLAIN_MESSAGE, null, null, lastEx);
-				if (lastEx == null || lastEx.equals("")){
-					setActionCancelled(true);
-					return;
-				}
-				Node newNode = null;
-				try {
-					newNode = Node.parseNode(lastEx);
-					getAttributeWithName(STEPS).setValue(
-							getAttributeWithName(STEPS).getValue().toString()
-							+ newNode.toStringRepresentation() + ";");
-					return;
-				} catch (NodeException e) {
-					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(null,
-							"Error with expression.",
-							"Warning", JOptionPane.WARNING_MESSAGE);
-				}
+			
+			Node newNode = this.getParentPage().getParentDoc().getDocViewerPanel()
+					.getNotebook().getNotebookPanel().getExpressionFromUser("Type the entire next line.");
+			if ( newNode == null){
+				setActionCancelled(true);
+				return;
+			}
+			try {
+				getListWithName(STEPS).addValueWithString(newNode.toStringRepresentation());
+				return;
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null,
+						"Error with expression.",
+						"Warning", JOptionPane.WARNING_MESSAGE);
 			}
 		}
 
-		// disabled for now
-//		else if (s.equals(COMBINE_LIKE_TERMS)){
-//			Node n = null;
-//			try {
-//				if (((StringAttribute)getAttributeWithName(STEPS)).getValue().equals("")){
-//					n = Node.parseNode( ((StringAttribute)getAttributeWithName(EXPRESSION)).getValue());
-//				}
-//				else{
-//					String stepsString = getAttributeWithName(STEPS).getValue().toString();
-//					Vector<String> steps = new Vector<String>();
-//					int lastEnd = 0;
-//					for (int i = 0; i < stepsString.length(); i++){
-//						if (stepsString.charAt(i) == ';'){
-//							steps.add(stepsString.substring(lastEnd, i));
-//							lastEnd = i + 1;
-//						}
-//						else if ( i == stepsString.length() - 1){
-//							steps.add(stepsString.substring(lastEnd, i + 1));
-//						}
-//					}
-//					n = Node.parseNode(steps.get(steps.size() - 1));
-//				}
-//				n = n.collectLikeTerms();
-//				n = n.numericSimplify();
-//				getAttributeWithName(STEPS).setValue(
-//						getAttributeWithName(STEPS).getValue().toString()
-//						+ n.toStringRepresentation() + ";");
-//			} catch (NodeException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			return;
-//		}
-
-		// disabled for now
-//		else if (s.equals(SIMPLIFY)){
-//			Node n = null;
-//			try {
-//				if ( ((StringAttribute)getAttributeWithName(STEPS)).getValue().equals("")){
-//					n = Node.parseNode( ((StringAttribute)getAttributeWithName(EXPRESSION)).getValue());
-//				}
-//				else{
-//					String stepsString = getAttributeWithName(STEPS).getValue().toString();
-//					Vector<String> steps = new Vector<String>();
-//					int lastEnd = 0;
-//					for (int i = 0; i < stepsString.length(); i++){
-//						if (stepsString.charAt(i) == ';'){
-//							steps.add(stepsString.substring(lastEnd, i));
-//							lastEnd = i + 1;
-//						}
-//						else if ( i == stepsString.length() - 1){
-//							steps.add(stepsString.substring(lastEnd, i + 1));
-//						}
-//					}
-//					n = Node.parseNode(steps.get(steps.size() - 1));
-//				}
-//				n = n.numericSimplify();
-//
-//				getAttributeWithName(STEPS).setValue(
-//						getAttributeWithName(STEPS).getValue().toString()
-//						 + n.toStringRepresentation()+ ";");
-//			}catch (NodeException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//
-//			return;
-//		}
-		
-	
 		// all of the rest of the operations require an equals sign
 		Node n = null;
 		try{
 			String expression = ((StringAttribute)getAttributeWithName(EXPRESSION)).getValue();
 			if ( ! expression.equals("")){
-				if ( ((StringAttribute)getAttributeWithName(STEPS)).getValue().equals("")){
+				if ( getListWithName(STEPS).getValues().size() == 0){
 					n = Node.parseNode( ((StringAttribute)getAttributeWithName(EXPRESSION)).getValue());
 				}
 				else{
-					String stepsString = getAttributeWithName(STEPS).getValue().toString();
-					Vector<String> steps = new Vector<String>();
-					int lastEnd = 0;
-					for (int i = 0; i < stepsString.length(); i++){
-						if (stepsString.charAt(i) == ';'){
-							steps.add(stepsString.substring(lastEnd, i));
-							lastEnd = i + 1;
-						}
-						else if ( i == stepsString.length() - 1){
-							steps.add(stepsString.substring(lastEnd, i + 1));
-						}
-					}
-					n = Node.parseNode(steps.get(steps.size() - 1));
+					n = Node.parseNode(getLastStep());
 				}
 			}
 		} catch (Exception e){
@@ -378,13 +251,13 @@ public class ExpressionObject extends MathObject {
 		if (s.equals(OTHER_OPERATIONS)){
 			Object[] operations = {"sqrt", "sin", "cos", "tan"};
 			String op = (String)JOptionPane.showInputDialog(
-			                    null,
-			                    "Choose an operation to apply to both sides",
-			                    "Operation Selection",
-			                    JOptionPane.PLAIN_MESSAGE,
-			                    null,
-			                    operations,
-			                    "sqrt");
+					null,
+					"Choose an operation to apply to both sides",
+					"Operation Selection",
+					JOptionPane.PLAIN_MESSAGE,
+					null,
+					operations,
+					"sqrt");
 			if (op == null || op.equals("")){
 				setActionCancelled(true);
 				return;
@@ -402,7 +275,7 @@ public class ExpressionObject extends MathObject {
 			else if (op.equals("tan")){
 				o = new Operator.Tangent();
 			}
-			
+
 			Expression newLeft = new Expression(o);
 			Vector<Node> left = new Vector<Node>();
 			Node newChild = ex.getChild(0);
@@ -411,28 +284,31 @@ public class ExpressionObject extends MathObject {
 			}
 			left.add(newChild);
 			newLeft.setChildren(left);
-			
+
 			Expression newRight = new Expression(o);
 			Vector<Node> right = new Vector<Node>();
-			 newChild = ex.getChild(1);
-				if ( ! op.equals("sqrt") ){
-					newChild.setDisplayParentheses(true);
-				}
+			newChild = ex.getChild(1);
+			if ( ! op.equals("sqrt") ){
+				newChild.setDisplayParentheses(true);
+			}
 			right.add(newChild);
 			newRight.setChildren(right);
-			
+
 			Vector<Node> exChildren = new Vector<Node>();
 			exChildren.add(newLeft);
 			exChildren.add(newRight);
 			ex.setChildren(exChildren);
-			
+
 			try {
-				getAttributeWithName(STEPS).setValue(
-						getAttributeWithName(STEPS).getValue().toString()
-						 + ex.toStringRepresentation()+ ";");
+				getListWithName(STEPS).addValueWithString(ex.toStringRepresentation());
 			} catch (NodeException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				JOptionPane.showMessageDialog(null,
+						"Error with expression.",
+						"Warning", JOptionPane.WARNING_MESSAGE);
+			} catch (AttributeException e) {
+				JOptionPane.showMessageDialog(null,
+						"Error with expression.",
+						"Warning", JOptionPane.WARNING_MESSAGE);
 			}
 			return;
 		}
@@ -456,130 +332,89 @@ public class ExpressionObject extends MathObject {
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
-	
+
 	public String getLastStep(){
-		String stepsString = getAttributeWithName(STEPS).getValue().toString();
-		String[] steps;
-		if ( stepsString.equals("")){
-			steps = new String[1];
-			return getExpression();
+		if ( getListWithName(STEPS).getValues().size() == 0){
+			return ((StringAttribute)getAttributeWithName(EXPRESSION)).getValue();
 		}
 		else{
-			steps = stepsString.split(";");
-			return steps[steps.length - 1];
+			return (String) getListWithName(STEPS).getValue(
+					getListWithName(STEPS).getValues().size() - 1).getValue();
 		}
 	}
-	
+
 	public void multiplyOrDivideBothSides(Expression ex, Operator newOp, String message) throws NodeException{
-		boolean validEx = false;
-		String lastEx = "";
-		Node newNode = null;
-		while( ! validEx ){
-			lastEx = (String)JOptionPane.showInputDialog(null, message,
-					null, JOptionPane.PLAIN_MESSAGE, null, null, lastEx);
-			if ( lastEx == null){
-				setActionCancelled(true);
-				return;
-			}
-			try{
-				newNode = Node.parseNode(lastEx);
-				validEx = true;
-			} catch (NodeException e) {
-				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(null, "Error with expression.",
-						"Warning", JOptionPane.WARNING_MESSAGE);
-			}
-			
+		Node newNode = this.getParentPage().getParentDoc().getDocViewerPanel()
+				.getNotebook().getNotebookPanel().getExpressionFromUser(message);
+		if ( newNode == null){
+			setActionCancelled(true);
+			return;
 		}
-		Node newLeft = new Expression(new Operator.Addition());
-		Vector<Node> leftChildren = new Vector<Node>();
-		for ( Node n : ex.getChild(0).splitOnAddition()){
-			Expression newTerm = new Expression(newOp);
-			Vector<Node> termChildren = new Vector<Node>();
-			termChildren.add(n);
-			termChildren.add(newNode);
-			newTerm.setChildren(termChildren);
-			leftChildren.add(newTerm);
+		Node newLeft = null;
+		Node newRight = null;
+		if ( newOp instanceof Operator.Division){
+			newLeft = ex.getChild(0).divideByNode(newNode);
+			newRight = ex.getChild(1).divideByNode(newNode);
 		}
-		newLeft = Expression.staggerAddition(leftChildren);
-		
-		Node newRight = new Expression(new Operator.Addition());
-		Vector<Node> rightChildren = new Vector<Node>();
-		for ( Node n : ex.getChild(1).splitOnAddition()){
-			Expression newTerm = new Expression(newOp);
-			Vector<Node> termChildren = new Vector<Node>();
-			termChildren.add(n);
-			termChildren.add(newNode);
-			newTerm.setChildren(termChildren);
-			rightChildren.add(newTerm);
+		else if ( newOp instanceof Operator.Multiplication){
+			newLeft = ex.getChild(0).multiplyByNode(newNode);
+			newRight = ex.getChild(1).multiplyByNode(newNode);
 		}
-		newRight = Expression.staggerAddition(rightChildren);
+		else{
+			throw new NodeException("Operation must be division or multiplication.");
+		}
 		
 		Vector<Node> exChildren = new Vector<Node>();
 		exChildren.add(newLeft);
 		exChildren.add(newRight);
 		ex.setChildren(exChildren);
 
-		getAttributeWithName(STEPS).setValue(
-				getAttributeWithName(STEPS).getValue().toString()
-				 + ex.toStringRepresentation()+ ";");
-		
+		try {
+			getListWithName(STEPS).addValueWithString(ex.toStringRepresentation());
+		} catch (AttributeException e) {
+			JOptionPane.showMessageDialog(null,
+					"Error with expression.",
+					"Warning", JOptionPane.WARNING_MESSAGE);
+		}
+
 	}
 
 	public void applyOpToBothSides(Expression ex, Operator newOp, String message) throws NodeException{
-		boolean validEx = false;
-		String lastEx = "";
-		Node newNode = null;
-		while( ! validEx ){
-			lastEx = (String)JOptionPane.showInputDialog(null, message,
-					null, JOptionPane.PLAIN_MESSAGE, null, null, lastEx);
-			if ( lastEx == null){
-				setActionCancelled(true);
-				return;
-			}
-			try{
-				newNode = Node.parseNode(lastEx);
-				validEx = true;
-			} catch (NodeException e) {
-				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(null, "Error with expression.",
-						"Warning", JOptionPane.WARNING_MESSAGE);
-			}
-			
+		Node newNode = this.getParentPage().getParentDoc().getDocViewerPanel()
+				.getNotebook().getNotebookPanel().getExpressionFromUser(message);
+		if ( newNode == null){
+			setActionCancelled(true);
+			return;
 		}
 		try {
-			Expression newLeft = new Expression(newOp);
-			Vector<Node> leftchildren = new Vector<Node>();
-	
-			//grab the left hand size of the previous expression
-			leftchildren.add(ex.getChild(0).cloneNode());
-			leftchildren.add(newNode);
-			newLeft.setChildren(leftchildren);
-	
-			Expression newRight = new Expression(newOp);
-			Vector<Node> rightchildren = new Vector<Node>();
-	
-			//grab the right hand side of the previous expression
-			rightchildren.add(ex.getChild(1).cloneNode());
-			rightchildren.add(newNode);
-			newRight.setChildren(rightchildren);
-	
+			Node newLeft = null;
+			Node newRight = null;
+			if ( newOp instanceof Operator.Addition){
+				newLeft = ex.getChild(0).addNodeToExpression(newNode);
+				newRight = ex.getChild(1).addNodeToExpression(newNode);
+			}
+			else if ( newOp instanceof Operator.Subtraction){
+				newLeft = ex.getChild(0).subtractNodeFromExpression(newNode);
+				newRight = ex.getChild(1).subtractNodeFromExpression(newNode);
+			}
+
 			Vector<Node> exChildren = new Vector<Node>();
 			exChildren.add(newLeft);
 			exChildren.add(newRight);
 			ex.setChildren(exChildren);
-		
+
+			getListWithName(STEPS).addValueWithString(ex.toStringRepresentation());
 		} catch (NodeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,
+					"Error with expression.",
+					"Warning", JOptionPane.WARNING_MESSAGE);
+		} catch (AttributeException e) {
+			JOptionPane.showMessageDialog(null,
+					"Error with expression.",
+					"Warning", JOptionPane.WARNING_MESSAGE);
 		}
-
-		getAttributeWithName(STEPS).setValue(
-				getAttributeWithName(STEPS).getValue().toString()
-				 + ex.toStringRepresentation()+ ";");
-
 	}
-	
+
 	@Override
 	public ExpressionObject clone() {
 		ExpressionObject o = new ExpressionObject(getParentContainer());
@@ -593,7 +428,7 @@ public class ExpressionObject extends MathObject {
 		}
 		return o;
 	}
-	
+
 	public Color getColor(){
 		return ((ColorAttribute)getAttributeWithName(FILL_COLOR)).getValue();
 	}

@@ -1,26 +1,17 @@
 package doc.mathobjects;
 
 import java.awt.Rectangle;
-import java.util.UUID;
 import java.util.Vector;
 
 import doc.Document;
 import doc.Page;
-import doc.attributes.Date;
-import doc.attributes.DateAttribute;
-import doc.attributes.IntegerAttribute;
 import doc.attributes.ListAttribute;
 import doc.attributes.MathObjectAttribute;
-import doc.attributes.StringAttribute;
-import doc.attributes.UUIDAttribute;
 
 public class Grouping extends MathObject implements MathObjectContainer{
 
 	private Vector<MathObject> objects;
 	private Vector<DecimalRectangle> objectBounds;
-
-	public static final String DATE = "date", TAGS = "tags", AUTHOR = "author", NAME = "group name",
-			GROUP_UUID = "groupUUID";
 
 	public static final String STORE_IN_DATABASE = "Store in Database";
 	public static final String BRING_TO_LEFT = "Bring all to Left";
@@ -33,9 +24,6 @@ public class Grouping extends MathObject implements MathObjectContainer{
 		objectBounds = new Vector<DecimalRectangle>();
 		addGroupAttributes();
 		addGroupActions();
-		setDate(new Date());
-		setAuthor("");
-		setName("");
 	}
 
 	public Grouping(MathObjectContainer p, int x, int y, int w, int h) {
@@ -44,9 +32,6 @@ public class Grouping extends MathObject implements MathObjectContainer{
 		objectBounds = new Vector<DecimalRectangle>();
 		addGroupAttributes();
 		addGroupActions();
-		setDate(new Date());
-		setAuthor("");
-		setName("");
 	}
 
 	public Grouping(MathObjectContainer p){
@@ -55,32 +40,13 @@ public class Grouping extends MathObject implements MathObjectContainer{
 		objectBounds = new Vector<DecimalRectangle>();
 		addGroupAttributes();
 		addGroupActions();
-		setDate(new Date());
-		setAuthor("");
-		setName("");
 	}
 
 	public void addGroupAttributes() {
-		MathObjectAttribute name = new StringAttribute(NAME);
-				name.setUserEditable(false);
-		addAttribute(name);
-		ListAttribute<StringAttribute> tags = new ListAttribute(TAGS, new StringAttribute(""));
-				tags.setUserEditable(false);
-		addList(tags);
-		MathObjectAttribute author = new StringAttribute(AUTHOR);
-				author.setUserEditable(false);
-		addAttribute(author);
-		MathObjectAttribute date = new DateAttribute(DATE);
-				date.setUserEditable(false);
-		addAttribute(date);
-
-		addAttribute(new UUIDAttribute(GROUP_UUID, UUID.randomUUID()));
-		getAttributeWithName(GROUP_UUID).setUserEditable(false);
 	}
 
 	public void addGroupActions(){
 		addAction(MathObject.MAKE_INTO_PROBLEM);
-//		addAction(STORE_IN_DATABASE);
 		addAction(BRING_TO_LEFT);
 		addAction(BRING_TO_RIGHT);
 		addAction(BRING_TO_TOP);
@@ -90,7 +56,7 @@ public class Grouping extends MathObject implements MathObjectContainer{
 	@Override
 	public void performSpecialObjectAction(String s) {
 		if (s.equals(MathObject.MAKE_INTO_PROBLEM)){
-			ProblemObject newProblem = new ProblemObject(getParentContainer(), getxPos(),getyPos(),
+			VariableValueInsertionProblem newProblem = new VariableValueInsertionProblem(getParentContainer(), getxPos(),getyPos(),
 					getWidth(), getHeight());
 			getParentContainer().removeObject(this);
 			getParentContainer().addObject(newProblem);
@@ -101,10 +67,6 @@ public class Grouping extends MathObject implements MathObjectContainer{
 			this.getParentContainer().getParentDoc().getDocViewerPanel().resetTempGroup();
 			this.getParentContainer().getParentDoc().getDocViewerPanel().setFocusedObject(newProblem);
 
-		}
-		else if (s.equals(STORE_IN_DATABASE)){
-			this.getParentContainer().getParentDoc().getDocViewerPanel().
-			getNotebook().getDatabase().addGrouping(this.clone());
 		}
 		else if (s.equals(BRING_TO_LEFT)){
 			for (MathObject mObj  : getObjects()){
@@ -167,34 +129,6 @@ public class Grouping extends MathObject implements MathObjectContainer{
 	@Override
 	public String getType() {
 		return GROUPING;
-	}
-
-	public void setName(String s){
-		getAttributeWithName(NAME).setValue(s);
-	}
-
-	public String getName(){
-		return ((StringAttribute) getAttributeWithName(NAME)).getValue();
-	}
-
-	public void setAuthor(String s){
-		getAttributeWithName(AUTHOR).setValue(s);
-	}
-
-	public String getAuthor(){
-		return ((StringAttribute) getAttributeWithName(AUTHOR)).getValue();
-	}
-
-	public void setDate(Date d){
-		getAttributeWithName(DATE).setValue(d);
-	}
-
-	public Date getDate(){
-		return ((DateAttribute) getAttributeWithName(DATE)).getValue();
-	}
-
-	public ListAttribute<StringAttribute> getTags(){
-		return getListWithName(TAGS);
 	}
 
 	public void setObjects(Vector<MathObject> objects) {
@@ -421,21 +355,11 @@ public class Grouping extends MathObject implements MathObjectContainer{
 		getAttributeWithName(WIDTH).setValue(width);
 		adjustChildrenToGroupChange();
 	}
-
-	@Override
-	public int getWidth() {
-		return ((IntegerAttribute)getAttributeWithName(WIDTH)).getValue();
-	}
-
+	
 	@Override
 	public void setHeight(int height) {
 		getAttributeWithName(HEIGHT).setValue(height);
 		adjustChildrenToGroupChange();
-	}
-
-	@Override
-	public int getHeight() {
-		return ((IntegerAttribute)getAttributeWithName(HEIGHT)).getValue();
 	}
 
 	@Override
@@ -445,21 +369,10 @@ public class Grouping extends MathObject implements MathObjectContainer{
 	}
 
 	@Override
-	public int getxPos() {
-		return ((IntegerAttribute)getAttributeWithName(X_POS)).getValue();
-	}
-
-	@Override
 	public void setyPos(int yPos) {
 		getAttributeWithName(Y_POS).setValue(yPos);
 		adjustChildrenToGroupChange();
 	}
-
-	@Override
-	public int getyPos() {
-		return ((IntegerAttribute)getAttributeWithName(Y_POS)).getValue();
-	}
-
 	public void setObjectBounds(Vector<DecimalRectangle> objectBounds) {
 		this.objectBounds = objectBounds;
 	}

@@ -6,7 +6,7 @@
  * the file was found and delete it immediately. 
  */
 
-package doc_gui.object_panels;
+package doc_gui.attribute_panels;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -36,11 +36,13 @@ import doc.attributes.EnumeratedAttribute;
 import doc.attributes.ListAttribute;
 import doc.attributes.MathObjectAttribute;
 import doc.attributes.StringAttribute;
+import doc.mathobjects.AnswerBoxObject;
 import doc.mathobjects.ExpressionObject;
 import doc.mathobjects.GraphObject;
 import doc.mathobjects.Grouping;
 import doc.mathobjects.MathObject;
 import doc.mathobjects.PolygonObject;
+import doc.mathobjects.TextObject;
 import doc.mathobjects.TriangleObject;
 import doc_gui.DocViewerPanel;
 import doc_gui.OCButton;
@@ -55,6 +57,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 	private JPanel mainPanel;
 	private DocViewerPanel docPanel; 
 	private Vector<AdjustmentPanel> adjusters;
+	private Vector<ListAdjuster> listAdjusters;
 	private MathObject object;
 	private ObjectPropertiesFrame thisFrame;
 	private String[] graphNavActions = {GraphObject.MOVE_DOWN, GraphObject.MOVE_UP,
@@ -74,6 +77,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridBagLayout());
 		adjusters = new Vector<AdjustmentPanel>();
+		listAdjusters = new Vector<ListAdjuster>();
 		scrollPane = new JScrollPane(mainPanel);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
@@ -119,6 +123,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		JPanel panel = mainPanel;
 		mainPanel.removeAll();
 		adjusters.removeAllElements();
+		listAdjusters.removeAllElements();
 		this.setTitle(o.getClass().getSimpleName());
 		JTabbedPane graphTabs = null;
 		JPanel graphNav = null, graphGrid = null;
@@ -203,7 +208,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 			skipAction = false;
 			if ( object instanceof GraphObject)
 			{// skip the actions for navigating around the graph
-				// they are added in a seperate panel to make their
+				// they are added in a separate panel to make their
 				// use more intuitive
 				for ( String str : graphNavActions){
 					if (s.equals(str)){
@@ -254,7 +259,8 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 					( ! docPanel.isInStudentMode() && list.isUserEditable()) )
 			{// only show editing dialog if in teacher mode (not student)
 				//or if the attribute has been left student editable
-				panel.add(new ListAdjuster(list, docPanel, panel), con);
+				listAdjusters.add(new ListAdjuster(list, docPanel, panel));
+				panel.add(listAdjusters.get(listAdjusters.size() - 1), con);
 				con.gridy++;
 			}
 		}
@@ -272,10 +278,10 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 			{// only show editing dialog if in teacher mode (not student)
 				//or if the attribute has been left student editable
 				adjusters.add(getAdjuster(mAtt, docPanel, panel));
-				if (mAtt instanceof StringAttribute){
+				if (mAtt instanceof StringAttribute){// make string panels stretch vertically
 					con.weighty = 1;
 				}
-				else{
+				else{// make all others stretch very little horizontally
 					con.weighty = .01;
 				}
 				panel.add(adjusters.get(adjusters.size() - 1), con);
@@ -408,7 +414,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		// the order of these next two lines is important,
 		// some properties, such as with the graph are adjusted
 		// when the document redraws itself
-		if ( ! object.ActionWasCancelled()){
+		if ( ! object.actionWasCancelled()){
 			docPanel.addUndoState();
 		}
 		docPanel.repaint();
@@ -416,10 +422,40 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		ObjectPropertiesFrame.this.repaint();
 	}
 
-	public void focusAttributeField(MathObjectAttribute mAtt){
-		for ( AdjustmentPanel aPanel : adjusters){
-			if ( aPanel.getAttribute().equals(mAtt)){
-				aPanel.focusAttributField();
+	public void focusPrimaryAttributeField(){
+		
+		// the graph's primary attribute is a list, so by default focus the last
+		// list member that was created
+		if (object instanceof GraphObject){
+			ListAttribute ex = object.getListWithName(GraphObject.EXPRESSIONS);
+			for ( ListAdjuster aPanel : listAdjusters){
+				if ( aPanel.getList().equals(ex)){
+					aPanel.focusAttributField();
+					return;
+				}
+			}
+			return;
+		}
+		MathObjectAttribute primaryAttribute;
+		if (object instanceof TextObject){
+			primaryAttribute = object.getAttributeWithName(TextObject.TEXT);
+		}
+		else if (object instanceof ExpressionObject){
+			primaryAttribute = object.getAttributeWithName(ExpressionObject.EXPRESSION);
+		}
+		else if (object instanceof AnswerBoxObject){
+			primaryAttribute = object.getAttributeWithName(AnswerBoxObject.ANSWER);
+
+		}
+		else{
+			return;
+		}
+		if ( ! docPanel.isInStudentMode() ||
+				(docPanel.isInStudentMode() && primaryAttribute.isStudentEditable())){
+			for ( AdjustmentPanel aPanel : adjusters){
+				if ( aPanel.getAttribute().equals(primaryAttribute)){
+					aPanel.focusAttributField();
+				}
 			}
 		}
 	}

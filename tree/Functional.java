@@ -8,7 +8,7 @@
 
 package tree;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public abstract class Functional extends Expression {
 

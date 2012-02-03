@@ -4,9 +4,6 @@ package doc_gui;
 import javax.swing.ImageIcon;
 import javax.swing.JToolBar;
 
-import doc.mathobjects.MathObject;
-import doc.mathobjects.ProblemObject;
-
 public class ObjectActionsToolBar extends JToolBar{
 	
 	private NotebookPanel notebookPanel;
