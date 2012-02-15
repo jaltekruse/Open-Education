@@ -36,14 +36,16 @@ public class NegationGraphic extends UnaryExpressionGraphic {
 			super.getRootNodeGraphic().getGraphics().fillRect(symbolX1, symbolY1, symbolX2 - symbolX1, symbolY2 - symbolY1);
 			super.getRootNodeGraphic().getGraphics().setColor(Color.black);
 		}
-		getRootNodeGraphic().getGraphics().setStroke(new BasicStroke(
-				(int) (1 * getRootNodeGraphic().DOC_ZOOM_LEVEL * getRootNodeGraphic().getFontSizeAdjustment())));
-		super.getRootNodeGraphic().getGraphics().drawLine(symbolX1 + 
-				(int) Math.round(((symbolX2 - symbolX1) - space) * .1),
-				symbolY1 + (int) Math.round((symbolY2 - symbolY1) * .4),
-				symbolX2 - space, 
-				symbolY1 + (int) Math.round((symbolY2 - symbolY1) * .4));
-		super.getRootNodeGraphic().getGraphics().setStroke(new BasicStroke());
+		
+		getRootNodeGraphic().getGraphics().setFont(getFont());
+		getRootNodeGraphic().getGraphics().drawString("-", symbolX1, symbolY2);
+//		getRootNodeGraphic().getGraphics().setStroke(new BasicStroke(
+//				(int) (1 * getRootNodeGraphic().DOC_ZOOM_LEVEL * getRootNodeGraphic().getFontSizeAdjustment())));
+//		super.getRootNodeGraphic().getGraphics().drawLine(symbolX1 + space,
+//				symbolY1 + (int) Math.round((symbolY2 - symbolY1) * .4),
+//				symbolX2 - space, 
+//				symbolY1 + (int) Math.round((symbolY2 - symbolY1) * .4));
+//		super.getRootNodeGraphic().getGraphics().setStroke(new BasicStroke());
 	}
 
 	@Override
@@ -160,7 +162,7 @@ public class NegationGraphic extends UnaryExpressionGraphic {
 		g.setFont(f);
 		setFont(f);
 		
-		space = (int) (3 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
+		space = (int) (1 * super.getRootNodeGraphic().DOC_ZOOM_LEVEL);
 		
 		Node tempChild = ((Expression)getValue()).getChild(0);
 		NodeGraphic childValGraphic = null;
@@ -169,7 +171,7 @@ public class NegationGraphic extends UnaryExpressionGraphic {
 		int[] totalSize = {0, 0};
 		
 		
-		symbolSize[0] = (int)Math.round(super.getRootNodeGraphic().getStringWidth("-", f) * .3) + space;
+		symbolSize[0] = (int) Math.round(super.getRootNodeGraphic().getStringWidth("-", f)) + 2 * space;
 		symbolSize[1] = super.getRootNodeGraphic().getFontHeight(f);
 		childValGraphic = makeNodeGraphic(tempChild);
 		

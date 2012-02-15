@@ -18,6 +18,7 @@ public class NotebookKeyboardListener implements KeyListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
+		System.out.println(KeyEvent.getKeyText(e.getKeyCode()) + " presssed");
 		keysPressed.add(e.getKeyCode());
 	}
 
@@ -32,5 +33,8 @@ public class NotebookKeyboardListener implements KeyListener{
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	public boolean shiftPressed(){
+		return keysPressed.contains(KeyEvent.SHIFT_DOWN_MASK);
+	}
 }

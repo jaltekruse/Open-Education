@@ -59,7 +59,6 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 	private Vector<AdjustmentPanel> adjusters;
 	private Vector<ListAdjuster> listAdjusters;
 	private MathObject object;
-	private ObjectPropertiesFrame thisFrame;
 	private String[] graphNavActions = {GraphObject.MOVE_DOWN, GraphObject.MOVE_UP,
 			GraphObject.MOVE_LEFT, GraphObject.MOVE_RIGHT, GraphObject.DEFAULT_GRID};
 	private String[] expressionOpActions = {ExpressionObject.ADD_TO_BOTH_SIDES,
@@ -83,7 +82,6 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		this.getContentPane().add(scrollPane);
-		thisFrame = this;
 	}
 
 	public JScrollPane getScrollPane(){
@@ -144,12 +142,13 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 			graphNav.setLayout(new GridBagLayout());
 			graphGrid = new JPanel();
 			graphGrid.setLayout(new GridBagLayout());
-			JScrollPane graphNavScrollPane = new JScrollPane(graphNav);
+			JScrollPane graphNavScrollPane = new JScrollPane(graphTabs);
 			graphNavScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 			graphNavScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
 			graphNavScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-			graphTabs.add("Navigation", graphNavScrollPane);
+			graphTabs.add("Navigation", graphNav);
 			graphTabs.add("Grid", graphGrid);
+			this.getContentPane().add(graphNavScrollPane);
 			panel = graphNav;
 		}
 		else{
@@ -161,11 +160,6 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		actionPics.setLayout(new GridLayout(0, 3, 4, 4));
 		JPanel otherActions = new JPanel();
 		otherActions.setLayout(new GridLayout(0, 1, 4, 4));
-		
-		panel.add(otherActions, con);
-		
-		con.gridy++;
-		panel.add(actionPics, con);
 
 		ImageIcon pic;
 		JButton button;
@@ -193,16 +187,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 				});
 			}
 		}
-		con.gridy++;
 
-		if ( object instanceof GraphObject){
-			panel.add(createGraphNagvigator(), con);
-			con.gridy++;
-		}
-		if ( object instanceof ExpressionObject){
-			panel.add(createExpressionModifier(), con);
-			con.gridy++;
-		}
 		boolean skipAction;
 		for (final String s : o.getStudentActions()){
 			skipAction = false;
@@ -247,10 +232,29 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 					// TODO Auto-generated method stub
 					buttonAction(s);
 					docPanel.repaint();
-					thisFrame.update();
+					ObjectPropertiesFrame.this.update();
 				}
 
 			});
+		}
+		
+		if (otherActions.getComponentCount() != 0)
+		{// only add panel for actions if components have been added to it
+			panel.add(otherActions, con);
+			con.gridy++;
+		}
+		if (actionPics.getComponentCount() != 0)
+		{// only add panel for action pics if components have been added to it	
+			panel.add(actionPics, con);
+			con.gridy++;
+		}
+		if ( object instanceof GraphObject){
+			panel.add(createGraphNagvigator(), con);
+			con.gridy++;
+		}
+		if ( object instanceof ExpressionObject){
+			panel.add(createExpressionModifier(), con);
+			con.gridy++;
 		}
 
 		con.fill = GridBagConstraints.HORIZONTAL;
@@ -287,6 +291,9 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 				panel.add(adjusters.get(adjusters.size() - 1), con);
 				con.gridy++;
 			}
+		}
+		if ( panel.getComponentCount() == 0){
+			panel.add(new JLabel("No actions for this object"), con);
 		}
 		panel.revalidate();
 		this.pack();

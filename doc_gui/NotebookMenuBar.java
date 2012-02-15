@@ -171,7 +171,17 @@ public class NotebookMenuBar extends JMenuBar {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				openBook.setPreferencesDirectory();
+				OpenNotebook.setPreferencesDirectory();
+			}
+		});
+		
+		item = new JMenuItem("Set User Name");
+		edit.add(item);
+		item.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				OpenNotebook.setUserName();
 			}
 		});
 		

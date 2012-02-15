@@ -45,10 +45,9 @@ public class ExpressionObjectGUI extends MathObjectGUI<ExpressionObject> {
 
 		RootNodeGraphic rootGraphic;
 		if ( ! object.getExpression().equals("")){
-
 			// if any of the steps cannot be rendered, this information will allow
-			// space to be left to print an error message in its place
-			g.setFont(new Font("SansSerif", 0, fontSize));
+			// space to be left for printing an error message in its place
+			g.setFont(new Font("Sans Serif", 0, fontSize));
 			int errorMessageHeight = g.getFontMetrics().getHeight();
 			int errorMessageWidth = g.getFontMetrics().stringWidth(EX_ERROR);
 
@@ -98,7 +97,6 @@ public class ExpressionObjectGUI extends MathObjectGUI<ExpressionObject> {
 					}
 					totalHeight += rootGraphic.getHeight();
 				}catch (Exception e) {
-					// TODO Auto-generated catch block
 					indeciesInError.add(currentIndex);
 					totalHeight += errorMessageHeight;
 					if (errorMessageWidth > greatestWidth){
@@ -127,7 +125,9 @@ public class ExpressionObjectGUI extends MathObjectGUI<ExpressionObject> {
 						index++;
 						continue;
 					}
-					r.draw();
+					else{
+						r.draw();
+					}
 				} catch (NodeException e) {
 					// TODO Auto-generated catch block
 					g.setFont(new Font("SansSerif", 0, fontSize));
@@ -151,7 +151,10 @@ public class ExpressionObjectGUI extends MathObjectGUI<ExpressionObject> {
 
 	public void drawMathObject(ExpressionObject object, Graphics g, Point pageOrigin,
 			float zoomLevel) {
-		// TODO Auto-generated method stub
+		if ( object.isAlwaysShowingSteps()){
+			drawInteractiveComponents(object, g, pageOrigin, zoomLevel);
+			return;
+		}
 
 		int xOrigin = (int) (pageOrigin.getX() + object.getxPos() * zoomLevel);
 		int yOrigin = (int) (pageOrigin.getY() + object.getyPos() * zoomLevel);

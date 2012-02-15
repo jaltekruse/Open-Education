@@ -17,12 +17,12 @@ package doc;
  * @author jason
  *
  */
-public class PointInDocument {
-	
+public class PointInDocument implements Comparable<PointInDocument>{
+
 	private int page, xPos, yPos;
-	
+
 	private boolean outSidePage, belowPage;
-	
+
 	public PointInDocument(int page, int xPos, int yPos){
 		this.page = page;
 		this.yPos = yPos;
@@ -71,5 +71,37 @@ public class PointInDocument {
 
 	public boolean isBelowPage() {
 		return belowPage;
+	}
+
+	@Override
+	public int compareTo(PointInDocument other) {
+		// had problems with columns being off by small amounts, causing the
+		// number to turn out bizarrely. this function is used to order
+		// the numbers, so I added a small buffer to prevent a problem
+		// that is slightly higher, but on the right column from being ordered
+		// after another on the left that is slightly lower
+		int columnBuffer = 4;
+		if ( page < other.getPage()){
+			return -1;
+		}
+		else if ( page > other.getPage()){
+			return 1;
+		}
+		else{
+			if ( yPos < other.getyPos() - 3){
+				return -1;
+			}
+			else if ( yPos > other.getyPos() + 3){
+				return 1;
+			}
+			else{
+				if ( xPos < other.getxPos()){
+					return -1;
+				}
+				else{
+					return 1;
+				}
+			}
+		}
 	}
 }

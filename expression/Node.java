@@ -56,9 +56,6 @@ public abstract class Node implements Cloneable {
 	public abstract Node replace(Identifier identifier, Node node);
 
 	public Node addNodeToExpression(Node n){
-		if ( n instanceof Expression){
-			n.setDisplayParentheses(true);
-		}
 		try {
 			return new Expression(new Operator.Addition(), (Node) cloneNode(), n.cloneNode());
 		}catch (NodeException e) {
@@ -69,9 +66,6 @@ public abstract class Node implements Cloneable {
 	}
 
 	public Node subtractNodeFromExpression(Node n){
-		if ( n instanceof Expression){
-			n.setDisplayParentheses(true);
-		}
 		try {
 			return new Expression(new Operator.Subtraction(), cloneNode(), n.cloneNode());
 		}catch (NodeException e) {

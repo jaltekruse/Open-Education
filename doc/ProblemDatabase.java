@@ -4,8 +4,14 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.Vector;
 
+import doc.expression_generators.AssociativePropertiesWithVariables;
+import doc.expression_generators.BasicAddition;
+import doc.expression_generators.BasicAdditionAndSubraction;
+import doc.expression_generators.BasicAdditionWithNegatives;
 import doc.expression_generators.BasicArithmeticExpression;
+import doc.expression_generators.BasicAssociativeProperty;
 import doc.expression_generators.ExpressionGenerator;
+import doc.expression_generators.PropertyOfOppositiesWithVariables;
 import doc.mathobjects.Grouping;
 import doc.mathobjects.MathObject;
 import doc.mathobjects.ProblemGenerator;
@@ -14,7 +20,9 @@ public class ProblemDatabase {
 
 	private Vector<ProblemGenerator> problems;
 	private static final ExpressionGenerator[] expressionGenerators = {
-		new BasicArithmeticExpression()
+		new BasicArithmeticExpression(), new BasicAssociativeProperty(), new AssociativePropertiesWithVariables(),
+		new BasicAddition(), new BasicAdditionWithNegatives(), new BasicAdditionAndSubraction(),
+		new PropertyOfOppositiesWithVariables()
 	};
 	private CaseInsensitiveMap tagIndex;
 	public static final String NAME = "ProblemDatabase";

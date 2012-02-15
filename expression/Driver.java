@@ -22,7 +22,11 @@ public class Driver {
 			VarList varList = new VarList();
 			varList.setIdentifierValue("x", new Number(5));
 			varList.setIdentifierValue("y", new Number(2));
-			Node node = Node.parseNode("2x+3x+5");
+			Node node = Node.parseNode("3x*3*x");
+			System.out.println(node.smartNumericSimplify().standardFormat().toStringRepresentation());
+			Node node1 = Node.parseNode("2(x+5)");
+			System.out.println(node.equals(node1));
+			System.out.println(node1.smartNumericSimplify().toStringRepresentation());
 			Node node2 = Node.parseNode("2");
 			System.out.println(node.multiplyByNode(node2).toStringRepresentation());
 			System.out.println(Expression.staggerAddition(node.splitOnAddition()).toStringRepresentation());

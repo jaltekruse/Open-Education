@@ -207,7 +207,6 @@ public void drawCursor(){
 	@Override
 	public int[] requestSize(Graphics g, Font f, int x1, int y1)
 			throws Exception {
-		// TODO Auto-generated method stub
 		g.setFont(f);
 		setFont(f);
 		FontMetrics fm = g.getFontMetrics();
@@ -215,7 +214,7 @@ public void drawCursor(){
 		int[] size = new int[2];
 		size[0] = fm.stringWidth(s);
 		size[1] = getRootNodeGraphic().getFontHeight(f);
-		setUpperHeight((int) Math.round(size[1]/2));
+		setUpperHeight((int) Math.round(size[1]/2.0));
 		setLowerHeight(getUpperHeight());
 		super.setX1(x1);
 		super.setY1(y1);
@@ -226,7 +225,6 @@ public void drawCursor(){
 
 	@Override
 	public Vector getComponents() {
-		// TODO Auto-generated method stub
 		return new Vector<NodeGraphic>();
 	}
 

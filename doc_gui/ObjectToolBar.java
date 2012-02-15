@@ -17,13 +17,13 @@ public class ObjectToolBar extends JToolBar {
 		for (final String s : MathObject.objectTypes) {
 			if (s.equals(MathObject.GROUPING)
 					|| s.equals(MathObject.VAR_INSERTION_PROBLEM)
-					|| s.equals(MathObject.GENERATED_PROBLEM)) {
+					|| s.equals(MathObject.GENERATED_PROBLEM)
+					|| s.equals(MathObject.PROBLEM_NUMBER_OBJECT)) {
 				// all classes that extend grouping cannot be created with a
-				// button and mouse drag they do not need buttons
+				// button and mouse drag. They do not need buttons
 				continue;
 			}
-			if (s.equals(MathObject.CONE_OBJECT)
-					|| s.equals(MathObject.PYRAMID_OBJECT)) {
+			if (s.equals(MathObject.PYRAMID_OBJECT)) {
 				// these objects have not been created yet, they will be added
 				// soon
 				continue;
@@ -35,7 +35,7 @@ public class ObjectToolBar extends JToolBar {
 
 				@Override
 				public void associatedAction() {
-					// pass even down to current doc window for placing a
+					// pass event down to current doc window for placing a
 					// mathObj
 					notebookPanel.getCurrentDocViewer().createMathObject(
 							MathObject.getNewInstance(s));
@@ -53,7 +53,7 @@ public class ObjectToolBar extends JToolBar {
 			}
 		};
 		
-//		OCButton cloneButton = new OCButton("Clonse Doc", "Clone Doc",
+//		OCButton cloneButton = new OCButton("Clone Doc", "Clone Doc",
 //				1, 1, 3, 0, this){
 //			
 //			@Override

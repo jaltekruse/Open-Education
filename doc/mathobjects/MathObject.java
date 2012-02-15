@@ -11,7 +11,9 @@ package doc.mathobjects;
 import java.awt.Rectangle;
 import java.util.Vector;
 
+import doc.GridPoint;
 import doc.Page;
+import doc.PointInDocument;
 import doc.attributes.AttributeException;
 import doc.attributes.IntegerAttribute;
 import doc.attributes.ListAttribute;
@@ -25,6 +27,9 @@ public abstract class MathObject {
 
 	private Vector<ListAttribute<?>> lists;
 
+	// flag used for temporarily storing if an action was successful
+	// prevents unnecessary undo states from being added when actions
+	// are canceled
 	private boolean actionCancelled = false;
 
 	public static final String ANSWER_BOX_OBJ = "AnswerBox",
@@ -36,7 +41,8 @@ public abstract class MathObject {
 			GROUPING = "Grouping", VAR_INSERTION_PROBLEM = "VarInsertionProblem",
 			CYLINDER_OBJ = "Cylinder", CONE_OBJECT = "Cone",
 			REGULAR_POLYGON_OBJECT = "RegularPolygon", ARROW_OBJECT = "Arrow",
-			PYRAMID_OBJECT = "Pyramid", GENERATED_PROBLEM = "GeneratedProblem";
+			PYRAMID_OBJECT = "Pyramid", GENERATED_PROBLEM = "GeneratedProblem",
+			PROBLEM_NUMBER_OBJECT = "ProblemNumber";
 
 	// the order of these three arrays is very important, they are parallel
 	// arrays used to create new instances of objects when all you have is
@@ -44,24 +50,26 @@ public abstract class MathObject {
 	// new objects
 	public static final String[] objectTypes = { RECTANGLE, OVAL_OBJ,
 			TRIANGLE_OBJ, REGULAR_POLYGON_OBJECT, TRAPEZOID_OBJ,
-			PARALLELOGRAM_OBJ, ARROW_OBJECT, CUBE_OBJECT, CYLINDER_OBJ,
+			PARALLELOGRAM_OBJ, ARROW_OBJECT, CUBE_OBJECT, CYLINDER_OBJ, CONE_OBJECT,
 			NUMBER_LINE, GRAPH_OBJ, TEXT_OBJ, EXPRESSION_OBJ, ANSWER_BOX_OBJ,
-			CONE_OBJECT, PYRAMID_OBJECT, GROUPING, VAR_INSERTION_PROBLEM,
-			GENERATED_PROBLEM };
+			PYRAMID_OBJECT, GROUPING, VAR_INSERTION_PROBLEM,
+			GENERATED_PROBLEM, PROBLEM_NUMBER_OBJECT};
 
 	public static final String[] imgFilenames = { "rectangle.png", "oval.png",
 			"triangle.png", "regularPolygon.png", "trapezoid.png",
-			"parallelogram.png", "arrow.png", "cube.png", "cylinder.png",
+			"parallelogram.png", "arrow.png", "cube.png", "cylinder.png", "cone.png",
 			"numberLine.png", "graph.png", "text.png", "expression.png",
-			"answerBox.png", "cone.png", "pyramid.png", null, null, null };
+			"answerBox.png", "pyramid.png", null, null, null, null };
 
 	public static final MathObject[] objects = { new RectangleObject(),
 			new OvalObject(), new TriangleObject(), new RegularPolygonObject(),
 			new TrapezoidObject(), new ParallelogramObject(),
-			new ArrowObject(), new CubeObject(), new CylinderObject(),
+			new ArrowObject(), new CubeObject(), new CylinderObject(), new ConeObject(),
 			new NumberLineObject(), new GraphObject(), new TextObject(),
-			new ExpressionObject(), new AnswerBoxObject(), null, null,
-			new Grouping(), new VariableValueInsertionProblem(), new GeneratedProblem() };
+			new ExpressionObject(), new AnswerBoxObject(), null,
+			new Grouping(), new VariableValueInsertionProblem(), new GeneratedProblem(),
+			new ProblemNumberObject()
+	};
 
 	public static final String MAKE_SQUARE = "Make Height and Width equal",
 			MAKE_INTO_PROBLEM = "Make into Problem",
@@ -75,12 +83,11 @@ public abstract class MathObject {
 	// written in the performFunction method
 	private Vector<String> actions;
 	private Vector<String> studentActions;
-	private boolean studentSelectable, isHorizontallyResizable,
-			isVerticallyResizable;
+	private boolean isHorizontallyResizable, isVerticallyResizable;
+	
 	// flag to indicate that the object has just been removed from the document,
-	// it prevents actions from
-	// being performed as the fields in the frame are being unfocused by
-	// clicking delete
+	// it prevents actions from being performed as the fields in the frame are
+	// being unfocused by clicking delete
 	private boolean justDeleted = false;
 
 	public MathObject() {
@@ -130,8 +137,7 @@ public abstract class MathObject {
 	 * this method will be overridden by the ones below them in the inheritance
 	 * tree.
 	 */
-	protected void addDefaultAttributes() {
-	}
+	protected void addDefaultAttributes() {}
 
 	public abstract String getType();
 
@@ -209,6 +215,20 @@ public abstract class MathObject {
 		}
 		return false;
 	}
+	
+	public PointInDocument getPositionInDoc(){
+		return new PointInDocument(getParentPage().getParentDoc().getPageIndex(getParentPage()),
+				getxPos(), getyPos());
+	}
+	
+	/**
+	 * Indicated if students have permission to select an object.
+	 * 
+	 * @return - true if they can select this object
+	 */
+	public boolean isStudentSelectable(){
+		return false;
+	}
 
 	@Override
 	public abstract MathObject clone();
@@ -283,7 +303,30 @@ public abstract class MathObject {
 			System.out.println("unrecognized action (MathObject)");
 		}
 	}
+	
+	public GridPoint flipPointVertically(GridPoint p){
+		if (p.gety() < .5){
+			return new GridPoint(p.getx(), p.gety() + 2 * (.5 - p.gety()));
+		}
+		else if (p.gety() > .5){
+			return new GridPoint(p.getx(), p.gety() + 2 * (.5 - p.gety()));
+		}
+		else{
+			return new GridPoint(p.getx(), p.gety()); //y is .5, should not be shifted
+		}
+	}
 
+	public GridPoint flipPointHorizontally(GridPoint p){
+		if (p.gety() < .5){
+			return new GridPoint(p.getx(), p.gety() + 2 * (.5 - p.gety()));
+		}
+		else if (p.gety() > .5){
+			return new GridPoint(p.getx(), p.gety() + 2 * (.5 - p.gety()));
+		}
+		else{
+			return new GridPoint(p.getx(), p.gety()); //y is .5, should not be shifted
+		}
+	}
 	public Rectangle getBounds() {
 		return new Rectangle(getxPos(), getyPos(), getWidth(), getHeight());
 	}
@@ -404,15 +447,7 @@ public abstract class MathObject {
 			}
 		}
 	}
-
-	public void setStudentSelectable(boolean studentSelectable) {
-		this.studentSelectable = studentSelectable;
-	}
-
-	public boolean isStudentSelectable() {
-		return studentSelectable;
-	}
-
+	
 	public void setStudentActions(Vector<String> studentActions) {
 		this.studentActions = studentActions;
 	}

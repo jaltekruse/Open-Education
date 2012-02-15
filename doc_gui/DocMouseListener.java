@@ -151,7 +151,7 @@ public class DocMouseListener implements MouseInputListener{
 		}
 
 	}
-	
+
 	@Override
 	public void mousePressed(MouseEvent e) {
 		docPanel.requestFocus();
@@ -236,7 +236,7 @@ public class DocMouseListener implements MouseInputListener{
 		placingObject = false;
 		objPlacementRequiresMouseDrag = false;
 	}
-	
+
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		docPanel.requestFocus();
@@ -508,88 +508,85 @@ public class DocMouseListener implements MouseInputListener{
 
 	private void adjustTempGroupSelection(){
 		//need to modify this code to take into account the current stacking of the objects
-				//large objects automatically cover up smaller ones using this system
-				Rectangle selectRect = docPanel.getSelectionRect().getBounds();
-				Grouping tempGroup = docPanel.getTempGroup();
-				Vector<MathObject> pageObjects = docPanel.getSelectionRect().getParentPage().getObjects();
+		//large objects automatically cover up smaller ones using this system
+		Rectangle selectRect = docPanel.getSelectionRect().getBounds();
+		Grouping tempGroup = docPanel.getTempGroup();
+		Vector<MathObject> pageObjects = docPanel.getSelectionRect().getParentPage().getObjects();
 
-				//temporary storage of objects that collide with the selection rectangle
-				Vector<MathObject> collisionObjects = new Vector<MathObject>();
+		//temporary storage of objects that collide with the selection rectangle
+		Vector<MathObject> collisionObjects = new Vector<MathObject>();
 
-				for (MathObject mObj : pageObjects)
-				{// find all of the bojects that were contated by the selection rectangle
-					if (selectRect.intersects(mObj.getBounds()))
-					{
-						collisionObjects.add(mObj);
-					}
-				}
+		for (MathObject mObj : pageObjects)
+		{// find all of the bojects that were contated by the selection rectangle
+			if (selectRect.intersects(mObj.getBounds()))
+			{
+				collisionObjects.add(mObj);
+			}
+		}
 
-				if (collisionObjects.size() == 0)
-				{// no objects were contacted
-					docPanel.ungroupTempGroup();
-					docPanel.setFocusedObject(null);
+		if (collisionObjects.size() == 0)
+		{// no objects were contacted
+			docPanel.ungroupTempGroup();
+			docPanel.setFocusedObject(null);
+			return;
+		}
+
+		if (collisionObjects.size() == 1)
+		{// only one object was contacted
+			MathObject contactedObj = collisionObjects.get(0);
+			if (contactedObj.equals(docPanel.getFocusedObject()))
+			{//collision occurred with a single object already selected
+				;//do nothing
+				if (contactedObj != tempGroup){
+					collisionObjects.remove(contactedObj);
+					docPanel.repaint();
 					return;
 				}
+			}
+			else{
+				docPanel.setFocusedObject(contactedObj);
+				collisionObjects.remove(contactedObj);
+				return;
+			}
+		}
 
-				if (collisionObjects.size() == 1)
-				{// only one object was contacted
-					MathObject contactedObj = collisionObjects.get(0);
-					if (contactedObj.equals(docPanel.getFocusedObject()))
-					{//collision occurred with a single object already selected
-						;//do nothing
-						if (contactedObj != tempGroup){
-							collisionObjects.remove(contactedObj);
-							docPanel.repaint();
-							return;
-						}
-					}
-					else{
-						docPanel.setFocusedObject(contactedObj);
-						collisionObjects.remove(contactedObj);
-						return;
-					}
+		if (collisionObjects.contains(tempGroup)){
+			MathObject mObj = null;
+			//need to make sure all of the objects in the group were contacted, otherwise remove them
+			for ( int i = 0; i < tempGroup.getObjects().size(); i++ ){
+				mObj = tempGroup.getObjects().get(i);
+				if ( ! selectRect.intersects(mObj.getBounds()) ){
+					tempGroup.removeObject(mObj);
+					tempGroup.getParentContainer().addObject(mObj);
+					i--;
 				}
+			}
 
-				if (collisionObjects.contains(tempGroup)){
-					MathObject mObj = null;
-					//need to make sure all of the objects in the group were contacted, otherwise remove them
-					for ( int i = 0; i < tempGroup.getObjects().size(); i++ ){
-						mObj = tempGroup.getObjects().get(i);
-						if ( ! selectRect.intersects(mObj.getBounds()) ){
-							tempGroup.removeObject(mObj);
-							tempGroup.getParentContainer().addObject(mObj);
-							i--;
-						}
-					}
+			// remove the temporary group from the contacted list, it now contains only elements that were
+			// in it before and were contacted by the current selection rectangle
+			collisionObjects.remove(tempGroup);
+		}
 
-					// remove the temporary group from the contacted list, it now contains only elements that were
-					// in it before and were contacted by the current selection rectangle
-					collisionObjects.remove(tempGroup);
-				}
+		//objects were selected, that have not been added to the temp group yet
 
-				//objects were selected, that have not been added to the temp group yet
+		if (collisionObjects.size() > 0){
 
-				if (collisionObjects.size() > 0){
+			tempGroup.setParentContainer(collisionObjects.get(0).getParentContainer());
+			collisionObjects.get(0).getParentContainer().addObject(tempGroup);
+			for ( MathObject mObj : collisionObjects){
+				tempGroup.addObjectFromPage(mObj);
+				mObj.getParentContainer().removeObject(mObj);
+			}
+			docPanel.setFocusedObject(tempGroup);
+		}
 
-					tempGroup.setParentContainer(collisionObjects.get(0).getParentContainer());
-					collisionObjects.get(0).getParentContainer().addObject(tempGroup);
-					for ( MathObject mObj : collisionObjects){
-						tempGroup.addObjectFromPage(mObj);
-						mObj.getParentContainer().removeObject(mObj);
-					}
-
-
-
-					docPanel.setFocusedObject(tempGroup);
-				}
-
-				if (tempGroup.getParentContainer() != null){
-					if (tempGroup.getObjects().size() == 1)
-					{// there is one one object left in the temporary group
-						docPanel.setFocusedObject(tempGroup.getObjects().get(0));
-						docPanel.ungroupTempGroup();
-					}
-				}
+		if (tempGroup.getParentContainer() != null){
+			if (tempGroup.getObjects().size() == 1)
+			{// there is one one object left in the temporary group
+				docPanel.setFocusedObject(tempGroup.getObjects().get(0));
+				docPanel.ungroupTempGroup();
+			}
+		}
 	}
 
 	@Override

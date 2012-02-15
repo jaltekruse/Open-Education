@@ -11,16 +11,14 @@ package doc;
 import java.awt.Rectangle;
 import java.util.Vector;
 
-import doc.mathobjects.Grouping;
-import doc.mathobjects.MathObject;
-import doc.mathobjects.MathObjectContainer;
+import doc.mathobjects.*;
 
 public class Page implements MathObjectContainer{
-	
+
 	private Vector<MathObject> objects;
-	
+
 	private Document parentDoc;
-	
+
 	public Page(Document doc){
 		setObjects(new Vector<MathObject>());
 		setParentDoc(doc);
@@ -29,33 +27,40 @@ public class Page implements MathObjectContainer{
 	public void setObjects(Vector<MathObject> objects) {
 		this.objects = objects;
 	}
-	
+
 	public boolean removeObject(MathObject mObj){
-		return objects.remove(mObj);
+
+		boolean success = objects.remove(mObj);
+		if ( mObj instanceof ProblemNumberObject ||
+				(mObj instanceof Grouping &&
+						((Grouping)mObj).containsProblemNumber()) ){
+			getParentDoc().refactorPageNumbers();
+		}
+		return success;
 	}
 
 	public Vector<MathObject> getObjects() {
 		return objects;
 	}
-	
+
 	/**
 	 * Add a MathObject to this page.
 	 * @param mObj - object to add
 	 * @return true if add was successful, if object did not fit in printable area it is not added
 	 */
 	public boolean addObject(MathObject mObj){
-		
+
 		//check to make sure the object will fit on the page, inside of the margins
-		
+
 		Rectangle printablePage = new Rectangle(0, 0, getWidth(),
 				getHeight());
 		
-//		Rectangle objRect = new Rectangle(mObj.getxPos(), mObj.getyPos(), mObj.getWidth(), mObj.getHeight());
-//		if (printablePage.contains(objRect)){
-//		objects.add(mObj);
-//			return true;
-//		}
-		
+		//		Rectangle objRect = new Rectangle(mObj.getxPos(), mObj.getyPos(), mObj.getWidth(), mObj.getHeight());
+		//		if (printablePage.contains(objRect)){
+		//		objects.add(mObj);
+		//			return true;
+		//		}
+
 		if ( ! objects.contains(mObj)){
 			objects.add(mObj);
 			mObj.setParentContainer(this);
@@ -65,7 +70,7 @@ public class Page implements MathObjectContainer{
 		return false;
 		//throw error? the object would not fit within the printable page with the current position and dimensions
 	}
-	
+
 	public Page clone(){
 		Page newPage = new Page(getParentDoc());
 		MathObject mObj;
@@ -80,24 +85,24 @@ public class Page implements MathObjectContainer{
 		}
 		return newPage;
 	}
-	
+
 	public void bringObjectToFront(MathObject mObj){
 		objects.remove(mObj);
 		objects.add(mObj);
 	}
-	
+
 	public void shiftObjInFrontOfOther(MathObject toMove, MathObject toBeBehind){
 		objects.remove(toMove);
 		objects.add(objects.indexOf(toBeBehind), toMove);
 	}
-	
+
 	public boolean objInFrontOfOther(MathObject obj1, MathObject obj2){
 		if (objects.indexOf(obj1) > objects.indexOf(obj2)){
 			return true;
 		}
 		return false;
 	}
-	
+
 	public void sendObjectForward(MathObject mObj){
 		int index = objects.lastIndexOf(mObj);
 		Rectangle objRect = new Rectangle(mObj.getxPos(), mObj.getyPos(), mObj.getWidth(), mObj.getHeight());
@@ -113,7 +118,7 @@ public class Page implements MathObjectContainer{
 			}
 		}
 	}
-	
+
 	public boolean objectContainedBelow(MathObject o){
 		for (MathObject mObj : objects){
 			if ( o == mObj){
@@ -127,7 +132,7 @@ public class Page implements MathObjectContainer{
 		}
 		return false;
 	}
-	
+
 	public void sendObjectBackward(MathObject mObj){
 		int index = objects.lastIndexOf(mObj);
 		Rectangle objRect = new Rectangle(mObj.getxPos(), mObj.getyPos(), mObj.getWidth(), mObj.getHeight());
@@ -143,12 +148,12 @@ public class Page implements MathObjectContainer{
 			}
 		}
 	}
-	
+
 	public void bringObjectToBack(MathObject mObj){
 		objects.remove(mObj);
 		objects.add(0,mObj);
 	}
-	
+
 	public String exportToXML(){
 		//should store page width and height at document level
 		//do not need to allow teachers to mix page orientations
@@ -207,5 +212,5 @@ public class Page implements MathObjectContainer{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 }

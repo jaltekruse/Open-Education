@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -87,6 +89,12 @@ public class OpenNotebook extends JFrame{
 	private static void createAndShowGUI() {
 
 		application = new OpenNotebook("OpenNotebook - Teacher");
+//		try {
+//			application.prefs.clear();
+//		} catch (BackingStoreException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		Dimension frameDim = new Dimension(1000, 720);
 		application.setPreferredSize(frameDim);
 		application.addComponentListener(new ComponentListener(){
@@ -144,7 +152,7 @@ public class OpenNotebook extends JFrame{
 		}
 		else{
 			setPreferencesDirectory();
-			database = new ProblemDatabase();
+			readDefaultDatabase();
 			if (application.inStudentMode()){
 				notebookPanel.open("Student Mode Tutorial");
 			}
@@ -188,11 +196,13 @@ public class OpenNotebook extends JFrame{
 
 	public static void quit(){
 
-		File export = new File(getPreferencesPath());
-		if ( ! export.exists() ){
-			export.mkdir();
+		if ( getPreferencesPath() != null){
+			File export = new File(getPreferencesPath());
+			if ( ! export.exists() ){
+				export.mkdir();
+			}
+			exportDatabase();
 		}
-		exportDatabase();
 		application.dispose();
 
 	}
@@ -211,6 +221,22 @@ public class OpenNotebook extends JFrame{
 					"Warning", JOptionPane.WARNING_MESSAGE);
 		}
 	}
+	
+	private static void readDefaultDatabase(){
+
+		String docName = "ProblemDatabase";
+		InputStream inputStream = OpenNotebook.class.getClassLoader()
+				.getResourceAsStream("samples/" + docName);
+		InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+		try {
+			database = getFileReader().readDatabase(inputStreamReader);
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,
+					"Error opening problem databse.",
+							"Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
 
 	private static void exportDatabase(){
 		BufferedWriter f = null;
@@ -224,14 +250,16 @@ public class OpenNotebook extends JFrame{
 
 		} catch (Exception e) {
 			try {
-				f.flush();
-				f.close();
+				if ( f != null){
+					f.flush();
+					f.close();
+				}
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 
-			JOptionPane.showMessageDialog(null, "Error saving file", "Error",
+			JOptionPane.showMessageDialog(null, "Error saving problem database.", "Error",
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -286,9 +314,13 @@ public class OpenNotebook extends JFrame{
 					"Warning", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-		JOptionPane.showMessageDialog(null, "Open Notebook requires a directory to store your\n" +
+		int input = JOptionPane.showConfirmDialog(null, "Open Notebook requires a directory to store your\n" +
 				"preferences, please select one in the next dialog.",
 				"Set Preferences Directory", JOptionPane.WARNING_MESSAGE);
+		System.out.println(input);
+		if ( input == -1 || input == 2 ){
+			return;
+		}
 		fileChooser = new JFileChooser();
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int success = fileChooser.showOpenDialog(application);
@@ -309,15 +341,18 @@ public class OpenNotebook extends JFrame{
 	public static void setUserName(){
 		String name = (String)JOptionPane.showInputDialog(
 				null,
-				"Etner your name.",
-				"Enter you name, as you would like it to appear in the\n" +
-				"Database if you want to publish problems. If you do not\n" +
-				"want your anem shown leave it blank." +
-				"",
+				"Enter you name as you would like it to appear in the\n" +
+				"database if you publish problems. If you do not\n" +
+				"want your name shown leave it blank.",
+				"Enter your name.",
 				JOptionPane.PLAIN_MESSAGE,
 				null,
 				null,
 				null);
+		if (name == null){
+			prefs.put(USER_NAME, "");
+			return;
+		}
 		prefs.put(USER_NAME, name);
 		try {
 			prefs.flush();
@@ -386,7 +421,7 @@ public class OpenNotebook extends JFrame{
 
 	}
 
-	public DocReader getFileReader() {
+	public static DocReader getFileReader() {
 		return reader;
 	}
 

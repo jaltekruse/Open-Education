@@ -10,7 +10,6 @@ public class ConnectedDrawing extends MathObject {
 	
 	public ConnectedDrawing(MathObjectContainer p, int x, int y, int w, int h) {
 		super(p, x, y, w, h);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public ConnectedDrawing(MathObjectContainer p){
@@ -19,19 +18,16 @@ public class ConnectedDrawing extends MathObject {
 
 	@Override
 	public void addDefaultAttributes() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public String getType() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public ConnectedDrawing clone() {
-		// TODO Auto-generated method stub
 		ConnectedDrawing o = new ConnectedDrawing(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){

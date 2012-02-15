@@ -13,8 +13,6 @@ import java.util.Vector;
  */
 public abstract class Operator {
 
-	//TODO rearrange members
-	
 	public static interface DisplayFormat {
 		
 	}
@@ -50,34 +48,6 @@ public abstract class Operator {
 		for (Node c : children)
 			stringChildren.add(c.toStringRepresentation());
 		return format(stringChildren);
-	}
-	
-	public static class Negation extends Operator {
-	
-		@Override
-		public String getSymbol() {
-			return "-";
-		}
-	
-		@Override
-		public Number evaluate(Vector<Number> children) throws NodeException {
-			if (children.size() != 1)
-				throwBadArguments();
-			return children.get(0).negate();
-		}
-	
-		@Override
-		public String format(Vector<String> children) throws NodeException {
-			if (children.size() != 1)
-				throwBadArguments();
-			return getSymbol() + children.get(0);
-		}
-	
-		@Override
-		public Operator clone() {
-			return new Negation();
-		}
-		
 	}
 
 	public static abstract class BinaryOperator extends Operator {
@@ -425,6 +395,32 @@ public abstract class Operator {
 		public abstract Number evaluate(Number a);
 	}
 	
+	
+	public static class Negation extends UnaryFunction {
+		
+		@Override
+		public String getSymbol() {
+			return "-";
+		}
+	
+		@Override
+		public String format(Vector<String> children) throws NodeException {
+			if (children.size() != 1)
+				throwBadArguments();
+			return getSymbol() + children.get(0);
+		}
+	
+		@Override
+		public Operator clone() {
+			return new Negation();
+		}
+		
+		@Override
+		public Number evaluate(Number a) {
+			return a.negate();
+		}
+		
+	}
 	public static class Logarithm extends UnaryFunction {
 
 		@Override

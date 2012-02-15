@@ -3,6 +3,8 @@ package doc.mathobjects;
 import java.awt.Rectangle;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
+
 import doc.Document;
 import doc.Page;
 import doc.attributes.ListAttribute;
@@ -52,10 +54,38 @@ public class Grouping extends MathObject implements MathObjectContainer{
 		addAction(BRING_TO_TOP);
 		addAction(BRING_TO_BOTTOM);
 	}
+	
+	public boolean containsProblemNumber(){
+		for ( MathObject mObj : getObjects()){
+			if (mObj instanceof ProblemNumberObject){
+				return true;
+			}
+			else if ( mObj instanceof Grouping){
+				if ( ((Grouping)mObj).containsProblemNumber()){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public void performSpecialObjectAction(String s) {
 		if (s.equals(MathObject.MAKE_INTO_PROBLEM)){
+			for ( MathObject mObj : getObjects()){
+				if ( mObj instanceof ProblemGenerator || mObj instanceof GeneratedProblem){
+					JOptionPane.showMessageDialog(null,
+							"Problems cannot contain other problems. If you would like to use\n" +
+							"some of the objects from a previous problem in a new one, try\n" +
+							"copying the old problem and using the \"Remove Problem\" option to\n" +
+							"convert it to raw objects. Those objects can then be used to create\n" +
+							"new problems.",
+							"Error Making Problem",
+							JOptionPane.WARNING_MESSAGE);
+					setActionCancelled(true);
+					return;
+				}
+			}
 			VariableValueInsertionProblem newProblem = new VariableValueInsertionProblem(getParentContainer(), getxPos(),getyPos(),
 					getWidth(), getHeight());
 			getParentContainer().removeObject(this);

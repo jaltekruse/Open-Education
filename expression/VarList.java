@@ -26,11 +26,15 @@ public class VarList {
 	
 	public boolean removeIdentifier(String s){
 		if ( this.identifiersWithValues.contains(s)){
-			this.identifierValues.remove(this.identifiersWithValues.indexOf(s));
-			this.identifiersWithValues.remove(s);
+			identifierValues.remove(identifiersWithValues.indexOf(s));
+			identifiersWithValues.remove(s);
 			return true;
 		}
 		return false;
+	}
+	
+	public int size(){
+		return identifiersWithValues.size();
 	}
 	
 	public double evaluate(Node n) throws NodeException{

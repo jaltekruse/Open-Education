@@ -165,6 +165,10 @@ public class DocReader extends DefaultHandler {
 			// the application to take their new name
 			doc = new Document(fileName);
 			doc.setAuthor(atts.getValue(Document.AUTHOR));
+			if ( atts.getValue(Document.LAST_PROBLEM_NUMBER) != null)
+			{
+				doc.setLastProblemNumber(Integer.parseInt(atts.getValue(Document.LAST_PROBLEM_NUMBER)));
+			}
 			return;
 		}
 		else if ( qName.equals(ProblemDatabase.NAME)){

@@ -27,7 +27,6 @@ import doc.mathobjects.TextObject;
 
 public class TextObjectGUI extends MathObjectGUI<TextObject>{
 
-
 	public void drawMathObject(TextObject object, Graphics g, Point pageOrigin,
 			float zoomLevel) {
 		
@@ -46,7 +45,6 @@ public class TextObjectGUI extends MathObjectGUI<TextObject>{
 			
 			g.setColor(Color.BLACK);
 		    Graphics2D graphics2D = (Graphics2D)g;
-		    
 		    GraphicsEnvironment.getLocalGraphicsEnvironment();
 		    AttributedString messageAS = new AttributedString(message);
 		    messageAS.addAttribute(TextAttribute.FONT, g.getFont());
@@ -58,23 +56,34 @@ public class TextObjectGUI extends MathObjectGUI<TextObject>{
 		    float wrappingWidth = width - insets.left - insets.right;
 		    float x = xOrigin + insets.left;
 		    float y = yOrigin + insets.top;
-	
+
 		    try{
 			    while (messageLBM.getPosition() < messageIterator.getEndIndex()) {
-			      TextLayout textLayout = messageLBM.nextLayout(wrappingWidth);
+			      TextLayout textLayout = messageLBM.nextLayout(wrappingWidth); 
 			      y += textLayout.getAscent();
-			      textLayout.draw(graphics2D, x, y);
+			      if ( object.getAlignment().equals(TextObject.LEFT)){
+				      textLayout.draw(graphics2D, x , y);
+			      }
+			      else if (object.getAlignment().equals(TextObject.RIGHT)){
+			    	  textLayout.draw(graphics2D, x + (float) (wrappingWidth - textLayout.getBounds().getWidth()) , y);
+			      }
+			      else{//centered
+			    	  textLayout.draw(graphics2D, x + (float) (wrappingWidth - textLayout.getBounds().getWidth())/2 , y);
+			      }
+
 			      y += textLayout.getDescent() + textLayout.getLeading();
 			      x = xOrigin + insets.left;
 			    }
 		    } catch(Exception e){
 		    	System.out.println("error with text rendering");
 		    }
+		    
+		    object.setHeight((int) ((y - yOrigin) / zoomLevel));
 
 			g.setFont(f);
 		}
 		else{
-			// draw the black box around all of the expressions
+			// draw the black box around the text box if nothing is in it
 			g.setColor(Color.BLACK);
 			g.drawRect(xOrigin, yOrigin , (int) (object.getWidth() * zoomLevel)
 					, (int) (object.getHeight() * zoomLevel));

@@ -69,15 +69,7 @@ public abstract class PolygonObject extends MathObject {
 
 		int i = 0;
 		for (GridPoint p : points){
-			if (p.getx() < .5){
-				flipped[i] = new GridPoint(p.getx() + 2 * (.5 - p.getx()), p.gety());
-			}
-			else if (p.getx() > .5){
-				flipped[i] = new GridPoint(p.getx() + 2 * (.5 - p.getx()), p.gety());
-			}
-			else{
-				//x is .5, should not be shifted
-			}
+			flipped[i] = flipPointHorizontally(p);
 			i++;
 		}
 		return flipped;
@@ -89,15 +81,7 @@ public abstract class PolygonObject extends MathObject {
 		
 		int i = 0;
 		for (GridPoint p : points){
-			if (p.gety() < .5){
-				flipped[i] = new GridPoint(p.getx(), p.gety() + 2 * (.5 - p.gety()));
-			}
-			else if (p.gety() > .5){
-				flipped[i] = new GridPoint(p.getx(), p.gety() + 2 * (.5 - p.gety()));
-			}
-			else{
-				//y is .5, should not be shifted
-			}
+			flipped[i] = flipPointVertically(p);
 			i++;
 		}
 		return flipped;

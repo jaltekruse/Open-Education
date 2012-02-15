@@ -25,10 +25,16 @@ private int space;
 			super.getRootNodeGraphic().getGraphics().setColor(Color.black);
 		}
 		
-		int buffer = (int) ( 2 * getRootNodeGraphic().getFontSizeAdjustment() * getRootNodeGraphic().DOC_ZOOM_LEVEL );
+		int buffer = (int) Math.round( 4 * getRootNodeGraphic().getFontSizeAdjustment()
+				* getRootNodeGraphic().DOC_ZOOM_LEVEL );
+		int dotRadius = ( space - (buffer * 2) )/2;
+		if ( dotRadius < 1){
+			dotRadius = 1;
+			super.getRootNodeGraphic().getGraphics().setColor(Color.GRAY);
+		}
 		int x = symbolX1 + buffer;
-		int y = getY1() + getHeight() / 2 -  ( ( space - buffer ) / 2 );
-		super.getRootNodeGraphic().getGraphics().fillOval(x, y, space - 2 * buffer, space - 2 * buffer);
+		int y = getY1() + getUpperHeight() - dotRadius;
+		super.getRootNodeGraphic().getGraphics().fillOval(x, y, dotRadius * 2, dotRadius * 2);
 	}
 	
 	@Override
@@ -142,7 +148,8 @@ private int space;
 		g.setFont(f);
 		setFont(f);
 		
-		space = (int) (6 * super.getRootNodeGraphic().getFontSizeAdjustment() * getRootNodeGraphic().DOC_ZOOM_LEVEL );
+		space = (int) Math.round(10 * super.getRootNodeGraphic().getFontSizeAdjustment()
+				* getRootNodeGraphic().DOC_ZOOM_LEVEL );
 		
 		Node tempLeft = (super.getValue()).getChild(0);
 		Node tempRight = (super.getValue()).getChild(1);

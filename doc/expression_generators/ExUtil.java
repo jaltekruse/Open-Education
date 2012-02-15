@@ -1,8 +1,10 @@
 package doc.expression_generators;
 
 import java.util.Random;
+import java.util.Vector;
 
 import expression.Expression;
+import expression.Identifier;
 import expression.Node;
 import expression.NodeException;
 import expression.Number;
@@ -28,13 +30,11 @@ public class ExUtil {
 	public static String NEGATION = "negation";
 	public static String ABSOLUTE_VALUE = "absolute value";
 
-	public static void main(String[] args){
-		generateRandomExpressions();
-	}
-
+	public static String[] vars = { "x", "y", "z", "a", "b", "c", "d", "s", "t", "w", "v", "m", "n", "j", "k", "l"};
+	
 	public static String[] generateRandomExpressions(){
 		String[] ops = { ADDITION, SUBTRACTION, MULTIPLICATION, DIVISION };
-		String[] vars = { "x", "y", "z", "a", "b", "c", "d", "s", "t", "w", "v", "m", "n"};
+		String[] vars = { "x", "y", "z", "a", "b", "c", "d", "s", "t", "w", "v", "m", "n", "j", "k", "l"};
 		int numTrials = 10;
 
 		String[] expressions = new String[numTrials];
@@ -72,35 +72,8 @@ public class ExUtil {
 	}
 
 	public static Node randomExpression( String[] ops, String[] vars, int numOps,
-			double maxAbsVal, double minNumVal, double maxNumVal, 
+			double maxAbsVal, int minNumVal, int maxNumVal, 
 			boolean excludeZero, boolean subtractNegatives, boolean addNegatives, boolean indcludeFractions ){
-		// integers, decimals, variables ( list of valid ), operations, number of Operations
-		// answer type - will influence how operations are added
-
-		// start with a number or a variable
-
-		// to add complexity, generate another number within the bounds, or a variable, or an entire term
-		// then choose an operation and randomly make the new operand come first or second in the operation
-
-		// or, make the existing part of the tree one complete node, decide on an operation
-		// and then start the process fresh to create another expression
-		// for (x+y) / (x-y) ;  (x+5) + (3+(x-4))  and other situations with parenthesis
-
-		// first trial, random expression using 4 major operations, and only integers from 1 to 12, integer answers
-		// problems :
-		// -----------
-		// - division by 0, fixed
-		// - numbers get too big :
-		//		solution1 :
-		//			if number is too big, make sure a division is the next thing added
-		// 			make division require a small result, or try again to add a different
-		//			operation ( could cause infinite loop) but would require it to keep
-		//			picking multiplication with random number generator
-		// 		solution2 :
-		//			try generating expression through creating terms out of just numbers
-		//			or a few simple multiplications of divisions and then randomly
-		//			add or subtract them
-
 		Node n;
 		n = new Number( randomInt( minNumVal, maxNumVal, excludeZero));
 
@@ -109,8 +82,141 @@ public class ExUtil {
 		}
 		return n;
 	}
+
+	public static String randomVarName(){
+		return vars[rand.nextInt(vars.length - 1)];
+	}
 	
-	public Node randomPolynomial(int maxDegree, int minCoefficient, int maxCoefficient, int minNumberTerms,
+	public static Identifier randomVar(){
+		try {
+			return new Identifier(vars[rand.nextInt(vars.length - 1)]);
+		} catch (NodeException e) {
+			// stupid error, will not happen with list of vars being pulled from
+		}
+		return null;
+	}
+
+	public static Vector<String> randomUniqueVarNames(int num){
+		Vector<String> varNames = new Vector<String>();
+		String varName;
+		while ( varNames.size() < num){
+			varName = randomVarName();
+			if ( ! varNames.contains(varName)){
+				varNames.add(varName);
+			}
+		}
+		return varNames;
+	}
+
+	/**
+	 * Generate a pair of numbers that add to an easy to deal with whole number
+	 * ( a multiple of 10, 50, 100, 1000,...) under the given number.
+	 * 
+	 * @param maxSum - the greatest sum that should result
+	 * @return - the two numbers
+	 */
+	public static double[] pairOfCleanAddingNumbers(int maxSum){
+		int[] easyNumbers = { 10, 50, 100, 1000, 10000 };
+		int[][] easyDivisors = { {1, 2} , {1, 5, 10}, 
+				{1, 5, 10, 25}, {100, 200, 250 },
+				{1000, 2000, 2500}};
+		int index, sub_index, sum = Integer.MAX_VALUE;
+		double[] nums = new double[2];
+		while (sum > maxSum)
+		{
+			index = (int) ExUtil.randomInt(0, easyNumbers.length - 1, false);
+			sub_index = (int) ExUtil.randomInt(0, easyDivisors[index].length - 1, false);
+			sum = easyNumbers[ index ] * (int) ExUtil.randomInt(1, 4, false);
+			nums[0] = (int) ExUtil.randomInt(1, sum / easyDivisors[index][sub_index] - 1, true)
+					* easyDivisors[index][sub_index];
+			nums[1] = sum - nums[0];
+		}
+		return nums;
+	}
+	
+	/**
+	 * Generate a pair of numbers that multiply to an easy to deal with whole number
+	 * ( a multiple of 10, 50, 100, 1000,...) under the given number.
+	 * 
+	 * @param maxProduct - the greatest product that should result
+	 * @return - the two numbers
+	 */
+	public static double[] pairOfCleanFactors(int maxProduct){
+		int[] easyNumbers = { 10, 50, 100, 1000, 10000 };
+		int[][] easyDivisors = { {2} , {2, 5, 10}, 
+				{ 5, 10, 25}, {100, 200, 250 },
+				{1000, 2000, 2500}};
+		int index, sub_index, product = Integer.MAX_VALUE;
+		double[] nums = new double[2];
+		while (product > maxProduct)
+		{
+			index = (int) ExUtil.randomInt(0, easyNumbers.length - 1, false);
+			sub_index = (int) ExUtil.randomInt(0, easyDivisors[index].length - 1, false);
+			product = easyNumbers[ index ] * randomInt(1, 4, false);
+			nums[0] = easyDivisors[index][sub_index];
+			nums[1] = product / nums[0];
+		}
+		return nums;
+	}
+	
+	/**
+	 * Randomly adds parenthesis to an expression composed of additions or multiplications.
+	 * The result of the operation does not change, due to the Associative property of both of
+	 * the operators, but this method is useful for creating exercises to teach those concepts.
+	 * 
+	 * @param ex - the expression
+	 * @param minNumParens - the minimum number of parenthesis to add
+	 * @param maxNumParens - the maximum number of parenthesis to add
+	 * @return - the modified expression
+	 */
+	public static Node randomlyAddParenthesis(Expression ex, int minNumParens,  int maxNumParens){
+		Vector<Node> terms = new Vector<Node>();
+		if ( ex.getOperator() instanceof Operator.Addition){
+			terms = ex.splitOnAddition();
+			int numParensToAdd = (int) randomInt(minNumParens, maxNumParens, true);
+			int unusedTermsLeft = terms.size();
+			int tempIndex;
+			Expression tempEx;
+			while ( unusedTermsLeft > 2 && numParensToAdd > 0){
+				// use size - 2 because a term and it's successive term will be used to
+				// create a new expression with parenthesis
+				tempIndex = randomInt(0, terms.size() - 2, false);
+				// remove from the same index twice, because everything is shifted with the
+				// first move
+				tempEx = new Expression(new Operator.Addition(), terms.remove(tempIndex),
+						terms.remove(tempIndex));
+				tempEx.setDisplayParentheses(true);
+				terms.add(tempEx);
+				unusedTermsLeft--;
+				numParensToAdd--;
+			}
+			return Expression.staggerAddition(terms);
+		}
+		else if ( ex.getOperator() instanceof Operator.Multiplication){
+			terms = ex.splitOnMultiplication();
+			int numParensToAdd = (int) randomInt(minNumParens, maxNumParens, true);
+			int unusedTermsLeft = terms.size();
+			int tempIndex;
+			Expression tempEx;
+			while ( unusedTermsLeft > 2 && numParensToAdd > 0){
+				tempIndex = randomInt(0, terms.size() - 2, false);
+				tempEx = new Expression(new Operator.Multiplication(),
+						terms.remove(tempIndex), terms.remove(tempIndex));
+				tempEx.setDisplayParentheses(true);
+				terms.add(tempEx);
+				unusedTermsLeft--;
+				numParensToAdd--;
+			}
+			return Expression.staggerMultiplication(terms);
+		}
+		return ex;
+	}
+
+	public static boolean randomBoolean(){
+		return rand.nextBoolean();
+	}
+	
+	public static Node randomPolynomial(int maxDegree, int minCoefficient, int maxCoefficient, int minNumberTerms,
 			int maxNumberTerms, VarList variables){
 		Node n = null;
 		int numTerms = (int) randomInt( minNumberTerms, maxNumberTerms, true);
@@ -120,6 +226,43 @@ public class ExUtil {
 		}
 
 		return n;
+	}
+
+	public static Node randomTerm(int maxDegree, int minCoefficient, int maxCoefficient, VarList variables){
+		Vector<Node> parts = new Vector<Node>();
+		// add the coefficient
+		parts.add(new Number(randomInt(minCoefficient, maxCoefficient, true)));
+		// keep a list of the variables that have already been used
+		Vector<String> usedVars = new Vector<String>();
+		int degree = 0;
+		while( degree < maxDegree && variables.size() > usedVars.size()){
+
+		}
+
+	}
+
+	public static Node randomTerm(int degree, String var, int minCoefficient, int maxCoefficient){
+		Number num = new Number(randomInt(minCoefficient, maxCoefficient, true));
+		if ( degree == 0){
+			return num;
+		}
+		Expression ex = new Expression(new Operator.Multiplication());
+		ex.getChildren().add(num);
+		try {
+			if ( degree == 1){
+
+				ex.getChildren().add(new Identifier(var));
+				return ex;
+			}
+			else{
+				ex.getChildren().add(new Expression(new Operator.Exponent(),
+						new Identifier(var), new Number(degree)));
+				return ex;
+			}
+		} catch (NodeException e) {
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 
 	public static double[] getFactors( double d){
@@ -149,8 +292,8 @@ public class ExUtil {
 		else return 0;
 	}
 
-	public static void addChild( Expression ex, Node n ){
-		
+	public static Node addChild( Expression ex, Node n ){
+
 		if ( n instanceof Number){
 			Number numChild = (Number) n;
 			if ( numChild.getValue() < 0)
@@ -172,7 +315,7 @@ public class ExUtil {
 					}
 				}
 				ex.getChildren().add(n);
-				return;
+				return ex;
 			}
 			else
 			{// there is already one operand, this is the second one added
@@ -186,13 +329,34 @@ public class ExUtil {
 					}
 				}
 				ex.getChildren().add(n);
-				return;
+				return ex;
 
 			}
 		}
+		else if ( ex.getOperator() instanceof Operator.Function){
+			if ( n instanceof Expression ){
+				Expression childEx = (Expression) n;
+				if ( getPrec( childEx.getOperator() ) < getPrec( ex.getOperator() ) )
+				{ // the expression has a greater precedence than the
+					// new child, it needs parenthesis
+					n.setDisplayParentheses(true);
+				}
+			}
+			ex.getChildren().add(n);
+			return ex;
+		}
+		return ex;
+	}
+	
+	public static Node randomlyStaggerOperation(Operator o, Node... nodes){
+		Node newNode = nodes[0];
+		for ( int i = 1; i < nodes.length; i++){
+			newNode = addNodeOnRandomSide(newNode, nodes[i], o);
+		}
+		return newNode;
 	}
 
-	public static Node addRandomOp(Node n, String[] ops, String[] vars, double min, double max,
+	public static Node addRandomOp(Node n, String[] ops, String[] vars, int min, int max,
 			double maxAbsVal, boolean excludeZero, boolean subtractNegatives, boolean addNegatives){
 
 		int opIndex = rand.nextInt( ops.length );
@@ -205,7 +369,7 @@ public class ExUtil {
 		boolean numberTooBig = false;
 
 		try {
-//			System.out.println(n.toStringRepresentation());
+			//			System.out.println(n.toStringRepresentation());
 			expressionVal = ((Number)n.numericSimplify()).getValue();
 		} catch (NodeException e1) {
 			// TODO Auto-generated catch block
@@ -217,28 +381,18 @@ public class ExUtil {
 		}
 
 		if ( opCode.equals(DIVISION)){
-			
+
 			// getting too many divisions all of the time, expressions end up bizarre and tall with
-			// horizontal display
+			// horizontal division display, half of the time just give up and add a different operator
 			if ( rand.nextBoolean() ){
 				return addRandomOp(n, ops, vars, min, max, maxAbsVal, excludeZero, subtractNegatives, addNegatives);
 			}
-			
 			op = new Operator.Division();
 			newEx = new Expression( op );
-
 			if ( ! (newChild instanceof Number) ){
 				// the new child being added is not a number, it will not have to be adjusted
 				// to keep the answer clean
-				if ( rand.nextBoolean() ){
-					addChild(newEx, n);
-					addChild(newEx, newChild);
-				}
-				else{
-					addChild(newEx, newChild);
-					addChild(newEx, n);
-				}
-				return newEx;
+				return addNodeOnRandomSide(n, newChild, op);
 			}
 
 			else if ( expressionVal == 0){
@@ -247,15 +401,13 @@ public class ExUtil {
 					newChild = new Number( randomInt(min, max, excludeZero));
 				} while( newNum.getValue() == 0);
 
-				addChild(newEx, n);
-				addChild(newEx, newChild);
+				return new Expression(op, n, newChild);
 			}
 			else if ( isPrime( expressionVal ) || ( rand.nextBoolean() && ! numberTooBig) )
 			{// the expression evaluates to a prime number, so it must be the divisor
 				// or the expression was randomly selected to be the divisor when it wasn't prime
 				newChild = new Number( expressionVal * randomInt(min, max, excludeZero));
-				addChild(newEx, newChild);
-				addChild(newEx, n);
+				return new Expression(op, newChild, n);
 			}
 			else
 			{// the expression evaluates to a non-prime number,and was randomly chosen to be the dividend
@@ -266,28 +418,16 @@ public class ExUtil {
 				double[] factors = getFactors(expressionVal);
 				int factorIndex = rand.nextInt( factors.length );
 				newChild = new Number( factors[factorIndex]);
-				addChild(newEx, n);
-				addChild(newEx, newChild);
+				return new Expression(op, n, newChild);
 			}
-
-			return newEx;
 		}
 		else if ( opCode.equals(ADDITION)){
 			op = new Operator.Addition();
-			newEx = new Expression( op );
 
 			if ( ! (newChild instanceof Number) ){
 				// the new child being added is not a number, it will not have to be adjusted
 				// to keep the answer clean
-				if ( rand.nextBoolean() ){
-					addChild(newEx, n);
-					addChild(newEx, newChild);
-				}
-				else{
-					addChild(newEx, newChild);
-					addChild(newEx, n);
-				}
-				return newEx;
+				return addNodeOnRandomSide(n, newChild, op);
 			}
 
 			if ( ! addNegatives)
@@ -299,7 +439,7 @@ public class ExUtil {
 				}
 				else{
 					// the minimum is below zero, so exclude those values between 0 and the minimum while finding a new number
-					double tempMin = 0;
+					int tempMin = 0;
 					newNum = (Number) newChild; 
 					if ( min > 0)
 					{
@@ -313,20 +453,17 @@ public class ExUtil {
 		}
 		else if ( opCode.equals(SUBTRACTION)){
 			op = new Operator.Subtraction();
-			newEx = new Expression( op );
 
 			if ( ! (newChild instanceof Number) ){
 				// the new child being added is not a number, it will not have to be adjusted
 				// to keep the answer clean
-				if ( rand.nextBoolean() ){
-					addChild(newEx, n);
-					addChild(newEx, newChild);
+				if ( n instanceof Expression && ((Expression)n).getOperator() instanceof Operator.Negation)
+				{// do not subtract a negative
+					// MIGHT CAUSE INFINITE RECURSION, BE CAREFUL
+					return addRandomOp(n, ops, vars, min, max, maxAbsVal, excludeZero,
+							subtractNegatives, addNegatives);
 				}
-				else{
-					addChild(newEx, newChild);
-					addChild(newEx, n);
-				}
-				return newEx;
+				return addNodeOnRandomSide(n, newChild, op);
 			}
 
 			if ( ! subtractNegatives)
@@ -337,8 +474,8 @@ public class ExUtil {
 				}
 				else{
 					// the minimum is below zero, so exclude those values between 0 and the minimum while finding a new number
-					double tempMin = 0;
-					newNum = (Number) newChild; 
+					int tempMin = 0;
+					newNum = (Number) newChild;
 					if ( min > 0)
 					{
 						tempMin = min;
@@ -356,42 +493,37 @@ public class ExUtil {
 			if ( ! (newChild instanceof Number) ){
 				// the new child being added is not a number, it will not have to be adjusted
 				// to keep the answer clean
-				if ( rand.nextBoolean() ){
-					addChild(newEx, n);
-					addChild(newEx, newChild);
-				}
-				else{
-					addChild(newEx, newChild);
-					addChild(newEx, n);
-				}
-				return newEx;
+				return addNodeOnRandomSide(n, newChild, op);
 			}
 
-//			newNum = (Number) newChild; 
-//			if ( expressionVal > maxAbsVal)
-//			{// a multiplication cannot be performed on the current expression without making the result too large
-//				// try again
-//				return addRandomOp(n, ops, vars, min, max, maxAbsVal, excludeZero, subtractNegatives, addNegatives);
-//			}
-//			while ( Math.abs(expressionVal * newNum.getValue()) > maxAbsVal){
-//				newNum = new Number( randomInt(min, max, excludeZero) );
-//			}
-
+		}
+		else if ( opCode.equals(NEGATION)){
+			if ( n instanceof Expression && ((Expression)n).getOperator() instanceof Operator.Negation
+					|| ( n instanceof Number && ((Number)n).getValue() < 0 ) )
+			{// do not add a negation on top of another negation, generate another random operation
+				// THIS WILL CAUSE INFINITE RECURSION IF THE ONLY OPERATOR IS NEGATION!!
+				return addRandomOp(n, ops, vars, min, max, maxAbsVal, excludeZero, subtractNegatives, addNegatives);
+			}
+			return new Expression(new Operator.Negation(), true, n);
 		}
 		else{
 			System.out.println("unknown op");
 		}
 
-		newEx = new Expression( op );
-		if ( rand.nextBoolean() ){
-			addChild(newEx, newChild);
-			addChild(newEx, n);
+		return addNodeOnRandomSide(n, newChild, op);
+	}
+	
+	public static Node addNodeOnRandomSide(Node oldNode, Node newNode, Operator o){
+		Expression ex = new Expression(o);
+		if (randomBoolean()){
+			addChild(ex, newNode);
+			addChild(ex, oldNode);
 		}
 		else{
-			addChild(newEx, n);
-			addChild(newEx, newChild);
+			addChild(ex, oldNode);
+			addChild(ex, newNode);
 		}
-		return newEx;
+		return ex;
 	}
 
 	public static boolean isPrime( double d){
@@ -441,9 +573,18 @@ public class ExUtil {
 		return null;
 	}
 
-	public static double randomInt(double a, double b, boolean excludeZero){
+	/**
+	 * Return a random number between a and b. A boolean flag is included if
+	 * zero is to be excluded.
+	 * 
+	 * @param a - start of random number generation
+	 * @param b - last number possible
+	 * @param excludeZero
+	 * @return
+	 */
+	public static int randomInt(int a, int b, boolean excludeZero){
 		double randVal = rand.nextDouble() * ( b - a );
-		double randNum = ( (int) (a + (int) Math.round(randVal) ) );
+		int randNum = ( (int) (a + (int) Math.round(randVal) ) );
 		if ( a < 0 && b > 0 && excludeZero){
 			while ( randNum == 0){
 				randNum = ( (int) (a + rand.nextDouble() * ( b - a )) );
@@ -456,14 +597,5 @@ public class ExUtil {
 	public static double randomDecimal(double a, double b, double round){
 		double randNum = a + rand.nextDouble() * ( b - a);
 		return randNum - randNum % round;
-
-		//		double numberPossiblities = ( b - a )/ round;
-		//		System.out.println(numberPossiblities);
-		//		if (numberPossiblities < 100000){
-		//			return a + round * rand.nextInt( (int) numberPossiblities);
-		//		}
-		//		else{
-		//			return a + Math.random() * ( b - a );
-		//		}
 	}
 }

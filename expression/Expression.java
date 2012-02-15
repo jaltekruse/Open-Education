@@ -32,6 +32,18 @@ public class Expression extends Node {
 		setChildren(v);
 	}
 	
+	/**
+	 * Constructor for an expression, includes flag for displaying parenthesis.
+	 * 
+	 * @param o - the operator for the new expression
+	 * @param displayParens - if parenthesis should be displayed
+	 * @param children - children of the expression
+	 */
+	public Expression(Operator o, boolean displayParens, Node... children) {
+		this(o, children);
+		setDisplayParentheses(displayParens);
+	}
+	
 	@Override
 	public boolean equals(Object other) {
 		if ((other == null) || !(other instanceof Expression))

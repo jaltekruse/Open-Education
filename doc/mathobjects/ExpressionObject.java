@@ -14,6 +14,7 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 
 import doc.attributes.AttributeException;
+import doc.attributes.BooleanAttribute;
 import doc.attributes.ColorAttribute;
 import doc.attributes.IntegerAttribute;
 import doc.attributes.ListAttribute;
@@ -40,12 +41,12 @@ public class ExpressionObject extends MathObject {
 	UNDO_STEP = "Undo Step";
 
 	public static String		EXPRESSION = "expression",		FONT_SIZE = "font size",
-	STEPS = "steps",	FILL_COLOR = "fill color";
+			STEPS = "steps",	FILL_COLOR = "fill color", ALWAYS_SHOW_STEPS = "always show steps",
+			CORRECT_ANSWER = "correct answer";
 
 
 	public ExpressionObject(MathObjectContainer p, int x, int y, int w, int h) {
 		super(p, x, y, w, h);
-		setStudentSelectable(true);
 		setVerticallyResizable(false);
 		setHorizontallyResizable(false);
 		setExpressionActions();
@@ -53,14 +54,12 @@ public class ExpressionObject extends MathObject {
 
 	public ExpressionObject(MathObjectContainer p){
 		super(p);
-		setStudentSelectable(true);
 		setVerticallyResizable(false);
 		setHorizontallyResizable(false);
 		setExpressionActions();
 	}
 
 	public ExpressionObject() {
-		setStudentSelectable(true);
 		setVerticallyResizable(false);
 		setHorizontallyResizable(false);
 		setExpressionActions();
@@ -85,9 +84,11 @@ public class ExpressionObject extends MathObject {
 	@Override
 	protected void addDefaultAttributes() {
 		addAttribute(new StringAttribute(EXPRESSION));
+		addAttribute(new StringAttribute(CORRECT_ANSWER, true, false));
 		addList(new ListAttribute<StringAttribute>(STEPS, new StringAttribute("val"), false));
 		addAttribute(new IntegerAttribute(FONT_SIZE, 1, 50));
 		addAttribute(new ColorAttribute(FILL_COLOR));
+		addAttribute(new BooleanAttribute(ALWAYS_SHOW_STEPS, false, true, false));
 		getAttributeWithName(EXPRESSION).setValue("");
 		getAttributeWithName(FONT_SIZE).setValue(12);
 		getAttributeWithName(FILL_COLOR).setValue(null);
@@ -110,6 +111,10 @@ public class ExpressionObject extends MathObject {
 			}
 		}
 		getAttributeWithName(n).setValue(o);
+		return true;
+	}
+	
+	public boolean isStudentSelectable(){
 		return true;
 	}
 
@@ -187,7 +192,8 @@ public class ExpressionObject extends MathObject {
 		else if (s.equals(MODIFY_EXPRESSION)){
 			
 			Node newNode = this.getParentPage().getParentDoc().getDocViewerPanel()
-					.getNotebook().getNotebookPanel().getExpressionFromUser("Modify the expression.");
+					.getNotebook().getNotebookPanel().getExpressionFromUser("Modify the expression.",
+							getLastStep());
 			if ( newNode == null){
 				setActionCancelled(true);
 				return;
@@ -436,9 +442,22 @@ public class ExpressionObject extends MathObject {
 	public String getExpression(){
 		return ((StringAttribute)getAttributeWithName(EXPRESSION)).getValue();
 	}
+	
+	public Boolean isAlwaysShowingSteps(){
+		return ((BooleanAttribute)getAttributeWithName(ALWAYS_SHOW_STEPS)).getValue();
+	}
+
 
 	public void setExpression(String s) throws AttributeException{
 		setAttributeValue(EXPRESSION, s);
+	}
+	
+	public String getCorrectAnswer(){
+		return ((StringAttribute)getAttributeWithName(CORRECT_ANSWER)).getValue();
+	}
+
+	public void setCorrectAnswer(String s) throws AttributeException{
+		setAttributeValue(CORRECT_ANSWER, s);
 	}
 
 	public void setFontSize(int fontSize) throws AttributeException {

@@ -8,17 +8,23 @@
 
 package doc;
 
+import java.util.Collections;
 import java.util.Random;
 import java.util.UUID;
 import java.util.Vector;
 
+import doc.attributes.AttributeException;
 import doc.attributes.Date;
 import doc.attributes.DateAttribute;
+import doc.attributes.IntegerAttribute;
 import doc.attributes.MathObjectAttribute;
 import doc.attributes.StringAttribute;
 import doc.mathobjects.GeneratedProblem;
+import doc.mathobjects.Grouping;
 import doc.mathobjects.MathObject;
 import doc.mathobjects.ProblemGenerator;
+import doc.mathobjects.ProblemNumberObject;
+import doc.mathobjects.TextObject;
 import doc_gui.DocViewerPanel;
 
 public class Document {
@@ -58,7 +64,7 @@ public class Document {
 	public static final String FILENAME = "filename", HEADER = "header",
 			FOOTER = "footer", AUTHOR = "author", DATE = "date",
 			AUTHOR_ID = "authorID", GENERATORS = "generators",
-			OPEN_NOTEBOOK_DOC = "OpenNotebookDoc";
+			OPEN_NOTEBOOK_DOC = "OpenNotebookDoc", LAST_PROBLEM_NUMBER = "lastProblemNumber";
 
 	private Vector<Page> pages;
 	private Vector<ProblemGenerator> generators;
@@ -67,7 +73,6 @@ public class Document {
 	// this should not be exported to files, it is a bridge between the front
 	// end and back end
 	private DocViewerPanel docPanel;
-	
 	private static ProblemDatabase problemDatabase;
 
 	// stores all of the data for the document, allows for easy creation of a
@@ -77,7 +82,7 @@ public class Document {
 
 	// used for automatically laying out problems on a document and giving them
 	// extra space
-	private static final int bufferSpace = 20;
+	private static final int minimumBufferSpace = 40;
 
 	// cloned versions of previous documents are used for the undo/redo stack
 	// to maintain what object had focus at each undo state, it is stored here
@@ -105,6 +110,7 @@ public class Document {
 		addAttribute(new StringAttribute(FILENAME));
 		addAttribute(new StringAttribute(AUTHOR));
 		addAttribute(new DateAttribute(DATE));
+		addAttribute(new IntegerAttribute(LAST_PROBLEM_NUMBER, 1));
 	}
 
 	private MathObjectAttribute getAttributeWithName(String n) {
@@ -222,24 +228,36 @@ public class Document {
 	}
 
 	public void generateProblems(Vector<ProblemGenerator> generators,
-			Vector<Integer> frequencies, int number) {
-		GeneratedProblem[] newProblems = new GeneratedProblem[number];
+			Vector<Integer> frequencies, int numberOfProblems, String directions) {
+		GeneratedProblem[] newProblems = new GeneratedProblem[numberOfProblems];
 		int difficulty;
 		for (ProblemGenerator gen : generators){
 			gen.setProblemHoldingDocument(this);
-		}
-		for (int i = 0; i < number; i++) {
-			if (i < number / 3.0) {
-				difficulty = ProblemGenerator.EASY;
-			} else if (i < number * (2.0 / 3)) {
-				difficulty = ProblemGenerator.MEDIUM;
-			} else {
-				difficulty = ProblemGenerator.HARD;
+			try {
+				addGenerator(gen);
+			} catch (Exception e) {
+				// problem formula has already been added
 			}
-			newProblems[i] = generators.get(pickRandomIndex(frequencies))
-					.generateProblem(difficulty);
 		}
-		layoutObjects(newProblems);
+		int j = 0;
+		newProblems = new GeneratedProblem[numberOfProblems / 3];
+		for (int i = 0; j < numberOfProblems / 3; j++, i++) {
+			newProblems[i] = generators.get(pickRandomIndex(frequencies))
+					.generateProblem(ProblemGenerator.EASY);
+		}
+		layoutProblems(newProblems, directions, this);
+		newProblems = new GeneratedProblem[numberOfProblems / 3];
+		for (int i = 0; j < (int) numberOfProblems * 2/3.0; j++, i++) {
+			newProblems[i] = generators.get(pickRandomIndex(frequencies))
+					.generateProblem(ProblemGenerator.MEDIUM);
+		}
+		layoutProblems(newProblems, null, this);
+		newProblems = new GeneratedProblem[numberOfProblems - 2 * (numberOfProblems / 3)];
+		for (int i = 0; j < numberOfProblems; j++, i++) {
+			newProblems[i] = generators.get(pickRandomIndex(frequencies))
+					.generateProblem(ProblemGenerator.HARD);
+		}
+		layoutProblems(newProblems, null, this);
 		docPanel.repaintDoc();
 	}
 
@@ -261,9 +279,81 @@ public class Document {
 		return 1;
 	}
 
-	public void layoutObjects(MathObject[] objects) {
+	public void refactorPageNumbers(){
+		Vector<ObjectAndPosition> allNumbers = getProblemsInOrder();
+		int lastProblemNumber = 1;
+		for ( ObjectAndPosition obj : allNumbers){
+			try {
+				obj.mObj.setAttributeValue(ProblemNumberObject.NUMBER, lastProblemNumber);
+			} catch (AttributeException e) {
+				// error should not be thrown
+			}
+			lastProblemNumber++;
+		}
+		setLastProblemNumber(lastProblemNumber);
+	}
 
-		PointInDocument pt = findFirstWhitespace();
+	private Vector<ObjectAndPosition> getProblemsInOrder(){
+		Vector<ObjectAndPosition> allNumbers = new Vector<ObjectAndPosition>();
+		for ( Page p : getPages()){
+			for (MathObject mObj : p.getObjects()){
+				if ( mObj instanceof ProblemNumberObject){
+					allNumbers.add(new ObjectAndPosition(mObj.getPositionInDoc(), mObj));
+				}
+				else if ( mObj instanceof Grouping){
+					allNumbers.addAll(0, findAllProblemNumbersInGroup(((Grouping)mObj)));
+				}
+			}
+		}
+		Collections.sort(allNumbers);
+		return allNumbers;
+	}
+
+	public Document getAnswerKey(){
+
+		Vector<ObjectAndPosition> allNumbers = getProblemsInOrder();
+
+		// change the objects that have answers
+
+		// update group that problems are in to accommodate bigger expressions
+
+		// create new doc
+
+		// layout problems on new doc
+	}
+
+	private Vector<ObjectAndPosition> findAllProblemNumbersInGroup(Grouping g){
+		Vector<ObjectAndPosition> allNumbers = new Vector<ObjectAndPosition>();
+		for (MathObject mObj : g.getObjects()){
+			if ( mObj instanceof ProblemNumberObject){
+				allNumbers.add(new ObjectAndPosition(mObj.getPositionInDoc(), mObj));
+			}
+			else if ( mObj instanceof Grouping){
+				allNumbers.addAll(0, findAllProblemNumbersInGroup(((Grouping)mObj)));
+			}
+		}
+		return allNumbers;
+	}
+
+	private class ObjectAndPosition implements Comparable<ObjectAndPosition>{
+
+		private PointInDocument pt;
+		private MathObject mObj;
+		private ObjectAndPosition(PointInDocument pt, MathObject mObj){
+			this.pt = pt;
+			this.mObj = mObj;
+		}
+		@Override
+		public int compareTo(ObjectAndPosition o) {
+			return pt.compareTo(o.pt);
+		}
+	}
+
+	public static void layoutProblems(MathObject[] objects, String directions, Document doc) {
+
+		int extraMarginForDirections = 5;
+		PointInDocument pt = doc.findFirstWhitespace();
+		Page currentPage = doc.getPage(pt.getPage());
 
 		int greatestWidth = 0, greatestHeight = 0;
 		for (MathObject mObj : objects) {
@@ -274,49 +364,102 @@ public class Document {
 				greatestHeight = mObj.getHeight();
 			}
 		}
-
-		int numColumns = ((getWidth() - 2 * getxMargin() - bufferSpace) / (greatestWidth + bufferSpace));
-		int totalExtraSpace = ((getWidth() - 2 * getxMargin() - bufferSpace) % (greatestWidth + bufferSpace));
-
-		int extraColumnSpace = totalExtraSpace / (numColumns + 1);
-		int currColumn = 0;
 		int curryPos = pt.getyPos();
-		Page currentPage = getPage(pt.getPage());
+		if (directions != null){
+			// add some extra space between lists of problems
+			pt.setyPos(pt.getyPos() + minimumBufferSpace/2);
+			TextObject directionText = new TextObject(currentPage, extraMarginForDirections + currentPage.getxMargin(),
+					pt.getyPos(), currentPage.getWidth() - 2 * currentPage.getxMargin() - 
+					2 * extraMarginForDirections, 20, 12, directions);
+			curryPos = pt.getyPos() + directionText.getHeight() + minimumBufferSpace/2;
+			// draw the text in the background, so it has its height set correctly
+			doc.getDocViewerPanel().drawObjectInBackgorund(directionText);
+			if ( curryPos + greatestHeight < currentPage.getHeight() - currentPage.getyMargin())
+			{// the first row of objects will fit on this page, otherwise move the directions down a page
+				currentPage.addObject(directionText);
+			}
+			else{
+				currentPage = nextPage(currentPage);
+				curryPos = currentPage.getyMargin() + minimumBufferSpace;
+				directionText.setyPos(curryPos);
+				currentPage.addObject(directionText);
+				directionText.setParentContainer(currentPage);
+				curryPos += directionText.getHeight() + minimumBufferSpace/2;
+			}
+		}
+
+		int numColumns = (doc.getWidth() - 2 * doc.getxMargin() - 4 * extraMarginForDirections) 
+				/ (greatestWidth + minimumBufferSpace);
+		int totalExtraSpace = (doc.getWidth() - 2 * doc.getxMargin() - 4 * extraMarginForDirections)
+				% (greatestWidth + minimumBufferSpace);
+
+		int extraColumnSpace = totalExtraSpace / (numColumns);
+		int currColumn = 0;
+
+		ProblemNumberObject problemNumber;
+		int lastProblemNumber = doc.getLastProblemNumber();
 
 		for (MathObject mObj : objects) {
-			mObj.setxPos(currentPage.getxMargin() + bufferSpace
-					+ extraColumnSpace + currColumn
-					* (greatestWidth + bufferSpace + extraColumnSpace));
+			mObj.setxPos(currentPage.getxMargin() + minimumBufferSpace
+					+ currColumn * (greatestWidth + minimumBufferSpace + extraColumnSpace));
 			mObj.setyPos(curryPos);
-			
+
 			mObj.setParentContainer(currentPage);
 			if (!mObj.isOnPage()) {
-				if (currentPage.getParentDoc().getNumPages() < currentPage
-						.getParentDoc().getPageIndex(currentPage) + 2) 
-				{// a page must be added to add the objects
-					currentPage.getParentDoc().addBlankPage();
-					currentPage = currentPage.getParentDoc().getPage(
-							currentPage.getParentDoc().getNumPages() - 1);
-					currentPage.getParentDoc().getDocViewerPanel()
-							.resizeViewWindow();
-				} else {// there is a next page on the document that the new
-						// objects can be added to
-					currentPage = currentPage.getParentDoc().getPage(
-							currentPage.getParentDoc()
-									.getPageIndex(currentPage) + 1);
-				}
-
-				curryPos = currentPage.getyMargin() + bufferSpace;
+				currentPage = nextPage(currentPage);
+				curryPos = currentPage.getyMargin() + minimumBufferSpace;
 				mObj.setyPos(curryPos);
 			}
+			// add a number for this problem
+			problemNumber = new ProblemNumberObject(currentPage, mObj.getxPos() - 38,
+					mObj.getyPos(), 35, 20, lastProblemNumber);
+			// draw it in the background so its height is set properly
+			doc.getDocViewerPanel().drawObjectInBackgorund(problemNumber);
+			// to accommodate problems of different heights, the number should be layed out either in the
+			// center of the height of the problem, or at the top if it is very large
+			if ( problemNumber.getHeight() * 4 >= mObj.getHeight()){
+				problemNumber.setyPos(mObj.getyPos() + (int)
+						Math.round( (mObj.getHeight()/2.0) - (problemNumber.getHeight()/2.0)));
+				//				problemNumber.setyPos(mObj.getyPos() + (mObj.getHeight() - problemNumber.getHeight())/2);
+			}
+			else{
+				problemNumber.setyPos(mObj.getyPos() + problemNumber.getHeight());
+			}
+			currentPage.addObject(problemNumber);
+			lastProblemNumber++;
 			currentPage.addObject(mObj);
 			mObj.setParentContainer(currentPage);
 			currColumn++;
 			if (currColumn > numColumns - 1) {
-				curryPos += greatestHeight + bufferSpace;
+				curryPos += greatestHeight + minimumBufferSpace/3;
 				currColumn = 0;
 			}
 		}
+		doc.setLastProblemNumber(lastProblemNumber);
+	}
+
+	/**
+	 * Returns the next page, if there is none, one is added and it is returned.
+	 * 
+	 * @param currentPage - the previous page
+	 * @return - the next page
+	 */
+	public static Page nextPage(Page currentPage){
+		if (currentPage.getParentDoc().getNumPages() < currentPage
+				.getParentDoc().getPageIndex(currentPage) + 2) 
+		{// a page must be added to add the objects
+			currentPage.getParentDoc().addBlankPage();
+			currentPage = currentPage.getParentDoc().getPage(
+					currentPage.getParentDoc().getNumPages() - 1);
+			currentPage.getParentDoc().getDocViewerPanel()
+			.resizeViewWindow();
+		} else {// there is a next page on the document that the new
+			// objects can be added to
+			currentPage = currentPage.getParentDoc().getPage(
+					currentPage.getParentDoc()
+					.getPageIndex(currentPage) + 1);
+		}
+		return currentPage;
 	}
 
 	public void setWidth(int pageWidth) {
@@ -355,12 +498,21 @@ public class Document {
 		return ((DateAttribute) getAttributeWithName(DATE)).getValue();
 	}
 
+	public int getLastProblemNumber() {
+		return (Integer) getAttributeWithName(LAST_PROBLEM_NUMBER).getValue();
+	}
+
+	public void setLastProblemNumber(int i){
+		((IntegerAttribute) getAttributeWithName(LAST_PROBLEM_NUMBER)).setValue(i);
+	}
+
 	public String exportToXML() {
 		String output = "";
 		output += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 		output += "<" + OPEN_NOTEBOOK_DOC + " " + "version=\"0.1\" " + FILENAME
 				+ "=\"" + getName() + "\" " + AUTHOR + "=\"" + getAuthor()
-				+ "\" " + DATE + "=\"" + getDate() + "\">\n";
+				+ "\" " + DATE + "=\"" + getDate() + "\" " + 
+				LAST_PROBLEM_NUMBER + "=\"" + getLastProblemNumber() + "\">\n";
 		for (String s : subjectsCovered) {
 			output += "<subject name=\"" + s + "\"></subject>";
 		}
@@ -461,6 +613,10 @@ public class Document {
 
 	public static void setProblemDatabase(ProblemDatabase problemDatabase) {
 		Document.problemDatabase = problemDatabase;
+	}
+
+	public void removeAllPages() {
+		pages = new Vector<Page>();
 	}
 
 }

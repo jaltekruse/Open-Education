@@ -18,11 +18,13 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Scrollable;
 
@@ -126,8 +128,28 @@ public class ProblemListPanel extends JPanel {
 				if ( num == -1){// user cancelled the action
 					return;
 				}
+				String directions = selectedProblems.get(0).getDirections();
+				if (  selectedProblems.size() > 1)
+				{// there is more than one problem, check to make sure they
+					// have the same directions, or prompt the user for a
+					// new set of directions that applies to all of them.
+					boolean directionsMatch = true;
+					for ( ProblemGenerator gen : selectedProblems){
+						if ( ! gen.getDirections().equalsIgnoreCase(directions)){
+							directionsMatch = false;
+							break;
+						}
+					}
+					if ( ! directionsMatch){
+						// prompt user for new set of directions
+						directions = promtForDirections(selectedProblems);
+						if ( directions == null){
+							return;
+						}
+					}
+				}
 				notebookPanel.getCurrentDocViewer().getDoc().generateProblems(
-						selectedProblems, selectedFrequencies, num);
+						selectedProblems, selectedFrequencies, num, directions);
 				notebookPanel.getCurrentDocViewer().addUndoState();
 			}
 			
@@ -200,6 +222,34 @@ public class ProblemListPanel extends JPanel {
 		problemList.setPreferredSize(new Dimension(scrollPane.getViewport().getWidth(),
 				problemList.getHeight()));
 		problemList.revalidate();
+	}
+	
+	public String promtForDirections(Vector<ProblemGenerator> generators){
+		final JComponent[] inputs = new JComponent[generators.size() + 3];
+		inputs[0] = new JLabel("<html>The directions form the selected problems are different.<br>" +
+				"Enter a set of directions suitable for all of the problems below,<br>" +
+				"each individual problem's directions are listed for reference.<html>");
+		int index = 1;
+		for ( ProblemGenerator gen : generators){
+			inputs[index] = new JLabel("<html><font size=-2>" + gen.getDirections() + "</font></html");
+			index++;
+		}
+		inputs[index] = new JLabel("Directions for list of problems");
+		index++;
+		JTextArea directions = new JTextArea(3,10);
+		inputs[index] = new JScrollPane(directions);
+		directions.setWrapStyleWord(true);
+		directions.setLineWrap(true);
+		while (true){
+			int input = JOptionPane.showConfirmDialog(notebookPanel, 
+					inputs, "Enter Directions", JOptionPane.PLAIN_MESSAGE);
+			if ( input == -1){
+				return null;
+			}
+			if ( ! directions.getText().equals("")){
+				return directions.getText();
+			}
+		}
 	}
 	
 	private class ProblemList extends JPanel implements Scrollable{

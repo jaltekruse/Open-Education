@@ -1,6 +1,8 @@
 package doc_gui;
 
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
+import java.util.Collections;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -9,6 +11,10 @@ import javax.swing.KeyStroke;
 public class KeyboardShortcuts {
 
 	public static void addKeyboardShortcuts(final NotebookPanel notebookPanel){
+		
+		notebookPanel.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.singleton(KeyStroke.getKeyStroke("TAB")));
+		notebookPanel.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.singleton(KeyStroke.getKeyStroke("shift TAB")));
+	    
 		notebookPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DELETE")
 				, "delete");
 		notebookPanel.getActionMap().put("delete", new AbstractAction(){
@@ -36,6 +42,24 @@ public class KeyboardShortcuts {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				notebookPanel.closeCurrentViewer();
+			}
+		});
+		
+		notebookPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control TAB")
+				, "switchTab");
+		notebookPanel.getActionMap().put("switchTab", new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				notebookPanel.switchTab();
+			}
+		});
+
+		notebookPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control shift TAB")
+				, "switchTabBackwards");
+		notebookPanel.getActionMap().put("switchTabBackwards", new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				notebookPanel.switchTabBackward();
 			}
 		});
 

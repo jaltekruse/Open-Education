@@ -10,30 +10,27 @@ import doc.attributes.StringAttribute;
 public class AnswerBoxObject extends MathObject {
 
 	public static final String FONT_SIZE = "font size";
-	public static final String ANSWER = "answer";
+	public static final String ANSWER = "answer", CORRECT_ANSWER = "correct answer";
+	
 	public AnswerBoxObject(Page p, int x, int y, int w, int h) {
 		super(p, x, y, w, h);
-		this.setStudentSelectable(true);
 	}
 	
 	public AnswerBoxObject(MathObjectContainer p){
 		super(p);
-		this.setStudentSelectable(true);
 	}
 
-	public AnswerBoxObject() {
-		this.setStudentSelectable(true);
+	public AnswerBoxObject() {}
+	
+	public boolean isStudentSelectable(){
+		return true;
 	}
 
 	@Override
 	public void addDefaultAttributes() {
-		// TODO Auto-generated method stub
-		addAttribute(new StringAttribute(ANSWER));
-		getAttributeWithName(ANSWER).setValue("");
-		getAttributeWithName("answer").setStudentEditable(true);
-		addAttribute(new IntegerAttribute(FONT_SIZE, 1, 50));
-		getAttributeWithName(FONT_SIZE).setValue(12);
-		getAttributeWithName(FONT_SIZE).setStudentEditable(false);
+		addAttribute(new StringAttribute(ANSWER, "", true, true));
+		addAttribute(new StringAttribute(CORRECT_ANSWER, true, false));
+		addAttribute(new IntegerAttribute(FONT_SIZE, 12, 1, 50, true, false));
 	}
 
 	public void setFontSize(int fontSize) throws AttributeException {
@@ -46,7 +43,6 @@ public class AnswerBoxObject extends MathObject {
 
 	@Override
 	public String getType() {
-		// TODO Auto-generated method stub
 		return ANSWER_BOX_OBJ;
 	}
 	
@@ -57,10 +53,17 @@ public class AnswerBoxObject extends MathObject {
 	public void setText(String s) throws AttributeException{
 		setAttributeValue("answer", s);
 	}
+	
+	public String getCorrectAnswer(){
+		return ((StringAttribute)getAttributeWithName(CORRECT_ANSWER)).getValue();
+	}
+
+	public void setCorrectAnswer(String s) throws AttributeException{
+		setAttributeValue(CORRECT_ANSWER, s);
+	}
 
 	@Override
 	public AnswerBoxObject clone() {
-		// TODO Auto-generated method stub
 		AnswerBoxObject o = new AnswerBoxObject(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){

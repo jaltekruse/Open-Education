@@ -18,6 +18,7 @@ import java.awt.Rectangle;
 
 import doc.Page;
 import doc.mathobjects.AnswerBoxObject;
+import doc.mathobjects.ConeObject;
 import doc.mathobjects.CubeObject;
 import doc.mathobjects.CylinderObject;
 import doc.mathobjects.ExpressionObject;
@@ -31,6 +32,7 @@ import doc.mathobjects.RectangleObject;
 import doc.mathobjects.TextObject;
 import doc.mathobjects.TriangleObject;
 import doc_gui.mathobject_gui.AnswerBoxGUI;
+import doc_gui.mathobject_gui.ConeObjectGUI;
 import doc_gui.mathobject_gui.CubeObjectGUI;
 import doc_gui.mathobject_gui.CylinderObjectGUI;
 import doc_gui.mathobject_gui.ExpressionObjectGUI;
@@ -58,6 +60,7 @@ public class PageGUI {
 	public AnswerBoxGUI answerBoxGUI;
 	public CubeObjectGUI cubeGUI;
 	public CylinderObjectGUI cylinderGUI;
+	public ConeObjectGUI coneGUI;
 
 	public static final int MOUSE_LEFT_CLICK = 0;
 	public static final int MOUSE_MIDDLE_CLICK = 1;
@@ -90,6 +93,7 @@ public class PageGUI {
 		answerBoxGUI = new AnswerBoxGUI();
 		cubeGUI = new CubeObjectGUI();
 		cylinderGUI = new CylinderObjectGUI();
+		coneGUI = new ConeObjectGUI();
 	}
 
 
@@ -107,6 +111,7 @@ public class PageGUI {
 		answerBoxGUI = new AnswerBoxGUI();
 		cubeGUI = new CubeObjectGUI();
 		cylinderGUI = new CylinderObjectGUI();
+		coneGUI = new ConeObjectGUI();
 	}
 
 	/**
@@ -215,6 +220,12 @@ public class PageGUI {
 			if (docPanel != null && docPanel.getFocusedObject() == mObj){
 				cubeGUI.drawInteractiveComponents( (CubeObject) mObj, g,
 						new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
+			}
+		}
+		else if (mObj instanceof ConeObject){
+			coneGUI.drawMathObject((ConeObject)mObj, g,
+					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
+			if (docPanel != null && docPanel.getFocusedObject() == mObj){
 			}
 		}
 		else if (mObj instanceof PolygonObject){

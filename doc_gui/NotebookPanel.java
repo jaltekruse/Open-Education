@@ -234,7 +234,8 @@ public class NotebookPanel extends SubPanel {
 		if (focusedObj != null) {
 			MathObject newObj = getClipBoardContents().clone();
 			newObj.setxPos(focusedObj.getxPos());
-			newObj.setyPos(focusedObj.getyPos());
+			// offset the new object a little so the user knows that it was added
+			newObj.setyPos(focusedObj.getyPos() + 10);
 			newObj.setParentContainer(focusedObj.getParentContainer());
 			focusedObj.getParentContainer().addObject(newObj);
 			getCurrentDocViewer().setFocusedObject(newObj);
@@ -276,7 +277,7 @@ public class NotebookPanel extends SubPanel {
 			openNotebook.quit();
 			return;
 		}
-		 
+
 		String tabs = null;
 		String message;
 		if ( unsavedIndeces.size() == 1){
@@ -294,10 +295,10 @@ public class NotebookPanel extends SubPanel {
 		Object[] options = {"Quit", "Cancel"};
 		int n = JOptionPane.showOptionDialog(openNotebook,
 				message + "Are you sure you want to quit?\n" + tabs,
-						"Important Data May Be Lost",
-						JOptionPane.YES_NO_CANCEL_OPTION,
-						JOptionPane.ERROR_MESSAGE,
-						null, options, options[1]);
+				"Important Data May Be Lost",
+				JOptionPane.YES_NO_CANCEL_OPTION,
+				JOptionPane.ERROR_MESSAGE,
+				null, options, options[1]);
 
 		if (n == 0){ 
 			openNotebook.quit();
@@ -308,10 +309,10 @@ public class NotebookPanel extends SubPanel {
 	public void delete() {
 		if (getCurrentDocViewer().getFocusedObject() != null) {
 			MathObject mObj = getCurrentDocViewer().getFocusedObject();
-			if (mObj == getCurrentDocViewer().getTempGroup()) {
-				getCurrentDocViewer().removeTempGroup();
-			}
 			mObj.getParentContainer().removeObject(mObj);
+			if (mObj == getCurrentDocViewer().getTempGroup()) {
+				getCurrentDocViewer().resetTempGroup();
+			}
 			mObj.setParentContainer(null);
 			mObj.setJustDeleted(true);
 			getCurrentDocViewer().setFocusedObject(null);
@@ -367,8 +368,31 @@ public class NotebookPanel extends SubPanel {
 		this.closeDocViewer(getCurrentDocViewer());
 	}
 
+	public void switchTab(){
+		if ( docTabs.getSelectedIndex() < docTabs.getTabCount() - 2)
+		{// needs to be two before tab count because the last tab is the add new tab
+			// with the "+" on it, when it gains focus a new document is added
+			docTabs.setSelectedIndex(docTabs.getSelectedIndex() + 1);
+		}
+		else{
+			docTabs.setSelectedIndex(0);
+		}
+	}
+
+	public void switchTabBackward(){
+		if ( docTabs.getSelectedIndex() > 0)
+		{
+			docTabs.setSelectedIndex(docTabs.getSelectedIndex() - 1);
+		}
+		else
+		{// needs to be two before tab count because the last tab is the add new tab
+			// with the "+" on it, when it gains focus a new document is added
+			docTabs.setSelectedIndex(docTabs.getTabCount() - 2);
+		}
+	}
+
 	public void generateWorksheet() {
-		
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				Vector<Page> docPages = getCurrentDocViewer().getDoc().getPages();
@@ -398,9 +422,9 @@ public class NotebookPanel extends SubPanel {
 					.showMessageDialog(
 							null,
 							"No generated problems were found to replace. To see some" +
-							"\ngenerated problems try opening a sample document.",
-							"No Problems Generated",
-							JOptionPane.WARNING_MESSAGE);
+									"\ngenerated problems try opening a sample document.",
+									"No Problems Generated",
+									JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		});
@@ -450,9 +474,13 @@ public class NotebookPanel extends SubPanel {
 		newDoc.getPage(0).addObject(newProb);
 		this.addDoc(newDoc);
 	}
-	
+
 	public Node getExpressionFromUser(String message){
-		String lastEx = "";
+		return getExpressionFromUser(message, "");
+	}
+
+	public Node getExpressionFromUser(String message, String defaultInput){
+		String lastEx = defaultInput;
 		Node newNode = null;
 		while( true ){
 			lastEx = (String)JOptionPane.showInputDialog(openNotebook, message,
@@ -470,7 +498,7 @@ public class NotebookPanel extends SubPanel {
 
 		}
 	}
-	
+
 	public void addProbelmToDatabase(ProblemGenerator problem){
 		JTextField problemName = new JTextField();
 		JTextField author = new JTextField(openNotebook.getUserName());
@@ -482,21 +510,23 @@ public class NotebookPanel extends SubPanel {
 		tags.setWrapStyleWord(true);
 		tags.setLineWrap(true);
 		final JComponent[] inputs = new JComponent[] {
-		                new JLabel("Problem Name"),
-		                problemName,
-		                new JLabel("Author"),
-		                author,
-		                new JLabel("Date (mm/dd/yyyy)"),
-		                date,
-		                new JLabel("Directions"),
-		                new JScrollPane(directions),
-		                new JLabel("Tags (Seperate with Commas)"),
-		                new JScrollPane( tags),
+				new JLabel("Problem Name"),
+				problemName,
+				new JLabel("Author"),
+				author,
+				new JLabel("Date (mm/dd/yyyy)"),
+				date,
+				new JLabel("Directions"),
+				new JScrollPane(directions),
+				new JLabel("Tags (Seperate with Commas)"),
+				new JScrollPane(tags),
 		};
 		while (true){
-			JOptionPane.showMessageDialog(openNotebook, 
+			int input = JOptionPane.showConfirmDialog(openNotebook, 
 					inputs, "Enter Problem Details", JOptionPane.PLAIN_MESSAGE);
-			
+			if ( input == -1){
+				return;
+			}
 			if ( problemName.getText().equals("")){
 				JOptionPane.showMessageDialog(null, "Name cannot be blank.",
 						"Warning", JOptionPane.WARNING_MESSAGE);
@@ -513,7 +543,7 @@ public class NotebookPanel extends SubPanel {
 			}
 			problem.setDirections(directions.getText());
 			problem.getListWithName(ProblemGenerator.TAGS).removeAll();
-			for ( String s : tags.getText().split("[\\s,;]+")){
+			for ( String s : tags.getText().split("[,;]+")){
 				try {
 					problem.getListWithName(ProblemGenerator.TAGS).addValueWithString(s);
 				} catch (AttributeException e) {
@@ -522,7 +552,7 @@ public class NotebookPanel extends SubPanel {
 			}
 			break;
 		}
-		
+
 		openNotebook.getDatabase().addProblem(problem);
 	}
 
@@ -813,9 +843,23 @@ public class NotebookPanel extends SubPanel {
 		}
 
 		openDocs.remove(docPanel);
+		docPanel.destroyAllUndoStates();
+		destroyDoc(docPanel.getDoc());
 		justClosedTab = true;
 		docTabs.remove(docPanel);
 		justClosedTab = false;
+	}
+	
+	public void destroyDoc(Document doc){
+		for (Page p : doc.getPages()){
+			p.setParentDoc(null);
+			for (MathObject mObj : p.getObjects()){
+				mObj.setParentContainer(null);
+			}
+			p.removeAllObjects();
+		}
+		doc.removeAllPages();
+		doc.setDocViewerPanel(null);
 	}
 
 	public void focusDocViewer(DocViewerPanel docPanel) {

@@ -155,13 +155,27 @@ public class DocViewerPanel extends JDesktopPane{
 	}
 
 	public void drawObjectInBackgorund(MathObject o){
-		pageGUI.drawObject(o, background.getGraphics(),
+		Graphics g = background.getGraphics();
+		pageGUI.drawObject(o, g,
 				o.getParentPage(), new Point(0,0),
 				new Rectangle(),  zoomLevel);
+		g.dispose();
 	}
 
 	public void setScrollBounds(int w, int h){
 		docScrollPane.setBounds(0, 0, w, h);
+	}
+	
+	public void destroyAllUndoStates(){
+		for ( Document doc : actions){
+			notebook.getNotebookPanel().destroyDoc(doc);
+		}
+		for ( Document doc : actions){
+			notebook.getNotebookPanel().destroyDoc(doc);
+		}
+		notebook.getNotebookPanel().destroyDoc(lastAction);
+		undoneActions = new Stack<Document>();
+		actions = new Stack<Document>();
 	}
 
 	public void addUndoState(){

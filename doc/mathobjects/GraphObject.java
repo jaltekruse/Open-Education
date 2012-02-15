@@ -33,21 +33,22 @@ public class GraphObject extends MathObject {
 	public GraphObject(MathObjectContainer p, int x, int y, int width, int height) {
 		super(p, x, y, width, height);
 		setDefaults();
-		setStudentSelectable(true);
 		addGraphActions();
 	}
 	
 	public GraphObject(MathObjectContainer p){
 		super(p);
 		setDefaults();
-		setStudentSelectable(true);
 		addGraphActions();
 	}
 	
 	public GraphObject() {
 		setDefaults();
-		setStudentSelectable(true);
 		addGraphActions();
+	}
+	
+	public boolean isStudentSelectable(){
+		return true;
 	}
 	
 	private void addGraphActions(){
@@ -70,8 +71,8 @@ public class GraphObject extends MathObject {
 			getAttributeWithName(X_MIN).setValueWithString("-5");
 			addAttribute(new DoubleAttribute(X_MAX, -7E8, 7E8, true, true));
 			getAttributeWithName(X_MAX).setValueWithString("5");
-			addAttribute(new DoubleAttribute("yMin", -7E8, 7E8, true, true));
-			getAttributeWithName("yMin").setValueWithString("-5");
+			addAttribute(new DoubleAttribute(Y_MIN, -7E8, 7E8, true, true));
+			getAttributeWithName(Y_MIN).setValueWithString("-5");
 			addAttribute(new DoubleAttribute("yMax", -7E8, 7E8, true, true));
 			getAttributeWithName("yMax").setValueWithString("5");
 			addAttribute(new DoubleAttribute("xStep", -3E8, 3E8, true, true));
@@ -168,11 +169,11 @@ public class GraphObject extends MathObject {
 	}
 	
 	public double getyMin(){
-		return ((DoubleAttribute) getAttributeWithName("yMin")).getValue();
+		return ((DoubleAttribute) getAttributeWithName(Y_MIN)).getValue();
 	}
 	
 	public double getxMax(){
-		return ((DoubleAttribute) getAttributeWithName("xMax")).getValue();
+		return ((DoubleAttribute) getAttributeWithName(X_MAX)).getValue();
 	}
 	
 	public double getyMax(){
@@ -188,11 +189,11 @@ public class GraphObject extends MathObject {
 	}
 	
 	public void setyMin(double d) throws AttributeException{
-		setAttributeValue("yMin", d);
+		setAttributeValue(Y_MIN, d);
 	}
 	
 	public void setxMax(double d) throws AttributeException{
-		setAttributeValue("xMax", d);
+		setAttributeValue(X_MAX, d);
 	}
 	
 	public void setyMax(double d) throws AttributeException{
@@ -209,14 +210,48 @@ public class GraphObject extends MathObject {
 	
 	@Override
 	public boolean setAttributeValue(String n, Object o) throws AttributeException{
-		if (n.equals("xMin")){
+		if (n.equals(X_MIN)){
 			if (o instanceof Double){
 				if (((Double)o) < 
-						((DoubleAttribute)getAttributeWithName("xMax")).getValue()){
-					getAttributeWithName("xMin").setValue(o);
+						((DoubleAttribute)getAttributeWithName(X_MAX)).getValue()){
+					getAttributeWithName(X_MIN).setValue(o);
 				}
 				else{
-					throw new AttributeException("xMin must be less than xMax");
+					throw new AttributeException( X_MIN + " must be less than " + X_MAX);
+				}
+			}
+		}
+		else if (n.equals(X_MAX)){
+			if (o instanceof Double){
+				if (((Double)o) >
+						((DoubleAttribute)getAttributeWithName(X_MIN)).getValue()){
+					getAttributeWithName(X_MAX).setValue(o);
+				}
+				else{
+					throw new AttributeException(X_MAX + " must be greater than " + X_MIN);
+				}
+			}
+		}
+		
+		if (n.equals(Y_MIN)){
+			if (o instanceof Double){
+				if (((Double)o) <
+						((DoubleAttribute)getAttributeWithName(Y_MAX)).getValue()){
+					getAttributeWithName(Y_MIN).setValue(o);
+				}
+				else{
+					throw new AttributeException( Y_MIN + " must be greater than " + Y_MAX);
+				}
+			}
+		}
+		else if (n.equals(Y_MAX)){
+			if (o instanceof Double){
+				if (((Double)o) >
+						((DoubleAttribute)getAttributeWithName(Y_MIN)).getValue()){
+					getAttributeWithName(Y_MAX).setValue(o);
+				}
+				else{
+					throw new AttributeException(Y_MAX + " must be less than " + Y_MIN);
 				}
 			}
 		}
