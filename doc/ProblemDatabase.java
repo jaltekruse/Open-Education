@@ -60,8 +60,17 @@ public class ProblemDatabase {
 	}
 	
 	public ProblemGenerator getProblemWithUUID(UUID uuid){
-		for ( ProblemGenerator ex : getAllProblems()){
-			if ( ex.getUUID().equals(uuid)){
+		System.out.println("lookin for ID: " + uuid);
+		for ( ProblemGenerator ex : problems){
+			System.out.println("found: " + ex.getProblemID());
+			if ( ex.getProblemID().equals(uuid)){
+				return ex;
+			}
+		}
+		System.out.println("expression gen:");
+		for ( ProblemGenerator ex : expressionGenerators){
+			System.out.println("found: " + ex.getProblemID());
+			if ( ex.getProblemID().equals(uuid)){
 				return ex;
 			}
 		}

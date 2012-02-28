@@ -14,19 +14,20 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 import doc.PointInDocument;
+import doc.mathobjects.LineObject;
 import doc.mathobjects.MathObject;
 import doc_gui.DocMouseListener;
 
 public abstract class MathObjectGUI<K extends MathObject>{
-	
+
 	private static int resizeDotDiameter = 10;
-	
+
 	private static int resizeDotRadius = 5;
-	
+
 	private int currResizeDot;
-	
+
 	private boolean resizeDotBeingDragged;
-	
+
 	/**
 	 * Represents the value of the upper left resizing dot.
 	 */
@@ -38,14 +39,28 @@ public abstract class MathObjectGUI<K extends MathObject>{
 	public static final int SOUTH_DOT = 5;
 	public static final int SOUTHWEST_DOT = 6;
 	public static final int WEST_DOT = 7;
-	
+
 	public abstract void drawMathObject(K object, Graphics g, Point pageOrigin, float zoomLevel);
-	
+
 	public void drawInteractiveComponents(K object, Graphics g, Point pageOrigin, float zoomLevel){}
-	
+
 	public static void drawResizingDots(MathObject object, Graphics g, Point pageOrigin, float zoomLevel){
-		
-		if ( object.isVerticallyResizable() && object.isHorizontallyResizable()){
+
+		if ( object instanceof LineObject ){
+			boolean flipped = false;
+			if ( ((LineObject)object).isFlippedHorizontally()) flipped = !flipped;
+			if ( ((LineObject)object).isFlippedVertically()) flipped = !flipped;
+			if ( flipped ){
+				drawResizeDot(object, g, pageOrigin, zoomLevel, NORTHEAST_DOT);
+				drawResizeDot(object, g, pageOrigin, zoomLevel, SOUTHWEST_DOT);
+			}
+			else{
+				drawResizeDot(object, g, pageOrigin, zoomLevel, NORTHWEST_DOT);
+				drawResizeDot(object, g, pageOrigin, zoomLevel, SOUTHEAST_DOT);
+			}
+			return;
+		}
+		else if ( object.isVerticallyResizable() && object.isHorizontallyResizable()){
 			for (int i = NORTHWEST_DOT; i <= WEST_DOT; i++){
 				drawResizeDot(object, g, pageOrigin, zoomLevel, i);
 			}
@@ -63,7 +78,7 @@ public abstract class MathObjectGUI<K extends MathObject>{
 		}
 
 	}
-	
+
 	/**
 	 * Draws a single white circle (dot) used to show a user that they can click and drag
 	 * to resize an object.
@@ -71,7 +86,7 @@ public abstract class MathObjectGUI<K extends MathObject>{
 	 * @param object - the object able to be resized
 	 * @param g - the graphics object to draw on
 	 * @param pageOrigin - the point on the graphics object where the objects parent page
-	 * 				
+	 * 
 	 * @param zoomLevel
 	 * @param dot
 	 */
@@ -83,118 +98,123 @@ public abstract class MathObjectGUI<K extends MathObject>{
 		g.setColor(Color.BLACK);
 		g.drawOval((int) p.getX(), (int) p.getY(), resizeDotDiameter, resizeDotDiameter);
 	}
-	
+
 	public static Point getPosResizeDot(MathObject object, Point pageOrigin, float zoomLevel, int dotVal){
+		if (object instanceof LineObject){
+			return getPosResizeDot(object, pageOrigin, zoomLevel, dotVal, false);
+		}
+		return getPosResizeDot(object, pageOrigin, zoomLevel, dotVal, true);
+	}
+	
+	private static Point getPosResizeDot(MathObject object, Point pageOrigin,
+			float zoomLevel, int dotVal, boolean outSideObject){
 		int xOrigin = (int) (pageOrigin.getX() + object.getxPos() * zoomLevel);
 		int yOrigin = (int) (pageOrigin.getY() + object.getyPos() * zoomLevel);
 		int width = (int) (object.getWidth() * zoomLevel);
 		int height = (int) (object.getHeight() * zoomLevel);
 		
-		if (dotVal == NORTHWEST_DOT){
-			return new Point(xOrigin - resizeDotDiameter, yOrigin - resizeDotDiameter);
+		int shiftIn, shiftOut;
+		if ( outSideObject ){
+			shiftIn = 0;
+			shiftOut = resizeDotDiameter;
 		}
-		else if (dotVal == NORTH_DOT){
-			return new Point(xOrigin + width/2 - resizeDotRadius, yOrigin - resizeDotDiameter);
+		else{
+			shiftIn = resizeDotRadius;
+			shiftOut = resizeDotRadius;
 		}
-		else if (dotVal == NORTHEAST_DOT){
-			return new Point(xOrigin + width, yOrigin - resizeDotDiameter);
-		}
-		else if (dotVal == EAST_DOT){
-			return new Point(xOrigin + width, yOrigin  + height/2 - resizeDotRadius);
-		}
-		else if (dotVal == SOUTHEAST_DOT){
-			return new Point(xOrigin + width, yOrigin + height);
-		}
-		else if (dotVal == SOUTH_DOT){
-			return new Point(xOrigin + width/2 - resizeDotRadius, yOrigin  + height);
-		}
-		else if (dotVal == SOUTHWEST_DOT){
-			return new Point(xOrigin - resizeDotDiameter, yOrigin + height );
-		}
-		else if (dotVal == WEST_DOT){
-			return new Point(xOrigin - resizeDotDiameter, yOrigin + height/2 - resizeDotRadius);
-		}
+
+		if (dotVal == NORTHWEST_DOT)
+			return new Point(xOrigin - shiftOut, yOrigin - shiftOut);
+		else if (dotVal == NORTH_DOT)
+			return new Point(xOrigin + width/2 - resizeDotRadius, yOrigin - shiftOut);
+		else if (dotVal == NORTHEAST_DOT)
+			return new Point(xOrigin + width - shiftIn, yOrigin - shiftOut);
+		else if (dotVal == EAST_DOT)
+			return new Point(xOrigin + width - shiftIn, yOrigin  + height/2 - resizeDotRadius);
+		else if (dotVal == SOUTHEAST_DOT)
+			return new Point(xOrigin + width - shiftIn, yOrigin + height - shiftIn);
+		else if (dotVal == SOUTH_DOT)
+			return new Point(xOrigin + width/2 - resizeDotRadius, yOrigin + height - shiftIn);
+		else if (dotVal == SOUTHWEST_DOT)
+			return new Point(xOrigin - shiftOut, yOrigin + height - shiftIn);
+		else if (dotVal == WEST_DOT)
+			return new Point(xOrigin - shiftOut, yOrigin + height/2 - resizeDotRadius);
 		else{
 			System.out.println("Invalid resize dot value");
 			return null;
 		}
-		
 	}
-	
+
 	public static Color brightenColor(Color c){
 		if ( c.equals(Color.WHITE)){
 			return c;
 		}
 		else{
-			int newRed = (int ) (c.getRed() * 1.4);
-			if (newRed > 255){
-				newRed = 255;
-			}
-			int newGreen = (int ) (c.getGreen() * 1.4);
-			if (newGreen > 255){
-				newGreen = 255;
-			}
-			int newBlue = (int ) (c.getBlue() * 1.4);
-			if (newBlue > 255){
-				newBlue = 255;
-			}
+			int newRed = (int) (c.getRed() * 1.4);
+			if (newRed > 255) newRed = 255;
+			int newGreen = (int) (c.getGreen() * 1.4);
+			if (newGreen > 255) newGreen = 255;
+			int newBlue = (int) (c.getBlue() * 1.4);
+			if (newBlue > 255) newBlue = 255;
+			
 			return new Color(newRed, newGreen, newBlue);
 		}
 	}
-	
+
 	public static int detectResizeDotCollision(Point clickPos, MathObject object,
 			Point pageOrigin, float zoomLevel){
-		int extraBuffer = 1;
-		Point p;
-		
+
+		if ( object instanceof LineObject){
+			boolean flipped = false;
+			if ( ((LineObject)object).isFlippedHorizontally()) flipped = !flipped;
+			if ( ((LineObject)object).isFlippedVertically()) flipped = !flipped;
+			if ( flipped ){
+				if (detectDotCollision(NORTHEAST_DOT, clickPos, object, pageOrigin, zoomLevel))
+					return NORTHEAST_DOT;
+				else if (detectDotCollision(SOUTHWEST_DOT, clickPos, object, pageOrigin, zoomLevel))
+					return SOUTHWEST_DOT;
+			}
+			else{
+				if (detectDotCollision(NORTHWEST_DOT, clickPos, object, pageOrigin, zoomLevel))
+					return NORTHWEST_DOT;
+				else if (detectDotCollision(SOUTHEAST_DOT, clickPos, object, pageOrigin, zoomLevel))
+					return SOUTHEAST_DOT;
+			}
+			return Integer.MAX_VALUE;
+		}
 		if ( object.isVerticallyResizable() && object.isHorizontallyResizable()){
 			for (int i = NORTHWEST_DOT; i <= WEST_DOT; i++){
-				p = getPosResizeDot(object, pageOrigin, zoomLevel, i);
-				if ( Math.sqrt( Math.pow( (p.getX() + resizeDotRadius - clickPos.getX() ), 2) +
-						Math.pow( (p.getY() + resizeDotRadius - clickPos.getY() ), 2))
-						<= resizeDotRadius + extraBuffer)
-				{//calculate the distance from the click to one of the dots
+				if (detectDotCollision(i, clickPos, object, pageOrigin, zoomLevel))
 					return i;
-				}
 			}
 		}
 		if ( object.isVerticallyResizable()){
-			p = getPosResizeDot(object, pageOrigin, zoomLevel, NORTH_DOT);
-			if ( Math.sqrt( Math.pow( (p.getX() + resizeDotRadius - clickPos.getX() ), 2) +
-					Math.pow( (p.getY() + resizeDotRadius - clickPos.getY() ), 2))
-					<= resizeDotRadius + extraBuffer)
-			{//calculate the distance from the click to one of the dots
+			if (detectDotCollision(NORTH_DOT, clickPos, object, pageOrigin, zoomLevel))
 				return NORTH_DOT;
-			}
-			p = getPosResizeDot(object, pageOrigin, zoomLevel, SOUTH_DOT);
-			if ( Math.sqrt( Math.pow( (p.getX() + resizeDotRadius - clickPos.getX() ), 2) +
-					Math.pow( (p.getY() + resizeDotRadius - clickPos.getY() ), 2))
-					<= resizeDotRadius + extraBuffer)
-			{//calculate the distance from the click to one of the dots
+			else if (detectDotCollision(SOUTH_DOT, clickPos, object, pageOrigin, zoomLevel))
 				return SOUTH_DOT;
-			}
 		}
 		if ( object.isHorizontallyResizable()){
-			p = getPosResizeDot(object, pageOrigin, zoomLevel, WEST_DOT);
-			if ( Math.sqrt( Math.pow( (p.getX() + resizeDotRadius - clickPos.getX() ), 2) +
-					Math.pow( (p.getY() + resizeDotRadius - clickPos.getY() ), 2))
-					<= resizeDotRadius + extraBuffer)
-			{//calculate the distance from the click to one of the dots
-				return WEST_DOT;
-			}
-			p = getPosResizeDot(object, pageOrigin, zoomLevel, EAST_DOT);
-			if ( Math.sqrt( Math.pow( (p.getX() + resizeDotRadius - clickPos.getX() ), 2) +
-					Math.pow( (p.getY() + resizeDotRadius - clickPos.getY() ), 2))
-					<= resizeDotRadius + extraBuffer)
-			{//calculate the distance from the click to one of the dots
+			if (detectDotCollision(NORTH_DOT, clickPos, object, pageOrigin, zoomLevel))
+				return NORTH_DOT;
+			else if (detectDotCollision(EAST_DOT, clickPos, object, pageOrigin, zoomLevel))
 				return EAST_DOT;
-			}
 		}
-		
-
 		return Integer.MAX_VALUE;
 	}
 	
+	public static boolean detectDotCollision(int dotVal, Point clickPos, MathObject object,
+			Point pageOrigin, float zoomLevel){
+		int extraBuffer = 1;
+		Point p = getPosResizeDot(object, pageOrigin, zoomLevel, dotVal);
+		if ( Math.sqrt( Math.pow( (p.getX() + resizeDotRadius - clickPos.getX() ), 2) +
+				Math.pow( (p.getY() + resizeDotRadius - clickPos.getY() ), 2))
+				<= resizeDotRadius + extraBuffer){
+			return true;
+		}
+		return false;
+	}
+
 	public static boolean detectObjectCollision(Point clickPos, MathObject object,
 			Point pageOrigin, float zoomLevel){
 		//(x0,y0)----(x1,y0)
@@ -207,16 +227,16 @@ public abstract class MathObjectGUI<K extends MathObject>{
 		int y1 = (int) ((object.getyPos() + object.getHeight()) * zoomLevel + pageOrigin.getY());
 		int x =  (int) clickPos.getX();
 		int y = (int) clickPos.getY();
-		
+
 		Rectangle bigRect = new Rectangle(x0 - resizeDotDiameter, y0 - resizeDotDiameter,
 				x1 - x0 + 2 * resizeDotDiameter, y1 - y0 + 2 * resizeDotDiameter);
-		
+
 		if (bigRect.contains(x,y)){
 			return true;
 		}
 		return false;
 	}
-	
+
 	public static boolean detectBorderCollision(Point clickPos, MathObject object,
 			Point pageOrigin, float zoomLevel){
 		//(x0,y0)----(x1,y0)
@@ -229,19 +249,19 @@ public abstract class MathObjectGUI<K extends MathObject>{
 		int y1 = (int) ((object.getyPos() + object.getHeight()) * zoomLevel + pageOrigin.getY());
 		int x =  (int) clickPos.getX();
 		int y = (int) clickPos.getY();
-		
+
 		Rectangle smallRect = new Rectangle(x0 , y0 ,
 				x1 - x0 , y1 - y0 - 2 );
-		
+
 		Rectangle bigRect = new Rectangle(x0 - resizeDotDiameter, y0 - resizeDotDiameter,
 				x1 - x0 + 2 * resizeDotDiameter, y1 - y0 + 2 * resizeDotDiameter);
-		
+
 		if (bigRect.contains(x,y) && ! smallRect.contains(x,y)){
 			return true;
 		}
 		return false;
 	}
-	
+
 	public static void moveBoxToPoint(Point clickPos, MathObject object,
 			Point pageOrigin, float zoomLevel, int xBoxOffset, int yBoxOffset){
 		object.setxPos((int) ( (clickPos.getX() - pageOrigin.getX() - xBoxOffset * zoomLevel) / zoomLevel ));
@@ -259,118 +279,118 @@ public abstract class MathObjectGUI<K extends MathObject>{
 			object.setyPos(object.getParentPage().getHeight() - object.getHeight());
 		}
 	}
-	
+
 	/**
 	 * @param dotVal - the code for one of the 8 dots
-	 * @param docPt - a point on the page in the user space
+	 * @param dragPos - a point on the page in the user space
 	 */
 	public static void moveResizeDot(MathObject object, int dotVal,
-			PointInDocument docPt, DocMouseListener docMouseListener){
+			PointInDocument dragPos, DocMouseListener docMouseListener){
 		int verticalMovement, horizontalMovement;
-		
-		if (dotVal == SOUTH_DOT){
-			verticalMovement = ( docPt.getyPos() - object.getyPos() - object.getHeight());
+
+		// TODO
+		// there is a bug with how the object handles positioning the corner if you 
+		// cross over an edge with a drag dot, these values below could be used to solve
+		// the problem later
+		int prevX = object.getxPos(), prevY = object.getyPos(),
+				prevWidth = object.getWidth(), prevHeight = object.getHeight();
+
+		if (isSouthDot(dotVal)){
+			verticalMovement = ( dragPos.getyPos() - object.getyPos() - object.getHeight());
 			object.setHeight(object.getHeight() + verticalMovement);
 		}
-		else if (dotVal == NORTH_DOT){
-			verticalMovement = ( docPt.getyPos() - object.getyPos());
+		else if (isNorthDot(dotVal)){
+			verticalMovement = ( dragPos.getyPos() - object.getyPos());
 			object.setHeight(object.getHeight() - verticalMovement);
 			object.setyPos(object.getyPos() + verticalMovement);
 		}
-		else if (dotVal == WEST_DOT){
-			horizontalMovement = ( docPt.getxPos() - object.getxPos());
+		if (isWestDot(dotVal)){
+			horizontalMovement = ( dragPos.getxPos() - object.getxPos());
 			object.setWidth(object.getWidth() - horizontalMovement);
 			object.setxPos(object.getxPos() + horizontalMovement);
 		}
-		else if (dotVal == EAST_DOT){
-			horizontalMovement = ( docPt.getxPos() - object.getxPos() - object.getWidth());
+		else if (isEastDot(dotVal)){
+			horizontalMovement = ( dragPos.getxPos() - (object.getxPos() + object.getWidth()));
 			object.setWidth(object.getWidth() + horizontalMovement);
-		}
-		else if (dotVal == NORTHEAST_DOT){
-			verticalMovement = ( docPt.getyPos() - object.getyPos());
-			object.setHeight(object.getHeight() - verticalMovement);
-			object.setyPos(object.getyPos() + verticalMovement);
-			
-			horizontalMovement = ( docPt.getxPos() - object.getxPos() - object.getWidth());
-			object.setWidth(object.getWidth() + horizontalMovement);	
-		}
-		else if (dotVal == SOUTHEAST_DOT){
-			verticalMovement = ( docPt.getyPos() - object.getyPos() - object.getHeight());
-			object.setHeight(object.getHeight() + verticalMovement);
-			
-			horizontalMovement = ( docPt.getxPos() - object.getxPos() - object.getWidth());
-			object.setWidth(object.getWidth() + horizontalMovement);
-		}
-		else if (dotVal == SOUTHWEST_DOT){
-			horizontalMovement = ( docPt.getxPos() - object.getxPos());
-			object.setWidth(object.getWidth() - horizontalMovement);
-			object.setxPos(object.getxPos() + horizontalMovement);
-			
-			verticalMovement = ( docPt.getyPos() - object.getyPos() - object.getHeight());
-			object.setHeight(object.getHeight() + verticalMovement);
-		}
-		else if (dotVal == NORTHWEST_DOT){
-			horizontalMovement = ( docPt.getxPos() - object.getxPos());
-			object.setWidth(object.getWidth() - horizontalMovement);
-			object.setxPos(object.getxPos() + horizontalMovement);
-			
-			verticalMovement = ( docPt.getyPos() - object.getyPos());
-			object.setHeight(object.getHeight() - verticalMovement);
-			object.setyPos(object.getyPos() + verticalMovement);
 		}
 		
 		if (object.getHeight() <= 0){
-			if (object.getHeight() == 0){
-				object.setHeight(1);
+//			System.out.println("flip vert");
+//			System.out.println("move dragdot from (" + prevX + ", " + prevY + ")" +
+//					"(" + (prevX + prevWidth) + ", " + (prevHeight + prevY) + ")");
+//			System.out.println("to (" + dragPos.getxPos() + ", " + dragPos.getyPos() + ")");
+//			System.out.println("newWidth: " + object.getWidth());
+			object.flipVertically();
+			if ( isNorthDot(dotVal)){
+				object.setyPos(prevY + prevHeight);
+				object.setHeight(dragPos.getyPos() - prevY + prevHeight);
 			}
-			object.setHeight(Math.abs(object.getHeight()));
-			object.setyPos(object.getyPos() - object.getHeight());
-			if (dotVal == NORTH_DOT){
-				docMouseListener.setCurrentDragDot(SOUTH_DOT);
+			else{
+				object.setyPos(dragPos.getyPos());
+				object.setHeight(prevY - dragPos.getyPos());
 			}
-			else if (dotVal == SOUTH_DOT){
-				docMouseListener.setCurrentDragDot(NORTH_DOT);
-			}
-			else if (dotVal == SOUTHEAST_DOT){
-				docMouseListener.setCurrentDragDot(NORTHEAST_DOT);
-			}
-			else if (dotVal == SOUTHWEST_DOT){
-				docMouseListener.setCurrentDragDot(NORTHWEST_DOT);
-			}
-			else if (dotVal == NORTHWEST_DOT){
-				docMouseListener.setCurrentDragDot(SOUTHWEST_DOT);
-			}
-			else if (dotVal == NORTHEAST_DOT){
-				docMouseListener.setCurrentDragDot(SOUTHEAST_DOT);
-				
-			}
+			docMouseListener.setCurrentDragDot(getVerticallyOppositeDot(dotVal));
+
 		}
-		
+
 		if (object.getWidth() <= 0){
-			if (object.getWidth() == 0){
-				object.setWidth(1);
-			}
+//			System.out.println("flip horz");
+//			System.out.println("move dragdot from (" + prevX + ", " + prevY + ", " + prevWidth + ", " + prevHeight);
+//			System.out.println("to (" + dragPos.getxPos() + ", " + dragPos.getyPos() + ")");
+//			System.out.println();
+			object.flipHorizontally();
 			object.setWidth(Math.abs(object.getWidth()));
 			object.setxPos(object.getxPos() - object.getWidth());
-			if (dotVal == EAST_DOT){
-				docMouseListener.setCurrentDragDot(WEST_DOT);
-			}
-			else if (dotVal == WEST_DOT){
-				docMouseListener.setCurrentDragDot(EAST_DOT);
-			}
-			else if (dotVal == SOUTHEAST_DOT){
-				docMouseListener.setCurrentDragDot(SOUTHWEST_DOT);
-			}
-			else if (dotVal == SOUTHWEST_DOT){
-				docMouseListener.setCurrentDragDot(SOUTHEAST_DOT);
-			}
-			else if (dotVal == NORTHWEST_DOT){
-				docMouseListener.setCurrentDragDot(NORTHEAST_DOT);
-			}
-			else if (dotVal == NORTHEAST_DOT){
-				docMouseListener.setCurrentDragDot(NORTHWEST_DOT);
-			}
+			docMouseListener.setCurrentDragDot(getHorizontallyOppositeDot(dotVal));
 		}
+		if (object.getHeight() == 0){
+			object.setHeight(1);
+		}
+		if (object.getWidth() == 0){
+			object.setWidth(1);
+		}
+	}
+
+	public static boolean isNorthDot(int dotVal){
+		return ( dotVal == NORTH_DOT || dotVal == NORTHWEST_DOT
+				|| dotVal == NORTHEAST_DOT );
+	}
+
+	public static boolean isSouthDot(int dotVal){
+		return ( dotVal == SOUTH_DOT || dotVal == SOUTHWEST_DOT
+				|| dotVal == SOUTHEAST_DOT );
+	}
+
+	public static boolean isEastDot(int dotVal){
+		return ( dotVal == EAST_DOT || dotVal == SOUTHEAST_DOT
+				|| dotVal == NORTHEAST_DOT );
+	}
+
+	public static boolean isWestDot(int dotVal){
+		return ( dotVal == WEST_DOT || dotVal == SOUTHWEST_DOT
+				|| dotVal == NORTHWEST_DOT );
+	}
+
+	private static int getVerticallyOppositeDot(int dotVal){
+		if (dotVal == NORTH_DOT) return SOUTH_DOT;
+		else if (dotVal == SOUTH_DOT) return NORTH_DOT;
+		else if (dotVal == SOUTHEAST_DOT) return NORTHEAST_DOT;
+		else if (dotVal == SOUTHWEST_DOT) return NORTHWEST_DOT;
+		else if (dotVal == NORTHWEST_DOT) return SOUTHWEST_DOT;
+		else if (dotVal == NORTHEAST_DOT) return SOUTHEAST_DOT;
+		// could throw error, but the method is private and simple
+		else return Integer.MAX_VALUE;
+	}
+
+	private static int getHorizontallyOppositeDot(int dotVal){
+		if (dotVal == EAST_DOT) return WEST_DOT;
+		else if (dotVal == WEST_DOT) return EAST_DOT;
+		else if (dotVal == SOUTHEAST_DOT) return SOUTHWEST_DOT;
+		else if (dotVal == SOUTHWEST_DOT) return SOUTHEAST_DOT;
+		else if (dotVal == NORTHWEST_DOT) return NORTHEAST_DOT;
+		else if (dotVal == NORTHEAST_DOT) return NORTHWEST_DOT;
+		// could throw error, but the method is private and simple
+		else return Integer.MAX_VALUE;
 	}
 
 	public void setResizeDotBeingDragged(boolean resizeDotBeingDragged) {

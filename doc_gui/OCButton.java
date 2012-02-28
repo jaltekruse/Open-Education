@@ -8,14 +8,25 @@
 
 package doc_gui;
 
+import java.awt.AWTKeyStroke;
+import java.awt.DefaultKeyboardFocusManager;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.KeyboardFocusManager;
+import java.awt.Robot;
+import java.awt.TextComponent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.text.JTextComponent;
 
 public class OCButton extends JButton {
 
@@ -27,89 +38,58 @@ public class OCButton extends JButton {
 	 */
 	private static final long serialVersionUID = 1L;
 	private String s;
-	private GridBagConstraints bCon;
-	private JComponent comp;
+	
+	public static KeyboardFocusManager keyFocusManager;
+	
+	static{
+		try{
+			keyFocusManager = new DefaultKeyboardFocusManager();
+		}catch(Exception e){
+		}
+	}
 
 	public OCButton(String str, int gridwidth, int gridheight, int gridx,
 			int gridy, JComponent comp) {
 
 		super(str);
-		this.comp = comp;
+		this.setFocusable(false);
 		s = str;
-		bCon = new GridBagConstraints();
-		bCon.fill = GridBagConstraints.BOTH;
-		bCon.weightx = .1;
-		bCon.weighty = .2;
-		bCon.gridheight = gridheight;
-		bCon.gridwidth = gridwidth;
-		bCon.gridx = gridx;
-		bCon.gridy = gridy;
-		bCon.insets = new Insets(2, 2, 2, 2);
-		this.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				associatedAction();
-			}
-		});
-
-		comp.add(this, bCon);
+		addToContainer(gridwidth, gridheight, gridx, gridy, false, comp);
 	}
 
 	public OCButton(Icon bi, String tip, int gridwidth, int gridheight,
 			int gridx, int gridy, JComponent comp) {
 
 		super(bi);
-		this.comp = comp;
+		this.setFocusable(false);
 		this.setToolTipText(tip);
-		bCon = new GridBagConstraints();
-		bCon.fill = GridBagConstraints.BOTH;
-		bCon.weightx = .1;
-		bCon.weighty = .2;
-		bCon.gridheight = gridheight;
-		bCon.gridwidth = gridwidth;
-		bCon.gridx = gridx;
-		bCon.gridy = gridy;
-		bCon.insets = new Insets(2, 2, 2, 2);
-		this.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				associatedAction();
-			}
-		});
-
-		comp.add(this, bCon);
+		addToContainer(gridwidth, gridheight, gridx, gridy, false, comp);
 	}
 
 	public OCButton(boolean hasInsets, String str, int gridwidth,
 			int gridheight, int gridx, int gridy, JComponent comp) {
 
 		super(str);
-		this.comp = comp;
+		this.setFocusable(false);
+		addToContainer(gridwidth, gridheight, gridx, gridy, hasInsets, comp);
 		s = str;
-		bCon = new GridBagConstraints();
-		bCon.fill = GridBagConstraints.BOTH;
-		bCon.weightx = .1;
-		bCon.weighty = .2;
-		bCon.gridheight = gridheight;
-		bCon.gridwidth = gridwidth;
-		bCon.gridx = gridx;
-		bCon.gridy = gridy;
-		if (hasInsets) {
-			bCon.insets = new Insets(2, 2, 2, 2);
-		}
-		this.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				associatedAction();
-			}
-		});
 
-		comp.add(this, bCon);
 	}
 
 	public OCButton(String str, String tip, int gridwidth, int gridheight,
 			int gridx, int gridy, JComponent comp) {
 
 		super(str);
-		this.comp = comp;
+		this.setFocusable(false);
 		s = str;
+		this.setToolTipText(tip);
+		addToContainer(gridwidth, gridheight, gridx, gridy, false, comp);
+	}
+	
+	private void addToContainer(int gridwidth, int gridheight,
+			int gridx, int gridy, boolean hasInsets, JComponent comp){
+		setMargin(new Insets(3, 3, 3, 3));
+		GridBagConstraints bCon;
 		bCon = new GridBagConstraints();
 		bCon.fill = GridBagConstraints.BOTH;
 		bCon.weightx = .1;
@@ -125,18 +105,74 @@ public class OCButton extends JButton {
 			}
 		});
 
-		this.setToolTipText(tip);
-
 		comp.add(this, bCon);
 	}
-
-	public void removeInsets() {
-		comp.remove(this);
-		bCon.insets = null;
-		comp.add(this, bCon);
+	
+	public static boolean textComponentHasFocus(){
+		if ( keyFocusManager.getFocusOwner() instanceof JTextComponent ){
+			return true;
+		}
+		return false;
+	}
+	
+	public static JTextComponent getFocusedComponent(){
+		if ( ! textComponentHasFocus()){
+			return null;
+		}
+		return (JTextComponent) keyFocusManager.getFocusOwner();
 	}
 
 	public void associatedAction() {
+		
+		if ( ! textComponentHasFocus()){
+			return;
+		}
+		JTextComponent currField = getFocusedComponent();
+		int caretPos = 0;
+		if (currField != null) {
+			String currText = currField.getText();
+			if (currField.getSelectionStart() == currField.getSelectionEnd()) {
+				currText = currField.getText();
+				caretPos = currField.getCaretPosition();
+				String tempText = currText.substring(0, caretPos);
+				tempText += s;
+				tempText += currText.substring(caretPos, currText.length());
+				currField.setText(tempText);
+				currField.requestFocus();
+				currField.setCaretPosition(caretPos + s.length());
+			}
+			else {
+				int selectStart = currField.getSelectionStart();
+				int selectEnd = currField.getSelectionEnd();
+				String tempText = currText.substring(0, selectStart);
+				tempText += s;
+				tempText += currText.substring(selectEnd, currText.length());
+				currField.setText(tempText);
+				currField.requestFocus();
+				currField.setCaretPosition(selectStart + s.length());
+			}
+		}
+//		if ( ! canAccessSystemRobot() || keyCodes == null){
+//			return;
+//		}
+//		for (int i = 0; i < keyCodes.length; i++){
+//			if ( i + 1 < keyCodes.length){
+//				if (keyCodes[i + 1] == OnScreenMathKeypad.PRESS){
+//					System.out.println("press");
+//					robot.keyPress(keyCodes[i]);
+//					i++;
+//					continue;
+//				}
+//				else if  (keyCodes[i + 1] == OnScreenMathKeypad.RELEASE){
+//					System.out.println("release");
+//					robot.keyRelease(keyCodes[i]);
+//					i++;
+//					continue;
+//				}
+//			}
+//			System.out.println("normal press");
+//			robot.keyPress(keyCodes[i]);
+//			robot.keyRelease(keyCodes[i]);
+//		}
 	}
-
 }

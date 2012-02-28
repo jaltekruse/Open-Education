@@ -16,6 +16,8 @@ public class ConnectedDrawing extends MathObject {
 		super(p);
 	}
 
+	public ConnectedDrawing() {}
+
 	@Override
 	public void addDefaultAttributes() {
 		
@@ -27,17 +29,8 @@ public class ConnectedDrawing extends MathObject {
 	}
 
 	@Override
-	public ConnectedDrawing clone() {
-		ConnectedDrawing o = new ConnectedDrawing(getParentContainer());
-		o.removeAllAttributes();
-		for ( MathObjectAttribute mAtt : getAttributes()){
-			o.addAttribute( mAtt.clone());
-		}
-		o.removeAllLists();
-		for ( ListAttribute list : getLists()){
-			o.addList(list.clone());
-		}
-		return o;
+	public MathObject newInstance() {
+		return new ConnectedDrawing();
 	}
 
 }

@@ -110,10 +110,10 @@ public class ListAttribute <K extends MathObjectAttribute> {
 	
 	public String exportToXML(){
 		String output = "";
-		output += "<" + LIST + " " + NAME + "=\"" + getName() + "\" " + TYPE +"=\"" +
+		output += "\t<" + LIST + " " + NAME + "=\"" + getName() + "\" " + TYPE +"=\"" +
 		template.getType() + "\" " + CHILD_NAME + "=\"" + template.getName() + "\""+ ">\n";
 		for ( K val : values){
-			output += "<" + ENTRY + " " + VAL + "=\"" + val.getValue() + "\"/>\n";  
+			output += "\t\t<" + ENTRY + " " + VAL + "=\"" + val.getValue() + "\"/>\n";  
 		}
 		output += "</" + LIST + ">";
 		return output;

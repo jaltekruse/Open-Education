@@ -56,20 +56,6 @@ public class TextObject extends MathObject {
 	public int getFontSize() {
 		return ((IntegerAttribute)getAttributeWithName(FONT_SIZE)).getValue();
 	}
-	
-	@Override
-	public TextObject clone() {
-		TextObject o = new TextObject(getParentContainer());
-		o.removeAllAttributes();
-		for ( MathObjectAttribute mAtt : getAttributes()){
-			o.addAttribute( mAtt.clone());
-		}
-		o.removeAllLists();
-		for ( ListAttribute list : getLists()){
-			o.addList(list.clone());
-		}
-		return o;
-	}
 
 	@Override
 	public String getType() {
@@ -82,6 +68,11 @@ public class TextObject extends MathObject {
 	
 	public void setText(String s) throws AttributeException{
 		setAttributeValue(TEXT, s);
+	}
+
+	@Override
+	public MathObject newInstance() {
+		return new TextObject();
 	}
 
 }

@@ -12,6 +12,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -24,6 +26,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.Scrollable;
@@ -158,9 +161,9 @@ public class ProblemListPanel extends JPanel {
 
 	public JPanel createPanelForProblems() {
 		ProblemList panel = new ProblemList();
+		JPanel tempPanel;
 		GridBagConstraints con = new GridBagConstraints();
 		JComboBox frequencyChoices;
-		JCheckBox checkbox;
 		Component[] othersInRow = new Component[2];;
 		
 		int numProblemsToShow = notebookPanel.getDatabase().getAllProblems().size();
@@ -169,16 +172,17 @@ public class ProblemListPanel extends JPanel {
 			numProblemsToShow = 20;
 		}
 		con.gridy = 0;
-		panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+		panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		panel.setLayout(new GridBagLayout());
 		for ( final ProblemGenerator g : notebookPanel.getDatabase().getAllProblems()) {
 		
 			// add checkbox
 			con.fill = GridBagConstraints.NONE;
 			con.gridx = 0;
+			con.gridwidth = 1;
 			con.weightx = 0;
 			con.insets = new Insets(0,0,0,0);
-			checkbox = new JCheckBox();
+			final JCheckBox checkbox = new JCheckBox();
 			checkbox.addItemListener(new ItemListener(){
 
 				@Override
@@ -203,16 +207,34 @@ public class ProblemListPanel extends JPanel {
 			con.insets = new Insets(0,5,0,0);
 			con.weightx = 1;
 			con.gridx = 1;
-			panel.add(new ProblemDescriptionPanel(g, othersInRow), con);
+			tempPanel = new ProblemDescriptionPanel(g, othersInRow);
+			tempPanel.addMouseListener(new MouseListener(){
+				public void mouseClicked(MouseEvent arg0) {}
+				public void mouseEntered(MouseEvent arg0) {}
+				public void mouseExited(MouseEvent arg0) {}
+				@Override
+				public void mousePressed(MouseEvent arg0) {
+					checkbox.setSelected( ! checkbox.isSelected());
+				}
+				public void mouseReleased(MouseEvent arg0) {}
+				
+			});
+			panel.add(tempPanel, con);
 			
-			// add frequency selection menu
-			con.fill = GridBagConstraints.NONE;
-			con.gridx = 2;
-			con.weightx = 0;
-			con.insets = new Insets(0, 5, 0, 5);
-			frequencyChoices.setSelectedItem(AVERAGE);
-			panel.add(frequencyChoices, con);
 			
+//			// add frequency selection menu
+//			con.fill = GridBagConstraints.NONE;
+//			con.gridx = 2;
+//			con.weightx = 0;
+//			con.insets = new Insets(0, 5, 0, 5);
+//			frequencyChoices.setSelectedItem(AVERAGE);
+//			panel.add(frequencyChoices, con);
+			
+			con.gridy++;
+			con.gridx = 0;
+			con.gridwidth = 2;
+			con.insets = new Insets(0,0,0,0);
+			panel.add(new JSeparator(), con);
 			con.gridy++;
 		}
 		return panel;
@@ -332,14 +354,15 @@ public class ProblemListPanel extends JPanel {
 			con.gridheight = 1;
 			con.gridx++;
 			con.weightx = 1;
+			con.insets = new Insets(3,3,3,3);
 			this.add(label, con);
 			
 			// add problem author label
 			con.gridx++;
 			con.weightx = .1;
-			con.fill = GridBagConstraints.NONE;
+			con.fill = GridBagConstraints.HORIZONTAL;
 			con.anchor = GridBagConstraints.LINE_END;
-			label = new JLabel(problem.getAuthor());
+			label = new JLabel("By: " + problem.getAuthor());
 			label.setFont(label.getFont().deriveFont( fontSize * 0.8f));
 			label.setHorizontalTextPosition(JLabel.RIGHT);
 			label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));

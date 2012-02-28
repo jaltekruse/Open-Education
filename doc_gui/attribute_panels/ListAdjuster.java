@@ -57,12 +57,12 @@ public class ListAdjuster extends JPanel{
 		// I really need to revalidate the parent frame, but I don't want to limit its
 		// functionality in different uses, so for now I'm just going to disable it
 //		if (expanded){
-//			JButton expandButton = new JButton(getImage(EXPANDED_PIC));
+//			JButton expandButton = new JButton(docPanel.getIcon(EXPANDED_PIC));
 //			expandButton.addActionListener(new ExpandedButtonListener());
 //			this.add(expandButton, con);
 //		}
 //		else{
-//			JButton notExpandedButton = new JButton(getImage(NOT_EXPANDED_PIC));
+//			JButton notExpandedButton = new JButton(docPanel.getIcon(NOT_EXPANDED_PIC));
 //			notExpandedButton.addActionListener(new NotExpandedButtonListener());
 //			this.add(notExpandedButton, con);
 //			con.gridx = 1;
@@ -177,17 +177,6 @@ public class ListAdjuster extends JPanel{
 			docPanel.repaint();
 		}
 		
-	}
-	
-	public ImageIcon getImage(String fileName){
-		try {
-			fileName = "img/" + fileName;
-			BufferedImage image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(fileName));
-			return new ImageIcon(image);
-		} catch (IOException e) {
-			System.out.println("cannot find image: " + fileName);
-		}
-		return null;
 	}
 	
 	public void focusAttributField(){

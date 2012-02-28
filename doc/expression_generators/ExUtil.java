@@ -440,11 +440,9 @@ public class ExUtil {
 				else{
 					// the minimum is below zero, so exclude those values between 0 and the minimum while finding a new number
 					int tempMin = 0;
-					newNum = (Number) newChild; 
+					newNum = (Number) newChild;
 					if ( min > 0)
-					{
 						tempMin = min;
-					}
 					while ( newNum.getValue() < 0){
 						newNum = new Number( randomInt(tempMin, max, excludeZero) );
 					}
@@ -477,9 +475,7 @@ public class ExUtil {
 					int tempMin = 0;
 					newNum = (Number) newChild;
 					if ( min > 0)
-					{
 						tempMin = min;
-					}
 					while ( newNum.getValue() < 0){
 						newNum = new Number( randomInt(tempMin, max, excludeZero) );
 					}

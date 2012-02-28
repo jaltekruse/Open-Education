@@ -64,15 +64,7 @@ public class TriangleObject extends PolygonObject {
 	
 	@Override
 	public void performSpecialObjectAction(String s){
-		if (s.equals(FLIP_HORIZONTALLY)){
-			getAttributeWithName(HORIZONTALLY_FLIPPED).setValue( ! (Boolean)
-					getAttributeWithName(HORIZONTALLY_FLIPPED).getValue());
-		}
-		else if (s.equals(FLIP_VERTICALLY)){
-			getAttributeWithName(VERTICALLY_FLIPPED).setValue( ! (Boolean)
-					getAttributeWithName(VERTICALLY_FLIPPED).getValue());
-		}
-		else if(s.equals(MAKE_RIGHT_TRIANGLE)){
+		if(s.equals(MAKE_RIGHT_TRIANGLE)){
 			getAttributeWithName(TRIANGLE_TYPE).setValue(RIGHT);
 		}
 		else if(s.equals(MAKE_ISOSCELES_TRIANGLE)){
@@ -80,20 +72,6 @@ public class TriangleObject extends PolygonObject {
 		}
 	}
 	
-	@Override
-	public TriangleObject clone() {
-		TriangleObject o = new TriangleObject(getParentContainer());
-		o.removeAllAttributes();
-		for ( MathObjectAttribute mAtt : getAttributes()){
-			o.addAttribute( mAtt.clone());
-		}
-		o.removeAllLists();
-		for ( ListAttribute list : getLists()){
-			o.addList(list.clone());
-		}
-		return o;
-	}
-
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
@@ -112,6 +90,11 @@ public class TriangleObject extends PolygonObject {
 		else{
 			return null;
 		}
+	}
+
+	@Override
+	public MathObject newInstance() {
+		return new TriangleObject();
 	}
 	
 	

@@ -70,7 +70,7 @@ public class Document {
 	private Vector<ProblemGenerator> generators;
 	private Vector<ProblemGenerator> problemGenerators;
 
-	// this should not be exported to files, it is a bridge between the front
+	// these should not be exported to files, they are bridges between the front
 	// end and back end
 	private DocViewerPanel docPanel;
 	private static ProblemDatabase problemDatabase;
@@ -140,8 +140,8 @@ public class Document {
 	}
 
 	public ProblemGenerator getGeneratorWithID(UUID id) {
-		for (ProblemGenerator gen : generators) {
-			if (gen.getUUID().compareTo(id) == 0) {
+		for (ProblemGenerator gen : getGenerators()) {
+			if (gen.getProblemID().compareTo(id) == 0) {
 				return gen;
 			}
 		}
@@ -150,7 +150,7 @@ public class Document {
 
 	public void addGenerator(ProblemGenerator generator) throws Exception {
 		for (ProblemGenerator gen : generators) {
-			if (gen.getUUID().compareTo(generator.getUUID()) == 0) {
+			if (gen.getProblemID().compareTo(generator.getProblemID()) == 0) {
 				throw new Exception("UUID already in use");
 			}
 		}
@@ -171,7 +171,7 @@ public class Document {
 		}
 		for (ProblemGenerator gen : generators) {
 			try {
-				newDoc.addGenerator(gen.clone());
+				newDoc.addGenerator( (ProblemGenerator) gen.clone());
 			} catch (Exception e) {
 				System.out.println("UUID already in use.");
 			}
@@ -188,6 +188,15 @@ public class Document {
 		// this.setLastFocused(lastWithFocus);
 		newDoc.setDocViewerPanel(getDocViewerPanel());
 		return newDoc;
+	}
+	
+	public boolean objectIDInUse(UUID id){
+		for ( Page p : getPages()){
+			if ( p.objectIDInUse(id)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public String getName() {
@@ -240,115 +249,25 @@ public class Document {
 			}
 		}
 		int j = 0;
-		newProblems = new GeneratedProblem[numberOfProblems / 3];
-		for (int i = 0; j < numberOfProblems / 3; j++, i++) {
-			newProblems[i] = generators.get(pickRandomIndex(frequencies))
-					.generateProblem(ProblemGenerator.EASY);
+		newProblems = new GeneratedProblem[numberOfProblems];
+		for (int i = 0; j < numberOfProblems; j++, i++) {
+			if ( i < numberOfProblems / 3){
+				newProblems[i] = generators.get(pickRandomIndex(frequencies))
+						.generateProblem(ProblemGenerator.EASY);
+			}
+			else if ( i < numberOfProblems * (2.0/3)){
+				newProblems[i] = generators.get(pickRandomIndex(frequencies))
+						.generateProblem(ProblemGenerator.MEDIUM);
+			}
+			else{
+				newProblems[i] = generators.get(pickRandomIndex(frequencies))
+						.generateProblem(ProblemGenerator.HARD);
+			}
 		}
 		layoutProblems(newProblems, directions, this);
-		newProblems = new GeneratedProblem[numberOfProblems / 3];
-		for (int i = 0; j < (int) numberOfProblems * 2/3.0; j++, i++) {
-			newProblems[i] = generators.get(pickRandomIndex(frequencies))
-					.generateProblem(ProblemGenerator.MEDIUM);
-		}
-		layoutProblems(newProblems, null, this);
-		newProblems = new GeneratedProblem[numberOfProblems - 2 * (numberOfProblems / 3)];
-		for (int i = 0; j < numberOfProblems; j++, i++) {
-			newProblems[i] = generators.get(pickRandomIndex(frequencies))
-					.generateProblem(ProblemGenerator.HARD);
-		}
-		layoutProblems(newProblems, null, this);
-		docPanel.repaintDoc();
+		docPanel.repaint();
 	}
-
-	private int pickRandomIndex(Vector<Integer> frequencies) {
-		int total = 0;
-		for (int i = 0; i < frequencies.size(); i++) {
-			total += frequencies.get(i);
-		}
-		int chosen = random.nextInt(total) + 1;
-		total = 0;
-		for (int i = 0; i < frequencies.size(); i++) {
-			if (chosen > total && chosen <= total + frequencies.get(i)) {
-				return i;
-			}
-			total += frequencies.get(i);
-		}
-		// this next line should never be reached
-		System.out.println("this line should never be reached");
-		return 1;
-	}
-
-	public void refactorPageNumbers(){
-		Vector<ObjectAndPosition> allNumbers = getProblemsInOrder();
-		int lastProblemNumber = 1;
-		for ( ObjectAndPosition obj : allNumbers){
-			try {
-				obj.mObj.setAttributeValue(ProblemNumberObject.NUMBER, lastProblemNumber);
-			} catch (AttributeException e) {
-				// error should not be thrown
-			}
-			lastProblemNumber++;
-		}
-		setLastProblemNumber(lastProblemNumber);
-	}
-
-	private Vector<ObjectAndPosition> getProblemsInOrder(){
-		Vector<ObjectAndPosition> allNumbers = new Vector<ObjectAndPosition>();
-		for ( Page p : getPages()){
-			for (MathObject mObj : p.getObjects()){
-				if ( mObj instanceof ProblemNumberObject){
-					allNumbers.add(new ObjectAndPosition(mObj.getPositionInDoc(), mObj));
-				}
-				else if ( mObj instanceof Grouping){
-					allNumbers.addAll(0, findAllProblemNumbersInGroup(((Grouping)mObj)));
-				}
-			}
-		}
-		Collections.sort(allNumbers);
-		return allNumbers;
-	}
-
-	public Document getAnswerKey(){
-
-		Vector<ObjectAndPosition> allNumbers = getProblemsInOrder();
-
-		// change the objects that have answers
-
-		// update group that problems are in to accommodate bigger expressions
-
-		// create new doc
-
-		// layout problems on new doc
-	}
-
-	private Vector<ObjectAndPosition> findAllProblemNumbersInGroup(Grouping g){
-		Vector<ObjectAndPosition> allNumbers = new Vector<ObjectAndPosition>();
-		for (MathObject mObj : g.getObjects()){
-			if ( mObj instanceof ProblemNumberObject){
-				allNumbers.add(new ObjectAndPosition(mObj.getPositionInDoc(), mObj));
-			}
-			else if ( mObj instanceof Grouping){
-				allNumbers.addAll(0, findAllProblemNumbersInGroup(((Grouping)mObj)));
-			}
-		}
-		return allNumbers;
-	}
-
-	private class ObjectAndPosition implements Comparable<ObjectAndPosition>{
-
-		private PointInDocument pt;
-		private MathObject mObj;
-		private ObjectAndPosition(PointInDocument pt, MathObject mObj){
-			this.pt = pt;
-			this.mObj = mObj;
-		}
-		@Override
-		public int compareTo(ObjectAndPosition o) {
-			return pt.compareTo(o.pt);
-		}
-	}
-
+	
 	public static void layoutProblems(MathObject[] objects, String directions, Document doc) {
 
 		int extraMarginForDirections = 5;
@@ -438,6 +357,103 @@ public class Document {
 		doc.setLastProblemNumber(lastProblemNumber);
 	}
 
+	private int pickRandomIndex(Vector<Integer> frequencies) {
+		int total = 0;
+		for (int i = 0; i < frequencies.size(); i++) {
+			total += frequencies.get(i);
+		}
+		int chosen = random.nextInt(total) + 1;
+		total = 0;
+		for (int i = 0; i < frequencies.size(); i++) {
+			if (chosen > total && chosen <= total + frequencies.get(i)) {
+				return i;
+			}
+			total += frequencies.get(i);
+		}
+		// this next line should never be reached
+		System.out.println("this line should never be reached, in Document.pickRandomIndex");
+		return 1;
+	}
+
+	public void refactorPageNumbers(){
+		Vector<ObjectAndPosition> allNumbers = getProblemNumbersInOrder();
+		int lastProblemNumber = 1;
+		for ( ObjectAndPosition objAndPos : allNumbers){
+			try {
+				objAndPos.mObj.setAttributeValue(ProblemNumberObject.NUMBER, lastProblemNumber);
+			} catch (AttributeException e) {
+				// error should not be thrown
+			}
+			lastProblemNumber++;
+		}
+		setLastProblemNumber(lastProblemNumber);
+	}
+
+	private Vector<ObjectAndPosition> getProblemNumbersInOrder(){
+		Vector<ObjectAndPosition> allNumbers = new Vector<ObjectAndPosition>();
+		for ( Page p : getPages()){
+			for (MathObject mObj : p.getObjects()){
+				if ( mObj instanceof ProblemNumberObject){
+					allNumbers.add(new ObjectAndPosition(mObj.getPositionInDoc(), mObj));
+				}
+				else if ( mObj instanceof Grouping){
+					allNumbers.addAll(0, findAllProblemNumbersInGroup(((Grouping)mObj)));
+				}
+			}
+		}
+		Collections.sort(allNumbers);
+		return allNumbers;
+	}
+
+	public Document createAnswerKey(){
+		Document key = new Document("Key - " + this.getName());
+		Page currentNewPage;
+		for ( Page p : pages ){
+			// to preserve stacking order add the objects backwards
+			key.addBlankPage();
+			currentNewPage = key.getLastPage();
+			for ( int i = p.getObjects().size() - 1; i >= 0; i--){
+				currentNewPage.addObject(p.getObjects().get(i).getObjectWithAnswer());
+			}
+		}
+		
+		return key;
+		// change the objects that have answers
+
+		// update group that problems are in to accommodate bigger expressions
+
+		// create new doc
+
+		// layout problems on new doc
+	}
+
+	private Vector<ObjectAndPosition> findAllProblemNumbersInGroup(Grouping g){
+		Vector<ObjectAndPosition> allNumbers = new Vector<ObjectAndPosition>();
+		for (MathObject mObj : g.getObjects()){
+			if ( mObj instanceof ProblemNumberObject){
+				allNumbers.add(new ObjectAndPosition(mObj.getPositionInDoc(), mObj));
+			}
+			else if ( mObj instanceof Grouping){
+				allNumbers.addAll(0, findAllProblemNumbersInGroup(((Grouping)mObj)));
+			}
+		}
+		return allNumbers;
+	}
+
+	private class ObjectAndPosition implements Comparable<ObjectAndPosition>{
+
+		private PointInDocument pt;
+		private MathObject mObj;
+		private ObjectAndPosition(PointInDocument pt, MathObject mObj){
+			this.pt = pt;
+			this.mObj = mObj;
+		}
+		@Override
+		public int compareTo(ObjectAndPosition o) {
+			return pt.compareTo(o.pt);
+		}
+	}
+	
 	/**
 	 * Returns the next page, if there is none, one is added and it is returned.
 	 * 

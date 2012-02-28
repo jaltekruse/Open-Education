@@ -3,6 +3,7 @@ package doc.mathobjects;
 import java.util.UUID;
 
 import doc.Document;
+import doc.attributes.AttributeException;
 import doc.attributes.Date;
 import doc.attributes.DateAttribute;
 import doc.attributes.ListAttribute;
@@ -57,6 +58,8 @@ public abstract class ProblemGenerator extends Grouping implements Cloneable{
 		removeAction(Grouping.BRING_TO_TOP);
 		removeAction(Grouping.BRING_TO_RIGHT);
 		removeAction(Grouping.BRING_TO_BOTTOM);
+		removeAction(Grouping.STRETCH_HORIZONTALLY);
+		removeAction(Grouping.STRETCH_VERTICALLY);
 		addAction(STORE_IN_DATABASE);
 		addAction(REMOVE_PROBLEM);
 		addAction(GENERATE_NEW);
@@ -67,8 +70,19 @@ public abstract class ProblemGenerator extends Grouping implements Cloneable{
 	}
 
 	public abstract GeneratedProblem generateProblem(int difficuty);
+	
+	public void addTags(String... tags){
+		for ( String s : tags){
+			try {
+				getTags().addValueWithString(s);
+			} catch (AttributeException e) {
+				// should not throw an error
+				e.printStackTrace();
+			}
+		}
+	}
 
-	public UUID getUUID() {
+	public UUID getProblemID() {
 		return ((UUIDAttribute) getAttributeWithName(UUID_STR)).getValue();
 	}
 	
@@ -115,25 +129,6 @@ public abstract class ProblemGenerator extends Grouping implements Cloneable{
 
 	public void setProblemHoldingDocument(Document parentDocument) {
 		this.problemHoldingDoc = parentDocument;
-	}
-
-	@Override
-	public ProblemGenerator clone() {
-		VariableValueInsertionProblem o = new VariableValueInsertionProblem(
-				getParentContainer());
-		o.removeAllAttributes();
-		for (MathObjectAttribute<?> mAtt : getAttributes()) {
-			o.addAttribute(mAtt.clone());
-		}
-		o.removeAllLists();
-		for (ListAttribute<?> list : getLists()) {
-			o.addList(list.clone());
-		}
-		for (MathObject mObj : getObjects()) {
-			mObj.setParentContainer(null);
-			o.addObjectFromPage(mObj.clone());
-		}
-		return o;
 	}
 
 	public boolean isUserEditable() {

@@ -9,8 +9,10 @@
 package doc;
 
 import java.awt.Rectangle;
+import java.util.UUID;
 import java.util.Vector;
 
+import doc.attributes.MathObjectAttribute;
 import doc.mathobjects.*;
 
 public class Page implements MathObjectContainer{
@@ -31,10 +33,12 @@ public class Page implements MathObjectContainer{
 	public boolean removeObject(MathObject mObj){
 
 		boolean success = objects.remove(mObj);
-		if ( mObj instanceof ProblemNumberObject ||
-				(mObj instanceof Grouping &&
-						((Grouping)mObj).containsProblemNumber()) ){
-			getParentDoc().refactorPageNumbers();
+		if ( success){
+			if (mObj instanceof ProblemNumberObject ||
+					(mObj instanceof Grouping &&
+					((Grouping)mObj).containsProblemNumber()) ){
+				getParentDoc().refactorPageNumbers();
+			}
 		}
 		return success;
 	}
@@ -43,6 +47,20 @@ public class Page implements MathObjectContainer{
 		return objects;
 	}
 
+	public boolean objectIDInUse(UUID id){
+		for ( MathObject mObj : getObjects()){
+			if ( mObj.getObjectID().equals(id)){
+				return true;
+			}
+			if ( mObj instanceof Grouping){
+				if ( (( Grouping )mObj).objectIDInUse(id)){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * Add a MathObject to this page.
 	 * @param mObj - object to add
@@ -51,7 +69,9 @@ public class Page implements MathObjectContainer{
 	public boolean addObject(MathObject mObj){
 
 		//check to make sure the object will fit on the page, inside of the margins
-
+		if ( getObjects().contains(mObj)){
+			return true;
+		}
 		Rectangle printablePage = new Rectangle(0, 0, getWidth(),
 				getHeight());
 		
@@ -61,6 +81,10 @@ public class Page implements MathObjectContainer{
 		//			return true;
 		//		}
 
+		while (getParentDoc().objectIDInUse(mObj.getObjectID()))
+		{// randomly assign the object a new ID until it is unique within the document
+			mObj.setObjectID( UUID.randomUUID() );
+		}
 		if ( ! objects.contains(mObj)){
 			objects.add(mObj);
 			mObj.setParentContainer(this);

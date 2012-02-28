@@ -9,6 +9,7 @@
 package doc.mathobjects;
 
 import java.awt.Rectangle;
+import java.util.UUID;
 import java.util.Vector;
 
 import doc.GridPoint;
@@ -18,6 +19,7 @@ import doc.attributes.AttributeException;
 import doc.attributes.IntegerAttribute;
 import doc.attributes.ListAttribute;
 import doc.attributes.MathObjectAttribute;
+import doc.attributes.UUIDAttribute;
 
 public abstract class MathObject {
 
@@ -38,45 +40,54 @@ public abstract class MathObject {
 			RECTANGLE = "Rectangle", TEXT_OBJ = "Text",
 			TRIANGLE_OBJ = "Triangle", TRAPEZOID_OBJ = "Trapezoid",
 			PARALLELOGRAM_OBJ = "Parallelogram", CUBE_OBJECT = "Cube",
-			GROUPING = "Grouping", VAR_INSERTION_PROBLEM = "VarInsertionProblem",
+			GROUPING = "Grouping",
+			VAR_INSERTION_PROBLEM = "VarInsertionProblem",
 			CYLINDER_OBJ = "Cylinder", CONE_OBJECT = "Cone",
 			REGULAR_POLYGON_OBJECT = "RegularPolygon", ARROW_OBJECT = "Arrow",
 			PYRAMID_OBJECT = "Pyramid", GENERATED_PROBLEM = "GeneratedProblem",
-			PROBLEM_NUMBER_OBJECT = "ProblemNumber";
+			PROBLEM_NUMBER_OBJECT = "ProblemNumber", LINE_OBJECT = "Line";
 
 	// the order of these three arrays is very important, they are parallel
 	// arrays used to create new instances of objects when all you have is
 	// the type string. They also are used to generate the toolbar for creating
 	// new objects
-	public static final String[] objectTypes = { RECTANGLE, OVAL_OBJ,
-			TRIANGLE_OBJ, REGULAR_POLYGON_OBJECT, TRAPEZOID_OBJ,
-			PARALLELOGRAM_OBJ, ARROW_OBJECT, CUBE_OBJECT, CYLINDER_OBJ, CONE_OBJECT,
-			NUMBER_LINE, GRAPH_OBJ, TEXT_OBJ, EXPRESSION_OBJ, ANSWER_BOX_OBJ,
-			PYRAMID_OBJECT, GROUPING, VAR_INSERTION_PROBLEM,
-			GENERATED_PROBLEM, PROBLEM_NUMBER_OBJECT};
+	public static final String[] objectTypes = { LINE_OBJECT, RECTANGLE,
+			OVAL_OBJ, TRIANGLE_OBJ, REGULAR_POLYGON_OBJECT, TRAPEZOID_OBJ,
+			PARALLELOGRAM_OBJ, ARROW_OBJECT, CUBE_OBJECT, CYLINDER_OBJ,
+			CONE_OBJECT, NUMBER_LINE, GRAPH_OBJ, TEXT_OBJ, EXPRESSION_OBJ,
+			ANSWER_BOX_OBJ, PYRAMID_OBJECT, GROUPING, VAR_INSERTION_PROBLEM,
+			GENERATED_PROBLEM, PROBLEM_NUMBER_OBJECT };
 
-	public static final String[] imgFilenames = { "rectangle.png", "oval.png",
-			"triangle.png", "regularPolygon.png", "trapezoid.png",
-			"parallelogram.png", "arrow.png", "cube.png", "cylinder.png", "cone.png",
-			"numberLine.png", "graph.png", "text.png", "expression.png",
-			"answerBox.png", "pyramid.png", null, null, null, null };
+	public static final String[] imgFilenames = { "line.png", "rectangle.png",
+			"oval.png", "triangle.png", "regularPolygon.png", "trapezoid.png",
+			"parallelogram.png", "arrow.png", "cube.png", "cylinder.png",
+			"cone.png", "numberLine.png", "graph.png", "text.png",
+			"expression.png", "answerBox.png", "pyramid.png", null, null, null,
+			null };
 
-	public static final MathObject[] objects = { new RectangleObject(),
-			new OvalObject(), new TriangleObject(), new RegularPolygonObject(),
-			new TrapezoidObject(), new ParallelogramObject(),
-			new ArrowObject(), new CubeObject(), new CylinderObject(), new ConeObject(),
-			new NumberLineObject(), new GraphObject(), new TextObject(),
-			new ExpressionObject(), new AnswerBoxObject(), null,
-			new Grouping(), new VariableValueInsertionProblem(), new GeneratedProblem(),
-			new ProblemNumberObject()
-	};
+	public static final MathObject[] objects = { new LineObject(),
+			new RectangleObject(), new OvalObject(), new TriangleObject(),
+			new RegularPolygonObject(), new TrapezoidObject(),
+			new ParallelogramObject(), new ArrowObject(), new CubeObject(),
+			new CylinderObject(), new ConeObject(), new NumberLineObject(),
+			new GraphObject(), new TextObject(), new ExpressionObject(),
+			new AnswerBoxObject(), null, new Grouping(),
+			new VariableValueInsertionProblem(), new GeneratedProblem(),
+			new ProblemNumberObject() };
 
 	public static final String MAKE_SQUARE = "Make Height and Width equal",
 			MAKE_INTO_PROBLEM = "Make into Problem",
-			ADJUST_SIZE_AND_POSITION = "Adjust size and position";
+			FLIP_HORIZONTALLY = "flip horizontally",
+			FLIP_VERTICALLY = "flip vertically",
+			ADJUST_SIZE_AND_POSITION = "Adjust size and position",
+			ROTATE_CLOCKWISE_90 = "rotate clockwise (90)",
+			LINE_THICKNESS = "line thickness", FILL_COLOR = "fill color",
+			HORIZONTALLY_FLIPPED = "horizontally flipped",
+			VERTICALLY_FLIPPED = "vertically flipped", FONT_SIZE = "font size";
 
 	public static final String WIDTH = "width", HEIGHT = "height",
-			X_POS = "xPos", Y_POS = "yPos";
+			X_POS = "xPos", Y_POS = "yPos", OBJECT_ID = "objectID",
+			LINE_COLOR = "line color";
 
 	// holds a list of function names to manipulate objects, such as
 	// flip horizontally/vertically, actual code to change the object is
@@ -84,7 +95,7 @@ public abstract class MathObject {
 	private Vector<String> actions;
 	private Vector<String> studentActions;
 	private boolean isHorizontallyResizable, isVerticallyResizable;
-	
+
 	// flag to indicate that the object has just been removed from the document,
 	// it prevents actions from being performed as the fields in the frame are
 	// being unfocused by clicking delete
@@ -102,15 +113,15 @@ public abstract class MathObject {
 		addAction(MAKE_SQUARE);
 		addGenericDefaultAttributes();
 		addDefaultAttributes();
-		getAttributeWithName(X_POS).setValue(1);
-		getAttributeWithName(Y_POS).setValue(1);
-		getAttributeWithName(WIDTH).setValue(1);
-		getAttributeWithName(HEIGHT).setValue(1);
 	}
 
 	public MathObject(MathObjectContainer c) {
 		this();
 		setParentContainer(c);
+	}
+
+	public MathObject getObjectWithAnswer() {
+		return this.clone();
 	}
 
 	public MathObject(MathObjectContainer c, int x, int y, int w, int h) {
@@ -126,6 +137,8 @@ public abstract class MathObject {
 		addAttribute(new IntegerAttribute(Y_POS, 1, 790, false, false));
 		addAttribute(new IntegerAttribute(WIDTH, 1, 610, false, false));
 		addAttribute(new IntegerAttribute(HEIGHT, 1, 790, false, false));
+		addAttribute(new UUIDAttribute(OBJECT_ID, UUID.randomUUID(), false,
+				false));
 	}
 
 	/**
@@ -137,20 +150,10 @@ public abstract class MathObject {
 	 * this method will be overridden by the ones below them in the inheritance
 	 * tree.
 	 */
-	protected void addDefaultAttributes() {}
+	protected void addDefaultAttributes() {
+	}
 
 	public abstract String getType();
-
-	public static MathObject getNewInstance(String type) {
-		int i = 0;
-		for (String s : objectTypes) {
-			if (type.equals(s)) {
-				return objects[i].clone();
-			}
-			i++;
-		}
-		return null;
-	}
 
 	public static String getObjectImageName(String type) {
 		int i = 0;
@@ -215,23 +218,96 @@ public abstract class MathObject {
 		}
 		return false;
 	}
-	
-	public PointInDocument getPositionInDoc(){
-		return new PointInDocument(getParentPage().getParentDoc().getPageIndex(getParentPage()),
-				getxPos(), getyPos());
+
+	public PointInDocument getPositionInDoc() {
+		return new PointInDocument(getParentPage().getParentDoc().getPageIndex(
+				getParentPage()), getxPos(), getyPos());
 	}
-	
+
 	/**
 	 * Indicated if students have permission to select an object.
 	 * 
 	 * @return - true if they can select this object
 	 */
-	public boolean isStudentSelectable(){
+	public boolean isStudentSelectable() {
+		return false;
+	}
+
+	public boolean canFlipVertically() {
+		return (actions.contains(FLIP_VERTICALLY));
+	}
+
+	public boolean canFlipHorizontally() {
+		return (actions.contains(FLIP_HORIZONTALLY));
+	}
+
+	public void flipVertically() {
+		if (!canFlipVertically()) {
+			return;
+		}
+		try {
+			setAttributeValue(VERTICALLY_FLIPPED, !isFlippedVertically());
+		} catch (AttributeException e) {
+			// should not happen, just setting boolean
+			System.out
+					.println("error in CylinderGUI.performSpecialObjectAction");
+		}
+	}
+
+	public void flipHorizontally() {
+		if (!canFlipHorizontally()) {
+			return;
+		}
+		try {
+			setAttributeValue(HORIZONTALLY_FLIPPED, !isFlippedHorizontally());
+		} catch (AttributeException e) {
+			// should not happen, just setting boolean
+		}
+	}
+
+	public boolean isFlippedVertically() {
+		if (canFlipVertically()) {
+			return (Boolean) getAttributeWithName(VERTICALLY_FLIPPED)
+					.getValue();
+		}
+		return false;
+	}
+
+	public boolean isFlippedHorizontally() {
+		if (canFlipHorizontally()) {
+			return (Boolean) getAttributeWithName(HORIZONTALLY_FLIPPED)
+					.getValue();
+		}
 		return false;
 	}
 
 	@Override
-	public abstract MathObject clone();
+	public MathObject clone() {
+		MathObject o = newInstanceWithType(getType());
+		o.setParentContainer(getParentContainer());
+		o.removeAllAttributes();
+		for (MathObjectAttribute mAtt : getAttributes()) {
+			o.addAttribute(mAtt.clone());
+		}
+		o.removeAllLists();
+		for (ListAttribute list : getLists()) {
+			o.addList(list.clone());
+		}
+		return o;
+	}
+
+	public abstract MathObject newInstance();
+
+	public static MathObject newInstanceWithType(String type) {
+		int i = 0;
+		for (String s : objectTypes) {
+			if (type.equals(s)) {
+				return objects[i].newInstance();
+			}
+			i++;
+		}
+		return null;
+	}
 
 	public void removeAllAttributes() {
 		attributes = new Vector<MathObjectAttribute<?>>();
@@ -274,8 +350,7 @@ public abstract class MathObject {
 				return true;
 			}
 			return false;
-		}
-		else{
+		} else {
 			return false;
 		}
 	}
@@ -290,6 +365,10 @@ public abstract class MathObject {
 			int sideLength = (int) Math.sqrt(area);
 			this.setWidth(sideLength);
 			this.setHeight(sideLength);
+		} else if (s.equals(FLIP_HORIZONTALLY)) {
+			flipHorizontally();
+		} else if (s.equals(FLIP_VERTICALLY)) {
+			flipVertically();
 		} else {
 			// this call will send the request down to the object specific
 			// actions
@@ -303,35 +382,60 @@ public abstract class MathObject {
 			System.out.println("unrecognized action (MathObject)");
 		}
 	}
-	
-	public GridPoint flipPointVertically(GridPoint p){
-		if (p.gety() < .5){
+
+	public GridPoint flipPointVertically(GridPoint p) {
+		if (p.gety() < .5) {
 			return new GridPoint(p.getx(), p.gety() + 2 * (.5 - p.gety()));
-		}
-		else if (p.gety() > .5){
+		} else if (p.gety() > .5) {
 			return new GridPoint(p.getx(), p.gety() + 2 * (.5 - p.gety()));
-		}
-		else{
-			return new GridPoint(p.getx(), p.gety()); //y is .5, should not be shifted
+		} else {
+			return new GridPoint(p.getx(), p.gety()); // y is .5, should not be
+														// shifted
 		}
 	}
 
-	public GridPoint flipPointHorizontally(GridPoint p){
-		if (p.gety() < .5){
-			return new GridPoint(p.getx(), p.gety() + 2 * (.5 - p.gety()));
-		}
-		else if (p.gety() > .5){
-			return new GridPoint(p.getx(), p.gety() + 2 * (.5 - p.gety()));
-		}
-		else{
-			return new GridPoint(p.getx(), p.gety()); //y is .5, should not be shifted
+	public GridPoint flipPointHorizontally(GridPoint p) {
+		if (p.getx() < .5) {
+			return new GridPoint(p.getx() + 2 * (.5 - p.getx()), p.gety());
+		} else if (p.getx() > .5) {
+			return new GridPoint(p.getx() + 2 * (.5 - p.getx()), p.gety());
+		} else {
+			return new GridPoint(p.getx(), p.gety()); // y is .5, should not be
+														// shifted
 		}
 	}
+
+	protected GridPoint[] flipHorizontally(GridPoint[] points) {
+
+		GridPoint[] flipped = new GridPoint[points.length];
+
+		int i = 0;
+		for (GridPoint p : points) {
+			flipped[i] = flipPointHorizontally(p);
+			i++;
+		}
+		return flipped;
+	}
+
+	protected GridPoint[] flipVertically(GridPoint[] points) {
+
+		GridPoint[] flipped = new GridPoint[points.length];
+
+		int i = 0;
+		for (GridPoint p : points) {
+			flipped[i] = flipPointVertically(p);
+			i++;
+		}
+		return flipped;
+	}
+
 	public Rectangle getBounds() {
 		return new Rectangle(getxPos(), getyPos(), getWidth(), getHeight());
 	}
 
 	public void setWidth(int width) {
+		if (width == 0)
+			width = 1;
 		getAttributeWithName(WIDTH).setValue(width);
 	}
 
@@ -340,6 +444,8 @@ public abstract class MathObject {
 	}
 
 	public void setHeight(int height) {
+		if (height == 0)
+			height = 1;
 		getAttributeWithName(HEIGHT).setValue(height);
 	}
 
@@ -353,6 +459,14 @@ public abstract class MathObject {
 
 	public int getxPos() {
 		return ((IntegerAttribute) getAttributeWithName(X_POS)).getValue();
+	}
+
+	public void setObjectID(UUID uuid) {
+		getAttributeWithName(OBJECT_ID).setValue(uuid);
+	}
+
+	public UUID getObjectID() {
+		return ((UUIDAttribute) getAttributeWithName(OBJECT_ID)).getValue();
 	}
 
 	public void setyPos(int yPos) {
@@ -447,7 +561,7 @@ public abstract class MathObject {
 			}
 		}
 	}
-	
+
 	public void setStudentActions(Vector<String> studentActions) {
 		this.studentActions = studentActions;
 	}

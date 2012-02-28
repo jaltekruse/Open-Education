@@ -84,7 +84,7 @@ public class Graph {
 		Y_MAX = ((DoubleAttribute)gObj.getAttributeWithName("yMax")).getValue();
 		X_STEP = ((DoubleAttribute)gObj.getAttributeWithName("xStep")).getValue();
 		Y_STEP = ((DoubleAttribute)gObj.getAttributeWithName("yStep")).getValue();
-		FONT_SIZE = ((IntegerAttribute)gObj.getAttributeWithName("fontSize")).getValue();
+		FONT_SIZE = ((IntegerAttribute)gObj.getAttributeWithName("font size")).getValue();
 		SHOW_AXIS = ((BooleanAttribute)gObj.getAttributeWithName("showAxis")).getValue();
 		SHOW_GRID = ((BooleanAttribute)gObj.getAttributeWithName("showGrid")).getValue();
 		SHOW_NUMBERS = ((BooleanAttribute)gObj.getAttributeWithName("showNumbers")).getValue();
@@ -108,7 +108,7 @@ public class Graph {
 		((DoubleAttribute)gObj.getAttributeWithName("yMax")).setValue(Y_MAX);
 		((DoubleAttribute)gObj.getAttributeWithName("xStep")).setValue(X_STEP);
 		((DoubleAttribute)gObj.getAttributeWithName("yStep")).setValue(Y_STEP);
-		((IntegerAttribute)gObj.getAttributeWithName("fontSize")).setValue(FONT_SIZE);
+		((IntegerAttribute)gObj.getAttributeWithName("font size")).setValue(FONT_SIZE);
 		((BooleanAttribute)gObj.getAttributeWithName("showAxis")).setValue(SHOW_AXIS);
 		((BooleanAttribute)gObj.getAttributeWithName("showGrid")).setValue(SHOW_GRID);
 		((BooleanAttribute)gObj.getAttributeWithName("showNumbers")).setValue(SHOW_NUMBERS);
@@ -217,7 +217,7 @@ public class Graph {
 		freePoints.add(new PointOnGrid(this, x, y));
 	}
 	
-	public void addPointAtScreenPt(int x, int y){
+	public void addPtAtScreenPos(int x, int y){
 		addPoint(x * X_PIXEL + X_MIN, -y * Y_PIXEL + Y_MAX);
 	}
 	

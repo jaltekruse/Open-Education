@@ -17,12 +17,6 @@ import doc.attributes.IntegerAttribute;
 
 public abstract class PolygonObject extends MathObject {
 
-
-	public static final String FLIP_HORIZONTALLY = "flip horizontally", 
-			FLIP_VERTICALLY = "flip vertically", ROTATE_CLOCKWISE_90 = "rotate clockwise (90)";
-	public static final String LINE_THICKNESS = "line thickness", FILL_COLOR = "fill color",
-			HORIZONTALLY_FLIPPED = "horizontally flipped", VERTICALLY_FLIPPED = "vertically flipped";
-
 	public PolygonObject(MathObjectContainer p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h);
 		addPolygonAttributes();
@@ -52,47 +46,14 @@ public abstract class PolygonObject extends MathObject {
 	}
 
 	@Override
-	public void performSpecialObjectAction(String s){
-		if (s.equals(FLIP_HORIZONTALLY)){
-			getAttributeWithName(HORIZONTALLY_FLIPPED).setValue( ! (Boolean)
-					getAttributeWithName(HORIZONTALLY_FLIPPED).getValue());
-		}
-		else if (s.equals(FLIP_VERTICALLY)){
-			getAttributeWithName(VERTICALLY_FLIPPED).setValue( ! (Boolean)
-					getAttributeWithName(VERTICALLY_FLIPPED).getValue());
-		}
-	}
-
-	protected GridPoint[] flipHorizontally(GridPoint[] points){
-		
-		GridPoint[] flipped = new GridPoint[points.length];
-
-		int i = 0;
-		for (GridPoint p : points){
-			flipped[i] = flipPointHorizontally(p);
-			i++;
-		}
-		return flipped;
-	}
-
-	protected GridPoint[] flipVertically(GridPoint[] points){
-		
-		GridPoint[] flipped = new GridPoint[points.length];
-		
-		int i = 0;
-		for (GridPoint p : points){
-			flipped[i] = flipPointVertically(p);
-			i++;
-		}
-		return flipped;
-	}
+	public void performSpecialObjectAction(String s){}
 	
 	public GridPoint[] getAdjustedVertices(){
 		GridPoint[] points = getVertices();
-		if ( this.isFlippedHorizontally() ){
+		if ( isFlippedHorizontally() ){
 			points = flipHorizontally(points);
 		}
-		if (this.isFlippedVertically()){
+		if ( isFlippedVertically()){
 			points = flipVertically(points);
 		}
 		return points;
@@ -102,14 +63,6 @@ public abstract class PolygonObject extends MathObject {
 
 	public int countVertices(){
 		return getVertices().length;	
-	}
-	
-	public boolean isFlippedVertically(){
-		return (Boolean) getAttributeWithName(VERTICALLY_FLIPPED).getValue();
-	}
-	
-	public boolean isFlippedHorizontally(){
-		return (Boolean) getAttributeWithName(HORIZONTALLY_FLIPPED).getValue();
 	}
 
 	public void setThickness(int t) {

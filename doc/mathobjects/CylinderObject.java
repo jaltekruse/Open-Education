@@ -23,19 +23,19 @@ public class CylinderObject extends MathObject {
 	
 	public CylinderObject(MathObjectContainer p){
 		super(p);
-		addAction(PolygonObject.FLIP_VERTICALLY);
+		addAction(FLIP_VERTICALLY);
 	}
 	
 	public CylinderObject(){
-		addAction(PolygonObject.FLIP_VERTICALLY);
+		addAction(FLIP_VERTICALLY);
 	}
 	
 	@Override
 	public void addDefaultAttributes() {
 		// TODO Auto-generated method stub
-		addAttribute(new IntegerAttribute(PolygonObject.LINE_THICKNESS, 1, 1, 20));
-		addAttribute(new ColorAttribute(PolygonObject.FILL_COLOR, null));
-		BooleanAttribute flipped = new BooleanAttribute(PolygonObject.FLIP_VERTICALLY, false);
+		addAttribute(new IntegerAttribute(LINE_THICKNESS, 1, 1, 20));
+		addAttribute(new ColorAttribute(FILL_COLOR, null));
+		BooleanAttribute flipped = new BooleanAttribute(VERTICALLY_FLIPPED, false);
 		flipped.setUserEditable(false);
 		addAttribute(flipped);
 	}
@@ -47,35 +47,8 @@ public class CylinderObject extends MathObject {
 	}
 	
 	@Override
-	public void performSpecialObjectAction(String s){
-		if (s.equals(PolygonObject.FLIP_VERTICALLY)){
-			try {
-				setAttributeValue(PolygonObject.FLIP_VERTICALLY, ! isFlippedVertically());
-			} catch (AttributeException e) {
-				// TODO Auto-generated catch block
-//				System.out.println("error in CylinderGUI.performSpecialObjectAction");
-			}
-		}
-	}
+	public void performSpecialObjectAction(String s){}
 	
-	@Override
-	public CylinderObject clone() {
-		CylinderObject o = new CylinderObject(getParentContainer());
-		o.removeAllAttributes();
-		for ( MathObjectAttribute mAtt : getAttributes()){
-			o.addAttribute( mAtt.clone());
-		}
-		o.removeAllLists();
-		for ( ListAttribute list : getLists()){
-			o.addList(list.clone());
-		}
-		return o;
-	}
-	
-	public boolean isFlippedVertically(){
-		return ((BooleanAttribute)getAttributeWithName(PolygonObject.FLIP_VERTICALLY)).getValue();
-	}
-
 	public void setSide1pts(GridPoint[] side1pts) {
 		this.side1pts = side1pts;
 	}
@@ -93,11 +66,11 @@ public class CylinderObject extends MathObject {
 	}
 	
 	public int getThickness(){
-		return ((IntegerAttribute)getAttributeWithName(PolygonObject.LINE_THICKNESS)).getValue();
+		return ((IntegerAttribute)getAttributeWithName(LINE_THICKNESS)).getValue();
 	}
 	
 	public Color getColor(){
-		return ((ColorAttribute)getAttributeWithName(PolygonObject.FILL_COLOR)).getValue();
+		return ((ColorAttribute)getAttributeWithName(FILL_COLOR)).getValue();
 	}
 
 	public void setInsideEdgeOfDisk(GridPoint insideEdgeOfDisk) {
@@ -122,6 +95,11 @@ public class CylinderObject extends MathObject {
 
 	public double getHalfDiskHeight() {
 		return heightHalfDisk;
+	}
+
+	@Override
+	public MathObject newInstance() {
+		return new CylinderObject();
 	}
 
 	

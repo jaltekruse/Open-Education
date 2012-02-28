@@ -48,12 +48,10 @@ public class BasicAddition extends ExpressionGenerator {
 		setDirections("Simplify.");
 		try {
 			this.setAttributeValue(UUID_STR, new UUID(2846184626069213495L, 3575720896865422970L));
-			getTags().addValueWithString("Arithmetic");
-			getTags().addValueWithString("Addition");
-			getTags().addValueWithString("Integers");
+			addTags("Arithmetic", "Addition", "Integers");
 		} catch (AttributeException e) {
 			// should not be thrown
-			System.out.println("error that should not happen in BaiscArithmaticExpression");
+			e.printStackTrace();
 		}
 		setDate(new Date(2,1,2011));
 	}

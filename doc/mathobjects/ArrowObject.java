@@ -12,48 +12,36 @@ public class ArrowObject extends PolygonObject {
 
 	public ArrowObject(MathObjectContainer p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h, t);
-		addAction(PolygonObject.FLIP_HORIZONTALLY);
+		addAction(FLIP_HORIZONTALLY);
 	}
 	
 	public ArrowObject(MathObjectContainer p){
 		super(p);
-		addAction(PolygonObject.FLIP_HORIZONTALLY);
+		addAction(FLIP_HORIZONTALLY);
 	}
 
 	public ArrowObject() {
-		addAction(PolygonObject.FLIP_HORIZONTALLY);
+		addAction(FLIP_HORIZONTALLY);
 	}
 
 	@Override
 	public String getType() {
-		// TODO Auto-generated method stub
 		return ARROW_OBJECT;
 	}
 
 	@Override
 	public void addDefaultAttributes() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public ArrowObject clone() {
-		ArrowObject o = new ArrowObject(getParentContainer());
-		o.removeAllAttributes();
-		for ( MathObjectAttribute mAtt : getAttributes()){
-			o.addAttribute( mAtt.clone());
-		}
-		o.removeAllLists();
-		for ( ListAttribute list : getLists()){
-			o.addList(list.clone());
-		}
-		return o;
+	public GridPoint[] getVertices() {
+		return vertices;
 	}
 
 	@Override
-	public GridPoint[] getVertices() {
-		// TODO Auto-generated method stub
-		return vertices;
+	public MathObject newInstance() {
+		return new ArrowObject();
 	}
 
 }

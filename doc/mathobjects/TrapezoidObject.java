@@ -35,20 +35,6 @@ public class TrapezoidObject extends PolygonObject {
 	public void addDefaultAttributes() {
 		
 	}
-
-	@Override
-	public TrapezoidObject clone() {
-		TrapezoidObject o = new TrapezoidObject(getParentContainer());
-		o.removeAllAttributes();
-		for ( MathObjectAttribute mAtt : getAttributes()){
-			o.addAttribute( mAtt.clone());
-		}
-		o.removeAllLists();
-		for ( ListAttribute list : getLists()){
-			o.addList(list.clone());
-		}
-		return o;
-	}
 	
 	@Override
 	public String getType() {
@@ -60,6 +46,11 @@ public class TrapezoidObject extends PolygonObject {
 	public GridPoint[] getVertices() {
 		// TODO Auto-generated method stub
 		return vertices;
+	}
+
+	@Override
+	public MathObject newInstance() {
+		return new TrapezoidObject();
 	}
 
 }

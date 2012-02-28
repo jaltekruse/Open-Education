@@ -35,20 +35,6 @@ public class RectangleObject extends PolygonObject {
 	
 	@Override
 	public void addDefaultAttributes() {}
-	
-	@Override
-	public RectangleObject clone() {
-		RectangleObject o = new RectangleObject(getParentContainer());
-		o.removeAllAttributes();
-		for ( MathObjectAttribute mAtt : getAttributes()){
-			o.addAttribute( mAtt.clone());
-		}
-		o.removeAllLists();
-		for ( ListAttribute list : getLists()){
-			o.addList(list.clone());
-		}
-		return o;
-	}
 
 	@Override
 	public String getType() {
@@ -59,5 +45,10 @@ public class RectangleObject extends PolygonObject {
 	@Override
 	public GridPoint[] getVertices() {
 		return vertices;
+	}
+
+	@Override
+	public MathObject newInstance() {
+		return new RectangleObject();
 	}
 }

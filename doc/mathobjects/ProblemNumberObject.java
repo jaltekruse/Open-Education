@@ -48,17 +48,7 @@ public class ProblemNumberObject extends TextObject {
 		return true;
 	}
 	
-	@Override
-	public ProblemNumberObject clone() {
-		ProblemNumberObject o = new ProblemNumberObject(getParentContainer());
-		o.removeAllAttributes();
-		for ( MathObjectAttribute mAtt : getAttributes()){
-			o.addAttribute( mAtt.clone());
-		}
-		o.removeAllLists();
-		for ( ListAttribute list : getLists()){
-			o.addList(list.clone());
-		}
-		return o;
+	public MathObject newInstance(){
+		return new ProblemNumberObject();
 	}
 }

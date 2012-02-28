@@ -1,6 +1,7 @@
 package doc.mathobjects;
 
 import java.awt.Rectangle;
+import java.util.UUID;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
@@ -15,11 +16,10 @@ public class Grouping extends MathObject implements MathObjectContainer{
 	private Vector<MathObject> objects;
 	private Vector<DecimalRectangle> objectBounds;
 
-	public static final String STORE_IN_DATABASE = "Store in Database";
-	public static final String BRING_TO_LEFT = "Bring all to Left";
-	public static final String BRING_TO_RIGHT = "Bring all to Right";
-	public static final String BRING_TO_TOP = "Bring all to Top";
-	public static final String BRING_TO_BOTTOM = "Bring all to Bottom";
+	public static final String STORE_IN_DATABASE = "Store in Database", BRING_TO_LEFT = "Bring All to Left",
+			BRING_TO_RIGHT = "Bring All to Right", BRING_TO_TOP = "Bring All to Top",
+			BRING_TO_BOTTOM = "Bring All to Bottom", STRETCH_HORIZONTALLY = "Stretch all Horizontally",
+			STRETCH_VERTICALLY = "Stretch all Vertically";
 
 	public Grouping(){
 		objects = new Vector<MathObject>();
@@ -53,6 +53,8 @@ public class Grouping extends MathObject implements MathObjectContainer{
 		addAction(BRING_TO_RIGHT);
 		addAction(BRING_TO_TOP);
 		addAction(BRING_TO_BOTTOM);
+		addAction(STRETCH_HORIZONTALLY);
+		addAction(STRETCH_VERTICALLY);
 	}
 	
 	public boolean containsProblemNumber(){
@@ -62,6 +64,21 @@ public class Grouping extends MathObject implements MathObjectContainer{
 			}
 			else if ( mObj instanceof Grouping){
 				if ( ((Grouping)mObj).containsProblemNumber()){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+
+	public boolean objectIDInUse(UUID id){
+		for ( MathObject mObj : getObjects()){
+			if ( mObj.getObjectID().equals(id)){
+				return true;
+			}
+			if ( mObj instanceof Grouping){
+				if ( (( Grouping )mObj).objectIDInUse(id)){
 					return true;
 				}
 			}
@@ -122,6 +139,20 @@ public class Grouping extends MathObject implements MathObjectContainer{
 			}
 			adjustSizeToFixChildren();
 		}
+		else if (s.equals(STRETCH_VERTICALLY)){
+			for (MathObject mObj  : getObjects()){
+				mObj.setHeight(this.getHeight());
+				mObj.setyPos(this.getyPos());
+			}
+			adjustSizeToFixChildren();
+		}
+		else if (s.equals(STRETCH_HORIZONTALLY)){
+			for (MathObject mObj  : getObjects()){
+				mObj.setWidth(this.getWidth());
+				mObj.setxPos(this.getxPos());
+			}
+			adjustSizeToFixChildren();
+		}
 	}
 
 	public boolean objectContainedBelow(MathObject o){
@@ -140,7 +171,9 @@ public class Grouping extends MathObject implements MathObjectContainer{
 
 	@Override
 	public Grouping clone() {
-		Grouping o = new Grouping(getParentContainer());
+		// this creation method allows for subclasses of grouping to use this clone method
+		Grouping o = (Grouping) newInstanceWithType(getType());
+		o.setParentContainer(getParentContainer());
 		o.removeAllAttributes();
 		for ( MathObjectAttribute mAtt : getAttributes()){
 			o.addAttribute( mAtt.clone());
@@ -152,6 +185,7 @@ public class Grouping extends MathObject implements MathObjectContainer{
 		for ( MathObject mObj : getObjects()){
 			mObj.setParentContainer(null);
 			o.addObjectFromPage(mObj.clone());
+			mObj.setParentContainer(this);
 		}
 		return o;
 	}
@@ -171,7 +205,7 @@ public class Grouping extends MathObject implements MathObjectContainer{
 
 	public boolean addObject(MathObject mObj){
 		objects.add(mObj);
-		mObj.setParentContainer(getParentContainer());
+		mObj.setParentContainer(this);
 		return true;
 	}
 
@@ -187,20 +221,21 @@ public class Grouping extends MathObject implements MathObjectContainer{
 
 	public void convertPositionsGroupRelative(){
 		for (MathObject mathObj : objects){
-			mathObj.setWidth( (int) ((double)mathObj.getWidth()/getWidth() * 1000) );
-			mathObj.setHeight( (int) ((double)mathObj.getHeight()/getHeight() * 1000) );
+			mathObj.setWidth( (int) ((double) mathObj.getWidth()/getWidth() * 1000) );
+			mathObj.setHeight( (int) ((double) mathObj.getHeight()/getHeight() * 1000) );
 			mathObj.setxPos( (int) ( ((double) mathObj.getxPos() - getxPos())/getWidth() * 1000) );
 			mathObj.setyPos( (int) ( ((double) mathObj.getyPos() - getyPos())/getHeight() * 1000) );
 		}
 	}
 
-	public void adjustSizeToFixChildren(){
+	private void adjustSizeToFixChildren(){
 		Vector<MathObject> temp = getObjects();
 		objects = new Vector<MathObject>();
 		objectBounds = new Vector<DecimalRectangle>();
-		objectBounds.removeAllElements();
 		for (MathObject mObj : temp){
+			mObj.setParentContainer(null);
 			addObjectFromPage(mObj);
+			mObj.setParentContainer(this);
 		}
 
 	}
@@ -210,6 +245,7 @@ public class Grouping extends MathObject implements MathObjectContainer{
 		if ( mObj.getParentContainer() != null && getParentContainer() != null 
 				&&getParentContainer() != mObj.getParentContainer())
 		{// cannot add object from another page
+			System.out.println("parent container did not match");
 			return false;
 		}
 		if (objects.size() == 0){
@@ -316,17 +352,18 @@ public class Grouping extends MathObject implements MathObjectContainer{
 
 	public void unGroup(){
 
-		for (MathObject mathObj : objects){
+		MathObject mathObj;
+		int size = getObjects().size();
+		for (int i = 0; i < size; i++){
+			mathObj = getObjects().remove(0);
 			getParentContainer().addObject(mathObj);
 			mathObj.setParentContainer(getParentContainer());
 		}
-
 		//note, this method does not remove the group from the page, it must be done externally
 	}
 
 	@Override
 	public boolean childObjectsFocusable() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -419,5 +456,10 @@ public class Grouping extends MathObject implements MathObjectContainer{
 	@Override
 	protected void addDefaultAttributes() {
 
+	}
+
+	@Override
+	public MathObject newInstance() {
+		return new Grouping();
 	}
 }

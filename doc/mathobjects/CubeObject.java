@@ -21,60 +21,39 @@ public class CubeObject extends MathObject{
 	
 	public CubeObject(MathObjectContainer p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h);
-		getAttributeWithName(PolygonObject.LINE_THICKNESS).setValue(t);
-		addAction(PolygonObject.FLIP_VERTICALLY);
-		addAction(PolygonObject.FLIP_HORIZONTALLY);
+		getAttributeWithName(LINE_THICKNESS).setValue(t);
+		addAction(FLIP_VERTICALLY);
+		addAction(FLIP_HORIZONTALLY);
 	}
 	
 	public CubeObject(MathObjectContainer p){
 		super(p);
-		addAction(PolygonObject.FLIP_VERTICALLY);
-		addAction(PolygonObject.FLIP_HORIZONTALLY);
+		addAction(FLIP_VERTICALLY);
+		addAction(FLIP_HORIZONTALLY);
 	}
 
 	public CubeObject() {
-		addAction(PolygonObject.FLIP_VERTICALLY);
-		addAction(PolygonObject.FLIP_HORIZONTALLY);
+		addAction(FLIP_VERTICALLY);
+		addAction(FLIP_HORIZONTALLY);
 	}
 	
 	@Override
-	public void performSpecialObjectAction(String s){
-		if (s.equals(PolygonObject.FLIP_HORIZONTALLY)){
-			((BooleanAttribute)getAttributeWithName(
-					PolygonObject.FLIP_HORIZONTALLY)).setValue( ! isFlippedHorizontally());
-		}
-		else if (s.equals(PolygonObject.FLIP_VERTICALLY)){
-			((BooleanAttribute)getAttributeWithName(
-					PolygonObject.FLIP_VERTICALLY)).setValue( ! isFlippedVertically());
-		}
-	}
+	public void performSpecialObjectAction(String s){}
 	
 	@Override
 	public void addDefaultAttributes() {
-		addAttribute(new IntegerAttribute(PolygonObject.LINE_THICKNESS, 1, 1, 20));
-		addAttribute(new ColorAttribute(PolygonObject.FILL_COLOR, null));
-		BooleanAttribute flippedVertically = new BooleanAttribute(PolygonObject.FLIP_VERTICALLY, false);
-		flippedVertically.setUserEditable(false);
-		addAttribute(flippedVertically);
-		BooleanAttribute flippedHorizontally = new BooleanAttribute(PolygonObject.FLIP_HORIZONTALLY, false);
-		flippedHorizontally.setUserEditable(false);
-		addAttribute(flippedHorizontally);
+		addAttribute(new IntegerAttribute(LINE_THICKNESS, 1, 1, 20));
+		addAttribute(new ColorAttribute(FILL_COLOR, null));
+		addAttribute(new BooleanAttribute(HORIZONTALLY_FLIPPED, false, false));
+		addAttribute(new BooleanAttribute(VERTICALLY_FLIPPED, false, false));
 	}
 	
 	public int getThickness(){
-		return ((IntegerAttribute)getAttributeWithName(PolygonObject.LINE_THICKNESS)).getValue();
+		return ((IntegerAttribute)getAttributeWithName(LINE_THICKNESS)).getValue();
 	}
 	
 	public Color getColor(){
-		return ((ColorAttribute)getAttributeWithName(PolygonObject.FILL_COLOR)).getValue();
-	}
-	
-	public boolean isFlippedVertically(){
-		return ((BooleanAttribute)getAttributeWithName(PolygonObject.FLIP_VERTICALLY)).getValue();
-	}
-	
-	public boolean isFlippedHorizontally(){
-		return ((BooleanAttribute)getAttributeWithName(PolygonObject.FLIP_HORIZONTALLY)).getValue();
+		return ((ColorAttribute)getAttributeWithName(FILL_COLOR)).getValue();
 	}
 
 	@Override
@@ -103,18 +82,9 @@ public class CubeObject extends MathObject{
 	public static GridPoint getSide2Pt() {
 		return side2Pt;
 	}
-	
+
 	@Override
-	public CubeObject clone() {
-		CubeObject o = new CubeObject(getParentContainer());
-		o.removeAllAttributes();
-		for ( MathObjectAttribute mAtt : getAttributes()){
-			o.addAttribute( mAtt.clone());
-		}
-		o.removeAllLists();
-		for ( ListAttribute list : getLists()){
-			o.addList(list.clone());
-		}
-		return o;
+	public MathObject newInstance() {
+		return new CubeObject();
 	}
 }

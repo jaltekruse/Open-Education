@@ -24,6 +24,7 @@ import doc.mathobjects.CylinderObject;
 import doc.mathobjects.ExpressionObject;
 import doc.mathobjects.GraphObject;
 import doc.mathobjects.Grouping;
+import doc.mathobjects.LineObject;
 import doc.mathobjects.MathObject;
 import doc.mathobjects.NumberLineObject;
 import doc.mathobjects.OvalObject;
@@ -37,6 +38,7 @@ import doc_gui.mathobject_gui.CubeObjectGUI;
 import doc_gui.mathobject_gui.CylinderObjectGUI;
 import doc_gui.mathobject_gui.ExpressionObjectGUI;
 import doc_gui.mathobject_gui.GraphObjectGUI;
+import doc_gui.mathobject_gui.LineObjectGUI;
 import doc_gui.mathobject_gui.MathObjectGUI;
 import doc_gui.mathobject_gui.NumberLineObjectGUI;
 import doc_gui.mathobject_gui.OvalObjectGUI;
@@ -61,6 +63,7 @@ public class PageGUI {
 	public CubeObjectGUI cubeGUI;
 	public CylinderObjectGUI cylinderGUI;
 	public ConeObjectGUI coneGUI;
+	public LineObjectGUI lineGUI;
 
 	public static final int MOUSE_LEFT_CLICK = 0;
 	public static final int MOUSE_MIDDLE_CLICK = 1;
@@ -83,17 +86,7 @@ public class PageGUI {
 	 */
 	public PageGUI(DocViewerPanel docViewerPanel){
 		this.docPanel = docViewerPanel;
-		textGUI = new TextObjectGUI();
-		ovalGUI = new OvalObjectGUI();
-		graphGUI = new GraphObjectGUI();
-		triangleGUI = new TriangleObjectGUI();
-		polygonGUI = new PolygonObjectGUI();
-		expressionGUI = new ExpressionObjectGUI();
-		numLineGUI = new NumberLineObjectGUI();
-		answerBoxGUI = new AnswerBoxGUI();
-		cubeGUI = new CubeObjectGUI();
-		cylinderGUI = new CylinderObjectGUI();
-		coneGUI = new ConeObjectGUI();
+		initializeGUIs();
 	}
 
 
@@ -101,6 +94,10 @@ public class PageGUI {
 	 * Constructor used for printing to a physical document
 	 */
 	public PageGUI(){
+		initializeGUIs();
+	}
+	
+	public void initializeGUIs(){
 		textGUI = new TextObjectGUI();
 		ovalGUI = new OvalObjectGUI();
 		graphGUI = new GraphObjectGUI();
@@ -112,6 +109,7 @@ public class PageGUI {
 		cubeGUI = new CubeObjectGUI();
 		cylinderGUI = new CylinderObjectGUI();
 		coneGUI = new ConeObjectGUI();
+		lineGUI = new LineObjectGUI();
 	}
 
 	/**
@@ -203,6 +201,14 @@ public class PageGUI {
 					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			if (docPanel != null && docPanel.getFocusedObject() == mObj){
 				ovalGUI.drawInteractiveComponents( (OvalObject) mObj, g,
+						new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
+			}
+		}
+		else if (mObj instanceof LineObject){
+			lineGUI.drawMathObject( (LineObject) mObj, g,
+					new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
+			if (docPanel != null && docPanel.getFocusedObject() == mObj){
+				lineGUI.drawInteractiveComponents( (LineObject) mObj, g,
 						new Point((int) pageOrigin.getX(), (int) pageOrigin.getY()), zoomLevel);
 			}
 		}

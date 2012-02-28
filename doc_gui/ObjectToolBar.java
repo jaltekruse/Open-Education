@@ -38,7 +38,7 @@ public class ObjectToolBar extends JToolBar {
 					// pass event down to current doc window for placing a
 					// mathObj
 					notebookPanel.getCurrentDocViewer().createMathObject(
-							MathObject.getNewInstance(s));
+							MathObject.newInstanceWithType(s));
 				}
 			};
 		}

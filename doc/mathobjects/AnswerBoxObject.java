@@ -10,7 +10,7 @@ import doc.attributes.StringAttribute;
 public class AnswerBoxObject extends MathObject {
 
 	public static final String FONT_SIZE = "font size";
-	public static final String ANSWER = "answer", CORRECT_ANSWER = "correct answer";
+	public static final String STUDENT_ANSWER = "student answer", CORRECT_ANSWER = "correct answer";
 	
 	public AnswerBoxObject(Page p, int x, int y, int w, int h) {
 		super(p, x, y, w, h);
@@ -28,7 +28,7 @@ public class AnswerBoxObject extends MathObject {
 
 	@Override
 	public void addDefaultAttributes() {
-		addAttribute(new StringAttribute(ANSWER, "", true, true));
+		addAttribute(new StringAttribute(STUDENT_ANSWER, "", true, true));
 		addAttribute(new StringAttribute(CORRECT_ANSWER, true, false));
 		addAttribute(new IntegerAttribute(FONT_SIZE, 12, 1, 50, true, false));
 	}
@@ -46,12 +46,12 @@ public class AnswerBoxObject extends MathObject {
 		return ANSWER_BOX_OBJ;
 	}
 	
-	public String getText(){
-		return (String) getAttributeValue(ANSWER);
+	public String getStudentAnswer(){
+		return (String) getAttributeValue(STUDENT_ANSWER);
 	}
 	
-	public void setText(String s) throws AttributeException{
-		setAttributeValue("answer", s);
+	public void setStudentAnswer(String s) throws AttributeException{
+		setAttributeValue(STUDENT_ANSWER, s);
 	}
 	
 	public String getCorrectAnswer(){
@@ -63,17 +63,18 @@ public class AnswerBoxObject extends MathObject {
 	}
 
 	@Override
-	public AnswerBoxObject clone() {
-		AnswerBoxObject o = new AnswerBoxObject(getParentContainer());
-		o.removeAllAttributes();
-		for ( MathObjectAttribute mAtt : getAttributes()){
-			o.addAttribute( mAtt.clone());
-		}
-		o.removeAllLists();
-		for ( ListAttribute list : getLists()){
-			o.addList(list.clone());
+	public MathObject newInstance() {
+		return new AnswerBoxObject();
+	}
+	
+	public MathObject getObjectWithAnswer(){
+		AnswerBoxObject o = (AnswerBoxObject) this.clone();
+		try {
+			o.setStudentAnswer(o.getCorrectAnswer());
+		} catch (AttributeException e) {
+			// should not throw an error, just setting a string attribute
+			e.printStackTrace();
 		}
 		return o;
 	}
-
 }

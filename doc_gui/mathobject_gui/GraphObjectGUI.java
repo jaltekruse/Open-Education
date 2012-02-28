@@ -80,6 +80,6 @@ public class GraphObjectGUI extends MathObjectGUI<GraphObject> {
 		//add a point to the graph
 		graph.pullVarsFromGraphObject(gObj, (int) (gObj.getWidth() * zoomLevel),
 				(int) (gObj.getHeight() * zoomLevel) );
-		graph.addPointAtScreenPt(x, y);
+		graph.addPtAtScreenPos(x, y);
 	}
 }

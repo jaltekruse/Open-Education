@@ -19,6 +19,7 @@ import doc.Page;
 import doc.PointInDocument;
 import doc.mathobjects.Grouping;
 import doc.mathobjects.MathObject;
+import doc.mathobjects.ProblemNumberObject;
 import doc.mathobjects.RectangleObject;
 import doc_gui.mathobject_gui.MathObjectGUI;
 
@@ -84,7 +85,7 @@ public class DocMouseListener implements MouseInputListener{
 					}
 					else {
 						docPanel.setFocusedObject(mObj);
-						docPanel.repaintDoc();
+						docPanel.repaint();
 						docPanel.updateObjectToolFrame();
 						return;
 					}
@@ -100,7 +101,7 @@ public class DocMouseListener implements MouseInputListener{
 					if ( ! objRect.contains(new Point(clickedPt.getxPos(), clickedPt.getyPos()))){
 						//send event to object
 						docPanel.setFocusedObject(null);
-						docPanel.repaintDoc();
+						docPanel.repaint();
 						return;
 					}
 				}
@@ -110,7 +111,7 @@ public class DocMouseListener implements MouseInputListener{
 		{//click was outside of page
 			docPanel.setSelectedPage(null);
 			docPanel.setFocusedObject(null);
-			docPanel.repaintDoc();
+			docPanel.repaint();
 			return;
 		}
 
@@ -147,7 +148,7 @@ public class DocMouseListener implements MouseInputListener{
 		}
 
 		if (requiresRedraw){
-			docPanel.repaintDoc();
+			docPanel.repaint();
 		}
 
 	}
@@ -180,7 +181,7 @@ public class DocMouseListener implements MouseInputListener{
 				objToPlace.setHeight(1);
 				objToPlace.setParentContainer(docPanel.getDoc().getPage(clickedPt.getPage()));
 				objToPlace.getParentContainer().addObject(objToPlace);
-				docPanel.repaintDoc();
+				docPanel.repaint();
 				docPanel.updateObjectToolFrame();
 				objPlacementRequiresMouseDrag = true;
 				setPlacingObject(false);
@@ -218,7 +219,7 @@ public class DocMouseListener implements MouseInputListener{
 			selectionRectBeingResized = false;
 			selectionRectRequiresMouseDrag = false;
 			docPanel.setSelectionRect(null);
-			docPanel.repaintDoc();
+			docPanel.repaint();
 		}
 		if ( draggingDot ){
 			docPanel.addUndoState();
@@ -227,6 +228,13 @@ public class DocMouseListener implements MouseInputListener{
 		}
 		if (draggingObject){
 			docPanel.addUndoState();
+			if ( docPanel.getFocusedObject() instanceof ProblemNumberObject ||
+					(docPanel.getFocusedObject() instanceof Grouping &&
+							((Grouping)docPanel.getFocusedObject()).containsProblemNumber())){
+				docPanel.getDoc().refactorPageNumbers();
+				docPanel.repaint();
+			}
+				
 		}
 		selectionRectRequiresMouseDrag = false;
 		selectionRectBeingResized = false;
@@ -261,7 +269,7 @@ public class DocMouseListener implements MouseInputListener{
 					docPanel.getPageOrigin(docPanel.getFocusedObject().getParentPage()),
 					docPanel.getZoomLevel(),
 					xBoxOffset, yBoxOffset);
-			docPanel.repaintDoc();
+			docPanel.repaint();
 			return;
 
 		}
@@ -397,12 +405,14 @@ public class DocMouseListener implements MouseInputListener{
 				}
 				else{
 					currentDragDot = MathObjectGUI.NORTHEAST_DOT;
+					objToPlace.flipHorizontally();
 				}
 			}
 			else{
 				objToPlace.setHeight(docPt.getyPos() - objToPlace.getyPos());
 				if (isWest){
 					currentDragDot = MathObjectGUI.SOUTHWEST_DOT;
+					objToPlace.flipVertically();
 				}
 				else{
 					currentDragDot = MathObjectGUI.SOUTHEAST_DOT;
@@ -413,7 +423,7 @@ public class DocMouseListener implements MouseInputListener{
 				selectionRectBeingResized = true;
 			}
 			setObjPlacementRequiresMouseDrag(false);
-			docPanel.repaintDoc();
+			docPanel.repaint();
 		}
 		return true;
 	}
@@ -455,7 +465,7 @@ public class DocMouseListener implements MouseInputListener{
 				MathObjectGUI.moveResizeDot(objToResize, currentDragDot,
 						docPt, this);
 			}
-			docPanel.repaintDoc();
+			docPanel.repaint();
 			return true;
 		}
 		else
@@ -501,7 +511,7 @@ public class DocMouseListener implements MouseInputListener{
 				adjustTempGroupSelection();
 
 			}
-			docPanel.repaintDoc();
+			docPanel.repaint();
 		}
 		return true;
 	}
@@ -517,7 +527,7 @@ public class DocMouseListener implements MouseInputListener{
 		Vector<MathObject> collisionObjects = new Vector<MathObject>();
 
 		for (MathObject mObj : pageObjects)
-		{// find all of the bojects that were contated by the selection rectangle
+		{// find all of the objects that were contacted by the selection rectangle
 			if (selectRect.intersects(mObj.getBounds()))
 			{
 				collisionObjects.add(mObj);
@@ -551,17 +561,17 @@ public class DocMouseListener implements MouseInputListener{
 		}
 
 		if (collisionObjects.contains(tempGroup)){
-			MathObject mObj = null;
+			MathObject mObj;
 			//need to make sure all of the objects in the group were contacted, otherwise remove them
 			for ( int i = 0; i < tempGroup.getObjects().size(); i++ ){
 				mObj = tempGroup.getObjects().get(i);
 				if ( ! selectRect.intersects(mObj.getBounds()) ){
 					tempGroup.removeObject(mObj);
 					tempGroup.getParentContainer().addObject(mObj);
+					mObj.setParentContainer(tempGroup.getParentContainer());
 					i--;
 				}
 			}
-
 			// remove the temporary group from the contacted list, it now contains only elements that were
 			// in it before and were contacted by the current selection rectangle
 			collisionObjects.remove(tempGroup);
@@ -570,13 +580,15 @@ public class DocMouseListener implements MouseInputListener{
 		//objects were selected, that have not been added to the temp group yet
 
 		if (collisionObjects.size() > 0){
-
 			tempGroup.setParentContainer(collisionObjects.get(0).getParentContainer());
 			collisionObjects.get(0).getParentContainer().addObject(tempGroup);
 			for ( MathObject mObj : collisionObjects){
-				tempGroup.addObjectFromPage(mObj);
 				mObj.getParentContainer().removeObject(mObj);
+				mObj.setParentContainer(null);
+				tempGroup.addObjectFromPage(mObj);
+				mObj.setParentContainer(tempGroup);
 			}
+			docPanel.getDoc().refactorPageNumbers();
 			docPanel.setFocusedObject(tempGroup);
 		}
 

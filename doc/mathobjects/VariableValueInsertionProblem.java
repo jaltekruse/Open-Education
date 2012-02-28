@@ -57,7 +57,7 @@ public class VariableValueInsertionProblem extends ProblemGenerator {
 			}
 		}
 		else if (s.equals(STORE_IN_DATABASE)){
-			getParentContainer().getParentDoc().getDocViewerPanel().getNotebookPanel().addProbelmToDatabase(this.clone());
+			getParentContainer().getParentDoc().getDocViewerPanel().getNotebookPanel().addProbelmToDatabase((ProblemGenerator) clone());
 		}
 		else if (s.equals(GENERATE_NEW)){
 			int number = 0;
@@ -325,29 +325,15 @@ public class VariableValueInsertionProblem extends ProblemGenerator {
 			newProblem.addObjectFromPage(newObj);
 		}
 
-		return new GeneratedProblem(newProblem.getParentContainer(), this.getUUID(), newProblem);
+		return new GeneratedProblem(newProblem.getParentContainer(), this.getProblemID(), newProblem);
 	}
-
-	@Override
-	public VariableValueInsertionProblem clone() {
-		VariableValueInsertionProblem o = new VariableValueInsertionProblem(getParentContainer());
-		o.removeAllAttributes();
-		for ( MathObjectAttribute<?> mAtt : getAttributes()){
-			o.addAttribute( mAtt.clone());
-		}
-		o.removeAllLists();
-		for ( ListAttribute<?> list : getLists()){
-			o.addList(list.clone());
-		}
-		for ( MathObject mObj : getObjects()){
-			mObj.setParentContainer(null);
-			o.addObjectFromPage(mObj.clone());
-		}
-		return o;
-	}
-
+	
 	@Override
 	public String getType() {
 		return VAR_INSERTION_PROBLEM;
+	}
+	
+	public VariableValueInsertionProblem newInstance(){
+		return new VariableValueInsertionProblem();
 	}
 }

@@ -146,9 +146,9 @@ private int space;
 		g.setFont(f);
 		setFont(f);
 		
-		space = (int) Math.round(1 * super.getRootNodeGraphic().getFontSizeAdjustment());
+		space = (int) Math.round(2 * super.getRootNodeGraphic().getFontSizeAdjustment());
 		if ( space == 0){
-			space = 1;
+			space = 2;
 		}
 		Node tempLeft = (super.getValue()).getChild(0);
 		Node tempRight = (super.getValue()).getChild(1);

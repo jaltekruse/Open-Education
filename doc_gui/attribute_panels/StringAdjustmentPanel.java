@@ -49,8 +49,8 @@ public class StringAdjustmentPanel extends AdjustmentPanel<StringAttribute>{
 		else{
 			numLines = mAtt.getValue().length() / 20;
 		}
-		if ( numLines < 3){
-			numLines = 3;
+		if ( numLines < 2){
+			numLines = 2;
 		}
 		textArea = new JTextArea(numLines, 12);
 		textArea.setEditable(true);
@@ -112,10 +112,30 @@ public class StringAdjustmentPanel extends AdjustmentPanel<StringAttribute>{
 		con.gridy = 0;
 		con.insets = new Insets(2, 5, 0, 5);
 		add(new JLabel(mAtt.getName()), con);
+		
+		JButton keyboard = new JButton(docPanel.getIcon("smallKeyboard.png"));
+		keyboard.setToolTipText("Show On-Screen Keyboard");
+		keyboard.setMargin(new Insets(3, 3, 3, 3));
+		keyboard.setFocusable(false);
+		con.insets = new Insets(2, 2, 2, 2);
+		con.gridx = 1;
+		con.weightx = .1;
+		con.weighty = .1;
+		con.gridheight = 1;
+		add(keyboard, con);
+		keyboard.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				docPanel.setOnScreenKeyBoardVisible(true);
+			}
+		});
 
 		JButton applyChanges = new JButton("Apply");
 		applyChanges.setToolTipText("Value can also be applied by hitting Enter");
-		con.gridx = 1;
+		applyChanges.setMargin(new Insets(5, 3, 5, 3));
+		applyChanges.setFocusable(false);
+		con.gridx = 2;
 		con.weightx = .1;
 		con.weighty = .1;
 		con.gridheight = 1;
@@ -132,7 +152,7 @@ public class StringAdjustmentPanel extends AdjustmentPanel<StringAttribute>{
 		con.fill = GridBagConstraints.BOTH;
 		con.weightx = 1;
 		con.weighty = 1;
-		con.gridwidth = 2;
+		con.gridwidth = 3;
 		con.gridy = 1;
 		con.gridx = 0;
 		con.gridheight = 3;
@@ -185,7 +205,7 @@ public class StringAdjustmentPanel extends AdjustmentPanel<StringAttribute>{
 					docPanel.addUndoState();
 				}
 			}
-			docPanel.repaintDoc();
+			docPanel.repaint();
 		} catch (AttributeException e) {
 			// TODO Auto-generated catch block
 			if (!showingDialog){

@@ -142,25 +142,25 @@ public class GraphedCartFunction extends GraphWithExpression {
 					&& gridyToScreen(currY) <= graph.Y_SIZE + graph.Y_PIC_ORIGIN
 					&& gridyToScreen(currY) >= graph.Y_PIC_ORIGIN)
 			{//if the current point is on the screen, add it to the list of points
-				addPt(gridxToScreen(currX), gridyToScreen(currY));
 				if (lastY <= graph.Y_MIN){
 					addPt(gridxToScreen(lastX), graph.Y_SIZE + graph.Y_PIC_ORIGIN);
 				}
 				if (lastY >= graph.Y_MAX){
 					addPt(gridxToScreen(lastX), 0 + graph.Y_PIC_ORIGIN);
 				}
+				addPt(gridxToScreen(currX), gridyToScreen(currY));
 			}
 			else if (gridxToScreen(lastX) <= graph.X_SIZE + graph.X_PIC_ORIGIN
 					&&  gridxToScreen(lastX) >= graph.X_PIC_ORIGIN
 					&& gridyToScreen(lastY) <= graph.Y_SIZE + graph.Y_PIC_ORIGIN
 					&& gridyToScreen(lastY) >= graph.Y_PIC_ORIGIN)
-			{//if the current point is on the screen, add it to the list of points
+			{//if the last point is on the screen, add the correct boundary for this point to the list
 				addPt(gridxToScreen(lastX), gridyToScreen(lastY));
 				if (currY <= graph.Y_MIN){
-					addPt(gridxToScreen(lastX), graph.Y_SIZE + graph.Y_PIC_ORIGIN);
+					addPt(gridxToScreen(currX), graph.Y_SIZE + graph.Y_PIC_ORIGIN);
 				}
 				if (currY >= graph.Y_MAX){
-					addPt(gridxToScreen(lastX), 0 + graph.Y_PIC_ORIGIN);
+					addPt(gridxToScreen(currX), 0 + graph.Y_PIC_ORIGIN);
 				}
 			}
 			else if (lastY >= graph.Y_MAX && currY <= graph.Y_MIN)
@@ -185,9 +185,7 @@ public class GraphedCartFunction extends GraphWithExpression {
 		if ( this.getxVals().size() > 0){
 			GeneralPath polyline = 
 					new GeneralPath(GeneralPath.WIND_EVEN_ODD, this.getxVals().size());
-	
 			polyline.moveTo (this.getxVals().get(0), this.getyVals().get(0));
-	
 			for (int i = 1; i < this.getxVals().size(); i++) {
 				polyline.lineTo( getxVals().get(i), getyVals().get(i));
 			};

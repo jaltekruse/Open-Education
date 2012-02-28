@@ -32,7 +32,7 @@ public abstract class ExpressionGenerator extends ProblemGenerator implements Cl
 		ExpressionObject expressionObj = new ExpressionObject();
 		try {
 			newProblem.setDifficulty(difficulty);
-			newProblem.setAttributeValue(UUID_STR, this.getUUID());
+			newProblem.setAttributeValue(UUID_STR, this.getProblemID());
 			expressionObj.setExpression(generateExpression(difficulty).toStringRepresentation());
 		} catch (AttributeException e) {
 			// TODO Auto-generated catch block

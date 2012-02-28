@@ -67,7 +67,8 @@ public class GeneratedProblem extends Grouping {
 		removeAction(BRING_TO_RIGHT);
 		removeAction(BRING_TO_TOP);
 		removeAction(BRING_TO_BOTTOM);
-
+		removeAction(Grouping.STRETCH_VERTICALLY);
+		removeAction(Grouping.STRETCH_HORIZONTALLY);
 		addAction(GENERATE_NEW_PROBLEM);
 		addAction(VIEW_PROBLEM_FORMULA);
 		// addAction(REMOVE_PROBLEM);
@@ -113,12 +114,11 @@ public class GeneratedProblem extends Grouping {
 					.setFocusedObject(generateNewProblem());
 		}
 		if (s.equals(VIEW_PROBLEM_FORMULA)) {
-			if ( getParentDoc().getGeneratorWithID(getUUID()).isUserEditable()){
+			if ( getProblemGenerator().isUserEditable()){
 			getParentContainer()
 					.getParentDoc().getDocViewerPanel()
 					.getNotebook().getNotebookPanel()
-					.viewProblemGenrator(
-							getParentDoc().getGeneratorWithID(getUUID()));
+					.viewProblemGenrator(getProblemGenerator());
 			}
 			else{
 				JOptionPane.showMessageDialog(null,
@@ -130,33 +130,18 @@ public class GeneratedProblem extends Grouping {
 			}
 		}
 	}
+	
+	public GeneratedProblem newInstance(){
+		return new GeneratedProblem();
+	}
 
 	@Override
 	public String getType() {
 		return MathObject.GENERATED_PROBLEM;
 	}
 
-	public UUID getUUID() {
+	public UUID getGeneratorID() {
 		return (UUID) getAttributeWithName(UUID_STR).getValue();
-	}
-
-	@Override
-	public GeneratedProblem clone() {
-
-		GeneratedProblem o = new GeneratedProblem(getParentContainer());
-		o.removeAllAttributes();
-		for (MathObjectAttribute mAtt : getAttributes()) {
-			o.addAttribute(mAtt.clone());
-		}
-		o.removeAllLists();
-		for (ListAttribute list : getLists()) {
-			o.addList(list.clone());
-		}
-		for (MathObject mObj : getObjects()) {
-			mObj.setParentContainer(null);
-			o.addObjectFromPage(mObj.clone());
-		}
-		return o;
 	}
 
 }

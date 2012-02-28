@@ -40,8 +40,8 @@ public class ExpressionObject extends MathObject {
 	OTHER_OPERATIONS = "Other operations",
 	UNDO_STEP = "Undo Step";
 
-	public static String		EXPRESSION = "expression",		FONT_SIZE = "font size",
-			STEPS = "steps",	FILL_COLOR = "fill color", ALWAYS_SHOW_STEPS = "always show steps",
+	public static String		EXPRESSION = "expression",
+			STEPS = "steps", ALWAYS_SHOW_STEPS = "always show steps",
 			CORRECT_ANSWER = "correct answer";
 
 
@@ -420,21 +420,7 @@ public class ExpressionObject extends MathObject {
 					"Warning", JOptionPane.WARNING_MESSAGE);
 		}
 	}
-
-	@Override
-	public ExpressionObject clone() {
-		ExpressionObject o = new ExpressionObject(getParentContainer());
-		o.removeAllAttributes();
-		for ( MathObjectAttribute mAtt : getAttributes()){
-			o.addAttribute( mAtt.clone());
-		}
-		o.removeAllLists();
-		for ( ListAttribute list : getLists()){
-			o.addList(list.clone());
-		}
-		return o;
-	}
-
+	
 	public Color getColor(){
 		return ((ColorAttribute)getAttributeWithName(FILL_COLOR)).getValue();
 	}
@@ -471,5 +457,10 @@ public class ExpressionObject extends MathObject {
 	@Override
 	public String getType() {
 		return EXPRESSION_OBJ;
+	}
+
+	@Override
+	public MathObject newInstance() {
+		return new ExpressionObject();
 	}
 }

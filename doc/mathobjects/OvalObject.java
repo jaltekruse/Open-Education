@@ -45,25 +45,16 @@ public class OvalObject extends MathObject {
 	public Color getColor(){
 		return ((ColorAttribute)getAttributeWithName(PolygonObject.FILL_COLOR)).getValue();
 	}
-	
-	@Override
-	public OvalObject clone() {
-		OvalObject o = new OvalObject(getParentContainer());
-		o.removeAllAttributes();
-		for ( MathObjectAttribute mAtt : getAttributes()){
-			o.addAttribute( mAtt.clone());
-		}
-		o.removeAllLists();
-		for ( ListAttribute list : getLists()){
-			o.addList(list.clone());
-		}
-		return o;
-	}
 
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
 		return OVAL_OBJ;
+	}
+
+	@Override
+	public MathObject newInstance() {
+		return new OvalObject();
 	}
 
 }

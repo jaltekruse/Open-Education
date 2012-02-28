@@ -11,47 +11,36 @@ public class ParallelogramObject extends PolygonObject {
 	
 	public ParallelogramObject(MathObjectContainer p, int x, int y, int w, int h, int t) {
 		super(p, x, y, w, h, t);
-		addAction(PolygonObject.FLIP_VERTICALLY);
+		addAction(FLIP_VERTICALLY);
+		addAction(FLIP_HORIZONTALLY);
 	}
 	
 	public ParallelogramObject(MathObjectContainer p){
 		super(p);
-		addAction(PolygonObject.FLIP_VERTICALLY);
+		addAction(FLIP_VERTICALLY);
+		addAction(FLIP_HORIZONTALLY);
 	}
 
 	public ParallelogramObject() {
-		addAction(PolygonObject.FLIP_VERTICALLY);
+		addAction(FLIP_VERTICALLY);
+		addAction(FLIP_HORIZONTALLY);
 	}
 	
 	@Override
-	public void addDefaultAttributes() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void addDefaultAttributes() {}
 
 	@Override
 	public String getType() {
-		// TODO Auto-generated method stub
 		return PARALLELOGRAM_OBJ;
-	}
-	
-	@Override
-	public ParallelogramObject clone() {
-		ParallelogramObject o = new ParallelogramObject(getParentContainer());
-		o.removeAllAttributes();
-		for ( MathObjectAttribute mAtt : getAttributes()){
-			o.addAttribute( mAtt.clone());
-		}
-		o.removeAllLists();
-		for ( ListAttribute list : getLists()){
-			o.addList(list.clone());
-		}
-		return o;
 	}
 
 	@Override
 	public GridPoint[] getVertices() {
-		// TODO Auto-generated method stub
 		return vertices;
+	}
+
+	@Override
+	public MathObject newInstance() {
+		return new ParallelogramObject();
 	}
 }

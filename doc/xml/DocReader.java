@@ -223,7 +223,7 @@ public class DocReader extends DefaultHandler {
 			if (page != null || readingGenerators || readingProblemDatabase){
 				if (mObj != null){
 					if ( DEBUG ){
-						System.out.println("in object, should be finding attributes");
+						System.out.println("in object, should be finding attributes, or other objects if in group");
 					}
 					if (readAttribute(uri, name, qName, atts))
 					{// if the current tag was an attribute
@@ -236,7 +236,7 @@ public class DocReader extends DefaultHandler {
 				if (DEBUG){
 					System.out.println("tag was not attribute " + qName);
 				}
-				mObj = MathObject.getNewInstance(qName);
+				mObj = MathObject.newInstanceWithType(qName);
 				if ( mObj == null){
 					mObj = readOldObjectName(qName);
 				}
@@ -266,17 +266,12 @@ public class DocReader extends DefaultHandler {
 					}
 				}
 				else{
-					if (readingGenerators){
-						try {
-							doc.addGenerator( (ProblemGenerator) mObj );
-						} catch (Exception e) {
-							if (DEBUG){
-								System.out.println("Generator UUID already in use");
-							}
+					// wait until the generators id has been found to add it to the lists
+					// in the document, or in the background of the application
+					if (readingGenerators || readingProblemDatabase){
+						if ( DEBUG ){
+							System.out.println("wait until attributes are read before adding to database");
 						}
-					}
-					else if ( readingProblemDatabase ){
-						database.addProblem((VariableValueInsertionProblem) mObj);
 					}
 					else{
 						page.addObject(mObj);
@@ -403,6 +398,25 @@ public class DocReader extends DefaultHandler {
 				qName.equals(MathObject.VAR_INSERTION_PROBLEM) ||
 				qName.equals("Problem") ||
 				qName.equals(MathObject.GENERATED_PROBLEM)){
+			if (qName.equals(MathObject.VAR_INSERTION_PROBLEM) ||
+					qName.equals("Problem") ||
+					qName.equals(MathObject.GENERATED_PROBLEM)){
+
+				if (readingGenerators ){
+					try {
+						doc.addGenerator( (ProblemGenerator)
+								containerStack.get(containerStack.size() - 1) );
+					} catch (Exception e) {
+						if (DEBUG){
+							e.printStackTrace();
+						}
+					}
+				}
+				else if ( readingProblemDatabase ){
+					database.addProblem((VariableValueInsertionProblem)
+							containerStack.get(containerStack.size() - 1));
+				}
+			}
 			for ( MathObject mathObj : objectsInGroup.get(objectsInGroup.size() - 1)){
 				containerStack.get(containerStack.size() - 1).addObjectFromPage(mathObj);
 			}

@@ -37,13 +37,13 @@ public class BooleanAdjustmentPanel extends AdjustmentPanel<BooleanAttribute>{
 				// TODO Auto-generated method stub
 				if (e.getStateChange() == ItemEvent.SELECTED){
 					mAtt.setValue(true);
-					docPanel.repaintDoc();
+					docPanel.repaint();
 					docPanel.addUndoState();
 					docPanel.updateObjectToolFrame();
 				}
 				else{
 					mAtt.setValue(false);
-					docPanel.repaintDoc();
+					docPanel.repaint();
 					docPanel.addUndoState();
 					docPanel.updateObjectToolFrame();
 				}
@@ -58,7 +58,7 @@ public class BooleanAdjustmentPanel extends AdjustmentPanel<BooleanAttribute>{
 	public void applyPanelValueToObject() {
 		// TODO Auto-generated method stub
 		mAtt.setValue(true);
-		docPanel.repaintDoc();
+		docPanel.repaint();
 	}
 
 	@Override

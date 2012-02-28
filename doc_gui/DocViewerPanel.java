@@ -19,9 +19,12 @@ import java.awt.RenderingHints;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Stack;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
@@ -49,7 +52,7 @@ public class DocViewerPanel extends JDesktopPane{
 	private static final float zoomRate = 1.1f;
 	private JScrollPane docScrollPane;
 	private ObjectPropertiesFrame objPropsFrame;
-	private JInternalFrame databaseFrame;
+	private JInternalFrame keyboardFrame;
 	private JInternalFrame docPropsFrame;
 	private Page selectedPage;
 	private BufferedImage background;
@@ -82,6 +85,7 @@ public class DocViewerPanel extends JDesktopPane{
 		setPageGUI(new PageGUI(this));
 		background = new BufferedImage(10,10, 10);
 		
+		setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
 		actions = new Vector<Document>();
 		undoneActions = new Vector<Document>();
 		// add the first undo state, the blank document
@@ -106,8 +110,8 @@ public class DocViewerPanel extends JDesktopPane{
 
 		objPropsFrame = new ObjectPropertiesFrame(this);
 		objPropsFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-		objPropsFrame.setBounds(10, 10, 250, 300);
-		this.add(objPropsFrame);
+		objPropsFrame.setBounds(5, 5, 250, 300);
+		this.add(objPropsFrame, 3, 0);
 		//do not show yet, only appears when MathObject is selected
 
 		GraphObject temp = new GraphObject();
@@ -115,27 +119,27 @@ public class DocViewerPanel extends JDesktopPane{
 		setFocusedObject(null);
 		this.drawObjectInBackgorund(temp);
 
-		docPropsFrame = new JInternalFrame("Document",
+//		docPropsFrame = new JInternalFrame("Document",
+//				true, //resizable
+//				true, //closable
+//				false, //maximizable
+//				true);//iconifiable
+//
+//
+//		docPropsFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+//		docPropsFrame.setBounds(10, 10, 200, 300);
+//		this.add(docPropsFrame, 3, 0);
+
+		keyboardFrame = new JInternalFrame("Math Keyboard",
 				true, //resizable
 				true, //closable
 				false, //maximizable
-				false);//iconifiable
+				true);//iconifiable
+		keyboardFrame.setContentPane(new OnScreenMathKeypad(book.getNotebookPanel()));
 
-
-		docPropsFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-		docPropsFrame.setBounds(20, 20, 200, 300);
-		this.add(docPropsFrame);
-
-
-		databaseFrame = new JInternalFrame("Document",
-				true, //resizable
-				true, //closable
-				false, //maximizable
-				false);//iconifiable
-
-		databaseFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-		databaseFrame.setBounds(20, 20, 300, 250);
-		this.add(databaseFrame);
+		keyboardFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+		keyboardFrame.setBounds(5, 315, 370, 210);
+		this.add(keyboardFrame, 3, 0);
 
 		this.addComponentListener(new ComponentListener(){
 			@Override
@@ -144,14 +148,13 @@ public class DocViewerPanel extends JDesktopPane{
 			public void componentMoved(ComponentEvent arg0) {}
 			@Override
 			public void componentResized(ComponentEvent arg0) {
-				// TODO Auto-generated method stub
 				setScrollBounds(DocViewerPanel.this.getWidth(), DocViewerPanel.this.getHeight());
 			}
 			@Override
 			public void componentShown(ComponentEvent arg0) {}
 		});
 
-		this.add(docScrollPane);
+		this.add(docScrollPane, 2, 0);
 	}
 
 	public void drawObjectInBackgorund(MathObject o){
@@ -307,6 +310,17 @@ public class DocViewerPanel extends JDesktopPane{
 		docPropsFrame.getContentPane().add(objPropsFrame.generatePanel(getDoc(), this));
 		docPropsFrame.setVisible( ! docPropsFrame.isVisible());
 	}
+	
+	public ImageIcon getIcon(String fileName){
+		try {
+			fileName = "img/" + fileName;
+			BufferedImage image = ImageIO.read(getClass().getClassLoader().getResourceAsStream(fileName));
+			return new ImageIcon(image);
+		} catch (IOException e) {
+			System.out.println("cannot find image: " + fileName);
+		}
+		return null;
+	}
 
 	public void resizeViewWindow(){
 
@@ -333,8 +347,8 @@ public class DocViewerPanel extends JDesktopPane{
 	public void repaintDoc(){
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				docPanel.repaint();
-				docPanel.revalidate();
+				repaint();
+				revalidate();
 			}
 		});
 	}
@@ -446,6 +460,10 @@ public class DocViewerPanel extends JDesktopPane{
 			this.focusedObject = newFocusedObject;
 			objPropsFrame.setVisible(false);
 		}
+	}
+	
+	public void setOnScreenKeyBoardVisible(boolean visible){
+		this.keyboardFrame.setVisible(visible);
 	}
 
 	public void ungroupTempGroup(){

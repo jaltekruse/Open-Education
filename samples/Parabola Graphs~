@@ -2,6 +2,282 @@
 <OpenNotebookDoc version="0.1" filename="Parabola Graphs" author="null" date="2/2/2012">
 <generators>
 <VarInsertionProblem>
+<int name="xPos" value="37"/>
+<int name="yPos" value="13"/>
+<int name="width" value="134"/>
+<int name="height" value="179"/>
+<string name="group name" value=""/>
+<string name="directions" value=""/>
+<string name="author" value=""/>
+<date name="date" value="11/3/2011"/>
+<uuid name="uuid" value="075bd280-bd90-4b73-91d2-8435a10f25b2"/>
+<list name="tags" type="string" childName="">
+<entry v=""/>
+</list><list name="scripts" type="string" childName="">
+<entry v="a=randomInt(-3,3)"/>
+<entry v=" b=randomInt(-3,3)"/>
+<entry v=" c=randomInt(-3,3) "/>
+</list><Graph>
+<int name="xPos" value="37"/>
+<int name="yPos" value="13"/>
+<int name="width" value="134"/>
+<int name="height" value="128"/>
+<double name="xMin" value="-5.0"/>
+<double name="xMax" value="5.0"/>
+<double name="yMin" value="-5.0"/>
+<double name="yMax" value="5.0"/>
+<double name="xStep" value="1.0"/>
+<double name="yStep" value="1.0"/>
+<int name="fontSize" value="8"/>
+<boolean name="showAxis" value="true"/>
+<boolean name="showNumbers" value="true"/>
+<boolean name="showGrid" value="true"/>
+<list name="Expressions" type="string" childName="y=">
+<entry v="a((x+c)^2)+b"/>
+</list></Graph>
+<AnswerBox>
+<int name="xPos" value="37"/>
+<int name="yPos" value="149"/>
+<int name="width" value="134"/>
+<int name="height" value="43"/>
+<string name="answer" value=""/>
+<int name="font size" value="12"/>
+</AnswerBox>
+</VarInsertionProblem>
+<VarInsertionProblem>
+<int name="xPos" value="194"/>
+<int name="yPos" value="20"/>
+<int name="width" value="121"/>
+<int name="height" value="160"/>
+<string name="group name" value=""/>
+<string name="directions" value=""/>
+<string name="author" value=""/>
+<date name="date" value="11/3/2011"/>
+<uuid name="uuid" value="c8390604-28cf-4376-bb75-ec12ff9604ed"/>
+<list name="tags" type="string" childName="">
+<entry v=""/>
+</list><list name="scripts" type="string" childName="">
+<entry v="a=randomInt(-3,3)"/>
+<entry v=" b=randomInt(-3,3)"/>
+<entry v=" c=randomInt(-3,3) "/>
+</list><Graph>
+<int name="xPos" value="194"/>
+<int name="yPos" value="20"/>
+<int name="width" value="121"/>
+<int name="height" value="114"/>
+<double name="xMin" value="-5.0"/>
+<double name="xMax" value="5.0"/>
+<double name="yMin" value="-5.0"/>
+<double name="yMax" value="5.0"/>
+<double name="xStep" value="1.0"/>
+<double name="yStep" value="1.0"/>
+<int name="fontSize" value="8"/>
+<boolean name="showAxis" value="true"/>
+<boolean name="showNumbers" value="true"/>
+<boolean name="showGrid" value="true"/>
+<list name="Expressions" type="string" childName="y=">
+<entry v="-a(x+c)^2+b"/>
+</list></Graph>
+<AnswerBox>
+<int name="xPos" value="194"/>
+<int name="yPos" value="142"/>
+<int name="width" value="121"/>
+<int name="height" value="38"/>
+<string name="answer" value=""/>
+<int name="font size" value="12"/>
+</AnswerBox>
+</VarInsertionProblem>
+<VarInsertionProblem>
+<int name="xPos" value="194"/>
+<int name="yPos" value="20"/>
+<int name="width" value="121"/>
+<int name="height" value="160"/>
+<string name="group name" value=""/>
+<string name="directions" value=""/>
+<string name="author" value=""/>
+<date name="date" value="11/3/2011"/>
+<uuid name="uuid" value="8e95aa11-63ab-4892-91df-224a88d16faf"/>
+<list name="tags" type="string" childName="">
+<entry v=""/>
+</list><list name="scripts" type="string" childName="">
+<entry v="a=randomInt(-3,3)"/>
+<entry v=" b=randomInt(-3,3)"/>
+<entry v=" c=randomInt(-3,3) "/>
+</list><Graph>
+<int name="xPos" value="194"/>
+<int name="yPos" value="20"/>
+<int name="width" value="121"/>
+<int name="height" value="114"/>
+<double name="xMin" value="-5.0"/>
+<double name="xMax" value="5.0"/>
+<double name="yMin" value="-5.0"/>
+<double name="yMax" value="5.0"/>
+<double name="xStep" value="1.0"/>
+<double name="yStep" value="1.0"/>
+<int name="fontSize" value="8"/>
+<boolean name="showAxis" value="true"/>
+<boolean name="showNumbers" value="true"/>
+<boolean name="showGrid" value="true"/>
+<list name="Expressions" type="string" childName="y=">
+<entry v="-a(x+c)^2+b"/>
+</list></Graph>
+<AnswerBox>
+<int name="xPos" value="194"/>
+<int name="yPos" value="142"/>
+<int name="width" value="121"/>
+<int name="height" value="38"/>
+<string name="answer" value=""/>
+<int name="font size" value="12"/>
+</AnswerBox>
+</VarInsertionProblem>
+<VarInsertionProblem>
+<int name="xPos" value="194"/>
+<int name="yPos" value="20"/>
+<int name="width" value="181"/>
+<int name="height" value="160"/>
+<string name="group name" value=""/>
+<string name="directions" value=""/>
+<string name="author" value=""/>
+<date name="date" value="11/3/2011"/>
+<uuid name="uuid" value="a77fe51c-369a-4305-b55c-1a09a5618198"/>
+<list name="tags" type="string" childName="">
+<entry v=""/>
+</list><list name="scripts" type="string" childName="">
+<entry v="a=randomInt(-3,3)"/>
+<entry v=" b=randomInt(-3,3)"/>
+<entry v=" c=randomInt(-3,3) "/>
+</list><Graph>
+<int name="xPos" value="194"/>
+<int name="yPos" value="20"/>
+<int name="width" value="121"/>
+<int name="height" value="114"/>
+<double name="xMin" value="-5.0"/>
+<double name="xMax" value="5.0"/>
+<double name="yMin" value="-5.0"/>
+<double name="yMax" value="5.0"/>
+<double name="xStep" value="1.0"/>
+<double name="yStep" value="1.0"/>
+<int name="fontSize" value="8"/>
+<boolean name="showAxis" value="true"/>
+<boolean name="showNumbers" value="true"/>
+<boolean name="showGrid" value="true"/>
+<list name="Expressions" type="string" childName="y=">
+<entry v="-a(x+c)^2+b"/>
+</list></Graph>
+<AnswerBox>
+<int name="xPos" value="194"/>
+<int name="yPos" value="142"/>
+<int name="width" value="121"/>
+<int name="height" value="38"/>
+<string name="answer" value=""/>
+<int name="font size" value="12"/>
+</AnswerBox>
+<Text>
+<int name="xPos" value="325"/>
+<int name="yPos" value="63"/>
+<int name="width" value="50"/>
+<int name="height" value="64"/>
+<string name="text" value="valA b   valB b     valC c"/>
+<int name="font size" value="12"/>
+<boolean name="show border" value="true"/>
+</Text>
+</VarInsertionProblem>
+<VarInsertionProblem>
+<int name="xPos" value="194"/>
+<int name="yPos" value="20"/>
+<int name="width" value="181"/>
+<int name="height" value="160"/>
+<string name="group name" value=""/>
+<string name="directions" value=""/>
+<string name="author" value=""/>
+<date name="date" value="11/3/2011"/>
+<uuid name="uuid" value="4eebe939-74bc-4011-818c-2d666412aec5"/>
+<list name="tags" type="string" childName="">
+<entry v=""/>
+</list><list name="scripts" type="string" childName="">
+<entry v="a=randomInt(-3,3)"/>
+<entry v=" b=randomInt(-3,3)"/>
+<entry v=" c=randomInt(-3,3) "/>
+</list><Graph>
+<int name="xPos" value="194"/>
+<int name="yPos" value="20"/>
+<int name="width" value="121"/>
+<int name="height" value="114"/>
+<double name="xMin" value="-5.0"/>
+<double name="xMax" value="5.0"/>
+<double name="yMin" value="-5.0"/>
+<double name="yMax" value="5.0"/>
+<double name="xStep" value="1.0"/>
+<double name="yStep" value="1.0"/>
+<int name="fontSize" value="8"/>
+<boolean name="showAxis" value="true"/>
+<boolean name="showNumbers" value="true"/>
+<boolean name="showGrid" value="true"/>
+<list name="Expressions" type="string" childName="y=">
+<entry v="-a(x+c)^2+b"/>
+</list></Graph>
+<AnswerBox>
+<int name="xPos" value="194"/>
+<int name="yPos" value="142"/>
+<int name="width" value="121"/>
+<int name="height" value="38"/>
+<string name="answer" value=""/>
+<int name="font size" value="12"/>
+</AnswerBox>
+<Text>
+<int name="xPos" value="325"/>
+<int name="yPos" value="63"/>
+<int name="width" value="50"/>
+<int name="height" value="64"/>
+<string name="text" value="valA b   valB b     valC c"/>
+<int name="font size" value="12"/>
+<boolean name="show border" value="true"/>
+</Text>
+</VarInsertionProblem>
+<VarInsertionProblem>
+<int name="xPos" value="36"/>
+<int name="yPos" value="1"/>
+<int name="width" value="121"/>
+<int name="height" value="159"/>
+<string name="group name" value=""/>
+<string name="directions" value=""/>
+<string name="author" value=""/>
+<date name="date" value="11/3/2011"/>
+<uuid name="uuid" value="566d066b-0a7f-4191-bd00-f45c7f9c1be5"/>
+<list name="tags" type="string" childName="">
+<entry v=""/>
+</list><list name="scripts" type="string" childName="">
+<entry v="a=randomInt(-3,3)"/>
+<entry v=" b=randomInt(-3,3)"/>
+<entry v=" c=randomInt(-3,3)"/>
+</list><Graph>
+<int name="xPos" value="36"/>
+<int name="yPos" value="1"/>
+<int name="width" value="121"/>
+<int name="height" value="114"/>
+<double name="xMin" value="-5.0"/>
+<double name="xMax" value="5.0"/>
+<double name="yMin" value="-5.0"/>
+<double name="yMax" value="5.0"/>
+<double name="xStep" value="1.0"/>
+<double name="yStep" value="1.0"/>
+<int name="fontSize" value="8"/>
+<boolean name="showAxis" value="true"/>
+<boolean name="showNumbers" value="true"/>
+<boolean name="showGrid" value="true"/>
+<list name="Expressions" type="string" childName="y=">
+<entry v="a(x+c)^2+b"/>
+</list></Graph>
+<AnswerBox>
+<int name="xPos" value="36"/>
+<int name="yPos" value="122"/>
+<int name="width" value="121"/>
+<int name="height" value="38"/>
+<string name="answer" value=""/>
+<int name="font size" value="12"/>
+</AnswerBox>
+</VarInsertionProblem>
+<VarInsertionProblem>
 <int name="xPos" value="69"/>
 <int name="yPos" value="1"/>
 <int name="width" value="121"/>

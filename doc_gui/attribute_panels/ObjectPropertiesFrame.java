@@ -71,7 +71,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 				true, //resizable
 				false, //closable
 				false, //maximizable
-				false);//iconifiable
+				true);//iconifiable
 		docPanel = dvp;
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridBagLayout());
@@ -122,9 +122,9 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		mainPanel.removeAll();
 		adjusters.removeAllElements();
 		listAdjusters.removeAllElements();
-		this.setTitle(o.getClass().getSimpleName());
-		JTabbedPane graphTabs = null;
-		JPanel graphNav = null, graphGrid = null;
+		this.setTitle(o.getType());
+		JTabbedPane panelTabs = null;
+		JPanel tabOneContents = null, tabTwoContents = null;
 		GridBagConstraints con = new GridBagConstraints();
 		con.fill = GridBagConstraints.BOTH;
 		con.weightx = 1;
@@ -133,23 +133,31 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		con.gridx = 0;
 		con.gridy = 0;
 		
-		if (o instanceof GraphObject)
+		if (o instanceof GraphObject || o instanceof ExpressionObject)
 		{// there are too many attributes and actions for the graph to put them all in one panel
 			// add a tabbed pane to make it more reasonable and avoid scrolling
-			graphTabs = new JTabbedPane();
-			this.getContentPane().add(graphTabs);
-			graphNav = new JPanel();
-			graphNav.setLayout(new GridBagLayout());
-			graphGrid = new JPanel();
-			graphGrid.setLayout(new GridBagLayout());
-			JScrollPane graphNavScrollPane = new JScrollPane(graphTabs);
-			graphNavScrollPane.getVerticalScrollBar().setUnitIncrement(16);
-			graphNavScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
-			graphNavScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-			graphTabs.add("Navigation", graphNav);
-			graphTabs.add("Grid", graphGrid);
-			this.getContentPane().add(graphNavScrollPane);
-			panel = graphNav;
+			panelTabs = new JTabbedPane();
+			this.getContentPane().add(panelTabs);
+			tabOneContents = new JPanel();
+			tabOneContents.setLayout(new GridBagLayout());
+			tabTwoContents = new JPanel();
+			tabTwoContents.setLayout(new GridBagLayout());
+			JScrollPane tabScrollPane = new JScrollPane(panelTabs);
+			tabScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+			tabScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
+			tabScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			if ( o instanceof GraphObject){
+				panelTabs.add("Nav", tabOneContents);
+				panelTabs.add("Grid", tabTwoContents);
+				panel = tabOneContents;
+			}
+			else if (o instanceof ExpressionObject){
+				panelTabs.add("Expression", tabOneContents);
+				panelTabs.add("Solve", tabTwoContents);
+				panel = tabTwoContents;
+			}
+			this.getContentPane().add(tabScrollPane);
+			
 		}
 		else{
 			this.getContentPane().add(scrollPane);
@@ -169,13 +177,13 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 				if (pic != null){
 					button = new JButton(pic);
 					button.setMargin(new Insets(2, 2, 2, 2));
-					button.setMaximumSize(new Dimension(25,25));
+					button.setMaximumSize(new Dimension(20,20));
 					button.setToolTipText(s);
 					actionPics.add(button);
 				}
 				else{
 					button = new JButton(s);
-					button.setMargin(new Insets(4, 4, 4, 4));
+					button.setMargin(new Insets(2, 2, 2, 2));
 					otherActions.add(button);
 				}
 				button.addActionListener(new ActionListener(){
@@ -218,11 +226,13 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 			pic = getIconForAction(s);
 			if (pic != null){
 				button = new JButton(pic);
+				button.setMargin(new Insets(2, 2, 2, 2));
 				button.setToolTipText(s);
 				actionPics.add(button);
 			}
 			else{
 				button = new JButton(s);
+				button.setMargin(new Insets(2, 2, 2, 2));
 				otherActions.add(button);
 			}
 			button.addActionListener(new ActionListener(){
@@ -244,12 +254,12 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 			con.gridy++;
 		}
 		if (actionPics.getComponentCount() != 0)
-		{// only add panel for action pics if components have been added to it	
+		{// only add panel for action pics if components have been added to it
 			panel.add(actionPics, con);
 			con.gridy++;
 		}
 		if ( object instanceof GraphObject){
-			panel.add(createGraphNagvigator(), con);
+			panel.add(createGraphNavigator(), con);
 			con.gridy++;
 		}
 		if ( object instanceof ExpressionObject){
@@ -271,8 +281,15 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		
 		if (o instanceof GraphObject)
 		{// there are too many attributes and actions for the graph to put them all in one panel
-			// add a tabbed pane to make it more reasonable and avoid scrolling
-			panel = graphGrid;
+			// added a tabbed pane to make it more reasonable and avoid scrolling
+			// this line moves to the other tab to place components there
+			panel = tabTwoContents;
+		}
+		else if (o instanceof ExpressionObject)
+		{// there are too many attributes and actions for the expression to put them all in one panel
+			// added a tabbed pane to make it more reasonable and avoid scrolling
+			// this line moves to the other tab to place components there
+			panel = tabOneContents;
 		}
 
 		con.fill = GridBagConstraints.BOTH;
@@ -341,28 +358,24 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 				buttonAction(ExpressionObject.ADD_TO_BOTH_SIDES);
 			}
 		};
-		add.setMargin(new Insets(0, 0, 0, 0));
 		pic = getIconForAction(ExpressionObject.SUBTRACT_FROM_BOTH_SIDES);
 		OCButton subtract = new OCButton(pic, ExpressionObject.SUBTRACT_FROM_BOTH_SIDES, 1, 1, 1, 1, newPanel){
 			public void associatedAction(){
 				buttonAction(ExpressionObject.SUBTRACT_FROM_BOTH_SIDES);
 			}
 		};
-		subtract.setMargin(new Insets(0, 0, 0, 0));
 		pic = getIconForAction(ExpressionObject.MULTIPLY_BOTH_SIDES);
 		OCButton multiply = new OCButton(pic, ExpressionObject.MULTIPLY_BOTH_SIDES, 1, 1, 2, 1, newPanel){
 			public void associatedAction(){
 				buttonAction(ExpressionObject.MULTIPLY_BOTH_SIDES);
 			}
 		};
-		multiply.setMargin(new Insets(0, 0, 0, 0));
 		pic = getIconForAction(ExpressionObject.DIVIDE_BOTH_SIDES);
 		OCButton divide = new OCButton(pic, ExpressionObject.DIVIDE_BOTH_SIDES, 1, 1, 3, 1, newPanel){
 			public void associatedAction(){
 				buttonAction(ExpressionObject.DIVIDE_BOTH_SIDES);
 			}
 		};
-		divide.setMargin(new Insets(0, 0, 0, 0));
 		OCButton down = new OCButton(ExpressionObject.OTHER_OPERATIONS, 4, 1, 0, 2, newPanel){
 			public void associatedAction(){
 				buttonAction(ExpressionObject.OTHER_OPERATIONS);
@@ -371,7 +384,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 		return newPanel;
 	}
 
-	private JPanel createGraphNagvigator(){
+	private JPanel createGraphNavigator(){
 		JPanel newPanel = new JPanel();
 		newPanel.setLayout(new GridBagLayout());
 		ImageIcon pic;
@@ -382,28 +395,24 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 				buttonAction(GraphObject.MOVE_UP);
 			}
 		};
-		up.setMargin(new Insets(0, 0, 0, 0));
 		pic = getIconForAction(GraphObject.MOVE_LEFT);
 		OCButton left = new OCButton(pic, GraphObject.MOVE_LEFT, 1, 1, 0, 1, newPanel){
 			public void associatedAction(){
 				buttonAction(GraphObject.MOVE_LEFT);
 			}
 		};
-		left.setMargin(new Insets(0, 0, 0, 0));
 		pic = getIconForAction(GraphObject.MOVE_RIGHT);
 		OCButton right = new OCButton(pic, GraphObject.MOVE_RIGHT, 1, 1, 2, 1, newPanel){
 			public void associatedAction(){
 				buttonAction(GraphObject.MOVE_RIGHT);
 			}
 		};
-		right.setMargin(new Insets(0, 0, 0, 0));
 		pic = getIconForAction(GraphObject.MOVE_DOWN);
 		OCButton down = new OCButton(pic, GraphObject.MOVE_DOWN, 1, 1, 1, 2, newPanel){
 			public void associatedAction(){
 				buttonAction(GraphObject.MOVE_DOWN);
 			}
 		};
-		down.setMargin(new Insets(0, 0, 0, 0));
 
 		pic = getIconForAction(GraphObject.DEFAULT_GRID);
 		OCButton zoomDefault = new OCButton(pic, GraphObject.DEFAULT_GRID, 1, 1, 1, 1, newPanel){
@@ -411,7 +420,6 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 				buttonAction(GraphObject.DEFAULT_GRID);
 			}
 		};
-		zoomDefault.setMargin(new Insets(0, 0, 0, 0));
 		
 		return newPanel;
 	}
@@ -451,7 +459,7 @@ public class ObjectPropertiesFrame extends JInternalFrame {
 			primaryAttribute = object.getAttributeWithName(ExpressionObject.EXPRESSION);
 		}
 		else if (object instanceof AnswerBoxObject){
-			primaryAttribute = object.getAttributeWithName(AnswerBoxObject.ANSWER);
+			primaryAttribute = object.getAttributeWithName(AnswerBoxObject.STUDENT_ANSWER);
 
 		}
 		else{

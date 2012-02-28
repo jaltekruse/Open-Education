@@ -7,10 +7,9 @@ import doc.attributes.AttributeException;
 import doc.attributes.BooleanAttribute;
 import doc.attributes.ColorAttribute;
 import doc.attributes.IntegerAttribute;
-import doc.attributes.ListAttribute;
-import doc.attributes.MathObjectAttribute;
 
 public class ConeObject extends MathObject {
+	
 	private GridPoint[] trianglePts = { new GridPoint(0, .865), new GridPoint(.5, 0), new GridPoint(1, .865)};
 	
 	private GridPoint insideEdgeOfDisk = new GridPoint(.5, .25);
@@ -21,21 +20,18 @@ public class ConeObject extends MathObject {
 	
 	public ConeObject(MathObjectContainer p){
 		super(p);
-		addAction(PolygonObject.FLIP_VERTICALLY);
+		addAction(FLIP_VERTICALLY);
 	}
 	
 	public ConeObject(){
-		addAction(PolygonObject.FLIP_VERTICALLY);
+		addAction(FLIP_VERTICALLY);
 	}
 	
 	@Override
 	public void addDefaultAttributes() {
-		// TODO Auto-generated method stub
-		addAttribute(new IntegerAttribute(PolygonObject.LINE_THICKNESS, 1, 1, 20));
-		addAttribute(new ColorAttribute(PolygonObject.FILL_COLOR, null));
-		BooleanAttribute flipped = new BooleanAttribute(PolygonObject.FLIP_VERTICALLY, false);
-		flipped.setUserEditable(false);
-		addAttribute(flipped);
+		addAttribute(new IntegerAttribute(LINE_THICKNESS, 1, 1, 20));
+		addAttribute(new ColorAttribute(FILL_COLOR, null));
+		addAttribute(new BooleanAttribute(VERTICALLY_FLIPPED, false, false));
 	}
 
 	@Override
@@ -44,45 +40,18 @@ public class ConeObject extends MathObject {
 	}
 	
 	@Override
-	public void performSpecialObjectAction(String s){
-		if (s.equals(PolygonObject.FLIP_VERTICALLY)){
-			try {
-				setAttributeValue(PolygonObject.FLIP_VERTICALLY, ! isFlippedVertically());
-			} catch (AttributeException e) {
-				// should not happen, just setting boolean
-				System.out.println("error in CylinderGUI.performSpecialObjectAction");
-			}
-		}
-	}
-	
-	@Override
-	public ConeObject clone() {
-		ConeObject o = new ConeObject(getParentContainer());
-		o.removeAllAttributes();
-		for ( MathObjectAttribute mAtt : getAttributes()){
-			o.addAttribute( mAtt.clone());
-		}
-		o.removeAllLists();
-		for ( ListAttribute list : getLists()){
-			o.addList(list.clone());
-		}
-		return o;
-	}
-	
-	public boolean isFlippedVertically(){
-		return ((BooleanAttribute)getAttributeWithName(PolygonObject.FLIP_VERTICALLY)).getValue();
-	}
+	public void performSpecialObjectAction(String s){}
 
 	public GridPoint[] getTrianglePts() {
 		return trianglePts;
 	}
 	
 	public int getThickness(){
-		return ((IntegerAttribute)getAttributeWithName(PolygonObject.LINE_THICKNESS)).getValue();
+		return ((IntegerAttribute)getAttributeWithName(LINE_THICKNESS)).getValue();
 	}
 	
 	public Color getColor(){
-		return ((ColorAttribute)getAttributeWithName(PolygonObject.FILL_COLOR)).getValue();
+		return ((ColorAttribute)getAttributeWithName(FILL_COLOR)).getValue();
 	}
 
 	public void setInsideEdgeOfDisk(GridPoint insideEdgeOfDisk) {
@@ -107,6 +76,11 @@ public class ConeObject extends MathObject {
 
 	public double getHalfDiskHeight() {
 		return heightHalfDisk;
+	}
+
+	@Override
+	public MathObject newInstance() {
+		return new ConeObject();
 	}
 
 }

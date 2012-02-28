@@ -167,7 +167,6 @@ public class OpenNotebook extends JFrame{
 	}
 
 	private static boolean inStudentMode() {
-		// TODO Auto-generated method stub
 		return inStudentMode;
 	}
 

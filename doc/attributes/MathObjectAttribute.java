@@ -107,7 +107,7 @@ public abstract class MathObjectAttribute<K> {
 	}
 
 	public String exportToXML(){
-		return "<" + getType() + " " + NAME + "=\"" + getName()
+		return "\t<" + getType() + " " + NAME + "=\"" + getName()
 				+ "\" " + VALUE + "=\"" + formatFoXML(getValue().toString()) + "\"/>\n";
 	}
 

@@ -36,20 +36,6 @@ public class RegularPolygonObject extends PolygonObject {
 	public int getNumSides(){
 		return ((IntegerAttribute)getAttributeWithName(NUM_SIDES)).getValue();
 	}
-	
-	@Override
-	public RegularPolygonObject clone() {
-		RegularPolygonObject o = new RegularPolygonObject(getParentContainer());
-		o.removeAllAttributes();
-		for ( MathObjectAttribute mAtt : getAttributes()){
-			o.addAttribute( mAtt.clone());
-		}
-		o.removeAllLists();
-		for ( ListAttribute list : getLists()){
-			o.addList(list.clone());
-		}
-		return o;
-	}
 
 	@Override
 	public void addDefaultAttributes() {
@@ -66,6 +52,11 @@ public class RegularPolygonObject extends PolygonObject {
 	public GridPoint[] getVertices() {
 		// TODO Auto-generated method stub
 		return generateVertices();
+	}
+
+	@Override
+	public MathObject newInstance() {
+		return new RegularPolygonObject();
 	}
 
 }

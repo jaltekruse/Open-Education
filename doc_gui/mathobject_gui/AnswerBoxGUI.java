@@ -27,7 +27,7 @@ public class AnswerBoxGUI extends MathObjectGUI<AnswerBoxObject> {
 		int width = (int) (object.getWidth() * zoomLevel);
 		int height = (int) (object.getHeight() * zoomLevel);
 		
-		if ( ! object.getText().equals("")){
+		if ( ! object.getStudentAnswer().equals("")){
 			Font f = g.getFont();
 			
 			g.setColor(new Color(180, 255, 100));
@@ -35,7 +35,7 @@ public class AnswerBoxGUI extends MathObjectGUI<AnswerBoxObject> {
 	
 			float fontSize = object.getFontSize() * zoomLevel;
 			
-		    String message = object.getText();
+		    String message = object.getStudentAnswer();
 			g.setFont(f.deriveFont(fontSize));
 			
 			g.setColor(Color.BLACK);

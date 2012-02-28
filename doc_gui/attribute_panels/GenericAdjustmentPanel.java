@@ -54,12 +54,12 @@ public class GenericAdjustmentPanel extends AdjustmentPanel{
 		con.weightx = .1;
 		con.gridx = 0;
 		con.gridy = 0;
-		con.insets = new Insets(0, 10, 0, 0);
+		con.insets = new Insets(0, 5, 0, 5);
 		add(new JLabel(mAtt.getName()), con);
 		field = new JTextField();
 		con.weightx = 1;
 		con.gridx = 1;
-		con.insets = new Insets(0, 10, 0, 5);
+		con.insets = new Insets(0, 0, 0, 0);
 		add(field, con);
 		if ( mAtt.getValue() instanceof Double){
 			int len = mAtt.getValue().toString().length();
@@ -89,7 +89,7 @@ public class GenericAdjustmentPanel extends AdjustmentPanel{
 					else{
 						mAtt.setValueWithString(field.getText());
 					}
-					docPanel.repaintDoc();
+					docPanel.repaint();
 					docPanel.updateObjectToolFrame();
 				} catch (AttributeException e) {
 					if (!showingDialog){
@@ -134,7 +134,7 @@ public class GenericAdjustmentPanel extends AdjustmentPanel{
 			else{
 				field.setText(mAtt.getValue().toString());
 			}
-			docPanel.repaintDoc();
+			docPanel.repaint();
 		} catch (AttributeException e) {
 			if (!showingDialog){
 				JOptionPane.showMessageDialog(null,

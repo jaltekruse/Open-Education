@@ -50,19 +50,9 @@ public class NumberLineObject extends MathObject {
 		// TODO Auto-generated method stub
 		return NUMBER_LINE;
 	}
-	
-	@Override
-	public NumberLineObject clone() {
-		NumberLineObject o = new NumberLineObject(getParentContainer());
-		o.removeAllAttributes();
-		for ( MathObjectAttribute mAtt : getAttributes()){
-			o.addAttribute( mAtt.clone());
-		}
-		o.removeAllLists();
-		for ( ListAttribute list : getLists()){
-			o.addList(list.clone());
-		}
-		return o;
-	}
 
+	@Override
+	public MathObject newInstance() {
+		return new NumberLineObject();
+	}
 }
