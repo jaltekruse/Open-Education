@@ -11,6 +11,8 @@ public class ObjectToolBar extends JToolBar {
 
 	public ObjectToolBar(NotebookPanel p) {
 		notebookPanel = p;
+		this.setFloatable(false);
+		
 		OCButton objButton;
 		ImageIcon objIcon;
 

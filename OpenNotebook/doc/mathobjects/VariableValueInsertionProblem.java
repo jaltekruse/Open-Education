@@ -171,6 +171,7 @@ public class VariableValueInsertionProblem extends ProblemGenerator {
 		String exString, textString = null;
 		Node expression;
 		
+		System.out.println(newObj);
 		if (newObj instanceof Grouping){
 			Grouping newGroup = (Grouping) newObj.clone();
 			newGroup.removeAllObjects();
@@ -208,50 +209,68 @@ public class VariableValueInsertionProblem extends ProblemGenerator {
 			}
 		}
 		else if ( newObj instanceof TextObject){
-			textString = ((TextObject) newObj).getText();
-			try {
-				for (int j = 0; j < textString.length(); j++)
-				{// loop through all characters in text
-					if ( s.equals(textString.charAt(j) + "" ) )
-					{// if the variable char was found
-						if ( (j == 0 || ! Character.isLetter(textString.charAt(j - 1)) ) && 
-								( j == textString.length() - 1 ||
-								! Character.isLetter(textString.charAt(j + 1)) ) )
-						{// if the character is surrounded by non-alphabetic chars
-							if ( j != 0 && j != textString.length())
-							{// if the char is not at the end or beginning
-								textString = textString.substring(0, j) 
-										+ val.toStringRepresentation() + 
-										textString.substring(j+1);
+			textString = replaceInString(((TextObject) newObj).getText() , val);
+			try{
+				((TextObject) newObj).setText(textString);
+			} catch( AttributeException e){
+				e.printStackTrace();
+			}
+
+		}
+		else if ( newObj instanceof AnswerBoxObject ){
+			System.out.println("is answer box");
+			textString = replaceInString(((AnswerBoxObject) newObj).getCorrectAnswer() , val);
+			try{
+				System.out.println(textString);
+				((AnswerBoxObject) newObj).setCorrectAnswer(textString);
+			} catch( AttributeException e){
+				e.printStackTrace();
+			}
+		}
+		return newObj;
+	}
+	
+	public String replaceInString(String s, Node val){
+		String textString = s;
+		try {
+			for (int j = 0; j < textString.length(); j++)
+			{// loop through all characters in text
+				if ( s.equals(textString.charAt(j) + "" ) )
+				{// if the variable char was found
+					if ( (j == 0 || ! Character.isLetter(textString.charAt(j - 1)) ) && 
+							( j == textString.length() - 1 ||
+							! Character.isLetter(textString.charAt(j + 1)) ) )
+					{// if the character is surrounded by non-alphabetic chars
+						if ( j != 0 && j != textString.length())
+						{// if the char is not at the end or beginning
+							textString = textString.substring(0, j) 
+									+ val.toStringRepresentation() + 
+									textString.substring(j+1);
+						}
+						else{
+							if ( j == 0){
+								if (textString.length() > 1)
+									textString = val.toStringRepresentation() 
+									+ textString.substring(j + 1);
+								else
+									textString = val.toStringRepresentation();
 							}
-							else{
-								if ( j == 0){
-									if (textString.length() > 1)
-										textString = val.toStringRepresentation() 
-										+ textString.substring(j + 1);
-									else
-										textString = val.toStringRepresentation();
-								}
-								else if ( j == textString.length()){
-									if (textString.length() > 1)
-										textString = textString.substring(0, j - 1) +  
-										val.toStringRepresentation();
-									else
-										textString = val.toStringRepresentation();
-								}
+							else if ( j == textString.length()){
+								if (textString.length() > 1)
+									textString = textString.substring(0, j - 1) +  
+									val.toStringRepresentation();
+								else
+									textString = val.toStringRepresentation();
 							}
 						}
 					}
 				}
-				((TextObject) newObj).setText(textString);
-			} catch (AttributeException e) {
-				// should not be thrown, as a text object can have any string as its child
-				System.out.println("error that should not happen in ProblemObject");
-			} catch (NodeException e) {
-				System.out.println("node error that should not happen in ProblemObject");
 			}
+		} catch (NodeException e) {
+			// should not be throw an error
+			e.printStackTrace();
 		}
-		return newObj;
+		return textString;
 	}
 
 	public GeneratedProblem generateProblem(int difficulty){

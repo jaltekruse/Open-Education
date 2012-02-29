@@ -12,6 +12,7 @@ public class FileActionsToolBar extends JToolBar {
 	private NotebookPanel notebookPanel;
 
 	public FileActionsToolBar(NotebookPanel p){
+		this.setFloatable(false);
 		notebookPanel = p;
 
 		Icon saveIcon = notebookPanel.getIcon("img/save.png");

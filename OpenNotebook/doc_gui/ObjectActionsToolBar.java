@@ -10,6 +10,7 @@ public class ObjectActionsToolBar extends JToolBar{
 	
 	public ObjectActionsToolBar(NotebookPanel p){
 		notebookPanel = p;
+		this.setFloatable(false);
 		
 		if ( ! notebookPanel.isInStudentMode()){
 			ImageIcon deleteIcon = notebookPanel.getIcon("img/delete.png");

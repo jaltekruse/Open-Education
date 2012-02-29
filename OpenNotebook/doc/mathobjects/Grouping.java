@@ -189,6 +189,26 @@ public class Grouping extends MathObject implements MathObjectContainer{
 		}
 		return o;
 	}
+	
+	public MathObject getObjectWithAnswer(){
+		// this creation method allows for subclasses of grouping to use this clone method
+		Grouping o = (Grouping) newInstanceWithType(getType());
+		o.setParentContainer(getParentContainer());
+		o.removeAllAttributes();
+		for ( MathObjectAttribute mAtt : getAttributes()){
+			o.addAttribute( mAtt.clone());
+		}
+		o.removeAllLists();
+		for ( ListAttribute list : getLists()){
+			o.addList(list.clone());
+		}
+		for ( MathObject mObj : getObjects()){
+			mObj.setParentContainer(null);
+			o.addObjectFromPage(mObj.getObjectWithAnswer());
+			mObj.setParentContainer(this);
+		}
+		return o;
+	}
 
 	@Override
 	public String getType() {
