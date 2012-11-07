@@ -1,0 +1,45 @@
+<?php
+class User extends CI_Controller{
+
+        public function __construct(){
+               	parent::__construct();
+		$this->load->library('session');
+		$this->load->model('user_model');
+        }
+	
+	public function index(){
+		$data['title'] =  'Classes';
+				
+		$this->load->view('templates/header', $data);
+		$user_id = $this->session->userdata('user_id');
+		$data['user_id'] = $user_id;
+		if( $user_id == FALSE){
+			$this->load->view('news/create');	
+		}
+		else{
+			$this->load->view('pages/classes', $data);
+		}
+		$this->load->view('templates/footer', $data);
+	}
+	
+	public function create(){
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+
+		$data['title'] = 'Add User/Sign In';
+		$data['heading'] = $data['title'];
+		$this->form_validation->set_rules('email','E-mail','required|max_length[60]|is_unique[user_profiles.email]|valid_email');
+		//$this->form_validation->set_rules('first_name','First Name','required|min_length[1]|max_length[40]');
+		//$this->form_validation->set_rules('last_name','Last Name','required');
+		
+		if ($this->form_validation->run() === FALSE ){
+			$this->load->view('templates/header', $data);
+			$this->load->view('user/create');
+			$this->load->view('templates/footer');
+		}
+		else{
+			$this->user_model->add_user();
+		}
+	}	
+}
+?>

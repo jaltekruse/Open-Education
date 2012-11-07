@@ -1,0 +1,37 @@
+<?php
+if (sizeof($docs) == 0){ ?>
+	<h2>You have not added any documents yet.</h2>
+<?php
+} 
+else{?>
+<p>
+<table cellpadding="0" cellspacing="0" width="100%" class="sortable">
+    <thead>
+      <tr>
+	<th>Doc Name</th>
+	<th>Size(Mb)</th>
+	<th>Doc Type</th>
+	<th>Material Type</th>
+	<th>Upload Date</th>
+	<th colspan="2">Actions</td>
+      </tr>
+    </thead>
+<?php foreach($docs as $doc):?>
+	<tr>
+		<td><a href="/index.php/user/view_doc/<?php echo $doc['doc_id']?>">
+			 <?php echo isset( $doc['docname'] ) ? $doc['docname'] : "N/A";?>
+			</a></br>
+			<p style="font-size:12px">Tags: algebra, stuff, another tag, I'm not going to be very creative with this</p>
+		</td>
+		<td> <?php echo isset($doc['size'] ) ?  number_format(($doc['size'] / 1024), 2) : "N/A"; ?></td>
+		<td> <?php echo isset($doc['doc_type'] ) ? $doc['doc_type'] : "N/A"; ?></td>
+		<td> <?php echo isset($doc['material_type'] ) ? $doc['material_type'] : "N/A"; ?></td>
+		<td> <?php echo isset($doc['upload_date'] ) ? $doc['upload_date'] : "N/A"; ?></td>
+		<td> <a href="/index.php/user/view_docs/<?php echo $doc['doc_id']?>">Download</a></td>
+		<td> <a href="/index.php/user/delete_doc/<?php echo $doc['doc_id']?>">Delete</a></td>
+	</tr>
+<?php endforeach ?>
+</table>
+</p>
+<?php } ?>
+<h2><a href="/index.php/user/upload_doc">Upload Doc</a></h2>

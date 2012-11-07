@@ -1,0 +1,65 @@
+<?php
+$userfile = array(
+	'name'	=> 'userfile',
+	'id'	=> 'userfile',
+	'value' => set_value('userfile'),
+	'maxlength'	=> 50,
+	'minlength' => 1,
+	'size'	=> 20,
+);
+$userfile_label = "File:";
+$doc_tags = array(
+	'name'	=> 'doc_tags',
+	'id'	=> 'doc_tags',
+	'value' => set_value('doc_tags'),
+	'rows'	=> 3,
+	'cols'	=> 15,
+	'size'	=> 20,
+);
+$doc_tags_label = 'Tags (separate with spaces):';
+$material_types = array(
+	'test' => 'Test',
+	'worksheet' => 'Worksheet',
+	'quiz'		=> 'Quiz',
+	'lesson_plan' => 'Lesson Plan',
+	'activity'	=> 'Activity',
+	'article'	=> 'Article',
+	'diagram'	=> 'Diagram',
+	'other'		=>	'Other'
+);
+$material_type_label = 'Material Type';
+?>
+<?php echo form_open_multipart('user/upload_doc');?>
+<table>
+	<tr>
+		<td><?php echo form_label($userfile_label, $userfile['id']); ?></td>
+		<td>
+		<!--<p class="fileupload">-->
+		<input type="file" name="userfile" value="" maxlength="50" minlength="1" size="20"  /> 
+		<!--</p>-->
+		</td>
+		<td style="color: red;"><p><?php echo form_error($userfile['name']); ?><?php echo isset($errors[$userfile['name']])?$errors[$userfile['name']]:''; ?> </p>
+		</td>
+	</tr>
+	<tr>
+		<td><?php echo form_label($doc_tags_label, $doc_tags['id']); ?></td>
+		<td><?php echo form_textarea($doc_tags); ?></td>
+		<td style="color: red;"><p><?php echo form_error($doc_tags['name']); ?><?php echo isset($errors[$doc_tags['name']])?$errors[$doc_tags['name']]:''; ?> </p>
+		</td>
+	</tr>
+	<tr>
+		<td><?php echo form_label($material_type_label, $doc_tags['id']); ?></td>
+		<td><?php echo form_dropdown('material_type', $material_types, 'worksheet'); ?></td>
+		<td style="color: red;"><?php echo form_error('material_type'); ?><?php echo isset($errors['material_type'])?$errors['material_type']:''; ?>
+		</td>
+	</tr>
+	<tr>
+		<td><label for="public">Public</label></td>
+		<td><input type="checkbox" value="1" name="public"></td>
+		<td style="color: red;"> <?php echo form_error('public'); ?><?php echo isset($errors['public'])?$errors['public']:''; ?>
+		</td>
+	</tr>
+</table>
+
+<input type="submit" name="submit" class="submit mid" value="Upload Doc" />
+<?php echo form_close(); ?>

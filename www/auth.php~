@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>Open Math</title>
+	
+    <style type="text/css" media="all">
+		@import url("../css/style.css");
+		@import url("../css/jquery.wysiwyg.css");
+		@import url("../css/facebox.css");
+		@import url("../css/visualize.css");
+		@import url("../css/date_input.css");
+    </style>
+<script language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script language="javascript" src="../scripts/bezier.js"></script>
+</head>
+<body>
+<div class="wrapper">
+<!--OpenMath header-->
+<?php include("common/header.php"); ?>
+<div class="block small left">
+  <div class="block_head">
+    <div class="bheadl"></div>
+    <div class="bheadr"></div>
+    <h2>Authentication</h2>
+  </div>
+  <div class="block_content">
+			<p>
+			<?php 
+			$password = $_POST['password'];
+			$email = $_POST['email'];
+
+			$db->select_db('openmath');
+			if ( ! $password || ! $email){
+					echo 'You did not enter all of the required information.';
+					exit();
+			}
+			if (!get_magic_quotes_gpc()){
+				$email = addslashes($email);
+				$password = addslashes($password);
+				$password = md5("S3D%@fg^35Fr%7^2qWS43@dER4skqwy!3Dkxhy235ue5836".$password);
+			}
+
+				// check to see if an existing account is using the email provided
+				$query = "SELECT * FROM users WHERE email = ('".$email."')";
+				$result = $db->query($query);
+				if ($result->num_rows > 0){
+					echo 'You entered an E-mail that is stored in our system.</br>';
+					$row = $result->fetch_assoc();
+					if ( $row['pass'] == $password){
+								echo 'login success!';
+					}
+					else{
+						echo 'Password was not correct.';
+					}
+				}
+				else{
+					echo 'E-mail was not found in our records.';
+				}
+				//$result->free();
+				$db->close();
+
+			?>
+  </div>
+  <div class="bendl"></div>
+  <div class="bendr"></div>
+</div>
+
+</div>
+</body>
+</html>

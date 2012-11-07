@@ -1,0 +1,16 @@
+Are you sure you want to remove <?php echo $student_name ?>?
+<table>
+<tr>
+<td>
+<form method="post" action="/index.php/user/remove_student/<?php echo $student_id ?>">
+	<input type="hidden" name="remove_student" value="1">
+	<input type="submit" name="submit" class="submit long" value="Yes, Remove Student">
+</form>
+</td>
+<td>
+<form method="get" action="/index.php/user/view_class">
+	<input type="submit" name="submit" class="submit mid" value="Cancel">
+</form>
+</td>
+</tr>
+</table>

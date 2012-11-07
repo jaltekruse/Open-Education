@@ -1,0 +1,124 @@
+mysql> select * from vigilant_behaviors;
++-------------+---------------+---------------------+-----------------------------------------------+--------------------------------------+
+| behavior_id | behavior_code | date_added          | behavior                                      | p_behavior                           |
++-------------+---------------+---------------------+-----------------------------------------------+--------------------------------------+
+|          74 | N             | 1900-00-00 00:00:00 | not vigilante                                 | NÃO VIGILANTE                        |
+|          75 | OA            | 1900-00-00 00:00:00 | look up at observer                           | OBSERVADOR – ALTO                    |
+|          76 | OH            | 1900-00-00 00:00:00 | look horizontal at observer                   | OBSERVADOR – HORIZONTE               |
+|          77 | OB            | 1900-00-00 00:00:00 | look down at observer                         | OBSERVADOR – BAIXO                   |
+|          78 | MA            | 1900-00-00 00:00:00 | look up at another muriqui                    | MURIQUI – ALTO                       |
+|          79 | MH            | 1900-00-00 00:00:00 | look horizontal at another muriqui            | MURIQUI – HORIZONTE                  |
+|          80 | MB            | 1900-00-00 00:00:00 | look down at another muriqui                  | MURIQUI – BAIXO                      |
+|          81 | 10A           | 1900-00-00 00:00:00 | look at something else, upward within 10m     | OUTRO –  ATÉ 10m – ALTO              |
+|          82 | 10H           | 1900-00-00 00:00:00 | look at something else, horizontal within 10m | OUTRO –  ATÉ 10m – HORIZONTE         |
+|          83 | 10B           | 1900-00-00 00:00:00 | look at something else, downward within 10m   | OUTRO –  ATÉ 10m – BAIXO             |
+|          84 | >10A          | 1900-00-00 00:00:00 | look at something else, upward beyond 10m     | OUTRO –  MAIS DE 10m – ALTO          |
+|          85 | >10H          | 1900-00-00 00:00:00 | look at something else, horizontal beyond 10m | OUTRO –  MAIS DE 10m – HORIZONTE     |
+|          86 | >10B          | 1900-00-00 00:00:00 | look at something else, downward beyond 10m   | OUTRO –  MAIS DE 10m – BAIXO         |
+|          87 | ID            | 1900-00-00 00:00:00 | undetermined                                  | INDETERMINADO                        |
++-------------+---------------+---------------------+-----------------------------------------------+--------------------------------------+
+14 rows in set (0.00 sec)
+
+mysql> select * from habitats;
++------------+--------------+---------------------+---------+-----------+
+| habitat_id | habitat_code | date_added          | habitat | p_habitat |
++------------+--------------+---------------------+---------+-----------+
+|          1 | A            | 1900-00-00 00:00:00 | open    | ABERTO    |
+|          2 | F            | 1900-00-00 00:00:00 | closed  | FECHADO   |
++------------+--------------+---------------------+---------+-----------+
+2 rows in set (0.00 sec)
+
+mysql> select * from relative_heights;
++--------------------+----------------------+---------------------+---------------------+-------------------+
+| relative_height_id | relative_height_code | date_added          | relative_height     | p_relative_height |
++--------------------+----------------------+---------------------+---------------------+-------------------+
+|                  1 | C                    | 1900-00-00 00:00:00 | ground              | CHÃO              |
+|                  2 | OC                   | 1900-00-00 00:00:00 | ground with support | CHÃO COM SUPORTE  |
+|                  3 | BC                   | 1900-00-00 00:00:00 | below the canopy    | ABAIXO DA COPA    |
+|                  4 | SC                   | 1900-00-00 00:00:00 | lower canopy        | SUBCOPA           |
+|                  5 | CM                   | 1900-00-00 00:00:00 | main canopy         | COPA MÉDIA        |
+|                  6 | CA                   | 1900-00-00 00:00:00 | upper canopy        | COPA ALTA         |
+|                  7 | CE                   | 1900-00-00 00:00:00 | emergent tree       | COPA EMERGENTE    |
++--------------------+----------------------+---------------------+---------------------+-------------------+
+7 rows in set (0.00 sec)
+
+mysql> select * from actual_heights;
++------------------+--------------------+---------------------+---------------+-----------------+
+| actual_height_id | actual_height_code | date_added          | actual_height | p_actual_height |
++------------------+--------------------+---------------------+---------------+-----------------+
+|                1 | 0                  | 1900-00-00 00:00:00 | 0 m           | 0 m             |
+|                2 | 1                  | 1900-00-00 00:00:00 | 1 – 2m        | 1 – 2m          |
+|                3 | 2                  | 1900-00-00 00:00:00 | 2 – 5m        | 2 – 5m          |
+|                4 | 3                  | 1900-00-00 00:00:00 | 5 – 10m       | 5 – 10m         |
+|                5 | 4                  | 1900-00-00 00:00:00 | 10 – 15m      | 10 – 15m        |
+|                6 | 5                  | 1900-00-00 00:00:00 | 15 – 20m      | 15 – 20m        |
+|                7 | 6                  | 1900-00-00 00:00:00 | >20m          | >20m            |
++------------------+--------------------+---------------------+---------------+-----------------+
+7 rows in set (0.00 sec)
+
+mysql> select * from distances_from_neighbor;
++---------------------------+-----------------------------+---------------------+------------------------+--------------------------+
+| distance_from_neighbor_id | distance_from_neighbor_code | date_added          | distance_from_neighbor | p_distance_from_neighbor |
++---------------------------+-----------------------------+---------------------+------------------------+--------------------------+
+|                         1 | R0                          | 1900-00-00 00:00:00 | contact                | CONTATO                  |
+|                         2 | R1                          | 1900-00-00 00:00:00 | <1m                    | <1m                      |
+|                         3 | R5                          | 1900-00-00 00:00:00 | 2 – 5m                 | 2 – 5m                   |
+|                         4 | R>5                         | 1900-00-00 00:00:00 | >5m                    | >5m                      |
++---------------------------+-----------------------------+---------------------+------------------------+--------------------------+
+4 rows in set (0.00 sec)
+
+
+mysql> select * from activities;
++-------------+---------------+---------------------+-----------------------------------------+-----------------------------------------------------+
+| activity_id | activity_code | date_added          | activity                                | p_activity                                          |
++-------------+---------------+---------------------+-----------------------------------------+-----------------------------------------------------+
+|          43 | AI            | 1900-00-00 00:00:00 | eating, item undetermined               | ALIMENTANDO – INDETERMINADO                         |
+|          44 | AO            | 1900-00-00 00:00:00 | eating, item other than those monitored | ALIMENTANDO – OUTRO                                 |
+|          45 | AFRI          | 1900-00-00 00:00:00 | eating, fruit, maturity undetermined    | ALIMENTANDO – FRUTO – INDETERMINADO                 |
+|          46 | AFRN          | 1900-00-00 00:00:00 | eating, immature fruit                  | ALIMENTANDO – FRUTO – NOVO                          |
+|          47 | AFRM          | 1900-00-00 00:00:00 | eating, mature fruit                    | ALIMENTANDO – FRUTO - MADURO                        |
+|          48 | AFOI          | 1900-00-00 00:00:00 | eating, leaf, maturity undetermined     | ALIMENTANDO – FOLHA – INDETERMINADA                 |
+|          49 | AFON          | 1900-00-00 00:00:00 | eating, new leaf                        | ALIMENTANDO – FOLHA – NOVA                          |
+|          50 | AFOM          | 1900-00-00 00:00:00 | eating, mature leaf                     | ALIMENTANDO – FOLHA – MADURA                        |
+|          51 | AFL           | 1900-00-00 00:00:00 | eating, flowers                         | ALIMENTANDO – FLORES                                |
+|          52 | ANE           | 1900-00-00 00:00:00 | eating, néctar                          | ALIMENTANDO – NÉCTAR                                |
+|          53 | ASE           | 1900-00-00 00:00:00 | eating, seeds                           | ALIMENTANDO – SEMENTES                              |
+|          54 | ACA           | 1900-00-00 00:00:00 | eating, bark                            | ALIMENTANDO – CASCA                                 |
+|          55 | ACAU          | 1900-00-00 00:00:00 | eating, stalk                           | ALIMENTANDO – CAULE                                 |
+|          56 | ATE           | 1900-00-00 00:00:00 | eating, soil                            | ALIMENTANDO – TERRA                                 |
+|          57 | LI            | 1900-00-00 00:00:00 | travel, undetermined type               | LOCOMOVENDO – INDETERMINADO                         |
+|          58 | LSUS          | 1900-00-00 00:00:00 | travel, suspensory                      | LOCOMOVENDO - SUSPENSO                              |
+|          59 | LSUB          | 1900-00-00 00:00:00 | travel, climbing up                     | LOCOMOVENDO – SUBINDO                               |
+|          60 | LDES          | 1900-00-00 00:00:00 | travel, climbing down                   | LOCOMOVENDO – DESCENDO                              |
+|          61 | LQUA          | 1900-00-00 00:00:00 | travel, quadrupedal                     | LOCOMOVENDO – QUADRÚPEDE                            |
+|          62 | LBI           | 1900-00-00 00:00:00 | travel, bipedal                         | LOCOMOVENDO – BÍPEDE                                |
+|          63 | LSAL          | 1900-00-00 00:00:00 | travel, jumping                         | LOCOMOVENDO – SALTANDO                              |
+|          64 | D             | 1900-00-00 00:00:00 | resting                                 | DESCANSANDO                                         |
+|          65 | B             | 1900-00-00 00:00:00 | drinking water                          | BEBENDO                                             |
+|          66 | SOI           | 1900-00-00 00:00:00 | socializing, undetermined               | SOCIALIZANDO – INDETERMINADO                        |
+|          67 | SOB           | 1900-00-00 00:00:00 | socializing, playing                    | SOCIALIZANDO – BRINCANDO                            |
+|          68 | SOA           | 1900-00-00 00:00:00 | socializing, hugging                    | SOCIALIZANDO – ABRAÇANDO                            |
+|          69 | SOT           | 1900-00-00 00:00:00 | socializing, touching                   | SOCIALIZANDO – TOCANDO                              |
+|          70 | SOAGD         | 1900-00-00 00:00:00 | socializing, agonistic traveling        | SOCIALIZANDO – AGONÍSTICO – DESLOCANDO              |
+|          71 | SOAGP         | 1900-00-00 00:00:00 | socializing, agonistic chasing          | SOCIALIZANDO – AGONÍSTICO – PERSEGUINDO             |
+|          72 | SOAGB         | 1900-00-00 00:00:00 | socializing, agonistic fighting         | SOCIALIZANDO – AGONÍSTICO – BELISCANDO              |
+|          73 | SOAGV         | 1900-00-00 00:00:00 | socializing, agonistic vocalizing       | SOCIALIZANDO – AGONÍSTICO – VOCALIZANDO             |
+|          74 | SOAGO         | 1900-00-00 00:00:00 | socializing, agonistic, other type      | SOCIALIZANDO – AGONÍSTICO – OUTRO                   |
+|          75 | SOAGI         | 1900-00-00 00:00:00 | socializing, agonistic, undetermined    | SOCIALIZANDO – AGONÍSTICO – INDETERMINADO           |
+|          76 | SEI           | 1900-00-00 00:00:00 | sexual, undetermined                    | COMPORTAMENTO SEXUAL – INDETERMINADO                |
+|          77 | SEIS          | 1900-00-00 00:00:00 | sexual, inspection, smelling            | COMPORTAMENTO SEXUAL – INSPEÇÃO – CHEIRAR           |
+|          78 | SEIT          | 1900-00-00 00:00:00 | sexual, inspection, tasting             | COMPORTAMENTO SEXUAL – INSPEÇÃO – PROVAR            |
+|          79 | SEIL          | 1900-00-00 00:00:00 | sexual, inspection, licking             | COMPORTAMENTO SEXUAL – INSPEÇÃO – LAMBER            |
+|          80 | SEIFS         | 1900-00-00 00:00:00 | sexual, inspection, smelling fingers    | COMPORTAMENTO SEXUAL – INSPEÇÃO – CHEIRAR OS        |
+|          81 | SEITG         | 1900-00-00 00:00:00 | sexual, inspection, pull and lick hand  | COMPORTAMENTO SEXUAL – INSPEÇÃO – PUXAR E LAM       |
+|          82 | SEC           | 1900-00-00 00:00:00 | sexual, copulation                      | COMPORTAMENTO SEXUAL – CÓPULA                       |
+|          83 | SET           | 1900-00-00 00:00:00 | sexual, copulation attempt              | COMPORTAMENTO SEXUAL – TENTATIVA DE CÓPULA          |
+|          84 | SEO           | 1900-00-00 00:00:00 | sexual, other                           | COMPORTAMENTO SEXUAL – OUTRO                        |
+|         172 | BS            | 2011-04-00 00:00:00 | playing alone                           | BRINCADEIRA SOLITÁRIA                               |
+|         173 | AMA           | 2011-04-00 00:00:00 | nursing                                 | AMAMENTANDO                                         |
+|         174 | SOV           | 2011-04-00 00:00:00 | socializing, vocalizing                 | SOCIALIZANDO – VOCALIZANDO                          |
+|         175 | MAM           | 2011-04-00 00:00:00 | suckling                                | MAMANDO                                             |
++-------------+---------------+---------------------+-----------------------------------------+-----------------------------------------------------+
+46 rows in set (0.00 sec)
+
+

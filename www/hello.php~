@@ -1,0 +1,14 @@
+<html>
+<title>Jason's web page</title>
+<body>
+<h1>Time to get serious about learning web development</h1>
+<?php echo "hello there from php" ?>
+<p> this is an HTML paragraph, below is a form </p>
+<form action="processorder.php" method="post">
+Books <input type="text" name="bookqty" size="3" maxlength="3"></br>
+CDs <input type="text" name="cdqty" size="3" maxlength="3"></br>
+DVDs <input type="text" name="dvdqty" size="3" maxlength="3"></br>
+<input type="submit" value="Submit Order">
+</form>
+</body>
+</html>

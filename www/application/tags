@@ -1,0 +1,1209 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ACTIVITY	models/user_model.php	/^		define('ACTIVITY', 5);$/;"	d
+ADMIN	models/user_model.php	/^		define('ADMIN', 3);$/;"	d
+APPEND	libraries/java.php	/^function APPEND($c) {$/;"	f
+ARTICLE	models/user_model.php	/^		define('ARTICLE', 6);$/;"	d
+Auth	controllers/auth.php	/^class Auth extends CI_Controller$/;"	c
+BEGIN	libraries/java.php	/^public $BEGIN=0,$KEY=1,$VAL=2,$ENTITY=3,$VOJD=5,$END=6;$/;"	v
+CALL_BEGIN	libraries/java.php	/^function CALL_BEGIN() {$/;"	f
+CALL_END	libraries/java.php	/^function CALL_END() {$/;"	f
+CC	libraries/phpass-0.1/c/Makefile	/^CC = gcc$/;"	m
+CFLAGS	libraries/phpass-0.1/c/Makefile	/^CFLAGS = -Wall -O2 -fomit-frame-pointer -funroll-loops$/;"	m
+CheckPassword	libraries/phpass-0.1/PasswordHash.php	/^	function CheckPassword($password, $stored_hash)$/;"	f
+DIAGRAM	models/user_model.php	/^		define('DIAGRAM', 7);$/;"	d
+DIR_READ_MODE	config/constants.php	/^define('DIR_READ_MODE', 0755);$/;"	d
+DIR_WRITE_MODE	config/constants.php	/^define('DIR_WRITE_MODE', 0777);$/;"	d
+FILE_READ_MODE	config/constants.php	/^define('FILE_READ_MODE', 0644);$/;"	d
+FILE_WRITE_MODE	config/constants.php	/^define('FILE_WRITE_MODE', 0666);$/;"	d
+FOPEN_READ	config/constants.php	/^define('FOPEN_READ',							'rb');$/;"	d
+FOPEN_READ_WRITE	config/constants.php	/^define('FOPEN_READ_WRITE',						'r+b');$/;"	d
+FOPEN_READ_WRITE_CREATE	config/constants.php	/^define('FOPEN_READ_WRITE_CREATE',				'a+b');$/;"	d
+FOPEN_READ_WRITE_CREATE_DESTRUCTIVE	config/constants.php	/^define('FOPEN_READ_WRITE_CREATE_DESTRUCTIVE',	'w+b'); \/\/ truncates existing file data, use with care$/;"	d
+FOPEN_READ_WRITE_CREATE_STRICT	config/constants.php	/^define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');$/;"	d
+FOPEN_WRITE_CREATE	config/constants.php	/^define('FOPEN_WRITE_CREATE',					'ab');$/;"	d
+FOPEN_WRITE_CREATE_DESTRUCTIVE	config/constants.php	/^define('FOPEN_WRITE_CREATE_DESTRUCTIVE',		'wb'); \/\/ truncates existing file data, use with care$/;"	d
+FOPEN_WRITE_CREATE_STRICT	config/constants.php	/^define('FOPEN_WRITE_CREATE_STRICT',				'xb');$/;"	d
+HashPassword	libraries/phpass-0.1/PasswordHash.php	/^	function HashPassword($password)$/;"	f
+JAVA_HOSTS	libraries/java.php	/^define ("JAVA_HOSTS","${scheme}${host}:${port}");$/;"	d
+JAVA_PEAR_VERSION	libraries/java.php	/^define("JAVA_PEAR_VERSION","6.2.1");$/;"	d
+JAVA_RECV_SIZE	libraries/java.php	/^define("JAVA_RECV_SIZE",8192);$/;"	d
+JAVA_SEND_SIZE	libraries/java.php	/^define("JAVA_SEND_SIZE",8192);$/;"	d
+JAVA_SERVLET	libraries/java.php	/^define ("JAVA_SERVLET","$dir\/servlet.phpjavabridge");$/;"	d
+Java	libraries/java.php	/^class Java extends java_AbstractJava {$/;"	c
+Java	libraries/java.php	/^function Java($name) {$/;"	f
+Java	libraries/java.php	/^function Java() {$/;"	f
+JavaClass	libraries/java.php	/^class JavaClass extends java_class{}$/;"	c
+JavaException	libraries/java.php	/^class JavaException extends java_exception {}$/;"	c
+LD	libraries/phpass-0.1/c/Makefile	/^LD = $(CC)$/;"	m
+LDFLAGS	libraries/phpass-0.1/c/Makefile	/^LDFLAGS = -s$/;"	m
+LESSON_PLAN	models/user_model.php	/^		define('LESSON_PLAN', 4);$/;"	d
+LIBS	libraries/phpass-0.1/c/Makefile	/^LIBS = -lcrypto$/;"	m
+Login_attempts	models/tank_auth/login_attempts.php	/^class Login_attempts extends CI_Model$/;"	c
+OTHER	models/user_model.php	/^		define('OTHER', 30);$/;"	d
+PUSH	libraries/java.php	/^function PUSH($t) {$/;"	f
+PasswordHash	libraries/phpass-0.1/PasswordHash.php	/^	function PasswordHash($iteration_count_log2, $portable_hashes)$/;"	f
+PasswordHash	libraries/phpass-0.1/PasswordHash.php	/^class PasswordHash {$/;"	c
+QUIZ	models/user_model.php	/^		define('QUIZ', 3);$/;"	d
+RECAPTCHA_API_SECURE_SERVER	helpers/recaptcha_helper.php	/^define("RECAPTCHA_API_SECURE_SERVER", "https:\/\/www.google.com\/recaptcha\/api");$/;"	d
+RECAPTCHA_API_SERVER	helpers/recaptcha_helper.php	/^define("RECAPTCHA_API_SERVER", "http:\/\/www.google.com\/recaptcha\/api");$/;"	d
+RECAPTCHA_VERIFY_SERVER	helpers/recaptcha_helper.php	/^define("RECAPTCHA_VERIFY_SERVER", "www.google.com");$/;"	d
+RESET	libraries/java.php	/^function RESET() {$/;"	f
+RM	libraries/phpass-0.1/c/Makefile	/^RM = rm -f$/;"	m
+RUNTIME	libraries/java.php	/^$this->RUNTIME=array();$/;"	v
+RUNTIME	libraries/java.php	/^public $RUNTIME;$/;"	v
+ReCaptchaResponse	helpers/recaptcha_helper.php	/^class ReCaptchaResponse {$/;"	c
+SLEN	libraries/java.php	/^public $SLEN=256;$/;"	v
+STATUS_ACTIVATED	libraries/Tank_auth.php	/^define('STATUS_ACTIVATED', '1');$/;"	d
+STATUS_NOT_ACTIVATED	libraries/Tank_auth.php	/^define('STATUS_NOT_ACTIVATED', '0');$/;"	d
+STUDENT	models/user_model.php	/^		define('STUDENT', 2);$/;"	d
+TEACHER	models/user_model.php	/^		define('TEACHER', 1);$/;"	d
+TEST	models/user_model.php	/^		define('TEST', 1);$/;"	d
+Tank_auth	libraries/Tank_auth.php	/^class Tank_auth$/;"	c
+User	controllers/user.php	/^class User extends CI_Controller{$/;"	c
+User_Autologin	models/tank_auth/user_autologin.php	/^class User_Autologin extends CI_Model$/;"	c
+User_model	models/user_model.php	/^class User_model extends CI_Model{$/;"	c
+Users	models/tank_auth/users.php	/^class Users extends CI_Model$/;"	c
+WORKSHEET	models/user_model.php	/^		define('WORKSHEET', 2);$/;"	d
+__call	libraries/java.php	/^function __call($method,$args) {$/;"	f
+__cancelProxyCreationTag	libraries/java.php	/^$this->__cancelProxyCreationTag=++$client->cancelProxyCreationTag;$/;"	v
+__cancelProxyCreationTag	libraries/java.php	/^public $__cancelProxyCreationTag;$/;"	v
+__cast	libraries/java.php	/^function __cast($type) {$/;"	f
+__client	libraries/java.php	/^$this->__client=$client;$/;"	v
+__client	libraries/java.php	/^$this->__client=$proxy->__client;$/;"	v
+__client	libraries/java.php	/^$this->__client=$this->__delegate->__client;$/;"	v
+__client	libraries/java.php	/^$this->__client=__javaproxy_Client_getClient();$/;"	v
+__client	libraries/java.php	/^public $__client;$/;"	v
+__construct	controllers/auth.php	/^	function __construct()$/;"	f
+__construct	controllers/user.php	/^	public function __construct(){$/;"	f
+__construct	libraries/Tank_auth.php	/^	function __construct()$/;"	f
+__construct	libraries/java.php	/^function __construct($ob) {$/;"	f
+__construct	models/tank_auth/login_attempts.php	/^	function __construct()$/;"	f
+__construct	models/tank_auth/user_autologin.php	/^	function __construct()$/;"	f
+__construct	models/tank_auth/users.php	/^	function __construct()$/;"	f
+__construct	models/user_model.php	/^	public function __construct(){$/;"	f
+__createDelegate	libraries/java.php	/^function __createDelegate() {$/;"	f
+__delegate	libraries/java.php	/^$this->__delegate=$proxy;$/;"	v
+__delegate	libraries/java.php	/^public $__delegate;$/;"	v
+__destruct	libraries/java.php	/^function __destruct() {$/;"	f
+__factory	libraries/java.php	/^$this->__factory=$cacheEntry->factory;$/;"	v
+__factory	libraries/java.php	/^public $__factory;$/;"	v
+__get	libraries/java.php	/^function __get($key) {$/;"	f
+__hasDeclaredExceptions	libraries/java.php	/^$this->__hasDeclaredExceptions=$exception;$/;"	v
+__hasDeclaredExceptions	libraries/java.php	/^$this->__hasDeclaredExceptions='T';$/;"	v
+__hasDeclaredExceptions	libraries/java.php	/^public $__hasDeclaredExceptions;$/;"	v
+__java	libraries/java.php	/^$this->__java=$delegate->__java;$/;"	v
+__java	libraries/java.php	/^$this->__java=$java;$/;"	v
+__java	libraries/java.php	/^$this->__java=$proxy->__java;$/;"	v
+__java	libraries/java.php	/^$this->__java=$this->__client->invokeMethod(0,"deserialize",$args);$/;"	v
+__java	libraries/java.php	/^$this->__java=$this->__delegate->__java;$/;"	v
+__java	libraries/java.php	/^$this->__java=++$client->asyncCtx;$/;"	v
+__javaproxy_Client_getClient	libraries/java.php	/^function __javaproxy_Client_getClient() {$/;"	f
+__serialID	libraries/java.php	/^$this->__serialID=$this->__client->invokeMethod(0,"serialize",$args);$/;"	v
+__serialID	libraries/java.php	/^public $__serialID;$/;"	v
+__set	libraries/java.php	/^function __set($key,$val) {$/;"	f
+__signature	libraries/java.php	/^$this->__signature=$cacheEntry->signature;$/;"	v
+__signature	libraries/java.php	/^$this->__signature=$delegate->__signature;$/;"	v
+__signature	libraries/java.php	/^$this->__signature=$proxy->__signature;$/;"	v
+__signature	libraries/java.php	/^$this->__signature=$signature;$/;"	v
+__signature	libraries/java.php	/^public $__signature;$/;"	v
+__sleep	libraries/java.php	/^function __sleep() {$/;"	f
+__tempGlobalRef	libraries/java.php	/^$this->__tempGlobalRef=$this->__client->globalRef;$/;"	v
+__tempGlobalRef	libraries/java.php	/^$this->__tempGlobalRef=null;$/;"	v
+__tempGlobalRef	libraries/java.php	/^public $__tempGlobalRef;$/;"	v
+__toExceptionString	libraries/java.php	/^function __toExceptionString($trace) {$/;"	f
+__toString	libraries/java.php	/^function __toString() {$/;"	f
+__toString	libraries/java.php	/^function __toString() {return $this->getMessage();}$/;"	f
+__wakeup	libraries/java.php	/^function __wakeup() {$/;"	f
+_check_captcha	controllers/auth.php	/^	function _check_captcha($code)$/;"	f
+_check_recaptcha	controllers/auth.php	/^	function _check_recaptcha()$/;"	f
+_create_captcha	controllers/auth.php	/^	function _create_captcha()$/;"	f
+_create_recaptcha	controllers/auth.php	/^	function _create_recaptcha()$/;"	f
+_doctypes	config/doctypes.php	/^$_doctypes = array($/;"	v
+_recaptcha_aes_encrypt	helpers/recaptcha_helper.php	/^function _recaptcha_aes_encrypt($val,$ky) {$/;"	f
+_recaptcha_aes_pad	helpers/recaptcha_helper.php	/^function _recaptcha_aes_pad($val) {$/;"	f
+_recaptcha_http_post	helpers/recaptcha_helper.php	/^function _recaptcha_http_post($host, $path, $data, $port = 80) {$/;"	f
+_recaptcha_mailhide_email_parts	helpers/recaptcha_helper.php	/^function _recaptcha_mailhide_email_parts ($email) {$/;"	f
+_recaptcha_mailhide_urlbase64	helpers/recaptcha_helper.php	/^function _recaptcha_mailhide_urlbase64 ($x) {$/;"	f
+_recaptcha_qsencode	helpers/recaptcha_helper.php	/^function _recaptcha_qsencode ($data) {$/;"	f
+_send_email	controllers/auth.php	/^	function _send_email($type, $email, &$data)$/;"	f
+_show_message	controllers/auth.php	/^	function _show_message($message)$/;"	f
+activate	controllers/auth.php	/^	function activate()$/;"	f
+activate_new_email	libraries/Tank_auth.php	/^	function activate_new_email($user_id, $new_email_key)$/;"	f
+activate_new_email	models/tank_auth/users.php	/^	function activate_new_email($user_id, $new_email_key)$/;"	f
+activate_user	libraries/Tank_auth.php	/^	function activate_user($user_id, $activation_key, $activate_by_email = TRUE)$/;"	f
+activate_user	models/tank_auth/users.php	/^	function activate_user($user_id, $activation_key, $activate_by_email)$/;"	f
+active_group	config/database.php	/^$active_group = 'default';$/;"	v
+active_record	config/database.php	/^$active_record = TRUE;$/;"	v
+add	libraries/java.php	/^function add($object) {$/;"	f
+add_assignment	models/user_model.php	/^	public function add_assignment($assignment_data){$/;"	f
+add_class	models/user_model.php	/^	public function add_class($class_data, $user_id){$/;"	f
+add_colleague	controllers/user.php	/^	public function add_colleague(){$/;"	f
+add_colleague_request	models/user_model.php	/^	public function add_colleague_request($sender_id, $receiver_id){$/;"	f
+add_user	models/user_model.php	/^	public function add_user(){$/;"	f
+answers	helpers/recaptcha_helper.php	/^        $answers = explode ("\\n", $response [1]);$/;"	v
+apply	libraries/java.php	/^function apply($arg) {$/;"	f
+ar	libraries/java.php	/^$ar=array($this,$idx);$/;"	v
+ar	libraries/java.php	/^$ar=array($this,$idx,$val);$/;"	v
+ar	libraries/java.php	/^$ar=array();$/;"	v
+ar	libraries/java.php	/^$ar=explode (" ",$line);$/;"	v
+ar	libraries/java.php	/^$ar=explode(";",$str);$/;"	v
+ar	libraries/java.php	/^$ar=get_required_files();$/;"	v
+arLen	libraries/java.php	/^$arLen=sizeof($ar);$/;"	v
+arg	libraries/java.php	/^$arg=$this->arg;$/;"	v
+arg	libraries/java.php	/^$arg=array_pop($this->stack);$/;"	v
+arg	libraries/java.php	/^$this->arg=$frame->parentArg;$/;"	v
+arg	libraries/java.php	/^public $arg;$/;"	v
+args	libraries/java.php	/^$args=array($this,$trace);$/;"	v
+args	libraries/java.php	/^$args=array($this,java_get_lifetime());$/;"	v
+args	libraries/java.php	/^$args=array($this->__serialID,java_get_lifetime());$/;"	v
+args	libraries/java.php	/^$args=func_get_args(); return $this->__call("getIterator",$args);$/;"	v
+args	libraries/java.php	/^$args=func_get_args(); return $this->__call("offsetExists",$args);$/;"	v
+args	libraries/java.php	/^$args=func_get_args(); return $this->__call("offsetGet",$args);$/;"	v
+args	libraries/java.php	/^$args=func_get_args(); return $this->__call("offsetSet",$args);$/;"	v
+args	libraries/java.php	/^$args=func_get_args(); return $this->__call("offsetUnset",$args);$/;"	v
+args	libraries/java.php	/^$args=func_get_args();$/;"	v
+args2	libraries/java.php	/^$args2=array($this->__java);$/;"	v
+args2	libraries/java.php	/^$args2=array();$/;"	v
+arr	helpers/recaptcha_helper.php	/^	$arr = preg_split("\/@\/", $email );$/;"	v
+arrayProxyFactory	libraries/java.php	/^$this->arrayProxyFactory=new java_ArrayProxyFactory($this);$/;"	v
+assign	controllers/user.php	/^	public function assign(){$/;"	f
+assign_date_parts	controllers/user.php	/^			$assign_date_parts = explode("\/", $this->input->post('assign_date'));$/;"	v
+assignment	controllers/user.php	/^					$assignment = $this->user_model->get_assignment($assignment_id);$/;"	v
+assignment	controllers/user.php	/^				$assignment = $this->user_model->get_assignment($assignment_id);$/;"	v
+assignment	controllers/user.php	/^		$assignment = $this->user_model->get_assignment($assignment_id);$/;"	v
+assignment	controllers/user.php	/^	public function assignment($assignment_id){$/;"	f
+assignment_data	controllers/user.php	/^			$assignment_data = array(	'documents_doc_id' => $doc_id,$/;"	v
+assignment_id	models/user_model.php	/^		$assignment_id = $this->db->insert_id();$/;"	v
+asyncCtx	libraries/java.php	/^$this->asyncCtx=$this->cancelProxyCreationCounter=0;$/;"	v
+authenticate	controllers/user.php	/^	public function authenticate(){$/;"	f
+autologin	libraries/Tank_auth.php	/^	private function autologin()$/;"	f
+ban_user	models/tank_auth/users.php	/^	function ban_user($user_id, $reason = NULL)$/;"	f
+begin	libraries/java.php	/^function begin($name,$st) {$/;"	f
+begin	libraries/java.php	/^function begin($parser,$name,$param) {$/;"	f
+block_size	helpers/recaptcha_helper.php	/^	$block_size = 16;$/;"	v
+browsers	config/user_agents.php	/^$browsers = array($/;"	v
+buf	libraries/java.php	/^$buf=$this->buf=$this->handler->read(JAVA_RECV_SIZE);$/;"	v
+buf	libraries/java.php	/^$this->buf=$this->handler->read(JAVA_RECV_SIZE);$/;"	v
+buf	libraries/java.php	/^public $buf;$/;"	v
+c	libraries/java.php	/^$c=__javaproxy_Client_getClient();$/;"	v
+c	libraries/java.php	/^$this->c=0;$/;"	v
+c1	libraries/phpass-0.1/PasswordHash.php	/^			$c1 = ($c1 & 0x03) << 4;$/;"	v
+c1	libraries/phpass-0.1/PasswordHash.php	/^			$c1 = ($c2 & 0x0f) << 2;$/;"	v
+c1	libraries/phpass-0.1/PasswordHash.php	/^			$c1 = ord($input[$i++]);$/;"	v
+c2	libraries/phpass-0.1/PasswordHash.php	/^			$c2 = ord($input[$i++]);$/;"	v
+cache	libraries/java.php	/^static $cache=null;$/;"	v
+cacheEntry	libraries/java.php	/^$cacheEntry=&$client->methodCache[$sig];$/;"	v
+cacheEntry	libraries/java.php	/^$cacheEntry=new java_CacheEntry($this->client->currentArgumentsFormat,$this->signature,$this->factory,false);$/;"	v
+cacheEntry	libraries/java.php	/^$cacheEntry=new java_CacheEntry($this->client->currentArgumentsFormat,$this->signature,$this->factory,true);$/;"	v
+cachedJavaPrototype	libraries/java.php	/^$this->cachedJavaPrototype=new java_JavaProxyProxy($this);$/;"	v
+cachedJavaPrototype	libraries/java.php	/^public $cachedJavaPrototype;$/;"	v
+can_add_colleague	models/user_model.php	/^	public function can_add_colleague($email, $user_id){$/;"	f
+can_reset_password	libraries/Tank_auth.php	/^	function can_reset_password($user_id, $new_pass_key)$/;"	f
+can_reset_password	models/tank_auth/users.php	/^	function can_reset_password($user_id, $new_pass_key, $expire_period = 900)$/;"	f
+cap	controllers/auth.php	/^		$cap = create_captcha(array($/;"	v
+captcha	views/auth/login_form.php	/^$captcha = array($/;"	v
+captcha	views/auth/register_form.php	/^$captcha = array($/;"	v
+captcha_registration	controllers/auth.php	/^			$captcha_registration	= $this->config->item('captcha_registration', 'tank_auth');$/;"	v
+cast	libraries/java.php	/^function cast($object,$type) {$/;"	f
+change_email	controllers/auth.php	/^	function change_email()$/;"	f
+change_email	libraries/Tank_auth.php	/^	function change_email($email)$/;"	f
+change_password	controllers/auth.php	/^	function change_password()$/;"	f
+change_password	libraries/Tank_auth.php	/^	function change_password($old_pass, $new_pass)$/;"	f
+change_password	models/tank_auth/users.php	/^	function change_password($user_id, $new_pass)$/;"	f
+channel	libraries/java.php	/^$this->channel=$channel;$/;"	v
+channel	libraries/java.php	/^$this->channel=$this->getChannel($channelName);$/;"	v
+channel	libraries/java.php	/^$this->channel=new java_EmptyChannel($this);$/;"	v
+channelName	libraries/java.php	/^$channelName=$name;$/;"	v
+channelName	libraries/java.php	/^$channelName=$this->headers["redirect"];$/;"	v
+channelName	libraries/java.php	/^$channelName=java_getHeader("X_JAVABRIDGE_REDIRECT",$_SERVER);$/;"	v
+check	libraries/phpass-0.1/test.php	/^$check = $t_hasher->CheckPassword($correct, $hash);$/;"	v
+check	libraries/phpass-0.1/test.php	/^$check = $t_hasher->CheckPassword($wrong, $hash);$/;"	v
+checkA	libraries/java.php	/^function checkA($peer) {$/;"	f
+checkE	libraries/java.php	/^function checkE() {$/;"	f
+checkResult	libraries/java.php	/^function checkResult($result) {$/;"	f
+checkSocket	libraries/java.php	/^function checkSocket($socket,&$errno,&$errstr) {$/;"	f
+check_colleague_email	controllers/user.php	/^	public function check_colleague_email($email, $user_id){$/;"	f
+check_date	controllers/user.php	/^	public function check_date($date){$/;"	f
+check_doc_id	controllers/user.php	/^	public function check_doc_id($doc_id, $user_id){$/;"	f
+check_file	controllers/user.php	/^	public function check_file($str){$/;"	f
+check_file_type	controllers/user.php	/^    public function check_file_type($str){$/;"	f
+check_tags	controllers/user.php	/^    public function check_tags($str){$/;"	f
+ci	libraries/Tank_auth.php	/^		$this->ci =& get_instance();$/;"	v
+ci	models/tank_auth/login_attempts.php	/^		$ci =& get_instance();$/;"	v
+ci	models/tank_auth/user_autologin.php	/^		$ci =& get_instance();$/;"	v
+ci	models/tank_auth/users.php	/^		$ci =& get_instance();$/;"	v
+classMap	libraries/java.php	/^static $classMap=array();$/;"	v
+class_admin	controllers/user.php	/^	public function class_admin($class_id = -1){$/;"	f
+class_data	controllers/user.php	/^			$class_data = array(	'subject' => $this->input->post('subject'),$/;"	v
+class_hour	views/user/create_class.php	/^$class_hour = array($/;"	v
+class_hour_label	views/user/create_class.php	/^$class_hour_label = "Class Hour:";$/;"	v
+class_id	views/user/enroll.php	/^$class_id = array($/;"	v
+class_id	views/user/join_class.php	/^$class_id = array($/;"	v
+class_id_label	views/user/enroll.php	/^$class_id_label = "Class ID:";$/;"	v
+class_id_label	views/user/join_class.php	/^$class_id_label = "Class ID:";$/;"	v
+classes	controllers/user.php	/^	public function classes(){$/;"	f
+clear	models/tank_auth/user_autologin.php	/^	function clear($user_id)$/;"	f
+clear_attempts	models/tank_auth/login_attempts.php	/^	function clear_attempts($ip_address, $login, $expire_period = 86400)$/;"	f
+clear_login_attempts	libraries/Tank_auth.php	/^	private function clear_login_attempts($login)$/;"	f
+client	libraries/java.php	/^$client=$this->__client;$/;"	v
+client	libraries/java.php	/^$client=$this->__client=__javaproxy_Client_getClient();$/;"	v
+client	libraries/java.php	/^$client=__javaproxy_Client_getClient();$/;"	v
+client	libraries/java.php	/^$client=new java_Client();$/;"	v
+client	libraries/java.php	/^$this->client=$client;$/;"	v
+client	libraries/java.php	/^public $client;$/;"	v
+client	libraries/java.php	/^static $client=null;$/;"	v
+close	libraries/java.php	/^function close() {$/;"	f
+close_enrollment	models/user_model.php	/^	public function close_enrollment($class_id){$/;"	f
+code	libraries/java.php	/^$code=((int)$ar[1]);$/;"	v
+colleagues	controllers/user.php	/^	public function colleagues(){$/;"	f
+compare_class_hours	models/user_model.php	/^	public function compare_class_hours($num1, $num2){$/;"	f
+compare_student_names	models/user_model.php	/^	public function compare_student_names($student1, $student2){$/;"	f
+compat	libraries/java.php	/^$compat=java_getCompatibilityOption($this->protocol->client);$/;"	v
+compatibility	libraries/java.php	/^$compatibility=$client->RUNTIME["PARSER"]=="NATIVE"$/;"	v
+compatibility	libraries/java.php	/^$compatibility=chr ($compatibility);$/;"	v
+compatibility	libraries/java.php	/^$compatibility=java_getCompatibilityOption($this->client);$/;"	v
+compatibility	libraries/java.php	/^static $compatibility=null;$/;"	v
+confirm_colleague	controllers/user.php	/^	public function confirm_colleague($pending_user_id){$/;"	f
+confirm_colleague	models/user_model.php	/^	public function confirm_colleague($pending_user_id, $user_id){$/;"	f
+confirm_new_password	views/auth/change_password_form.php	/^$confirm_new_password = array($/;"	v
+confirm_new_password	views/auth/reset_password_form.php	/^$confirm_new_password = array($/;"	v
+confirm_password	views/auth/register_form.php	/^$confirm_password = array($/;"	v
+context	libraries/java.php	/^$context="";$/;"	v
+context	libraries/java.php	/^$context="\/JavaBridge\/JavaBridge.phpjavabridge";$/;"	v
+context	libraries/java.php	/^$context=$this->getContext();$/;"	v
+context	libraries/java.php	/^$context=$this->getWebAppInternal();$/;"	v
+context	libraries/java.php	/^$context=$this->headers["context"];$/;"	v
+context	libraries/java.php	/^$context=$this->protocol->webContext;$/;"	v
+context	libraries/java.php	/^$context=java_getHeader("X_JAVABRIDGE_CONTEXT",$_SERVER);$/;"	v
+context	libraries/java.php	/^$context=sprintf("X_JAVABRIDGE_CONTEXT: %s\\r\\n",$ctx);$/;"	v
+context	libraries/java.php	/^$this->context=sprintf("X_JAVABRIDGE_CONTEXT: %s\\r\\n",$context);$/;"	v
+context	libraries/java.php	/^static $context=null;$/;"	v
+cookie	libraries/java.php	/^$cookie=explode("=",$ar[0]);$/;"	v
+cookies	libraries/java.php	/^$cookies=$this->getCookies();$/;"	v
+cookies	libraries/java.php	/^$this->cookies=array();$/;"	v
+correct	libraries/phpass-0.1/test.php	/^$correct = "test12345";$/;"	v
+count	libraries/java.php	/^$count=fwrite($socket,$res) or $this->shutdownBrokenConnection("Broken connection handle");$/;"	v
+count	libraries/phpass-0.1/PasswordHash.php	/^		$count = (1 << $count_log2) - 1;$/;"	v
+count	libraries/phpass-0.1/PasswordHash.php	/^		$count = 1 << $count_log2;$/;"	v
+count_log2	libraries/phpass-0.1/PasswordHash.php	/^		$count_log2 = min($this->iteration_count_log2 + 8, 24);$/;"	v
+count_log2	libraries/phpass-0.1/PasswordHash.php	/^		$count_log2 = strpos($this->itoa64, $setting[3]);$/;"	v
+counter	libraries/java.php	/^$this->counter=0;$/;"	v
+counter	libraries/java.php	/^public $counter;$/;"	v
+create	libraries/java.php	/^function create($result,$signature) {$/;"	f
+createChannel	libraries/java.php	/^function createChannel() {$/;"	f
+createHandler	libraries/java.php	/^function createHandler() {$/;"	f
+createHttpHandler	libraries/java.php	/^function createHttpHandler() {$/;"	f
+createInternal	libraries/java.php	/^function createInternal($proxy) {$/;"	f
+createObject	libraries/java.php	/^function createObject($name,$args) {$/;"	f
+createObjectBegin	libraries/java.php	/^function createObjectBegin($name) {$/;"	f
+createObjectEnd	libraries/java.php	/^function createObjectEnd() {$/;"	f
+createParserString	libraries/java.php	/^function createParserString() {$/;"	f
+createSimpleChannel	libraries/java.php	/^function createSimpleChannel () {$/;"	f
+createSimpleHandler	libraries/java.php	/^function createSimpleHandler($name,$again=true) {$/;"	f
+create_autologin	libraries/Tank_auth.php	/^	private function create_autologin($user_id)$/;"	f
+create_class	controllers/user.php	/^	public function create_class(){$/;"	f
+create_profile	models/tank_auth/users.php	/^	private function create_profile($user_id)$/;"	f
+create_user	libraries/Tank_auth.php	/^	function create_user($username, $email, $password, $email_activation)$/;"	f
+create_user	models/tank_auth/users.php	/^	function create_user($data, $activated = TRUE)$/;"	f
+crypt_private	libraries/phpass-0.1/PasswordHash.php	/^	function crypt_private($password, $setting)$/;"	f
+crypt_private	libraries/phpass-0.1/c/crypt_private.c	/^char *crypt_private(char *password, char *setting)$/;"	f
+cryptmail	helpers/recaptcha_helper.php	/^	$cryptmail = _recaptcha_aes_encrypt ($email, $ky);$/;"	v
+ctx	libraries/java.php	/^$ctx=$this->getContextFromCgiEnvironment();$/;"	v
+ctx	libraries/java.php	/^$ctx=java_getHeader('X_JAVABRIDGE_CONTEXT',$_SERVER);$/;"	v
+current	libraries/java.php	/^function current() {$/;"	f
+currentArgumentsFormat	libraries/java.php	/^$currentArgumentsFormat=$this->currentArgumentsFormat;$/;"	v
+currentArgumentsFormat	libraries/java.php	/^$this->currentArgumentsFormat=$currentArgumentsFormat;$/;"	v
+current_assignments	controllers/user.php	/^	public function current_assignments(){$/;"	f
+data	controllers/user.php	/^			$data = $this->authenticate();$/;"	v
+data	controllers/user.php	/^			$data = array_merge($data, $this->upload_assignment($data['user_id'], $assignment_id));$/;"	v
+data	controllers/user.php	/^		$data = $this->authenticate();$/;"	v
+data	libraries/Tank_auth.php	/^				$data = array($/;"	v
+data	libraries/Tank_auth.php	/^				$data = unserialize($cookie);$/;"	v
+data	libraries/Tank_auth.php	/^			$data = array($/;"	v
+data	libraries/Tank_auth.php	/^			$data = unserialize($cookie);$/;"	v
+data	libraries/java.php	/^$data="";$/;"	v
+data	models/user_model.php	/^		$data = array($/;"	v
+date	controllers/user.php	/^				$date = date('Y-m-d H:i:');$/;"	v
+date_parts	controllers/user.php	/^		$date_parts = explode("\/", $date);$/;"	v
+datetime	controllers/user.php	/^			$datetime = date('Y-m-d H:i:');$/;"	v
+defaultCache	libraries/java.php	/^public $defaultCache=array(),$asyncCache=array(),$methodCache;$/;"	v
+delegate	libraries/java.php	/^$delegate=$this->__delegate=$client->createObject($name,$args);$/;"	v
+delegate	libraries/java.php	/^$delegate=$this->__delegate=$this->__client->createObject($name,$args);$/;"	v
+delegate	libraries/java.php	/^$delegate=$this->__delegate=$this->__client->referenceObject($name,$args);$/;"	v
+delete	models/tank_auth/user_autologin.php	/^	function delete($user_id, $key)$/;"	f
+delete_assignment	controllers/user.php	/^	public function delete_assignment($assignment_id){$/;"	f
+delete_assignment	models/user_model.php	/^	public function delete_assignment($assignment_id){$/;"	f
+delete_autologin	libraries/Tank_auth.php	/^	private function delete_autologin()$/;"	f
+delete_doc	controllers/user.php	/^	public function delete_doc($doc_id){$/;"	f
+delete_doc	models/user_model.php	/^	public function delete_doc($doc_id){$/;"	f
+delete_profile	models/tank_auth/users.php	/^	private function delete_profile($user_id)$/;"	f
+delete_user	libraries/Tank_auth.php	/^	function delete_user($password)$/;"	f
+delete_user	models/tank_auth/users.php	/^	function delete_user($user_id)$/;"	f
+dieWithBrokenConnection	libraries/java.php	/^function dieWithBrokenConnection($msg) {$/;"	f
+dir	libraries/java.php	/^$dir=dirname($path);$/;"	v
+doSetCookie	libraries/java.php	/^function doSetCookie($key,$val,$path) {$/;"	f
+doc	controllers/user.php	/^				$doc = $this->user_model->get_doc($download_doc_id);$/;"	v
+doc	controllers/user.php	/^				$doc = $this->user_model->get_submission($assignment_id, $user_id);$/;"	v
+doc	controllers/user.php	/^		$doc = $this->user_model->get_doc($doc_id);$/;"	v
+doc_details	controllers/user.php	/^	public function doc_details($doc_id){$/;"	f
+doc_file	controllers/user.php	/^				$doc_file = base64_encode($doc['file']);$/;"	v
+doc_id	controllers/user.php	/^				$doc_id = $this->db->insert_id();$/;"	v
+doc_id	controllers/user.php	/^		$doc_id = $this->input->post('doc_id');$/;"	v
+doc_name	controllers/user.php	/^	public function doc_name($doc_id){$/;"	f
+doc_reader	controllers/user.php	/^				$doc_reader = new java('doc.xml.DocReader');$/;"	v
+doc_tags	controllers/user.php	/^				$doc_tags = explode(' ', $doc_tags);$/;"	v
+doc_tags	controllers/user.php	/^				$doc_tags = str_replace(',', ' ', $this->input->post('doc_tags'));$/;"	v
+doc_tags	controllers/user.php	/^				$doc_tags = trim(preg_replace('\/\\s+\/',' ',$doc_tags));$/;"	v
+doc_tags	controllers/user.php	/^    	$doc_tags = explode(' ', $str);$/;"	v
+doc_tags	views/user/upload_doc.php	/^$doc_tags = array($/;"	v
+doc_tags_label	views/user/upload_doc.php	/^$doc_tags_label = 'Tags (separate with spaces):';$/;"	v
+doc_type	controllers/user.php	/^					$doc_type = $data['userfile']['file_ext'];$/;"	v
+doc_type	controllers/user.php	/^					$doc_type = NULL;$/;"	v
+doc_type	controllers/user.php	/^				$doc_type = $data['userfile']['file_ext'];$/;"	v
+doc_type	controllers/user.php	/^				$doc_type = NULL;$/;"	v
+documents	controllers/user.php	/^	public function documents($download_doc_id = -1){$/;"	f
+due_date_parts	controllers/user.php	/^			$due_date_parts = explode("\/", $this->input->post('due_date'));$/;"	v
+e	libraries/java.php	/^$this->e=$this->i;$/;"	v
+edit_doc	controllers/user.php	/^	public function edit_doc($doc_id){$/;"	f
+email	views/auth/change_email_form.php	/^$email = array($/;"	v
+email	views/auth/register_form.php	/^$email = array($/;"	v
+email	views/auth/send_again_form.php	/^$email = array($/;"	v
+email	views/user/add_colleague.php	/^$email = array($/;"	v
+email_activation	controllers/auth.php	/^			$email_activation = $this->config->item('email_activation', 'tank_auth');$/;"	v
+email_label	views/user/add_colleague.php	/^$email_label = "New Colleague E-mail:";$/;"	v
+emailparts	helpers/recaptcha_helper.php	/^	$emailparts = _recaptcha_mailhide_email_parts ($email);$/;"	v
+enc	helpers/recaptcha_helper.php	/^	$enc=MCRYPT_RIJNDAEL_128;$/;"	v
+encode64	libraries/phpass-0.1/PasswordHash.php	/^	function encode64($input, $count)$/;"	f
+encode64	libraries/phpass-0.1/c/crypt_private.c	/^static void encode64(char *dst, char *src, int count)$/;"	f	file:
+end	libraries/java.php	/^function end($name) {$/;"	f
+end	libraries/java.php	/^function end($parser,$name) {$/;"	f
+enrollment_is_open	models/user_model.php	/^	public function enrollment_is_open($class_id){$/;"	f
+eor	libraries/java.php	/^$this->eor=0;$/;"	v
+eot	libraries/java.php	/^$this->eot=true;$/;"	v
+errno	libraries/java.php	/^$errno=null; $errstr=null;$/;"	v
+error	helpers/recaptcha_helper.php	/^        var $error;$/;"	v
+error	libraries/Tank_auth.php	/^						$this->error = array('not_activated' => '');$/;"	v
+error	libraries/Tank_auth.php	/^					$this->error = array('banned' => $user->ban_reason);$/;"	v
+error	libraries/Tank_auth.php	/^					$this->error = array('email' => 'auth_current_email');$/;"	v
+error	libraries/Tank_auth.php	/^					$this->error = array('email' => 'auth_email_in_use');$/;"	v
+error	libraries/Tank_auth.php	/^				$this->error = array('email' => 'auth_email_in_use');$/;"	v
+error	libraries/Tank_auth.php	/^				$this->error = array('login' => 'auth_incorrect_email_or_username');$/;"	v
+error	libraries/Tank_auth.php	/^				$this->error = array('old_password' => 'auth_incorrect_password');$/;"	v
+error	libraries/Tank_auth.php	/^				$this->error = array('password' => 'auth_incorrect_password');$/;"	v
+error	libraries/Tank_auth.php	/^			$this->error = array('email' => 'auth_email_in_use');$/;"	v
+error	libraries/Tank_auth.php	/^			$this->error = array('login' => 'auth_incorrect_login');$/;"	v
+error	libraries/Tank_auth.php	/^			$this->error = array('username' => 'auth_username_in_use');$/;"	v
+error	libraries/Tank_auth.php	/^	private $error = array();$/;"	v
+error	libraries/java.php	/^function error() {$/;"	f
+errorpart	helpers/recaptcha_helper.php	/^           $errorpart = "&amp;error=" . $error;$/;"	v
+errorpart	helpers/recaptcha_helper.php	/^        $errorpart = "";$/;"	v
+errors	controllers/auth.php	/^					$errors = $this->tank_auth->get_error_message();$/;"	v
+errstr	libraries/java.php	/^$errstr=null; $errno=null;$/;"	v
+event	libraries/java.php	/^$this->event=false;$/;"	v
+event	libraries/java.php	/^$this->event=true;$/;"	v
+exception	libraries/java.php	/^$this->exception=$string;$/;"	v
+exception	libraries/java.php	/^public $exception;$/;"	v
+exceptionProxyFactory	libraries/java.php	/^$this->exceptionProxyFactory=new java_ExceptionProxyFactory($this);$/;"	v
+factory	libraries/java.php	/^$factory=$this->arrayProxyFactory;$/;"	v
+factory	libraries/java.php	/^$factory=$this->exceptionProxyFactory;$/;"	v
+factory	libraries/java.php	/^$factory=$this->factory;$/;"	v
+factory	libraries/java.php	/^$factory=$this->iteratorProxyFactory;$/;"	v
+factory	libraries/java.php	/^$factory=$this->proxyFactory;$/;"	v
+factory	libraries/java.php	/^$this->factory=$client->simpleFactory;$/;"	v
+factory	libraries/java.php	/^$this->factory=$factory;$/;"	v
+factory	libraries/java.php	/^$this->factory=$this->client->simpleFactory;$/;"	v
+file	controllers/user.php	/^				$file = fread($fp, $size * 1024 + 200);$/;"	v
+file	controllers/user.php	/^			$file = fread($fp, $size * 1024 + 200);$/;"	v
+file_data	controllers/user.php	/^				$file_data=array('docname'=>$name,'doc_type'=>$doc_type,$/;"	v
+file_data	controllers/user.php	/^			$file_data=array('student_doc'=>$file, 'submit_time' => $datetime);$/;"	v
+finish	libraries/java.php	/^function finish() {$/;"	f
+first	libraries/java.php	/^$first=false;$/;"	v
+first	libraries/java.php	/^$first=true;$/;"	v
+first_name	views/auth/register_form.php	/^$first_name = array($/;"	v
+flush	libraries/java.php	/^function flush() {$/;"	f
+fmt	libraries/java.php	/^$this->fmt=$fmt;$/;"	v
+foreign_characters	config/foreign_chars.php	/^$foreign_characters = array($/;"	v
+forgot_password	controllers/auth.php	/^	function forgot_password()$/;"	f
+forgot_password	libraries/Tank_auth.php	/^	function forgot_password($login)$/;"	f
+fp	controllers/user.php	/^				$fp   = fopen($tmpname, 'r');$/;"	v
+fp	controllers/user.php	/^			$fp   = fopen($tmpname, 'r');$/;"	v
+frame	libraries/java.php	/^$frame=array_pop($this->stack);$/;"	v
+fread	libraries/java.php	/^function fread($size) {$/;"	f
+fread	libraries/java.php	/^function fread($size) {return $this->read($size);}$/;"	f
+full_name	controllers/user.php	/^	public function full_name($user_id){$/;"	f
+fwrite	libraries/java.php	/^function fwrite($data) {$/;"	f
+fwrite	libraries/java.php	/^function fwrite($data) {return $this->write($data);}$/;"	f
+gensalt_blowfish	libraries/phpass-0.1/PasswordHash.php	/^	function gensalt_blowfish($input)$/;"	f
+gensalt_extended	libraries/phpass-0.1/PasswordHash.php	/^	function gensalt_extended($input)$/;"	f
+gensalt_private	libraries/phpass-0.1/PasswordHash.php	/^	function gensalt_private($input)$/;"	f
+get	libraries/java.php	/^function get($id) {$/;"	f
+get	models/tank_auth/user_autologin.php	/^	function get($user_id, $key)$/;"	f
+getBodyFor	libraries/java.php	/^function getBodyFor ($compat,$data) {$/;"	f
+getChannel	libraries/java.php	/^function getChannel($channelName) {$/;"	f
+getContext	libraries/java.php	/^function getContext() {$/;"	f
+getContextFromCgiEnvironment	libraries/java.php	/^function getContextFromCgiEnvironment() {$/;"	f
+getCookies	libraries/java.php	/^function getCookies() {$/;"	f
+getData	libraries/java.php	/^function getData($str) {$/;"	f
+getExact	libraries/java.php	/^function getExact($str) {$/;"	f
+getHost	libraries/java.php	/^static function getHost() {$/;"	f
+getInexact	libraries/java.php	/^function getInexact($str) {$/;"	f
+getInternalResult	libraries/java.php	/^function getInternalResult() {$/;"	f
+getIterator	libraries/java.php	/^function getIterator() {$/;"	f
+getKeepAlive	libraries/java.php	/^function getKeepAlive() {$/;"	f
+getKeepAlive	libraries/java.php	/^function getKeepAlive() {return $this->getKeepAliveA();}$/;"	f
+getKeepAliveA	libraries/java.php	/^function getKeepAliveA() {$/;"	f
+getKeepAliveE	libraries/java.php	/^function getKeepAliveE() {$/;"	f
+getOverrideHosts	libraries/java.php	/^function getOverrideHosts() {$/;"	f
+getProperty	libraries/java.php	/^function getProperty($object,$property) {$/;"	f
+getProxy	libraries/java.php	/^function getProxy($result,$signature,$exception,$wrap) {$/;"	f
+getProxyFactory	libraries/java.php	/^function getProxyFactory($type) {$/;"	f
+getResult	libraries/java.php	/^function getResult($wrap) {$/;"	f
+getResult	libraries/java.php	/^function getResult() {$/;"	f
+getServerName	libraries/java.php	/^function getServerName() {$/;"	f
+getSession	libraries/java.php	/^function getSession($args) {$/;"	f
+getSimpleChannel	libraries/java.php	/^function getSimpleChannel() {$/;"	f
+getString	libraries/java.php	/^function getString() {$/;"	f
+getWebApp	libraries/java.php	/^function getWebApp() {$/;"	f
+getWebAppInternal	libraries/java.php	/^function getWebAppInternal() {$/;"	f
+getWrappedResult	libraries/java.php	/^function getWrappedResult($wrap) {$/;"	f
+get_assignment	models/user_model.php	/^	public function get_assignment($assignment_id){$/;"	f
+get_attempts_num	models/tank_auth/login_attempts.php	/^	function get_attempts_num($ip_address, $login)$/;"	f
+get_classes	models/user_model.php	/^	public function get_classes($user_id){$/;"	f
+get_colleagues	models/user_model.php	/^	public function get_colleagues($user_id){$/;"	f
+get_doc	models/user_model.php	/^	public function get_doc($doc_id){$/;"	f
+get_doc_tags	models/user_model.php	/^	public function get_doc_tags($doc_id){$/;"	f
+get_docs	models/user_model.php	/^	public function get_docs($user_id){$/;"	f
+get_error_message	libraries/Tank_auth.php	/^	function get_error_message()$/;"	f
+get_id_from_email	models/user_model.php	/^	public function get_id_from_email($email){$/;"	f
+get_pending_colleagues	models/user_model.php	/^	public function get_pending_colleagues($user_id){$/;"	f
+get_random_bytes	libraries/phpass-0.1/PasswordHash.php	/^	function get_random_bytes($count)$/;"	f
+get_student_assignments	models/user_model.php	/^	public function get_student_assignments($user_id, $class_id){$/;"	f
+get_student_submissions	models/user_model.php	/^	public function get_student_submissions($assignment_id){$/;"	f
+get_students	models/user_model.php	/^	public function get_students($class_id){$/;"	f
+get_submission	models/user_model.php	/^	public function get_submission($assignment_id, $user_id){$/;"	f
+get_teacher_assignments	models/user_model.php	/^	public function get_teacher_assignments($user_id, $class_id){	$/;"	f
+get_user_by_email	models/tank_auth/users.php	/^	function get_user_by_email($email)$/;"	f
+get_user_by_id	models/tank_auth/users.php	/^	function get_user_by_id($user_id, $activated)$/;"	f
+get_user_by_login	models/tank_auth/users.php	/^	function get_user_by_login($login)$/;"	f
+get_user_by_username	models/tank_auth/users.php	/^	function get_user_by_username($username)$/;"	f
+get_user_func	libraries/Tank_auth.php	/^			$get_user_func = 'get_user_by_email';$/;"	v
+get_user_func	libraries/Tank_auth.php	/^			$get_user_func = 'get_user_by_login';$/;"	v
+get_user_func	libraries/Tank_auth.php	/^			$get_user_func = 'get_user_by_username';$/;"	v
+get_user_id	libraries/Tank_auth.php	/^	function get_user_id()$/;"	f
+get_username	libraries/Tank_auth.php	/^	function get_username()$/;"	f
+globalRef	libraries/java.php	/^$this->globalRef=new java_GlobalRef();$/;"	v
+globalRef	libraries/java.php	/^public $globalRef;$/;"	v
+handle	libraries/java.php	/^function handle() {$/;"	f
+handleRequests	libraries/java.php	/^function handleRequests() {$/;"	f
+handler	libraries/java.php	/^$handler=new java_SocketHandler($this,new java_SocketChannelP($peer,$host));$/;"	v
+handler	libraries/java.php	/^$this->handler=$handler;$/;"	v
+handler	libraries/java.php	/^$this->handler=$this->createHandler();$/;"	v
+handler	libraries/java.php	/^protected $handler;$/;"	v
+handler	libraries/java.php	/^public $handler;$/;"	v
+hasContentLength	libraries/java.php	/^$this->hasContentLength=true;$/;"	v
+hasContentLength	libraries/java.php	/^protected $hasContentLength=false;$/;"	v
+hash	libraries/phpass-0.1/PasswordHash.php	/^				$hash = md5($hash . $password, TRUE);$/;"	v
+hash	libraries/phpass-0.1/PasswordHash.php	/^				$hash = pack('H*', md5($hash . $password));$/;"	v
+hash	libraries/phpass-0.1/PasswordHash.php	/^			$hash = crypt($password, $stored_hash);$/;"	v
+hash	libraries/phpass-0.1/PasswordHash.php	/^			$hash = md5($salt . $password, TRUE);$/;"	v
+hash	libraries/phpass-0.1/PasswordHash.php	/^			$hash = pack('H*', md5($salt . $password));$/;"	v
+hash	libraries/phpass-0.1/PasswordHash.php	/^			$hash =$/;"	v
+hash	libraries/phpass-0.1/PasswordHash.php	/^		$hash = $this->crypt_private($password, $stored_hash);$/;"	v
+hash	libraries/phpass-0.1/PasswordHash.php	/^		$hash =$/;"	v
+hash	libraries/phpass-0.1/test.php	/^$hash = $t_hasher->HashPassword($correct);$/;"	v
+hash	libraries/phpass-0.1/test.php	/^$hash = '$P$9IQRaTwmfeRo7ud9Fh4E2PdI0S3r.L0';$/;"	v
+hashed_password	libraries/Tank_auth.php	/^				$hashed_password = $hasher->HashPassword($new_pass);$/;"	v
+hashed_password	libraries/Tank_auth.php	/^				$hashed_password = $hasher->HashPassword($new_password);$/;"	v
+hashed_password	libraries/Tank_auth.php	/^			$hashed_password = $hasher->HashPassword($password);$/;"	v
+hasher	libraries/Tank_auth.php	/^				$hasher = new PasswordHash($/;"	v
+hasher	libraries/Tank_auth.php	/^			$hasher = new PasswordHash($/;"	v
+headers	libraries/java.php	/^$this->headers=array();$/;"	v
+headers	libraries/java.php	/^$this->headers=null;$/;"	v
+host	libraries/java.php	/^$host=$hostVec[1];$/;"	v
+host	libraries/java.php	/^$host=$s;$/;"	v
+host	libraries/java.php	/^$host=$url["host"];$/;"	v
+host	libraries/java.php	/^$host=explode(":",$hosts[0]);$/;"	v
+host	libraries/java.php	/^$host=substr($host,0,$idx);$/;"	v
+host	libraries/java.php	/^$host=substr($s,0,$webCtx);$/;"	v
+host	libraries/java.php	/^$this->host=$host;$/;"	v
+host	libraries/java.php	/^public $host;$/;"	v
+host	libraries/java.php	/^static $host=null;$/;"	v
+hostVec	libraries/java.php	/^$hostVec=java_Protocol::getHost();$/;"	v
+hosts	libraries/java.php	/^$hosts=explode(";",JAVA_HOSTS);$/;"	v
+html	controllers/auth.php	/^		$html = recaptcha_get_html($this->config->item('recaptcha_public_key', 'tank_auth'));$/;"	v
+http_request	helpers/recaptcha_helper.php	/^        $http_request  = "POST $path HTTP\/1.0\\r\\n";$/;"	v
+i	libraries/java.php	/^$i="class ${x} extends Java {".$/;"	v
+i	libraries/java.php	/^$this->i=0;$/;"	v
+i	libraries/phpass-0.1/PasswordHash.php	/^		$i = 0;$/;"	v
+i0	libraries/java.php	/^$this->i0=$this->i;$/;"	v
+i0	libraries/java.php	/^$this->i0=0;$/;"	v
+id	controllers/user.php	/^			$id = $this->user_model->get_id_from_email($this->input->post('email'));$/;"	v
+id	libraries/java.php	/^$id=($object==null) ? 0 : $object->__java;$/;"	v
+idx	libraries/java.php	/^$idx=strpos($host,':');$/;"	v
+idx	libraries/java.php	/^$idx=strrpos($x,"\\\\"); if (!$idx) return java_autoload_function5($x);$/;"	v
+idx	libraries/java.php	/^$this->idx=$this->counter++;$/;"	v
+idx	libraries/java.php	/^$this->idx=$val;$/;"	v
+idx	libraries/java.php	/^$this->idx=0;$/;"	v
+idx	libraries/java.php	/^public $idx;$/;"	v
+inArgs	libraries/java.php	/^$this->inArgs=false;$/;"	v
+inArgs	libraries/java.php	/^$this->inArgs=true;$/;"	v
+inArgs	libraries/java.php	/^public $inArgs;$/;"	v
+in_dquote	libraries/java.php	/^$this->in_dquote=!$this->in_dquote;$/;"	v
+in_dquote	libraries/java.php	/^$this->in_dquote=false;$/;"	v
+increase_attempt	models/tank_auth/login_attempts.php	/^	function increase_attempt($ip_address, $login)$/;"	f
+increase_login_attempt	libraries/Tank_auth.php	/^	private function increase_login_attempt($login)$/;"	f
+index	controllers/auth.php	/^	function index()$/;"	f
+index	controllers/user.php	/^	public function index(){$/;"	f
+instance	libraries/java.php	/^$instance="namespace $package; class ${name} extends \\\\Java {".$/;"	v
+invokeBegin	libraries/java.php	/^function invokeBegin($object,$method) {$/;"	f
+invokeEnd	libraries/java.php	/^function invokeEnd() {$/;"	f
+invokeMethod	libraries/java.php	/^function invokeMethod($object,$method,$args) {$/;"	f
+isAsync	libraries/java.php	/^$isAsync=$this->isAsync;$/;"	v
+isAsync	libraries/java.php	/^$this->isAsync=$isAsync;$/;"	v
+isAsync	libraries/java.php	/^public $isAsync=0;$/;"	v
+isRedirect	libraries/java.php	/^$this->isRedirect=isset($this->headers["redirect"]);$/;"	v
+is_class_member	models/user_model.php	/^	public function is_class_member($user_id, $class_id){$/;"	f
+is_current_colleague	models/user_model.php	/^	public function is_current_colleague($new_colleague_id, $user_id){$/;"	f
+is_doc_owner	models/user_model.php	/^	public function is_doc_owner($user_id, $doc_id){$/;"	f
+is_email_available	libraries/Tank_auth.php	/^	function is_email_available($email)$/;"	f
+is_email_available	models/tank_auth/users.php	/^	function is_email_available($email)$/;"	f
+is_logged_in	libraries/Tank_auth.php	/^	function is_logged_in($activated = TRUE)$/;"	f
+is_max_login_attempts_exceeded	libraries/Tank_auth.php	/^	function is_max_login_attempts_exceeded($login)$/;"	f
+is_pending_colleague	models/user_model.php	/^	public function is_pending_colleague($new_colleague_id, $user_id){$/;"	f
+is_student	models/user_model.php	/^	public function is_student($user_id, $class_id){$/;"	f
+is_students_assignment	models/user_model.php	/^	public function is_students_assignment($user_id, $assignment_id){$/;"	f
+is_teacher	models/user_model.php	/^	public function is_teacher($user_id, $class_id){$/;"	f
+is_username_available	libraries/Tank_auth.php	/^	function is_username_available($username)$/;"	f
+is_username_available	models/tank_auth/users.php	/^	function is_username_available($username)$/;"	f
+is_valid	helpers/recaptcha_helper.php	/^        var $is_valid;$/;"	v
+iteration_count_log2	libraries/phpass-0.1/PasswordHash.php	/^			$iteration_count_log2 = 8;$/;"	v
+iteration_count_log2	libraries/phpass-0.1/PasswordHash.php	/^		$this->iteration_count_log2 = $iteration_count_log2;$/;"	v
+iteration_count_log2	libraries/phpass-0.1/PasswordHash.php	/^	var $iteration_count_log2;$/;"	v
+iteratorProxyFactory	libraries/java.php	/^$this->iteratorProxyFactory=new java_IteratorProxyFactory($this);$/;"	v
+itoa64	libraries/phpass-0.1/PasswordHash.php	/^		$itoa64 = '.\/ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';$/;"	v
+itoa64	libraries/phpass-0.1/PasswordHash.php	/^		$this->itoa64 = '.\/0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';$/;"	v
+itoa64	libraries/phpass-0.1/PasswordHash.php	/^	var $itoa64;$/;"	v
+itoa64	libraries/phpass-0.1/c/crypt_private.c	/^static char *itoa64 =$/;"	v	file:
+java	libraries/java.php	/^$java=file_exists(ini_get("extension_dir")."\/JavaBridge.jar")?ini_get("extension_dir")."\/JavaBridge.jar":(java_get_base()."\/JavaBridge.jar");$/;"	v
+java_AbstractJava	libraries/java.php	/^abstract class java_AbstractJava implements IteratorAggregate,ArrayAccess,java_JavaType {$/;"	c
+java_ApplyArg	libraries/java.php	/^class java_ApplyArg extends java_CompositeArg {$/;"	c
+java_ApplyArg	libraries/java.php	/^function java_ApplyArg($client,$type,$m,$p,$v,$n) {$/;"	f
+java_Arg	libraries/java.php	/^class java_Arg {$/;"	c
+java_Arg	libraries/java.php	/^function java_Arg($client) {$/;"	f
+java_ArrayProxy	libraries/java.php	/^class java_ArrayProxy extends java_IteratorProxy implements ArrayAccess {$/;"	c
+java_ArrayProxyFactory	libraries/java.php	/^class java_ArrayProxyFactory extends java_ProxyFactory {$/;"	c
+java_CacheEntry	libraries/java.php	/^class java_CacheEntry {$/;"	c
+java_CacheEntry	libraries/java.php	/^function java_CacheEntry($fmt,$signature,$factory,$resultVoid) {$/;"	f
+java_ChunkedSocketChannel	libraries/java.php	/^class java_ChunkedSocketChannel extends java_SocketChannel {$/;"	c
+java_Client	libraries/java.php	/^class java_Client {$/;"	c
+java_Client	libraries/java.php	/^function java_Client() {$/;"	f
+java_CompositeArg	libraries/java.php	/^class java_CompositeArg extends java_Arg {$/;"	c
+java_CompositeArg	libraries/java.php	/^function java_CompositeArg($client,$type) {$/;"	f
+java_ConnectException	libraries/java.php	/^class java_ConnectException extends java_IOException {};$/;"	c
+java_EmptyChannel	libraries/java.php	/^class java_EmptyChannel {$/;"	c
+java_EmptyChannel	libraries/java.php	/^function java_EmptyChannel($handler) {$/;"	f
+java_ExceptionProxy	libraries/java.php	/^class java_ExceptionProxy extends java_JavaProxy {$/;"	c
+java_ExceptionProxyFactory	libraries/java.php	/^class java_ExceptionProxyFactory extends java_SimpleFactory {$/;"	c
+java_GlobalRef	libraries/java.php	/^class java_GlobalRef {$/;"	c
+java_GlobalRef	libraries/java.php	/^function java_GlobalRef() {$/;"	f
+java_HttpTunnelHandler	libraries/java.php	/^class java_HttpTunnelHandler extends java_SimpleHttpTunnelHandler {$/;"	c
+java_IOException	libraries/java.php	/^class java_IOException extends java_JavaException {};$/;"	c
+java_IllegalArgumentException	libraries/java.php	/^class java_IllegalArgumentException extends java_RuntimeException {$/;"	c
+java_IllegalStateException	libraries/java.php	/^class java_IllegalStateException extends java_RuntimeException {};$/;"	c
+java_InternalException	libraries/java.php	/^class java_InternalException extends JavaException {$/;"	c
+java_InternalException	libraries/java.php	/^function java_InternalException($proxy,$exception) {$/;"	f
+java_InternalJava	libraries/java.php	/^class java_InternalJava extends Java {$/;"	c
+java_InternalJava	libraries/java.php	/^function java_InternalJava($proxy) {$/;"	f
+java_IteratorProxy	libraries/java.php	/^class java_IteratorProxy extends java_JavaProxy implements IteratorAggregate {$/;"	c
+java_IteratorProxyFactory	libraries/java.php	/^class java_IteratorProxyFactory extends java_ProxyFactory {$/;"	c
+java_JavaException	libraries/java.php	/^class java_JavaException extends Exception {$/;"	c
+java_JavaProxy	libraries/java.php	/^class java_JavaProxy implements java_JavaType {$/;"	c
+java_JavaProxy	libraries/java.php	/^function java_JavaProxy($java,$signature){$/;"	f
+java_JavaProxyProxy	libraries/java.php	/^class java_JavaProxyProxy extends Java {$/;"	c
+java_JavaProxyProxy	libraries/java.php	/^function java_JavaProxyProxy($client) {$/;"	f
+java_JavaType	libraries/java.php	/^interface java_JavaType {};$/;"	i
+java_NativeParser	libraries/java.php	/^class java_NativeParser {$/;"	c
+java_NativeParser	libraries/java.php	/^function java_NativeParser($handler) {$/;"	f
+java_ObjectIterator	libraries/java.php	/^function java_ObjectIterator($javaProxy) {$/;"	f
+java_Parser	libraries/java.php	/^class java_Parser {$/;"	c
+java_Parser	libraries/java.php	/^function java_Parser($handler) {$/;"	f
+java_ParserString	libraries/java.php	/^class java_ParserString {$/;"	c
+java_ParserTag	libraries/java.php	/^class java_ParserTag {$/;"	c
+java_ParserTag	libraries/java.php	/^function java_ParserTag() {$/;"	f
+java_Protocol	libraries/java.php	/^class java_Protocol {$/;"	c
+java_Protocol	libraries/java.php	/^function java_Protocol ($client) {$/;"	f
+java_ProxyFactory	libraries/java.php	/^class java_ProxyFactory extends java_SimpleFactory {$/;"	c
+java_RuntimeException	libraries/java.php	/^class java_RuntimeException extends java_JavaException {};$/;"	c
+java_SimpleFactory	libraries/java.php	/^class java_SimpleFactory {$/;"	c
+java_SimpleFactory	libraries/java.php	/^function java_SimpleFactory($client) {$/;"	f
+java_SimpleHttpHandler	libraries/java.php	/^class java_SimpleHttpHandler extends java_SocketHandler {$/;"	c
+java_SimpleHttpHandler	libraries/java.php	/^function java_SimpleHttpHandler($protocol,$ssl,$host,$port) {$/;"	f
+java_SimpleHttpTunnelHandler	libraries/java.php	/^class java_SimpleHttpTunnelHandler extends java_SimpleHttpHandler {$/;"	c
+java_SimpleHttpTunnelHandler	libraries/java.php	/^function java_SimpleHttpTunnelHandler($protocol,$ssl,$host,$port) {$/;"	f
+java_SimpleParser	libraries/java.php	/^class java_SimpleParser {$/;"	c
+java_SimpleParser	libraries/java.php	/^function java_SimpleParser($handler) {$/;"	f
+java_SocketChannel	libraries/java.php	/^abstract class java_SocketChannel extends java_EmptyChannel {$/;"	c
+java_SocketChannel	libraries/java.php	/^function java_SocketChannel($peer,$host) {$/;"	f
+java_SocketChannelP	libraries/java.php	/^class java_SocketChannelP extends java_SocketChannel {$/;"	c
+java_SocketHandler	libraries/java.php	/^class java_SocketHandler {$/;"	c
+java_SocketHandler	libraries/java.php	/^function java_SocketHandler($protocol,$channel) {$/;"	f
+java_ThrowExceptionProxyFactory	libraries/java.php	/^class java_ThrowExceptionProxyFactory extends java_ExceptionProxyFactory {$/;"	c
+java_autoload	libraries/java.php	/^function java_autoload($libs=null) {$/;"	f
+java_autoload_function	libraries/java.php	/^function java_autoload_function($x) {$/;"	f
+java_autoload_function5	libraries/java.php	/^function java_autoload_function5($x) {$/;"	f
+java_begin_document	libraries/java.php	/^function java_begin_document() {$/;"	f
+java_call_with_continuation	libraries/java.php	/^function java_call_with_continuation($kontinuation=null) {$/;"	f
+java_cast	libraries/java.php	/^function java_cast($object,$type) {$/;"	f
+java_cast_internal	libraries/java.php	/^function java_cast_internal($object,$type) {$/;"	f
+java_checkCliSapi	libraries/java.php	/^function java_checkCliSapi() {$/;"	f
+java_class	libraries/java.php	/^class java_class extends Java {$/;"	c
+java_class	libraries/java.php	/^function java_class() {$/;"	f
+java_closure	libraries/java.php	/^function java_closure() {$/;"	f
+java_closure_array	libraries/java.php	/^function java_closure_array($args) {$/;"	f
+java_cmd	libraries/java.php	/^$java_cmd="java -Dphp.java.bridge.daemon=true -jar \\"${java}\\" INET_LOCAL:$channelName 0";$/;"	v
+java_context	libraries/java.php	/^function java_context() {$/;"	f
+java_defineHostFromInitialQuery	libraries/java.php	/^function java_defineHostFromInitialQuery($java_base) {$/;"	f
+java_doc	controllers/user.php	/^					$java_doc = $doc_reader->readServerDoc($doc_file, $doc['docname']);$/;"	v
+java_end_document	libraries/java.php	/^function java_end_document() {$/;"	f
+java_exception	libraries/java.php	/^class java_exception extends Exception implements java_JavaType {$/;"	c
+java_exception	libraries/java.php	/^function java_exception() {$/;"	f
+java_getCompatibilityOption	libraries/java.php	/^function java_getCompatibilityOption($client) {$/;"	f
+java_getHeader	libraries/java.php	/^function java_getHeader($name,$array) {$/;"	f
+java_get_base	libraries/java.php	/^function java_get_base() {$/;"	f
+java_get_closure	libraries/java.php	/^function java_get_closure() {return java_closure_array(func_get_args());}$/;"	f
+java_get_context	libraries/java.php	/^function java_get_context() {return java_context(); }$/;"	f
+java_get_lifetime	libraries/java.php	/^function java_get_lifetime ()$/;"	f
+java_get_server_name	libraries/java.php	/^function java_get_server_name() { return java_server_name(); }$/;"	f
+java_get_session	libraries/java.php	/^function java_get_session() {return java_session_array(func_get_args());}$/;"	f
+java_get_simple_channel	libraries/java.php	/^function java_get_simple_channel() {$/;"	f
+java_get_values	libraries/java.php	/^function java_get_values($arg) { return java_values($arg); }$/;"	f
+java_initialized	libraries/java.php	/^$java_initialized=false;$/;"	v
+java_initialized	libraries/java.php	/^$java_initialized=true;$/;"	v
+java_inspect	libraries/java.php	/^function java_inspect($object) {$/;"	f
+java_inspect_internal	libraries/java.php	/^function java_inspect_internal($object) {$/;"	f
+java_instanceof	libraries/java.php	/^function java_instanceof($ob,$clazz) {$/;"	f
+java_instanceof_internal	libraries/java.php	/^function java_instanceof_internal($ob,$clazz) {$/;"	f
+java_invoke	libraries/java.php	/^function java_invoke($object,$method,$args) {$/;"	f
+java_is_false	libraries/java.php	/^function java_is_false($value) { return !(java_values ($value)); }$/;"	f
+java_is_null	libraries/java.php	/^function java_is_null($value) { return is_null (java_values ($value)); }$/;"	f
+java_is_true	libraries/java.php	/^function java_is_true($value) { return (boolean)(java_values ($value)); }$/;"	f
+java_isfalse	libraries/java.php	/^function java_isfalse($value) { return !(java_values ($value)); }$/;"	f
+java_isnull	libraries/java.php	/^function java_isnull($value) { return is_null (java_values ($value)); }$/;"	f
+java_istrue	libraries/java.php	/^function java_istrue($value) { return (boolean)(java_values ($value)); }$/;"	f
+java_last_exception_clear	libraries/java.php	/^function java_last_exception_clear() {$/;"	f
+java_last_exception_get	libraries/java.php	/^function java_last_exception_get() {$/;"	f
+java_objectIterator	libraries/java.php	/^class java_objectIterator implements Iterator {$/;"	c
+java_require	libraries/java.php	/^function java_require($arg) {$/;"	f
+java_server_name	libraries/java.php	/^function java_server_name() {$/;"	f
+java_session	libraries/java.php	/^function java_session() {$/;"	f
+java_session_array	libraries/java.php	/^function java_session_array($args) {$/;"	f
+java_set_encoding	libraries/java.php	/^function java_set_encoding($enc) { return java_set_file_encoding ($enc); }$/;"	f
+java_set_file_encoding	libraries/java.php	/^function java_set_file_encoding($enc) {$/;"	f
+java_shutdown	libraries/java.php	/^function java_shutdown() {$/;"	f
+java_truncate	libraries/java.php	/^function java_truncate($str) {$/;"	f
+java_unwrap	libraries/java.php	/^function java_unwrap ($object) {$/;"	f
+java_values	libraries/java.php	/^function java_values($object) {$/;"	f
+java_values_internal	libraries/java.php	/^function java_values_internal($object) {$/;"	f
+java_virtual	libraries/java.php	/^function java_virtual($path,$return=false) {$/;"	f
+java_wrap	libraries/java.php	/^function java_wrap() {return java_closure_array(func_get_args());}$/;"	f
+join_class	controllers/user.php	/^	public function join_class(){$/;"	f
+join_class	models/user_model.php	/^	public function join_class($class_id, $user_id, $password){$/;"	f
+keepAlive	libraries/java.php	/^function keepAlive() { $this->keepAliveS(); $this->checkA($this->peer); }$/;"	f
+keepAlive	libraries/java.php	/^function keepAlive() { $this->keepAliveSC(); $this->checkE(); fclose ($this->peer); }$/;"	f
+keepAlive	libraries/java.php	/^function keepAlive() {$/;"	f
+keepAliveH	libraries/java.php	/^function keepAliveH() {$/;"	f
+keepAliveS	libraries/java.php	/^function keepAliveS() {$/;"	f
+keepAliveSC	libraries/java.php	/^function keepAliveSC() {$/;"	f
+key	libraries/Tank_auth.php	/^		$key = substr(md5(uniqid(rand().get_cookie($this->ci->config->item('sess_cookie_name')))), 0, 16);$/;"	v
+key	libraries/java.php	/^$key=$this->client->currentCacheKey;$/;"	v
+key	libraries/java.php	/^function key() {$/;"	f
+ky	helpers/recaptcha_helper.php	/^	$ky = pack('H*', $privkey);$/;"	v
+last_name	views/auth/register_form.php	/^$last_name = array($/;"	v
+len	libraries/java.php	/^$len=$this->headers['content_length'];$/;"	v
+len	libraries/java.php	/^$len=count($args);$/;"	v
+len	libraries/java.php	/^$len=dechex(2+strlen($data));$/;"	v
+len	libraries/java.php	/^$len=dechex(strlen($data));$/;"	v
+len	libraries/java.php	/^$len=strlen($buf);$/;"	v
+len	libraries/java.php	/^$len=strlen($context);$/;"	v
+len	libraries/java.php	/^$this->len=$this->SLEN;$/;"	v
+len0	libraries/java.php	/^$len0=chr(0xFF);$/;"	v
+len0	libraries/java.php	/^$len0=java_getCompatibilityOption($this->protocol->client);$/;"	v
+len1	libraries/java.php	/^$len1=chr($len&0xFF); $len>>=8;$/;"	v
+len2	libraries/java.php	/^$len2=chr($len&0xFF);$/;"	v
+length	libraries/java.php	/^$length=hexdec(fgets($this->peer,JAVA_RECV_SIZE));$/;"	v
+length	libraries/java.php	/^$length=hexdec(fgets($this->socket,JAVA_RECV_SIZE));$/;"	v
+level	libraries/java.php	/^$this->level=0;$/;"	v
+level	libraries/java.php	/^public $level=0,$eor=0; public $in_dquote,$eot=false;$/;"	v
+line	libraries/java.php	/^$line=trim(fgets($this->socket,JAVA_RECV_SIZE));$/;"	v
+link	libraries/java.php	/^function link(&$arg,&$newArg) {$/;"	f
+linkResult	libraries/java.php	/^function linkResult(&$val) {$/;"	f
+login	controllers/auth.php	/^				$login = $this->security->xss_clean($login);$/;"	v
+login	controllers/auth.php	/^				$login = '';$/;"	v
+login	controllers/auth.php	/^	function login()$/;"	f
+login	libraries/Tank_auth.php	/^	function login($login, $password, $remember, $login_by_username, $login_by_email)$/;"	f
+login	views/auth/forgot_password_form.php	/^$login = array($/;"	v
+login	views/auth/login_form.php	/^$login = array($/;"	v
+login_label	views/auth/forgot_password_form.php	/^	$login_label = 'Email or login';$/;"	v
+login_label	views/auth/forgot_password_form.php	/^	$login_label = 'Email';$/;"	v
+login_label	views/auth/login_form.php	/^	$login_label = 'Email or login';$/;"	v
+login_label	views/auth/login_form.php	/^	$login_label = 'Email';$/;"	v
+login_label	views/auth/login_form.php	/^	$login_label = 'Login';$/;"	v
+logout	controllers/auth.php	/^	function logout()$/;"	f
+logout	libraries/Tank_auth.php	/^	function logout()$/;"	f
+lookup_query	controllers/user.php	/^				$lookup_query = "SELECT tag_id FROM tags WHERE tag = ?";$/;"	v
+m	libraries/java.php	/^$this->m=$m;$/;"	v
+main	libraries/phpass-0.1/c/crypt_private.c	/^int main(int argc, char **argv)$/;"	f
+map	libraries/java.php	/^$this->map=array();$/;"	v
+map	libraries/java.php	/^public $map;$/;"	v
+material_type_code	models/user_model.php	/^	public function material_type_code($type){$/;"	f
+material_type_label	views/user/upload_doc.php	/^$material_type_label = 'Material Type';$/;"	v
+material_type_string	models/user_model.php	/^	public function material_type_string($type_id){$/;"	f
+material_types	views/user/upload_doc.php	/^$material_types = array($/;"	v
+message	controllers/user.php	/^		$message = $this->user_model->can_add_colleague($email, $user_id);$/;"	v
+methodCache	libraries/java.php	/^$methodCache=$this->methodCache;$/;"	v
+methodCache	libraries/java.php	/^$this->methodCache=$methodCache;$/;"	v
+methodCache	libraries/java.php	/^$this->methodCache=$this->asyncCache;$/;"	v
+methodCache	libraries/java.php	/^$this->methodCache=$this->defaultCache;$/;"	v
+mimes	config/mimes.php	/^$mimes = array(	'jnlp'	=>	'application\/x-java-jnlp-file',$/;"	v
+mobiles	config/user_agents.php	/^$mobiles = array($/;"	v
+mode	helpers/recaptcha_helper.php	/^	$mode=MCRYPT_MODE_CBC;   $/;"	v
+msg	libraries/java.php	/^$msg="Could not connect to the JEE server {$this->ssl}{$this->host}:{$this->port}. Please start it.";$/;"	v
+n	libraries/java.php	/^$n=$this->tag[2]->n;$/;"	v
+n	libraries/java.php	/^$n=&$this->tag[$t]->n;$/;"	v
+n	libraries/java.php	/^$n=count($args);$/;"	v
+n	libraries/java.php	/^$this->n=$n;$/;"	v
+n	libraries/java.php	/^$this->n=0;$/;"	v
+name	controllers/user.php	/^				$name = $data['userfile']['orig_name'];$/;"	v
+name	controllers/user.php	/^			$name = $data['userfile']['orig_name'];$/;"	v
+name	libraries/java.php	/^$name="HTTP_$name";$/;"	v
+name	libraries/java.php	/^$name=$arg->p;$/;"	v
+name	libraries/java.php	/^$name=$t->string[$t->off];$/;"	v
+name	libraries/java.php	/^$name=array_shift($args);$/;"	v
+name	libraries/java.php	/^$name=substr($x,1+$idx);$/;"	v
+newArg	libraries/java.php	/^$newArg=new java_ApplyArg($this,'A',$/;"	v
+newArg	libraries/java.php	/^$newArg=new java_CompositeArg($this,$st['t']);$/;"	v
+new_colleague_id	models/user_model.php	/^		$new_colleague_id = $this->get_id_from_email($email);$/;"	v
+new_email_key	controllers/auth.php	/^		$new_email_key	= $this->uri->segment(4);$/;"	v
+new_pass_key	controllers/auth.php	/^		$new_pass_key	= $this->uri->segment(4);$/;"	v
+new_password	views/auth/change_password_form.php	/^$new_password = array($/;"	v
+new_password	views/auth/reset_password_form.php	/^$new_password = array($/;"	v
+next	libraries/java.php	/^function next() {$/;"	f
+now	controllers/auth.php	/^		$now = ((float)$usec + (float)$sec);$/;"	v
+numpad	helpers/recaptcha_helper.php	/^	$numpad = $block_size - (strlen ($val) % $block_size);$/;"	v
+ob	libraries/java.php	/^$ob=($object==null) ? $name : array(&$object,$name);$/;"	v
+object	libraries/java.php	/^$object=$arg->v;$/;"	v
+object	libraries/java.php	/^$object=$this->globalRef->get($this->getExact($st['v']));$/;"	v
+offsetExists	libraries/java.php	/^function offsetExists($idx) {$/;"	f
+offsetGet	libraries/java.php	/^function offsetGet($idx) {$/;"	f
+offsetSet	libraries/java.php	/^function offsetSet($idx,$val) {$/;"	f
+offsetUnset	libraries/java.php	/^function offsetUnset($idx) {$/;"	f
+ok	libraries/phpass-0.1/test.php	/^$ok = 0;$/;"	v
+old_password	views/auth/change_password_form.php	/^$old_password = array($/;"	v
+onreadystatechange	views/user/assign.php	/^        xhr.onreadystatechange = function () {$/;"	j
+onreadystatechange	views/user/colleagues.php	/^        xhr.onreadystatechange = function () {$/;"	j
+onreadystatechange	views/user/documents.php	/^        xhr.onreadystatechange = function () {$/;"	j
+onreadystatechange	views/user/pending_colleagues.php	/^        xhr.onreadystatechange = function () {$/;"	j
+open	libraries/java.php	/^function open() {$/;"	f
+open_enrollment	models/user_model.php	/^	public function open_enrollment($class_id, $password){$/;"	f
+options	controllers/auth.php	/^		$options = "<script>var RecaptchaOptions = {theme: 'custom', custom_theme_widget: 'recaptcha_widget'};<\/script>\\n";$/;"	v
+output	libraries/phpass-0.1/PasswordHash.php	/^			$output = '';$/;"	v
+output	libraries/phpass-0.1/PasswordHash.php	/^			$output = '*1';$/;"	v
+output	libraries/phpass-0.1/PasswordHash.php	/^			$output = fread($fh, $count);$/;"	v
+output	libraries/phpass-0.1/PasswordHash.php	/^			$output = substr($output, 0, $count);$/;"	v
+output	libraries/phpass-0.1/PasswordHash.php	/^		$output = '$2a$';$/;"	v
+output	libraries/phpass-0.1/PasswordHash.php	/^		$output = '$P$';$/;"	v
+output	libraries/phpass-0.1/PasswordHash.php	/^		$output = '';$/;"	v
+output	libraries/phpass-0.1/PasswordHash.php	/^		$output = '*0';$/;"	v
+output	libraries/phpass-0.1/PasswordHash.php	/^		$output = '_';$/;"	v
+output	libraries/phpass-0.1/PasswordHash.php	/^		$output = substr($setting, 0, 12);$/;"	v
+override	libraries/java.php	/^$override=$_ENV['X_JAVABRIDGE_OVERRIDE_HOSTS'];$/;"	v
+overrideHosts	libraries/java.php	/^$overrideHosts=$this->getOverrideHosts();$/;"	v
+p	libraries/java.php	/^$this->p=$p;$/;"	v
+package	libraries/java.php	/^$package=substr($x,0,$idx);$/;"	v
+parentArg	libraries/java.php	/^public $parentArg;$/;"	v
+parse	libraries/java.php	/^function parse() {$/;"	f
+parseHeaders	libraries/java.php	/^function parseHeaders() {$/;"	f
+parser	libraries/java.php	/^$this->parser=new java_NativeParser($handler);$/;"	v
+parser	libraries/java.php	/^$this->parser=new java_Parser($this);$/;"	v
+parser	libraries/java.php	/^$this->parser=new java_SimpleParser($handler);$/;"	v
+parser	libraries/java.php	/^$this->parser=xml_parser_create();$/;"	v
+parser	libraries/java.php	/^public $parser;$/;"	v
+parserError	libraries/java.php	/^function parserError() {$/;"	f
+password	views/auth/change_email_form.php	/^$password = array($/;"	v
+password	views/auth/login_form.php	/^$password = array($/;"	v
+password	views/auth/register_form.php	/^$password = array($/;"	v
+password	views/auth/unregister_form.php	/^$password = array($/;"	v
+password	views/user/class_admin.php	/^$password = array($/;"	v
+password	views/user/enroll.php	/^$password = array($/;"	v
+password	views/user/join_class.php	/^$password = array($/;"	v
+password2	views/user/class_admin.php	/^$password2 = array($/;"	v
+password2	views/user/enroll.php	/^$password2 = array($/;"	v
+password2_label	views/user/class_admin.php	/^$password2_label = "Confirm Password:";$/;"	v
+password2_label	views/user/enroll.php	/^$password2_label = "Confirm Password:";$/;"	v
+password_label	views/user/class_admin.php	/^$password_label = 'Password:';$/;"	v
+password_label	views/user/enroll.php	/^$password_label = 'Password:';$/;"	v
+password_label	views/user/join_class.php	/^$password_label = 'Password:';$/;"	v
+path	libraries/java.php	/^$path="";$/;"	v
+path	libraries/java.php	/^$path=$url["path"];$/;"	v
+path	libraries/java.php	/^$path=trim($path);$/;"	v
+peer	libraries/java.php	/^$peer=@pfsockopen($host="127.0.0.1",$channelName,$errno,$errstr,5);$/;"	v
+peer	libraries/java.php	/^$peer=pfsockopen($host,$channelName,$errno,$errstr,20);$/;"	v
+peer	libraries/java.php	/^$peer=pfsockopen($this->host,$channelName,$errno,$errstr,20);$/;"	v
+peer	libraries/java.php	/^$this->peer=$peer;$/;"	v
+pending_colleagues	controllers/user.php	/^	public function pending_colleagues(){$/;"	f
+platforms	config/user_agents.php	/^$platforms = array ($/;"	v
+port	libraries/java.php	/^$port="8080";$/;"	v
+port	libraries/java.php	/^$port=$hostVec[2];$/;"	v
+port	libraries/java.php	/^$port=$url["port"];$/;"	v
+port	libraries/java.php	/^$port=substr($host,$idx+1);$/;"	v
+port	libraries/java.php	/^$port=substr($host,$idx+1,$webCtx);$/;"	v
+port	libraries/java.php	/^$this->port=$port;$/;"	v
+portable_hashes	libraries/phpass-0.1/PasswordHash.php	/^		$this->portable_hashes = $portable_hashes;$/;"	v
+portable_hashes	libraries/phpass-0.1/PasswordHash.php	/^	var $portable_hashes;$/;"	v
+pos	libraries/java.php	/^$this->pos=strlen($this->buf);$/;"	v
+pos	libraries/java.php	/^public $pos=0,$c=0,$i=0,$i0=0,$e;$/;"	v
+preparedToSendBuffer	libraries/java.php	/^$preparedToSendBuffer=&$client->preparedToSendBuffer;$/;"	v
+preparedToSendBuffer	libraries/java.php	/^$preparedToSendBuffer=null;$/;"	v
+profile_table_name	models/tank_auth/users.php	/^		$this->profile_table_name	= $ci->config->item('db_table_prefix', 'tank_auth').$this->profile_table_name;$/;"	v
+profile_table_name	models/tank_auth/users.php	/^	private $profile_table_name	= 'user_profiles';	\/\/ user profiles$/;"	v
+propertyAccessBegin	libraries/java.php	/^function propertyAccessBegin($object,$method) {$/;"	f
+propertyAccessEnd	libraries/java.php	/^function propertyAccessEnd() {$/;"	f
+protocol	libraries/java.php	/^$this->protocol=$protocol;$/;"	v
+protocol	libraries/java.php	/^$this->protocol=new java_Protocol($this);$/;"	v
+proxy	libraries/java.php	/^$proxy=$this->__delegate=$/;"	v
+proxy	libraries/java.php	/^$proxy=$this->create($result,$signature);$/;"	v
+proxy	libraries/java.php	/^$proxy=new java_InternalException($proxy,$exception);$/;"	v
+proxyFactory	libraries/java.php	/^$this->proxyFactory=new java_ProxyFactory($this);$/;"	v
+pt	libraries/java.php	/^$pt=&$this->tag[1]->strings;$/;"	v
+purge	models/tank_auth/user_autologin.php	/^	function purge($user_id)$/;"	f
+purge_na	models/tank_auth/users.php	/^	function purge_na($expire_period = 172800)$/;"	f
+qres	models/tank_auth/login_attempts.php	/^		$qres = $this->db->get($this->table_name);$/;"	v
+query	controllers/user.php	/^				$query = "INSERT IGNORE INTO tags SET `tag` = ?";$/;"	v
+query	models/tank_auth/user_autologin.php	/^		$query = $this->db->get();$/;"	v
+query	models/tank_auth/users.php	/^		$query = $this->db->get($this->table_name);$/;"	v
+query	models/user_model.php	/^		$query = $this->db->query($sql_query, $sql_row);$/;"	v
+query	models/user_model.php	/^		$query = $this->db->query($sql_query, array( 'email' => $email));$/;"	v
+query	models/user_model.php	/^		$query = $this->db->query($sql_query, array( 'owner_user_id' => $user_id, 'doc_id' => $doc_id));$/;"	v
+query	models/user_model.php	/^		$query = $this->db->query($sql_query, array( 'receiver_user_id' => $user_id, 'sender_user_id' => $new_colleague_id));$/;"	v
+query	models/user_model.php	/^		$query = $this->db->query($sql_query, array( 'role' => TEACHER, 'users_user_id' => $user_id, 'assignment_id' => $assignment_id));$/;"	v
+query	models/user_model.php	/^		$query = $this->db->query($sql_query, array( 'sender_user_id' => $pending_user_id, 'receiver_user_id' => $user_id));$/;"	v
+query	models/user_model.php	/^		$query = $this->db->query($sql_query, array( 'sender_user_id' => $sender_id, 'receiver_user_id' => $receiver_id));$/;"	v
+query	models/user_model.php	/^		$query = $this->db->query($sql_query, array( 'user_id' => $user_id, 'assignments_assignment_id' => $assignment_id));$/;"	v
+query	models/user_model.php	/^		$query = $this->db->query($sql_query, array( 'user_id' => $user_id, 'class_id' => $class_id))->row();$/;"	v
+query	models/user_model.php	/^		$query = $this->db->query($sql_query, array( 'user_id' => $user_id, 'class_id' => $class_id));$/;"	v
+query	models/user_model.php	/^		$query = $this->db->query($sql_query, array( 'users_user_id' => $user_id, 'assignment_id' => $assignment_id));$/;"	v
+query	models/user_model.php	/^		$query = $this->db->query($sql_query, array( 'users_user_id1' => $new_colleague_id, 'users_user_id2' => $user_id));$/;"	v
+query	models/user_model.php	/^		$query = $this->db->query($sql_query, array( 'users_user_id1' => $user_id, 'users_user_id2' => $new_colleague_id));$/;"	v
+query	models/user_model.php	/^		$query = $this->db->query($sql_query, array('class_id' => $class_id))->row();$/;"	v
+query	models/user_model.php	/^		$query = $this->db->query($sql_query, array('class_id' => $class_id));$/;"	v
+query	models/user_model.php	/^		$query = 'SELECT a_u.*, u_p.first_name,u_p.last_name FROM assignments_and_users as a_u,$/;"	v
+query	models/user_model.php	/^		$query = 'SELECT user_profiles.first_name, user_profiles.last_name, user_profiles.user_id FROM user_profiles,colleagues$/;"	v
+query	models/user_model.php	/^		$query = 'SELECT user_profiles.first_name, user_profiles.last_name, user_profiles.user_id FROM user_profiles,pending_colleagues WHERE$/;"	v
+query	models/user_model.php	/^		$query = 'SELECT user_profiles.first_name, user_profiles.last_name, user_profiles.user_id$/;"	v
+random	libraries/phpass-0.1/PasswordHash.php	/^				$random = $this->get_random_bytes(3);$/;"	v
+random	libraries/phpass-0.1/PasswordHash.php	/^			$random = $this->get_random_bytes(16);$/;"	v
+random	libraries/phpass-0.1/PasswordHash.php	/^			$random = $this->get_random_bytes(6);$/;"	v
+random	libraries/phpass-0.1/PasswordHash.php	/^		$random = '';$/;"	v
+random_state	libraries/phpass-0.1/PasswordHash.php	/^				$this->random_state =$/;"	v
+random_state	libraries/phpass-0.1/PasswordHash.php	/^		$this->random_state = microtime() . getmypid();$/;"	v
+random_state	libraries/phpass-0.1/PasswordHash.php	/^	var $random_state;$/;"	v
+rc	libraries/java.php	/^$rc=$this->factory->getProxy($this->val,$this->signature,$this->exception,$wrap);$/;"	v
+read	libraries/java.php	/^function read($size) {$/;"	f
+recaptcha_check_answer	helpers/recaptcha_helper.php	/^function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $extra_params = array())$/;"	f
+recaptcha_get_html	helpers/recaptcha_helper.php	/^function recaptcha_get_html ($pubkey, $error = null, $use_ssl = false)$/;"	f
+recaptcha_get_signup_url	helpers/recaptcha_helper.php	/^function recaptcha_get_signup_url ($domain = null, $appname = null) {$/;"	f
+recaptcha_mailhide_html	helpers/recaptcha_helper.php	/^function recaptcha_mailhide_html($pubkey, $privkey, $email) {$/;"	f
+recaptcha_mailhide_url	helpers/recaptcha_helper.php	/^function recaptcha_mailhide_url($pubkey, $privkey, $email) {$/;"	f
+recaptcha_response	helpers/recaptcha_helper.php	/^                $recaptcha_response = new ReCaptchaResponse();$/;"	v
+recaptcha_response	helpers/recaptcha_helper.php	/^        $recaptcha_response = new ReCaptchaResponse();$/;"	v
+redirect	libraries/java.php	/^function redirect() {$/;"	f
+redirect	libraries/java.php	/^function redirect() {}$/;"	f
+referenceBegin	libraries/java.php	/^function referenceBegin($name) {$/;"	f
+referenceEnd	libraries/java.php	/^function referenceEnd() {$/;"	f
+referenceObject	libraries/java.php	/^function referenceObject($name,$args) {$/;"	f
+register	controllers/auth.php	/^	function register()$/;"	f
+remember	views/auth/login_form.php	/^$remember = array($/;"	v
+remove_student	controllers/user.php	/^	public function remove_student($user_id){$/;"	f
+remove_student	models/user_model.php	/^	public function remove_student($user_id, $class_id){$/;"	f
+req	helpers/recaptcha_helper.php	/^        $req = "";$/;"	v
+req	helpers/recaptcha_helper.php	/^        $req = _recaptcha_qsencode ($data);$/;"	v
+req	helpers/recaptcha_helper.php	/^        $req=substr($req,0,strlen($req)-1);$/;"	v
+req	libraries/java.php	/^$req=java_context()->getHttpServletRequest();$/;"	v
+req	libraries/java.php	/^$req=new java("php.java.servlet.VoidInputHttpServletRequest",$req);$/;"	v
+request_already_sent	models/user_model.php	/^	public function request_already_sent($sender_id, $receiver_id){$/;"	f
+res	libraries/java.php	/^$res="PUT ";$/;"	v
+res	libraries/java.php	/^$res=$arg->getResult(true);$/;"	v
+res	libraries/java.php	/^$res=$this->getResult();$/;"	v
+res	libraries/java.php	/^$res=call_user_func_array($ob,$res);$/;"	v
+res	libraries/java.php	/^$res=java_context()->getHttpServletResponse();$/;"	v
+res	libraries/java.php	/^$res=new java("php.java.servlet.RemoteHttpServletResponse",$res);$/;"	v
+res	libraries/java.php	/^$this->res=$this->fread(10);$/;"	v
+res	libraries/java.php	/^$this->res=$this->handler->read(10);$/;"	v
+res	libraries/java.php	/^private $res;$/;"	v
+reset_email	controllers/auth.php	/^	function reset_email()$/;"	f
+reset_password	controllers/auth.php	/^	function reset_password()$/;"	f
+reset_password	libraries/Tank_auth.php	/^	function reset_password($user_id, $new_pass_key, $new_password)$/;"	f
+reset_password	models/tank_auth/users.php	/^	function reset_password($user_id, $new_pass, $new_pass_key, $expire_period = 900)$/;"	f
+resp	controllers/auth.php	/^		$resp = recaptcha_check_answer($this->config->item('recaptcha_private_key', 'tank_auth'),$/;"	v
+response	helpers/recaptcha_helper.php	/^        $response = '';$/;"	v
+response	helpers/recaptcha_helper.php	/^        $response = _recaptcha_http_post (RECAPTCHA_VERIFY_SERVER, "\/recaptcha\/api\/verify",$/;"	v
+response	helpers/recaptcha_helper.php	/^        $response = explode("\\r\\n\\r\\n", $response, 2);$/;"	v
+result	controllers/auth.php	/^			$result = $this->db->query($sql_query, $this->tank_auth->get_user_id())->row();$/;"	v
+result	controllers/user.php	/^				$result = $this->db->query($sql_query, $data['class_id'])->row();$/;"	v
+result	controllers/user.php	/^			$result = $this->db->query($sql_query, $this->tank_auth->get_user_id())->row();$/;"	v
+result	controllers/user.php	/^		$result = $this->db->query($sql_query, $doc_id)->row();$/;"	v
+result	controllers/user.php	/^		$result = $this->db->query($sql_query, $user_id)->row();$/;"	v
+result	libraries/java.php	/^$result=clone($client->cachedJavaPrototype);$/;"	v
+result	models/user_model.php	/^		$result = $this->db->query($query, array( 'users_user_id1' => $user_id))->result_array();$/;"	v
+result	models/user_model.php	/^		$result = $this->db->query($sql_query, array( 'doc_id' => $doc_id))->row_array();$/;"	v
+resultBegin	libraries/java.php	/^function resultBegin() {$/;"	f
+resultEnd	libraries/java.php	/^function resultEnd() {$/;"	f
+resultVoid	libraries/java.php	/^$this->resultVoid=$resultVoid;$/;"	v
+resultVoid	libraries/java.php	/^public $resultVoid;$/;"	v
+result_array	models/user_model.php	/^			$result_array = $this->db->query($sql_query, array('owner_user_id' => $user_id, 'tag' => $tag))->result_array();$/;"	v
+result_array	models/user_model.php	/^		$result_array = $this->db->query($sql_query, $sql_row)->result_array();$/;"	v
+result_array	models/user_model.php	/^		$result_array = $this->db->query($sql_query, $user_id)->result_array();$/;"	v
+result_array	models/user_model.php	/^		$result_array = $this->db->query($sql_query, array( 'users_user_id' => $user_id, 'classes_class_id' => $class_id))->result_array();$/;"	v
+result_array	models/user_model.php	/^		$result_array = $this->db->query($sql_query, array('classes_class_id' => $class_id))->result_array();$/;"	v
+result_array	models/user_model.php	/^		$result_array = $this->db->query($sql_query, array('document_doc_id' => $doc_id))->result_array();$/;"	v
+ret	controllers/user.php	/^				$ret = $this->db->insert('documents', $file_data);$/;"	v
+ret	controllers/user.php	/^			$ret = $this->db->update('assignments_and_users', $file_data, "users_user_id = ".$user_id." AND $/;"	v
+retval	libraries/java.php	/^$retval=parent::__call($method,$args);$/;"	v
+rewind	libraries/java.php	/^function rewind() {$/;"	f
+robots	config/user_agents.php	/^$robots = array($/;"	v
+role_num_to_string	models/user_model.php	/^	public function role_num_to_string($role){$/;"	f
+s	libraries/java.php	/^$s=$overrideHosts;$/;"	v
+s	libraries/java.php	/^$s=$st['t'];$/;"	v
+s	libraries/java.php	/^$s=$st['v'];$/;"	v
+s	libraries/java.php	/^$s=str_replace("_",".",$x);$/;"	v
+s	libraries/java.php	/^$s=substr($s,2);$/;"	v
+s	libraries/java.php	/^$this->s=str_repeat(" ",$this->SLEN);$/;"	v
+s	libraries/java.php	/^$this->s=str_repeat($this->s,2);$/;"	v
+salt	libraries/phpass-0.1/PasswordHash.php	/^		$salt = substr($setting, 4, 8);$/;"	v
+salt	models/user_model.php	/^		$salt = $query->salt;$/;"	v
+salt	models/user_model.php	/^		$salt = md5(rand().microtime());$/;"	v
+sapi	libraries/java.php	/^$sapi=substr(php_sapi_name(),0,3);$/;"	v
+scheme	libraries/java.php	/^$scheme=$url["scheme"]=="https" ? "ssl:\/\/" : "";$/;"	v
+search_assign_docs	controllers/user.php	/^	public function search_assign_docs($tags = NULL){$/;"	f
+search_colleague	views/user/pending_colleagues.php	/^function search_colleague(e)$/;"	f
+search_colleagues	views/user/colleagues.php	/^function search_colleagues(e)$/;"	f
+search_docs	controllers/user.php	/^	public function search_docs($tags = NULL){$/;"	f
+search_docs	views/user/assign.php	/^function search_docs(e)$/;"	f
+search_docs	views/user/documents.php	/^function search_docs(e)$/;"	f
+search_results	models/user_model.php	/^		$search_results = array();$/;"	v
+search_user_docs	models/user_model.php	/^	public function search_user_docs($user_id, $tags, $max_docs){$/;"	f
+sendData	libraries/java.php	/^function sendData() {$/;"	f
+send_again	controllers/auth.php	/^	function send_again()$/;"	f
+server	helpers/recaptcha_helper.php	/^                $server = RECAPTCHA_API_SECURE_SERVER;$/;"	v
+server	helpers/recaptcha_helper.php	/^                $server = RECAPTCHA_API_SERVER;$/;"	v
+serverName	libraries/java.php	/^$this->serverName="${ssl}${host}:$port";$/;"	v
+serverName	libraries/java.php	/^$this->serverName="127.0.0.1:$channelName";$/;"	v
+serverName	libraries/java.php	/^public $serverName;$/;"	v
+session_max_lifetime	libraries/java.php	/^$session_max_lifetime=ini_get("session.gc_maxlifetime");$/;"	v
+set	models/tank_auth/user_autologin.php	/^	function set($user_id, $key)$/;"	f
+setAsyncHandler	libraries/java.php	/^function setAsyncHandler() {$/;"	f
+setDefaultHandler	libraries/java.php	/^function setDefaultHandler() {$/;"	f
+setException	libraries/java.php	/^function setException($string) {$/;"	f
+setFactory	libraries/java.php	/^function setFactory($factory) {$/;"	f
+setIndex	libraries/java.php	/^function setIndex($val) {$/;"	f
+setNextIndex	libraries/java.php	/^function setNextIndex() {$/;"	f
+setProperty	libraries/java.php	/^function setProperty($object,$property,$arg) {$/;"	f
+setResult	libraries/java.php	/^function setResult($val) {$/;"	f
+setSignature	libraries/java.php	/^function setSignature($signature) {$/;"	f
+setVoidSignature	libraries/java.php	/^function setVoidSignature() {$/;"	f
+set_new_email	libraries/Tank_auth.php	/^	function set_new_email($new_email, $password)$/;"	f
+set_new_email	models/tank_auth/users.php	/^	function set_new_email($user_id, $new_email, $new_email_key, $activated)$/;"	f
+set_password_key	models/tank_auth/users.php	/^	function set_password_key($user_id, $new_pass_key)$/;"	f
+shutdownBrokenConnection	libraries/java.php	/^function shutdownBrokenConnection ($msg) {$/;"	f
+shutdownBrokenConnection	libraries/java.php	/^function shutdownBrokenConnection () {$/;"	f
+shutdownBrokenConnection	libraries/java.php	/^function shutdownBrokenConnection () {}$/;"	f
+sig	libraries/java.php	/^$sig="&{$this->__signature}@{$name}";$/;"	v
+sig	libraries/java.php	/^$sig="@{$this->__signature}@$method";$/;"	v
+sig	libraries/java.php	/^$sig="~INVALID";$/;"	v
+sign	libraries/java.php	/^$sign=$st['p'];$/;"	v
+signature	libraries/java.php	/^$signature=sprintf("<H p=\\"1\\" v=\\"%s\\">",$name);$/;"	v
+signature	libraries/java.php	/^$signature=sprintf("<K p=\\"1\\" v=\\"%s\\">",$name);$/;"	v
+signature	libraries/java.php	/^$this->signature="@V";$/;"	v
+signature	libraries/java.php	/^$this->signature=$signature;$/;"	v
+signature	libraries/java.php	/^public $signature;$/;"	v
+simpleArg	libraries/java.php	/^$this->simpleArg=new java_Arg($this);$/;"	v
+simpleFactory	libraries/java.php	/^$this->simpleFactory=new java_SimpleFactory($this);$/;"	v
+size	controllers/user.php	/^				$size = $data['userfile']['file_size'];$/;"	v
+size	controllers/user.php	/^			$size = $data['userfile']['file_size'];$/;"	v
+smileys	config/smileys.php	/^$smileys = array($/;"	v
+socket	libraries/java.php	/^$socket=$this->socket;$/;"	v
+socket	libraries/java.php	/^$socket=fsockopen("{$this->ssl}{$this->host}",$this->port,$errno,$errstr,20);$/;"	v
+socket	libraries/java.php	/^$this->socket=$socket;$/;"	v
+socket	libraries/java.php	/^public $socket;$/;"	v
+sql_query	controllers/auth.php	/^					$sql_query = 'SELECT id FROM users where email = ?';$/;"	v
+sql_query	controllers/auth.php	/^			$sql_query = 'SELECT first_name FROM user_profiles where id = ?';$/;"	v
+sql_query	controllers/user.php	/^				$sql_query = 'SELECT subject, class_hour FROM classes where class_id = ?';$/;"	v
+sql_query	controllers/user.php	/^			$sql_query = 'SELECT first_name FROM user_profiles where id = ?';$/;"	v
+sql_query	controllers/user.php	/^		$sql_query = 'SELECT docname FROM documents where doc_id = ?';$/;"	v
+sql_query	controllers/user.php	/^		$sql_query = 'SELECT first_name,last_name FROM user_profiles where id = ?';$/;"	v
+sql_query	models/user_model.php	/^			$sql_query = "SELECT user_profiles.first_name,user_profiles.last_name,user_profiles.user_id FROM user_profiles, class_members WHERE class_members.classes_class_id = ? AND class_members.role = ? AND class_members.users_user_id = user_profiles.user_id";$/;"	v
+sql_query	models/user_model.php	/^			$sql_query = 'SELECT documents.* FROM documents,document_tags,tags WHERE documents.owner_user_id = ? AND$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "DELETE FROM class_enrollments WHERE class_enrollments.classes_class_id = ?";$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "DELETE FROM pending_colleagues WHERE sender_user_id = ? AND receiver_user_id = ?";$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "SELECT * FROM assignments WHERE assignments.assignment_id = ?";$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "SELECT * FROM assignments_and_users WHERE	assignments_assignment_id = ? AND users_user_id = ?";$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "SELECT * FROM assignments_and_users WHERE assignments_and_users.users_user_id = ? AND$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "SELECT * FROM class_enrollments WHERE class_enrollments.classes_class_id = ? AND$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "SELECT * FROM class_enrollments WHERE class_enrollments.classes_class_id = ?";$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "SELECT * FROM class_members WHERE class_members.users_user_id = ? AND$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "SELECT * FROM documents WHERE	documents.doc_id = ?";$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "SELECT * FROM documents WHERE documents.owner_user_id = ? AND$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "SELECT a.assignment_name, a.assignment_id, a.total_points, DATE_FORMAT(assign_date, '%c\/%e\/%y %h:%i %p') as assign_date, DATE_FORMAT(assign_date, '%c\/%e\/%y %h:%i %p') AS due_date, CASE WHEN a_u.submit_time = '00\/00\/0000' THEN NULL ELSE DATE_FORMAT(a_u.submit_time, '%c\/%e\/%y %h:%i %p') END AS submit_time FROM assignments_and_users as a_u,assignments as a WHERE a_u.users_user_id = ? AND a_u.assignments_assignment_id = a.assignment_id AND a.classes_class_id = ?";$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "SELECT assignment_id, assignment_name, DATE_FORMAT(assign_date, '%c\/%e\/%y %h:%i %p') as assign_date, DATE_FORMAT(due_date, '%c\/%e\/%y %h:%i %p') as due_date, total_points, notes FROM assignments WHERE classes_class_id = ?";$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "SELECT colleagues.users_user_id1 FROM colleagues WHERE colleagues.users_user_id1 = ?$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "SELECT docname,material_type,DATE_FORMAT(upload_date, '%c\/%e\/%y %h:%i %p') as upload_date, doc_id,size,doc_type FROM documents where owner_user_id = ?";$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "SELECT role, class_id, subject, class_hour, create_date, close_date, ".$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "SELECT sender_user_id FROM pending_colleagues WHERE receiver_user_id = ? AND sender_user_id = ?";$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "SELECT sender_user_id FROM pending_colleagues WHERE sender_user_id = ? AND receiver_user_id = ?";$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = "SELECT users.id FROM users WHERE email = ?";$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = 'SELECT class_members.users_user_id from assignments, class_members WHERE assignments.classes_class_id =$/;"	v
+sql_query	models/user_model.php	/^		$sql_query = 'SELECT tags.tag FROM tags, document_tags$/;"	v
+sql_row	models/user_model.php	/^		$sql_row = array(	'classes_class_id' => $class_id,$/;"	v
+sql_row	models/user_model.php	/^		$sql_row = array(	'classes_class_id' => $this->db->insert_id(),$/;"	v
+sql_row	models/user_model.php	/^		$sql_row = array(	'subject' => $class_data['subject'],$/;"	v
+ssl	libraries/java.php	/^$ssl="";$/;"	v
+ssl	libraries/java.php	/^$ssl="ssl:\/\/";$/;"	v
+ssl	libraries/java.php	/^$this->ssl=$ssl;$/;"	v
+st	libraries/java.php	/^$st=&$this->tag[2]->strings;$/;"	v
+stack	libraries/java.php	/^$this->stack=array($this->arg=$this->simpleArg);$/;"	v
+stack	libraries/java.php	/^$this->stack=null;$/;"	v
+stack	libraries/java.php	/^public $stack;$/;"	v
+str	libraries/java.php	/^$str="";$/;"	v
+str	libraries/java.php	/^$str=$this->fread(JAVA_RECV_SIZE);$/;"	v
+str	libraries/java.php	/^$str=&$this->tag[$t]->strings;$/;"	v
+str	libraries/java.php	/^$str=fread($this->peer,$length);$/;"	v
+str	libraries/java.php	/^$str=fread($this->socket,$length);$/;"	v
+str	libraries/java.php	/^$str=fread($this->socket,JAVA_RECV_SIZE);$/;"	v
+str	libraries/java.php	/^$str=str_replace("\\\\",".",$x);$/;"	v
+str	libraries/java.php	/^$str=substr($str,12);$/;"	v
+strings	libraries/java.php	/^$this->strings=array();$/;"	v
+student_assignment	controllers/user.php	/^	public function student_assignment($assignment_id, $download = -1){$/;"	f
+student_current_assignments	controllers/user.php	/^	public function student_current_assignments($assignment_id = -1){$/;"	f
+student_doc	controllers/user.php	/^					$student_doc = $doc['file'];$/;"	v
+student_doc	controllers/user.php	/^					$student_doc = $java_doc->stripAnswers();$/;"	v
+student_doc	controllers/user.php	/^				$student_doc = $doc['file'];$/;"	v
+subject	views/user/create_class.php	/^$subject = array($/;"	v
+subject_label	views/user/create_class.php	/^$subject_label = 'Subject:';$/;"	v
+t	libraries/java.php	/^$t=&$this->tag[0]->strings[0];$/;"	v
+t_hasher	libraries/phpass-0.1/test.php	/^$t_hasher = new PasswordHash(8, FALSE);$/;"	v
+t_hasher	libraries/phpass-0.1/test.php	/^$t_hasher = new PasswordHash(8, TRUE);$/;"	v
+table_name	models/tank_auth/login_attempts.php	/^		$this->table_name = $ci->config->item('db_table_prefix', 'tank_auth').$this->table_name;$/;"	v
+table_name	models/tank_auth/login_attempts.php	/^	private $table_name = 'login_attempts';$/;"	v
+table_name	models/tank_auth/user_autologin.php	/^		$this->table_name		= $ci->config->item('db_table_prefix', 'tank_auth').$this->table_name;$/;"	v
+table_name	models/tank_auth/user_autologin.php	/^	private $table_name			= 'user_autologin';$/;"	v
+table_name	models/tank_auth/users.php	/^		$this->table_name			= $ci->config->item('db_table_prefix', 'tank_auth').$this->table_name;$/;"	v
+table_name	models/tank_auth/users.php	/^	private $table_name			= 'users';			\/\/ user accounts$/;"	v
+tag	libraries/java.php	/^$this->tag=array(new java_ParserTag(),new java_ParserTag(),new java_ParserTag());$/;"	v
+tag_id	controllers/user.php	/^					$tag_id = $this->db->query($lookup_query, array('tag' => $doc_tag))->row()->tag_id;$/;"	v
+tag_id	controllers/user.php	/^				$tag_id = 0;$/;"	v
+tags	controllers/user.php	/^			$tags = explode(' ', $tags);$/;"	v
+tags	controllers/user.php	/^			$tags = urldecode(trim($tags));$/;"	v
+tags	models/user_model.php	/^		$tags = array();$/;"	v
+tail_call	libraries/java.php	/^$tail_call=false;$/;"	v
+tail_call	libraries/java.php	/^$tail_call=true;$/;"	v
+teacher_assignment	controllers/user.php	/^	public function teacher_assignment($assignment_id, $user_id = -1){$/;"	f
+teacher_current_assignments	controllers/user.php	/^	public function teacher_current_assignments(){$/;"	f
+teacher_doc	controllers/user.php	/^					$teacher_doc = $doc['file'];$/;"	v
+teacher_doc	controllers/user.php	/^					$teacher_doc = $java_doc->generateNewVersion()->exportToXML();$/;"	v
+teacher_doc	controllers/user.php	/^				$teacher_doc = $doc['file'];$/;"	v
+teacher_has_assignment	models/user_model.php	/^	public function teacher_has_assignment($user_id, $assignment_id){$/;"	f
+thiz	libraries/java.php	/^$thiz=$ar[$arLen-1];$/;"	v
+throwExceptionProxyFactory	libraries/java.php	/^$this->throwExceptionProxyFactory=new java_ThrowExceptionProxyFactory($this);$/;"	v
+time	controllers/auth.php	/^		$time = $this->session->flashdata('captcha_time');$/;"	v
+tmpname	controllers/user.php	/^				$tmpname = $data['userfile']['full_path'];$/;"	v
+tmpname	controllers/user.php	/^			$tmpname = $data['userfile']['full_path'];$/;"	v
+toString	libraries/java.php	/^function toString() {$/;"	f
+trace	libraries/java.php	/^$trace=$e->getTraceAsString();$/;"	v
+type	libraries/java.php	/^$this->type=$this->BEGIN;$/;"	v
+type	libraries/java.php	/^$this->type=$this->ENTITY;$/;"	v
+type	libraries/java.php	/^$this->type=$this->KEY;$/;"	v
+type	libraries/java.php	/^$this->type=$this->VAL;$/;"	v
+type	libraries/java.php	/^$this->type=$this->VOJD;$/;"	v
+type	libraries/java.php	/^$this->type=$type;$/;"	v
+type	libraries/java.php	/^$type=$channelName[0];$/;"	v
+type	libraries/java.php	/^public $type;$/;"	v
+unban_user	models/tank_auth/users.php	/^	function unban_user($user_id)$/;"	f
+unref	libraries/java.php	/^function unref($object) {$/;"	f
+unregister	controllers/auth.php	/^	function unregister()$/;"	f
+update_login_info	models/tank_auth/users.php	/^	function update_login_info($user_id, $record_ip, $record_time)$/;"	f
+upload_assignment	controllers/user.php	/^	private function upload_assignment($user_id, $assignment_id){$/;"	f
+upload_doc	controllers/user.php	/^	public function upload_doc(){$/;"	f
+url	helpers/recaptcha_helper.php	/^	$url = recaptcha_mailhide_url ($pubkey, $privkey, $email);$/;"	v
+url	libraries/java.php	/^$url=parse_url($java_base);$/;"	v
+use_recaptcha	controllers/auth.php	/^			$use_recaptcha			= $this->config->item('use_recaptcha', 'tank_auth');$/;"	v
+use_username	controllers/auth.php	/^			$use_username = $this->config->item('use_username', 'tank_auth');$/;"	v
+used_already	models/user_model.php	/^						$used_already = TRUE;$/;"	v
+used_already	models/user_model.php	/^				$used_already = FALSE;$/;"	v
+used_already	models/user_model.php	/^		$used_already = FALSE;$/;"	v
+user_has_assignment	models/user_model.php	/^	public function user_has_assignment($user_id, $assignment_id){$/;"	f
+user_id	controllers/auth.php	/^					$user_id = $this->db->query($sql_query, $this->input->post('email'))->row();$/;"	v
+user_id	controllers/auth.php	/^					$user_id = $user_id->id;$/;"	v
+user_id	controllers/auth.php	/^		$user_id		= $this->uri->segment(3);$/;"	v
+user_id	libraries/Tank_auth.php	/^		$user_id = $this->ci->session->userdata('user_id');$/;"	v
+user_id	models/tank_auth/users.php	/^			$user_id = $this->db->insert_id();$/;"	v
+userfile	views/student/assignment.php	/^$userfile = array($/;"	v
+userfile	views/student/current_assignments.php	/^$userfile = array($/;"	v
+userfile	views/user/upload_doc.php	/^$userfile = array($/;"	v
+userfile_label	views/student/assignment.php	/^$userfile_label = "File:"; ?>$/;"	v
+userfile_label	views/student/current_assignments.php	/^$userfile_label = "File:";$/;"	v
+userfile_label	views/user/upload_doc.php	/^$userfile_label = "File:";$/;"	v
+username	views/auth/register_form.php	/^	$username = array($/;"	v
+users_table_name	models/tank_auth/user_autologin.php	/^		$this->users_table_name	= $ci->config->item('db_table_prefix', 'tank_auth').$this->users_table_name;$/;"	v
+users_table_name	models/tank_auth/user_autologin.php	/^	private $users_table_name	= 'users';$/;"	v
+v	libraries/java.php	/^$this->v=$v;$/;"	v
+val	helpers/recaptcha_helper.php	/^	$val=_recaptcha_aes_pad($val);$/;"	v
+val	libraries/java.php	/^$this->val=&$val;$/;"	v
+val	libraries/java.php	/^$this->val=array();$/;"	v
+val	libraries/java.php	/^$val=$client->getResult();$/;"	v
+val	libraries/java.php	/^$val=$this->getExact($st['v']);$/;"	v
+val	libraries/java.php	/^$val=$this->getInternalResult();$/;"	v
+val	libraries/java.php	/^$val=$this->getResult();$/;"	v
+val	libraries/java.php	/^$val=$this->res[6];$/;"	v
+val	libraries/java.php	/^$val=null;$/;"	v
+valid	libraries/java.php	/^function valid() {$/;"	f
+value	libraries/phpass-0.1/PasswordHash.php	/^			$value = ord($input[$i++]);$/;"	v
+var	libraries/java.php	/^$this->var=java_cast ($javaProxy,"A");$/;"	v
+var	libraries/java.php	/^private $var;$/;"	v
+view_class	controllers/user.php	/^	public function view_class($class_id = -1){$/;"	f
+view_submission	controllers/user.php	/^	public function view_submission($assignment_id, $user_id){$/;"	f
+webContext	libraries/java.php	/^$this->webContext=$webCtx;$/;"	v
+webContext	libraries/java.php	/^public $webContext;$/;"	v
+webCtx	libraries/java.php	/^$webCtx=strpos($s,"\/\/");$/;"	v
+webapp	libraries/java.php	/^$webapp=$this->getWebApp();$/;"	v
+webapp	libraries/java.php	/^$webapp=$this->getWebAppInternal(); if(!$webapp) $path="\/";$/;"	v
+word	controllers/auth.php	/^		$word = $this->session->flashdata('captcha_word');$/;"	v
+write	libraries/java.php	/^function write($data) {$/;"	f
+writeArg	libraries/java.php	/^function writeArg($arg) {$/;"	f
+writeArgs	libraries/java.php	/^function writeArgs($args) {$/;"	f
+writeBoolean	libraries/java.php	/^function writeBoolean($boolean) {$/;"	f
+writeCompositeBegin_a	libraries/java.php	/^function writeCompositeBegin_a() {$/;"	f
+writeCompositeBegin_h	libraries/java.php	/^function writeCompositeBegin_h() {$/;"	f
+writeCompositeEnd	libraries/java.php	/^function writeCompositeEnd() {$/;"	f
+writeDouble	libraries/java.php	/^function writeDouble($d) {$/;"	f
+writeException	libraries/java.php	/^function writeException($object,$str) {$/;"	f
+writeLong	libraries/java.php	/^function writeLong($l) {$/;"	f
+writeObject	libraries/java.php	/^function writeObject($object) {$/;"	f
+writePairBegin	libraries/java.php	/^function writePairBegin() {$/;"	f
+writePairBegin_n	libraries/java.php	/^function writePairBegin_n($key) {$/;"	f
+writePairBegin_s	libraries/java.php	/^function writePairBegin_s($key) {$/;"	f
+writePairEnd	libraries/java.php	/^function writePairEnd() {$/;"	f
+writeString	libraries/java.php	/^function writeString($name) {$/;"	f
+writeULong	libraries/java.php	/^function writeULong($l) {$/;"	f
+writeUnref	libraries/java.php	/^function writeUnref($object) {$/;"	f
+wrong	libraries/phpass-0.1/test.php	/^$wrong = "test12346";$/;"	v
+wrote_begin	libraries/java.php	/^$wrote_begin=1;$/;"	v
+wrote_begin	libraries/java.php	/^$wrote_begin=false;$/;"	v
+xhr.onreadystatechange	views/user/assign.php	/^        xhr.onreadystatechange = function () {$/;"	j
+xhr.onreadystatechange	views/user/colleagues.php	/^        xhr.onreadystatechange = function () {$/;"	j
+xhr.onreadystatechange	views/user/documents.php	/^        xhr.onreadystatechange = function () {$/;"	j
+xhr.onreadystatechange	views/user/pending_colleagues.php	/^        xhr.onreadystatechange = function () {$/;"	j

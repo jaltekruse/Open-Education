@@ -1,0 +1,61 @@
+<html>
+<title>Open-Math</title>
+<body>
+<div id="page_root" style="width:960px;height:500px;align:center">
+
+<?php include 'header.php'?>
+
+<div id="page_content" style="width:960px;height:400;">
+
+<div id="features" style="width:480px;float:left;">
+<h2>Key Features</h2>
+<ul>
+<li>Easy to use interface for tracking your classes</li>
+<li>Everything is online, even step-by-step work from assignments!</li>
+<li>Free application for making dynamic class content</li>
+<li>Free student accounts</li>
+</ul>
+</div>
+<div id="signup" style="width:480px;float:right;">
+<form action="" method="post">
+<table border="0">
+	<tr>
+		<td colspan="2">
+			<h2>Sign up today!</h2>
+		</td>
+	</tr>
+	<tr>
+		<td><label for="name">Name:</label></td>
+		<td><input type="text" name="name" id="name"></br></td>
+	</tr>
+	<tr>
+		<td><label for="email">E-mail:</label></td>
+		<td><input type="text" name="email" id="email"></br></td>
+	</tr>
+	<tr>
+				<td><label for="email">Confirm </br>E-mail:</label></td>
+		<td><input type="text" name="email" id="email"></br></td>
+	</tr>
+	<tr>
+				<td><label for="password">Password:</label></td>
+		<td><input type="text" name="password" id="password"></br></td>
+	</tr>
+	<tr>
+				<td><label for="email">Confirm </br>Password:</label></td>
+		<td><input type="text" name="password_conf" id="email_conf"></br></td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<input type="submit" value="Sign Up">
+		</td>
+	</tr>
+</table>
+</form>
+</div>
+</div>
+
+<?php include 'footer.php'?>
+
+</div>
+</body>
+</html>

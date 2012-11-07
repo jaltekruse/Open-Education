@@ -1,0 +1,827 @@
+<?php
+class User extends CI_Controller{
+
+	public function __construct(){
+		parent::__construct();
+		$this->load->library('session');
+		$this->load->model('user_model');
+		$this->load->helper('url');
+		$this->load->library('tank_auth');
+	}
+	
+	public function index(){
+		redirect('/user/classes');
+	}
+
+	public function classes(){
+		$this->session->unset_userdata('class_id');
+		$data = $this->authenticate();
+		$data['title'] =  'Classes';
+		$data['classes'] = $this->user_model->get_classes($data['user_id']);
+		$this->load->view('templates/header', $data);
+		$this->load->view('user/classes', $data);
+		$this->load->view('templates/footer', $data);
+	}
+	
+	public function comments(){
+		$data = $this->authenticate();
+		$data['title'] = 'Comment System';
+		$this->load->view('templates/header', $data);
+		$this->load->view('comments', $data);
+		$this->load->view('templates/footer', $data);
+	}
+
+	public function colleagues(){
+		$data = $this->authenticate();
+		$data['title'] =  'Colleagues';
+		$data['colleagues'] = $this->user_model->get_colleagues($data['user_id']);
+		$this->load->view('templates/header', $data);
+		$this->load->view('user/colleagues', $data);
+		$this->load->view('templates/footer', $data);
+	}
+	
+	public function pending_colleagues(){
+		$data = $this->authenticate();
+		$data['title'] =  'Pending Colleagues';
+		$data['colleagues'] = $this->user_model->get_pending_colleagues($data['user_id']);
+		$this->load->view('templates/header', $data);
+		$this->load->view('user/pending_colleagues', $data);
+		$this->load->view('templates/footer', $data);
+	}
+	
+	public function confirm_colleague($pending_user_id){
+		$data = $this->authenticate();
+		if ($this->user_model->is_pending_colleague($pending_user_id, $data['user_id'])){
+			$this->user_model->confirm_colleague($pending_user_id, $data['user_id']);
+		}
+		redirect('/user/pending_colleagues');
+	}
+	
+	public function add_colleague(){
+		$this->session->unset_userdata('class_id');
+		$data = $this->authenticate();
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+
+		// need to check that e-mail is in use on the site, should probably create block list
+		// to prevent unwanted requests
+		$this->form_validation->set_rules('email','Email','required|max_length[60]|valid_email|callback_check_colleague_email['.$data['user_id'].']');
+		$data['title'] =  'Add Colleague';
+		if ($this->form_validation->run()){
+			$id = $this->user_model->get_id_from_email($this->input->post('email'));
+			$this->user_model->add_colleague_request($data['user_id'], $id);
+			$data['messages'][] = array( 'type' =>'success', 'msg' => 'Request sent to '.$this->full_name($id));
+		}
+		$this->load->view('templates/header', $data);
+		$this->load->view('user/add_colleague', $data);
+		$this->load->view('templates/footer', $data);
+	}
+	
+	public function check_colleague_email($email, $user_id){
+		if ( $user_id ===  $this->user_model->get_id_from_email($email)){
+			$this->form_validation->set_message('check_colleague_email', 'You cannot add yourself as a colleague, Nice try :p');
+			return FALSE;
+		}
+		$message = $this->user_model->can_add_colleague($email, $user_id);
+		if ( $message === TRUE ){
+			return TRUE;
+		}
+		$this->form_validation->set_message('check_colleague_email', $message);
+		return FALSE;
+	}
+	
+	public function create_class(){
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+
+		$data = $this->authenticate();
+		$data['title'] = 'Create Class';
+		$data['heading'] = $data['title'];
+		$this->form_validation->set_rules('subject','Subject','required|max_length[50]|xss_clean');
+		$this->form_validation->set_rules('class_hour','Class Hour','is_natural|max_length[3]|xss_clean');
+		
+		if ($this->form_validation->run() === FALSE ){
+			$this->load->view('templates/header', $data);
+			$this->load->view('user/create_class');
+			$this->load->view('templates/footer');
+		}
+		else{
+			$class_data = array(	'subject' => $this->input->post('subject'),
+									'class_hour' => $this->input->post('class_hour')
+			);
+			$this->user_model->add_class($class_data, $data['user_id']);
+			redirect('/user/classes');
+		}
+	}
+		
+	public function remove_student($user_id){
+		if ($this->session->userdata('class_id') == FALSE){// no class is stored in session, send back to class list
+			redirect('/user/classes/');
+		}
+		$data = $this->authenticate();
+
+		// check to see if the current user is authorized to view this class, and is a teacher of the class
+		if ( ! $this->user_model->is_teacher($data['user_id'], $data['class_id'])){
+			redirect('/user/view_class');
+		}
+		if ( ! $this->user_model->is_student($user_id, $data['class_id'])){
+			redirect('/user/view_class');
+		}
+		if ( $this->input->post('remove_student') == 1){// confirm action was sent to delete user
+			$this->user_model->remove_student($user_id, $data['class_id']);
+			redirect('/user/view_class');
+		}
+		$data['student_name'] = $this->full_name($user_id);
+		$data['student_id'] = $user_id;
+		$data['title'] = 'Confirm Student Removal';
+		$this->load->view('templates/header', $data);
+		$this->load->view('user/remove_student', $data);
+		$this->load->view('templates/footer');
+	}
+	
+	public function class_admin($class_id = -1){
+			$this->load->helper('form');
+			$this->load->library('form_validation');
+			$this->form_validation->set_error_delimiters('<div class="errormsg">', '</div>');
+			if ($class_id == -1){
+				if ($this->session->userdata('class_id') != FALSE)
+					redirect('/user/class_admin/'.$this->session->userdata('class_id'));
+				else
+					redirect('/user/classes/');
+			}
+			$this->session->set_userdata('class_id', $class_id);
+			$data = $this->authenticate();
+
+			// check to see if the current user is authorized to view this class, and is a teacher of the class
+			if ( ! $this->user_model->is_teacher($data['user_id'], $class_id)){
+				redirect('/user/classes');
+			}
+			if ( ! $this->user_model->enrollment_is_open($data['class_id']))
+			{//enrollment is currently closed, below is form validation for setting new password to open enrollment
+				$this->form_validation->set_rules('password','Password','required|xss_clean|max_length[30]|min_length[8]');
+				$this->form_validation->set_rules('password2','Confirm Password','required|xss_clean|max_length[30]|min_length[8]|matches[password]');
+			
+				if ($this->form_validation->run()){
+					// password passes validation check
+					$this->user_model->open_enrollment($class_id, $this->input->post('password'));
+					$data['enrollment_open'] = TRUE;
+					$data['messages'][] = array( 'type' =>'success', 'msg' => 'You have opened enrollment for class'.$class_id.'.');
+				}
+			}
+			else{// enrollment is open
+				$data['enrollment_open'] = TRUE;
+				if ( $this->input->post('close_enrollment') == 1){// action was sent to close enrollment
+					$this->user_model->close_enrollment($data['class_id']);
+					$data['enrollment_open'] = FALSE;
+					$data['messages'] = array();
+					$data['messages'][] = array('type' =>'success', 'msg' =>'You have successfully closed enrollment.');
+				}
+			}
+			$data['title'] = 'Admin : '.$data['class_name'];
+			
+			$this->load->view('templates/header', $data);
+			$this->load->view('user/class_admin', $data);
+			$this->load->view('templates/footer');
+	}
+	
+	public function view_class($class_id = -1){
+		if ($class_id == -1){
+			if ($this->session->userdata('class_id') != FALSE)
+				redirect('/user/view_class/'.$this->session->userdata('class_id'));
+			else
+				redirect('/user/classes/');
+		}
+		$this->session->set_userdata('class_id', $class_id);
+		$data = $this->authenticate();
+		// check to see if the current user is authorized to view this class
+		if ( ! $this->user_model->is_class_member($data['user_id'], $data['class_id'])){
+			// should probably show a message to the user that they do not have permissions to view class
+			redirect('/user/classes');
+		}
+		if ( $this->user_model->is_student($data['user_id'], $class_id)){
+			redirect('/user/student_current_assignments');
+		}
+		$data['title'] = $data['class_name'];
+		
+		if ( $this->user_model->is_teacher($data['user_id'], $data['class_id'])){
+			$data['students'] = $this->user_model->get_students($data['class_id']);
+		}
+		$this->load->view('templates/header', $data);
+		$this->load->view('user/view_class', $data);
+		$this->load->view('templates/footer');
+	}
+	
+	public function join_class(){
+			$this->load->helper('form');
+			$this->load->library('form_validation');
+			
+			$data = $this->authenticate();
+			
+			$this->form_validation->set_rules('password','Password','required|xss_clean|max_length[60]|min_length[8]');
+			$this->form_validation->set_rules('class_id','Class ID','is_natural|max_length[20]|xss_clean');
+			
+			$data['messsages'] = array();
+			if ($this->form_validation->run() === FALSE ){
+				//view loaded below, nothing to do
+			}
+			else{
+				if ($this->user_model->is_class_member($data['user_id'], $this->input->post('class_id'))){
+					// user is already a member
+					$data['messages'][] = array( 'type' =>'warning', 'msg' => 'You are already a member of class '.$this->input->post('class_id'));
+				}
+				else if ( ! $this->user_model->join_class($this->input->post('class_id'), $data['user_id'], $this->input->post('password'))){
+					// joining class failed, need to create callbacks, so form is re-populated
+					$data['messages'][] = array( 'type' =>'error', 'msg' => 'Error joining class '.$this->input->post('class_id'));
+				}
+				else{// successful class sign-up
+					//refreshes class data for header	
+					$data[] = $this->authenticate();
+					$data['messages'][] = array( 'type' =>'success', 'msg' => 'You have joined class '.$this->input->post('class_id'));
+
+				}
+
+			}
+			$data['title'] = 'Join Class';
+			$this->load->view('templates/header', $data);
+			$this->load->view('user/join_class', $data);
+			$this->load->view('templates/footer');
+	}
+	
+	public function current_assignments(){
+		if ($this->session->userdata('class_id') == FALSE){// no class is stored in session, send back to class list
+			redirect('/user/classes/');
+		}
+		$data = $this->authenticate();
+
+		// check to see if the current user is authorized to view this class, and is a teacher of the class
+		if ( $this->user_model->is_teacher($data['user_id'], $data['class_id'])){
+			redirect('/user/teacher_current_assignments');
+		}
+		if ( $this->user_model->is_student($data['user_id'], $data['class_id'])){
+			redirect('/user/student_current_assignments');
+		}
+	}
+		
+	public function student_current_assignments($assignment_id = -1){
+		if ($this->session->userdata('class_id') == FALSE){// no class is stored in session, send back to class list
+			redirect('/user/classes/');
+		}
+		$data = $this->authenticate();
+		if ( ! $this->user_model->is_student($data['user_id'], $data['class_id'])){
+			redirect('/user/classes');
+		}
+		// the user is uploading a submission
+		//check they have permissions to do so
+		$config['upload_path'] = '/var/www/uploads/';
+		$config['allowed_types'] = '*';
+		$config['max_size'] = '50000';
+		$config['max_width']  = '2500';
+		$config['max_height']  = '2500';
+		$config['remove_spaces']= 'true';
+				
+		$this->load->helper('form');
+		$this->load->library('upload', $config);
+		$this->load->library('form_validation');
+		$this->load->helper('download');
+		$this->form_validation->set_rules('userfile','File','callback_check_file');
+		
+		if ( $assignment_id > 0){
+			if (! $assignment = $this->user_model->user_has_assignment($data['user_id'], $assignment_id)){
+				//check if the assignment id is valid and associated with the signed in user
+				redirect('user/current_assigments');
+			}else{
+				if ($_SERVER['REQUEST_METHOD'] == 'GET'){
+					$assignment = $this->user_model->get_assignment($assignment_id);
+					force_download($assignment['assignment_name'], $assignment['student_doc']);
+				}
+			}
+		}
+		if ( $this->form_validation->run() ){// the user selected a file
+			$data = array_merge($data, $this->upload_assignment($data['user_id'], $assignment_id));
+		}
+		
+		$data['assignments'] = $this->user_model->get_student_assignments($data['user_id'], $data['class_id']);
+		$data['title'] = 'Current Assignments';
+		$this->load->view('templates/header', $data);
+		$this->load->view('student/current_assignments', $data);
+		$this->load->view('templates/footer');
+	}
+	
+	public function assignment($assignment_id){
+		// check to see if the current user is authorized to view this class, and is a teacher of the class
+		$data = $this->authenticate();
+		if ( $this->user_model->is_teacher($data['user_id'], $data['class_id'])){
+			redirect('/user/teacher_assignment/'.$assignment_id);
+		}
+		if ( $this->user_model->is_student($data['user_id'], $data['class_id'])){
+			redirect('/user/student_assignment/'.$assignment_id);
+		}
+	}
+	
+	public function student_assignment($assignment_id, $download = -1){
+		//if ($this->session->userdata('class_id') == FALSE){// no class is stored in session, send back to class list
+		//	redirect('/user/classes/');
+		//}
+		$data = $this->authenticate();
+		//if ( ! $this->user_model->is_student($data['user_id'], $data['class_id'])){
+		//		redirect('/user/classes');
+		//}
+		if ( ! $this->user_model->is_students_assignment($data['user_id'], $assignment_id)){
+			redirect('/user/current_assignments');
+		}
+		// the user is uploading a submission
+		//check they have permissions to do so
+		$config['upload_path'] = '/var/www/uploads/';
+		$config['allowed_types'] = '*';
+		$config['max_size'] = '50000';
+		$config['max_width']  = '2500';
+		$config['max_height']  = '2500';
+		$config['remove_spaces']= 'true';
+				
+		$this->load->helper('form');
+		$this->load->library('upload', $config);
+		$this->load->library('form_validation');
+		$this->load->helper('download');
+		$this->form_validation->set_rules('userfile','File','callback_check_file');
+		
+		if ( $assignment_id > 0){
+			if ($download > 0){
+				$assignment = $this->user_model->get_student_assignment($assignment_id, $data['user_id'] );
+				force_download($assignment['assignment_name'], $assignment['original_assignment']);
+			}
+		}
+		if ( $this->form_validation->run() ){// the user selected a file
+			// perform the upload
+			$data = array_merge($data, $this->upload_assignment($data['user_id'], $assignment_id));
+		}
+		
+		$data['assignment'] = $this->user_model->get_student_assignment($assignment_id, $data['user_id']);
+		$data['title'] = "Assignment - " . $data['assignment']['assignment_name'];
+		$this->load->view('templates/header', $data);
+		$this->load->view('student/assignment', $data);
+		$this->load->view('templates/footer');
+	}
+
+	public function view_assignment($assignment_id){
+		
+	}
+
+	public function teacher_current_assignments(){
+		if ($this->session->userdata('class_id') == FALSE){// no class is stored in session, send back to class list
+			redirect('/user/classes/');
+		}
+		$data = $this->authenticate();
+		if ( ! $this->user_model->is_teacher($data['user_id'], $data['class_id'])){
+			redirect('/user/classes');
+		}
+		$data['assignments'] = $this->user_model->get_teacher_assignments($data['user_id'], $data['class_id']);
+		$data['heading'] = 'Current Assignments - '.'<a href="/index.php/user/assign">Create New Assignment</a>';
+		$data['title'] = 'Current Assignments';
+		$this->load->view('templates/header', $data);
+		$this->load->view('teacher/current_assignments', $data);
+		$this->load->view('templates/footer');
+	}
+	
+	public function view_submission($assignment_id, $user_id){
+		//if ($this->session->userdata('class_id') == FALSE){// no class is stored in session, send back to class list
+		//	redirect('/user/classes/');
+		//}
+		$data = $this->authenticate();
+		//if ( ! $this->user_model->is_teacher($data['user_id'], $data['class_id'])){
+		//	redirect('/user/classes');
+		//}
+		if ( ! $this->user_model->teacher_has_assignment($data['user_id'], $assignment_id)){
+			redirect('/user/current_assignments');
+		}
+		$data['parameters'] = array('teacher', $_SERVER['HTTP_COOKIE'],
+				'http://localhost/index.php/user/teacher_assignment/'.$assignment_id.'/'.$user_id);
+		$this->output->set_content_type('application/x-java-jnlp-file');
+		$this->load->view('user/OpenNotebook', $data);
+	}
+	
+	public function continue_working(){
+	
+	}
+	
+	public function teacher_assignment($assignment_id, $user_id = -1){
+		if ($this->session->userdata('class_id') == FALSE){// no class is stored in session, send back to class list
+			redirect('/user/classes/');
+		}
+		$data = $this->authenticate();
+		if ( ! $this->user_model->is_teacher($data['user_id'], $data['class_id'])){
+			redirect('/user/classes');
+		}
+		if ( ! $this->user_model->teacher_has_assignment($data['user_id'], $assignment_id)){
+			redirect('/user/current_assignments');
+		}
+		$this->load->helper('download');
+		if ( ! ($user_id == -1)){
+			if ( $this->user_model->teacher_has_assignment($data['user_id'], $assignment_id))
+			{// add more checks here to see if the document is being shared with the current user
+				$doc = $this->user_model->get_student_submission($assignment_id, $user_id);
+				$assignment = $this->user_model->get_teacher_assignment($assignment_id);
+				force_download($this->full_name($doc['users_user_id']).'_'.$assignment['assignment_name'], $doc['student_doc']); 
+			}
+		}
+		$data['assignment'] = $this->user_model->get_teacher_assignment($assignment_id);
+		$data['assignments'] = $this->user_model->get_student_submissions($assignment_id);
+		$data['title'] = 'Student Submissions - '.$data['assignment']['assignment_name'].' '.$data['assignment']['total_points'];
+		$this->load->view('templates/header', $data);
+		$this->load->view('teacher/student_submissions', $data);
+		$this->load->view('templates/footer');
+	}
+	
+	private function upload_assignment($user_id, $assignment_id){
+		if ( ! $this->upload->do_upload()){
+			$data['messsages'] = array();
+			$data['messages'][] = array( 'type' =>'error', 'msg' => ''.$this->upload->display_errors('',''));
+			return $data;
+		}else{
+			$this->load->database();
+			$data['userfile'] = $this->upload->data();
+			//DEFINE POSTED FILE INTO VARIABLE
+			$name = $data['userfile']['orig_name'];
+			$tmpname = $data['userfile']['full_path'];
+			if ( ! strpos($name, '.') ){
+				$doc_type = NULL;
+			}
+			else{
+				$doc_type = $data['userfile']['file_ext'];
+			}
+			$size = $data['userfile']['file_size'];
+			$datetime = date('Y-m-d H:i:');
+
+			//OPEN FILE AND EXTRACT DATA /CONTENT FROM IT
+			$fp   = fopen($tmpname, 'r');
+			$file = fread($fp, $size * 1024 + 200);
+			// php should be automatically adding slashes, using line below will double escape
+			//$file = addslashes($file);
+			fclose($fp);
+			$file_data=array('student_doc'=>$file, 'submit_time' => $datetime);
+			$ret = $this->db->update('assignments_and_users', $file_data, "users_user_id = ".$user_id." AND 
+					assignments_assignment_id = ".$assignment_id);
+			unlink($tmpname);
+			unset($data);
+			$data = array();
+			$data['messages'][] = array( 'type' =>'success', 'msg' => 'Successfully submitted assignment.');
+			return $data;
+		}
+	}
+	
+	public function search_assign_docs($tags = NULL){
+		$data = $this->authenticate();
+		if ( $tags === NULL || trim(urldecode($tags)) === ""){
+			$data['docs'] = $this->user_model->get_docs($data['user_id']);
+		}
+		else{
+			$tags = urldecode(trim($tags));
+			$tags = explode(' ', $tags);
+			$data['docs'] = $this->user_model->search_user_docs($data['user_id'], $tags, 20);
+		}
+		$data['searched'] = TRUE;
+		$this->load->view('/user/doc_selection_list', $data);
+	}
+	
+	public function search_docs($tags = NULL){
+		$data = $this->authenticate();
+		if ( $tags === NULL  || trim(urldecode($tags)) == ""){
+			$data['docs'] = $this->user_model->get_docs($data['user_id']);
+		}
+		else{
+			$tags = urldecode(trim($tags));
+			$tags = explode(' ', $tags);
+			$data['docs'] = $this->user_model->search_user_docs($data['user_id'], $tags, 20);
+		}
+		$data['searched'] = TRUE;
+		$this->load->view('/user/doc_list', $data);
+	}
+		
+	public function assign(){
+		require('/var/www/application/libraries/Java.inc');
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		$this->form_validation->set_error_delimiters('<div class="message errormsg">', '</div>');
+		
+		$data = $this->authenticate();
+		// check to see if the current user is a teacher of the class
+		if ( ! $this->user_model->is_teacher($data['user_id'], $data['class_id'])){
+			redirect('/user/view_class');
+		}
+		
+		$this->form_validation->set_rules('doc_id','Document','required|xss_clean|callback_check_doc_id($data[\'user_id\'])');
+		$this->form_validation->set_rules('assign_date','Assign Date','required|callback_check_date');
+		$this->form_validation->set_rules('due_date','Due Date','required|callback_check_date');
+		$this->form_validation->set_rules('total_points','Total Points','integer|less_than[5000]');
+		$this->form_validation->set_rules('notes','Notes','xss_clean|maxlength(300)');
+		$doc_id = $this->input->post('doc_id');
+		$doc = $this->user_model->get_doc($doc_id);
+		
+		
+		if ($this->form_validation->run()){
+			if ($doc['doc_type'] == '.mdoc'){
+				$doc_reader = new java('doc.xml.DocReader');
+				//echo $doc_reader->getRandomMessage();
+				$doc_file = base64_encode($doc['file']);
+				try{
+					$java_doc = $doc_reader->readServerDoc($doc_file, $doc['docname']);
+					$teacher_doc = $java_doc->generateNewVersion()->exportToXML();
+					$student_doc = $java_doc->stripAnswers();
+				} catch(Exception $e){
+					// should send a message back to the user that there was a problem
+					$teacher_doc = $doc['file'];
+					$student_doc = $doc['file'];
+				}
+			}
+			else{
+				$teacher_doc = $doc['file'];
+				$student_doc = $doc['file'];
+			}
+			
+			$due_date_parts = explode("/", $this->input->post('due_date'));
+			$assign_date_parts = explode("/", $this->input->post('assign_date'));
+			$assignment_data = array(	'documents_doc_id' => $doc_id,
+										'assign_date' => date('Y-m-d H:i:', mktime(0,0,0, $assign_date_parts['0'],
+											$assign_date_parts['1'], $assign_date_parts['2']) ),
+										'due_date' => date('Y-m-d H:i:', mktime(0,0,0, $due_date_parts['0'],
+											$due_date_parts['1'], $due_date_parts['2']) ),
+										'notes' => $this->input->post('notes'),
+										'classes_class_id' => $data['class_id'],
+										// need to change these two once communication with java is set up
+										'student_doc' => $doc['file'],
+										'teacher_doc' => $doc['file'],
+										'assignment_name' => $doc['docname'],
+										'total_points' => $this->input->post('total_points'),
+			);
+			$this->user_model->add_assignment($assignment_data);
+			// make sure to modify the add student method to grab assignments
+			// redirect to assignment list
+			redirect('/user/current_assignments');
+		}
+		
+		$data['docs'] = $this->user_model->get_docs($data['user_id']);
+		$data['title'] = 'View Docs';
+		$data['students'] = $this->user_model->get_students($data['class_id']);
+		$data['title'] = 'New Assignment';
+		$this->user_model->search_user_docs($data['user_id'], array('math', 'algebra'), 20);
+		$this->load->view('templates/header', $data);
+		$this->load->view('user/assign', $data);
+		$this->load->view('templates/footer');
+	}
+	
+	public function check_date($date){
+		$date_parts = explode("/", $date);
+		if (sizeof($date_parts) < 3){
+			$this->form_validation->set_message('check_date', 'Invaid Date.');
+			return FALSE;
+		}
+		if ( checkdate($date_parts[0], $date_parts[1], $date_parts[2]))
+			return TRUE;
+		$this->form_validation->set_message('check_date', 'Invaid Date.');
+		return FALSE;
+	}
+	
+	public function check_doc_id($doc_id, $user_id){
+		// TODO add check to see if the document is being shared by another user with the current one
+		if ( $this->user_model->is_doc_owner($user_id, $doc_id))
+			return TRUE;
+		// this method can be called as form validation, or outside of it, so the form validation library might not be present
+		if ( ! $this->form_validation == NULL)
+			$this->form_validation->set_message('check_doc_id', 'You are not authorized to assign this document.');
+		return FALSE;
+	}
+	
+	public function documents($download_doc_id = -1){
+		$data = $this->authenticate();
+		$this->load->helper('download');
+		if ( ! ($download_doc_id == -1)){
+			if ( $this->user_model->is_doc_owner($data['user_id'], $download_doc_id))
+			{// add more checks here to see if the document is being shared with the current user
+				$doc = $this->user_model->get_doc($download_doc_id);
+				force_download($doc['docname'], $doc['file']); 
+			}
+		}
+		$data['docs'] = $this->user_model->get_docs($data['user_id']);
+		$data['title'] = 'View Docs';
+		
+		//echo json_encode($data['docs']);
+		$this->load->view('templates/header', $data);
+		$this->load->view('user/documents', $data);
+		$this->load->view('templates/footer');
+	}
+	
+	public function doc_details($doc_id){
+		$data = $this->authenticate();
+		if ( ! $this->check_doc_id($doc_id, $data['user_id'])){
+			redirect('/user/documents');
+		}
+		$data['colleagues'] = $this->user_model->get_colleagues($data['user_id']);
+		$data['doc'] = $this->user_model->get_doc($doc_id);
+		$data['title'] = $data['doc']['docname'];
+		$this->load->view('templates/header', $data);
+		$this->load->view('user/doc_details');
+		$this->load->view('templates/footer');
+	}
+	
+	public function edit_doc($doc_id){
+		$data = $this->authenticate();
+
+		// check to see if the current user is the document owner
+		if ( ! $this->user_model->is_doc_owner($data['user_id'], $doc_id)){
+			redirect('/user/documents');
+		}
+		$data['parameters'] = array('teacher', $_SERVER['HTTP_COOKIE'], 'http://localhost/index.php/user/documents/'.$doc_id);
+		$this->output->set_content_type('application/x-java-jnlp-file');
+		$this->load->view('user/OpenNotebook', $data);
+	}
+	
+	public function delete_doc($doc_id){
+		$data = $this->authenticate();
+
+		// check to see if the current user is the document owner
+		if ( ! $this->user_model->is_doc_owner($data['user_id'], $doc_id)){
+			redirect('/user/documents');
+		}
+		if ( $this->input->post('delete_doc') == 1){// confirm action was sent to delete user
+			// should add check here to make sure the document is not being shared, once sharing is implemented
+			$this->user_model->delete_doc($doc_id);
+			redirect('/user/documents');
+		}
+		$data['docname'] = $this->doc_name($doc_id);
+		$data['doc_id'] = $doc_id;
+		$data['title'] = 'Confirm Document Deletion';
+		$this->load->view('templates/header', $data);
+		$this->load->view('user/delete_doc', $data);
+		$this->load->view('templates/footer');
+	}
+	
+	public function delete_assignment($assignment_id){
+		$data = $this->authenticate();
+
+		// check to see if the current user is a teacher who can modify the assignment
+		if ( ! $this->user_model->teacher_has_assignment($data['user_id'], $assignment_id)){
+			redirect('/user/current_assignments');
+		}
+		if ( $this->input->post('delete_assignment') == 1){// confirm action was sent to delete user
+			// should add check here to make sure the document is not being shared, once sharing is implemented
+			$this->user_model->delete_assignment($assignment_id);
+			redirect('/user/current_assignments');
+		}
+		$assignment = $this->user_model->get_assignment($assignment_id);
+		$data['assignment_name'] = $assignment['assignment_name'];
+		$data['assignment_id'] = $assignment_id;
+		$data['title'] = 'Confirm Assignment Deletion';
+		$this->load->view('templates/header', $data);
+		$this->load->view('teacher/delete_assignment', $data);
+		$this->load->view('templates/footer');
+	}
+	
+	public function upload_doc(){
+        $config['upload_path'] = '/var/www/uploads/';
+		$config['allowed_types'] = '*';
+		$config['max_size'] = '50000';
+		$config['max_width']  = '2500';
+		$config['max_height']  = '2500';
+		$config['remove_spaces']= 'true';
+
+		$this->load->library('upload', $config);
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		$data = $this->authenticate();
+		$this->form_validation->set_rules('userfile','File','callback_check_file');
+		$this->form_validation->set_rules('material_type','Material Type','callback_check_file_type');
+		$this->form_validation->set_rules('doc_tags','Tags','callback_check_tags');
+
+		if ( $this->form_validation->run() ){// the user selected a file
+			if ( ! $this->upload->do_upload())
+			{
+				$data['messsages'] = array();
+				$data['messages'][] = array( 'type' =>'error', 'msg' => ''.$this->upload->display_errors('',''));
+			}
+			else
+			{
+				$data['userfile'] = $this->upload->data();
+				//DEFINE POSTED FILE INTO VARIABLE
+				$name = $data['userfile']['orig_name'];
+				$tmpname = $data['userfile']['full_path'];
+				if ( ! strpos($name, '.') ){
+					$doc_type = NULL;
+				}
+				else{
+					$doc_type = $data['userfile']['file_ext'];
+				}
+				$size = $data['userfile']['file_size'];
+				$date = date('Y-m-d H:i:');
+
+				//OPEN FILE AND EXTRACT DATA /CONTENT FROM IT
+				$fp   = fopen($tmpname, 'r');
+				// had trouble with end of files being clipped, this method should stop at EOF regardless
+				$file = fread($fp, $size * 1024 + 200);
+				// php should be automatically adding slashes, using line below will double escape
+				//$file = addslashes($file);
+				fclose($fp);
+				$this->load->database();
+				$file_data=array('docname'=>$name,'doc_type'=>$doc_type,
+						'size'=>$size,'file'=>$file, 'owner_user_id' => $data['user_id'],
+						'upload_date' => $date, 'material_type' =>
+						$this->user_model->material_type_code($this->input->post('material_type')),
+						'public' => $this->input->post('public') 
+				);
+				$ret = $this->db->insert('documents', $file_data);
+				$doc_id = $this->db->insert_id();
+				$doc_tags = str_replace(',', ' ', $this->input->post('doc_tags'));
+				$doc_tags = trim(preg_replace('/\s+/',' ',$doc_tags));
+				$doc_tags = explode(' ', $doc_tags);
+				$query = "INSERT IGNORE INTO tags SET `tag` = ?";
+				$lookup_query = "SELECT tag_id FROM tags WHERE tag = ?";
+				$tag_id = 0;
+				foreach($doc_tags as $doc_tag){
+					$this->db->query($query, array( 'tag' => strtolower($doc_tag)));
+					// can get id from database if just added, but do not know how to get id without another
+					// query if tags is shared with a previous document and not added to dastabase
+					$tag_id = $this->db->query($lookup_query, array('tag' => $doc_tag))->row()->tag_id;
+					$this->db->insert('document_tags', array( 'tags_tag_id' => $tag_id,
+								'documents_doc_id' => $doc_id ));
+				}
+				unlink($tmpname);
+				redirect('/user/documents');
+			}
+		}
+		$data['title'] = 'Upload Doc';
+		$this->load->view('templates/header', $data);
+		$this->load->view('user/upload_doc', $data);
+		$this->load->view('templates/footer');
+    }
+    
+    public function check_tags($str){
+    	// TODO - make this check the length and characters of the tags
+    	$doc_tags = explode(' ', $str);
+		foreach ($doc_tags as $tag){
+			if ( strlen($tag) > 50){
+				$this->form_validation->set_message('check_tags', 'Tags must be less than 50 characters in length.');
+				return FALSE;
+			}
+		}
+    	return TRUE;
+    }
+    
+    public function check_file_type($str){
+    	if ($this->user_model->material_type_code($str) !== FALSE)
+    		return TRUE;
+    	$this->form_validation->set_message('check_file_type', 'Bad Material Type.');
+		return FALSE;
+    }
+	
+	public function check_file($str){
+		if ($_FILES['userfile'])
+			return TRUE;
+		$this->form_validation->set_message('check_file', 'File required.');
+		return FALSE;
+	}
+
+	/*
+	 * Check if a user is logged in, if so store their user_id and first name, current class_id (from a cookie) and class list in $data array.
+	 * 
+	 * @return - a $data array with page information to insert into views.
+	*/	
+	public function authenticate(){
+		$data['user_id'] = $this->session->userdata('user_id');
+		if( $this->tank_auth->is_logged_in()){
+			$sql_query = 'SELECT first_name FROM user_profiles where id = ?';
+			$result = $this->db->query($sql_query, $this->tank_auth->get_user_id())->row();
+			$data['first_name'] = $result->first_name;
+			$data['class_list'] = $this->user_model->get_classes($data['user_id']);
+			if ($this->session->userdata('class_id') &&
+					$this->user_model->is_class_member($data['user_id'], $this->session->userdata('class_id'))){
+				$data['class_id'] = $this->session->userdata('class_id');
+				$sql_query = 'SELECT subject, class_hour FROM classes where class_id = ?';
+				$result = $this->db->query($sql_query, $data['class_id'])->row();
+				if ( ! empty($result)){
+					$data['subject'] = $result->subject;
+					$data['class_name'] = $result->subject.' - Hr '.$result->class_hour;
+					$data['is_teacher'] = $this->user_model->is_teacher($data['user_id'], $data['class_id']);
+				}
+			}
+		}
+		else{
+			redirect('/auth/login');
+		}
+		return $data;
+	}
+	
+	private function load_page(){
+	
+	}
+	
+	public function full_name($user_id){
+		$sql_query = 'SELECT first_name,last_name FROM user_profiles where id = ?';
+		$result = $this->db->query($sql_query, $user_id)->row();
+		return $result->first_name.' '.$result->last_name;
+	}
+	
+	public function doc_name($doc_id){
+		$sql_query = 'SELECT docname FROM documents where doc_id = ?';
+		$result = $this->db->query($sql_query, $doc_id)->row();
+		return $result->docname;
+	}
+}
+?>

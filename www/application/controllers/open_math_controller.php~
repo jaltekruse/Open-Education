@@ -1,0 +1,42 @@
+<?php
+class Open_Math_Controller extends CI_Controller{
+
+	public function __construct(){
+		parent::__construct();
+		$this->load->library('session');
+		$this->load->model('user_model');
+		$this->load->helper('url');
+		$this->load->library('tank_auth');
+	}
+	
+	/*
+	 * Check if a user is logged in, if so store their user_id and first name in $data array.
+	 * 
+	 * @return - a $data array with page information to insert into views.
+	*/	
+	public function authenticate(){
+		$data['user_id'] = $this->session->userdata('user_id');
+		//throw new Exception('user id is:'.$data['user_id']);
+		if( $this->tank_auth->is_logged_in()){
+			$sql_query = 'SELECT first_name FROM user_profiles where id = ?';
+			$result = $this->db->query($sql_query, $this->tank_auth->get_user_id())->row();
+			$data['first_name'] = $result->first_name;
+			$data['class_list'] = $this->user_model->get_classes($data['user_id']);
+			if ($this->session->userdata('class_id')){
+				$data['class_id'] = $this->session->userdata('class_id');
+				$sql_query = 'SELECT subject, class_hour FROM classes where class_id = ?';
+				$result = $this->db->query($sql_query, $data['class_id'])->row();
+				if ( ! empty($result)){
+					$data['subject'] = $result->subject;
+					$data['class_name'] = $result->subject.' - Hr '.$result->class_hour;
+					$data['is_teacher'] = $this->user_model->is_teacher($data['user_id'], $data['class_id']);
+				}
+			}
+		}
+		else{
+			redirect('/auth/login');
+		}
+		return $data;
+	}
+	
+}

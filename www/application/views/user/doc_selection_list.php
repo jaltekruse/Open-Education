@@ -1,0 +1,35 @@
+<?php if (sizeof($docs) == 0){
+		if (isset($searched)) {?>
+			<h2>Search returned no results.</h2>
+		<?php
+		}else{ ?>
+			<h2>You have not added any documents yet.</h2>
+	<?php
+		}
+	}else{ ?>
+	<table cellpadding="0" cellspacing="0" width="100%" class="sortable">
+		<thead>
+		  <tr>
+		<!-- no content for this column header, it is a column for the radio buttons -->
+		<th></th>
+		<th>Doc Name</th>
+		<th>Material Type</th>
+		<th>Upload Date</th>
+		  </tr>
+		</thead>
+		<tbody id="doc_list">
+	<?php foreach($docs as $doc):?>
+		<tr>
+			<td><input type="radio" name="doc_id" value="<?php echo $doc['doc_id'] ?>" ></td>
+			<td><a href="/index.php/user/doc_details/<?php echo $doc['doc_id']?>">
+				 <?php echo isset( $doc['docname'] ) ? $doc['docname'] : "N/A";?>
+				</a></br>
+				<p style="font-size:12px">Tags: <?php foreach($doc['tags'] as $tag) echo $tag.', '; ?>  </p>
+			</td>
+			<td> <?php echo isset($doc['material_type'] ) ? $doc['material_type'] : "N/A"; ?></td>
+			<td> <?php echo isset($doc['upload_date'] ) ? $doc['upload_date'] : "N/A"; ?></td>
+		</tr>
+	<?php endforeach ?>
+	</tbody>
+	</table>
+<?php } ?>
