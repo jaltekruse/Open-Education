@@ -23,7 +23,8 @@
 # Logs and databases #
 ######################
 *.log
-*.sql
+# adding this to store the database create script in the repo
+# *.sql
 *.sqlite
 
 # temp files		 #
