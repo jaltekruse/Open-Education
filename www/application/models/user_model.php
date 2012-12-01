@@ -1,9 +1,16 @@
 <?php 
 class User_model extends CI_Model{
 	
+	private $doc_description_fields;
+	private $user_info_fields;
+
 	public function __construct(){
 		$this->load->database();
 		$this->load->library('tank_auth');
+
+		$this->doc_description_fields = "docname,material_type, " .
+			 $this->mysql_date_format("upload_date") . ", doc_id,size,doc_type ";
+		$this->user_info_fields = "user_profiles.first_name, user_profiles.last_name, user_profiles.user_id ";
 		define('TEACHER', 1);
 		define('STUDENT', 2);
 		define('ADMIN', 3);
@@ -19,8 +26,8 @@ class User_model extends CI_Model{
 	}
 
 	public function get_colleagues($user_id){
-		$query = 'SELECT user_profiles.first_name, user_profiles.last_name, user_profiles.user_id
-				FROM user_profiles,colleagues WHERE colleagues.users_user_id1 = ? AND
+		$query = 'SELECT ' . $this->user_info_fields . 
+				'FROM user_profiles,colleagues WHERE colleagues.users_user_id1 = ? AND
 				colleagues.users_user_id2 = user_profiles.user_id';
 		$result = $this->db->query($query, array( 'users_user_id1' => $user_id))->result_array();
 		$query = 'SELECT user_profiles.first_name, user_profiles.last_name, user_profiles.user_id FROM user_profiles,colleagues
@@ -29,11 +36,9 @@ class User_model extends CI_Model{
 	}
 	
 	public function get_pending_colleagues($user_id){
-		//$query = 'SELECT user_profiles.first_name, user_profiles.last_name, user_profiles.user_id FROM user_profiles, pending_colleagues WHERE 
-		//		pending_colleagues.sender_user_id = ? AND pending_colleagues.receiver_user_id = user_profiles.user_id';
-		//$result = $this->db->query($query, array( 'sender_user_id' => $user_id))->result_array();
-		$query = 'SELECT user_profiles.first_name, user_profiles.last_name, user_profiles.user_id FROM user_profiles,pending_colleagues WHERE
-				pending_colleagues.receiver_user_id = ? AND pending_colleagues.sender_user_id = user_profiles.user_id';
+		$query = 'SELECT ' . $this->user_info_fields .
+			'FROM user_profiles,pending_colleagues WHERE
+			pending_colleagues.receiver_user_id = ? AND pending_colleagues.sender_user_id = user_profiles.user_id';
 		return $this->db->query($query, array( 'receiver_user_id' => $user_id))->result_array();
 	}
 	
@@ -336,7 +341,7 @@ class User_model extends CI_Model{
 		else if ($role == ADMIN)
 			return 'Admin';
 	}
-	
+		
 	public function material_type_code($type){
 		if ($type == 'test')
 			return TEST;
@@ -378,9 +383,29 @@ class User_model extends CI_Model{
 		else
 			return '-';
 	}
-	
-	public function get_docs($user_id){
-		$sql_query = "SELECT docname,material_type,LOWER(DATE_FORMAT(upload_date, '%c/%e/%y at %l:%i%p')) as upload_date, doc_id,size,doc_type FROM documents where owner_user_id = ?";
+
+	/* helper function to ensure that all dates are displayed uniformly on the site
+	 * returns the column specified as an alias for the fomatted date.
+	 */
+	public function mysql_date_format($column_name){
+		return 'LOWER(DATE_FORMAT(' . $column_name . ", '%c/%e/%y %l:%i%p')) as " . $column_name;
+	}
+
+	/* helper function to standardize how result lists handle limiting results for pagination
+	 */
+	public function limit_results($per_page, $curr_pagination_page){
+		return 'limit ' . $per_page * ($curr_pagination_page - 1) . ', ' . $per_page; 
+	}
+
+	/*
+	 * Grabs all of the documents accessible to a user.
+	 * Arguments:
+	 * user_id - current user
+	 * per_page - number of results to show on each page when seperating results
+	 * curr_pagination_page - the page that the user has navigated to in the pagination of the results
+	 */	
+	public function get_docs($user_id, $per_page, $curr_pagination_page){
+		$sql_query = "SELECT " . $this->doc_description_fields . " FROM documents where owner_user_id = ? " . $this->limit_results($per_page, $curr_pagination_page);
 		$result_array = $this->db->query($sql_query, $user_id)->result_array();
 		for ($index = 0; $index < sizeof($result_array) ; $index++){
 			if (strlen($result_array[$index]['docname']) > 25){
@@ -391,10 +416,20 @@ class User_model extends CI_Model{
 		}
 		return $result_array;
 	}
+
+	public function get_doc_count($user_id){
+		$result_array = $this->db->query('select count(*) as doc_count from documents where owner_user_id = ?', array($user_id))->result_array();
+		return $result_array[0]['doc_count'];
+	}
+
+	public function get_sudent_assignment_count($user_id, $class_id){
+		$result_array = $this->db->query('select count(*) as assignment_count from assignments as a, assignments_and_users as a_u where a_u.users_user_id = ? AND a_u.assignments_assignment_id = a.assignment_id AND a.classes_class_id = ?')->result_array();
+		return $result_array[0]['assignment_count'];	
+	}
 	
-	public function get_student_assignments($user_id, $class_id){
+	public function get_student_assignments($user_id, $class_id, $per_page, $curr_pagination_page){
 		// TODO - remove *'s  
-		$sql_query = "SELECT a.assignment_name, a.assignment_id, a.total_points, LOWER(DATE_FORMAT(assign_date, '%c/%e/%y at %l:%i%p')) as assign_date, LOWER(DATE_FORMAT(assign_date, '%c/%e/%y at %l:%i%p')) AS due_date, CASE WHEN a_u.submit_time = '00/00/0000' THEN NULL ELSE LOWER(DATE_FORMAT(a_u.submit_time, '%c/%e/%y at %l:%i%p')) END AS submit_time FROM assignments_and_users as a_u,assignments as a WHERE a_u.users_user_id = ? AND a_u.assignments_assignment_id = a.assignment_id AND a.classes_class_id = ?";
+		$sql_query = "SELECT a.assignment_name, a.assignment_id, a.total_points, " . $this->mysql_date_format('assign_date') . ", " . $this->mysql_date_format('due_date') . ", CASE WHEN a_u.submit_time = '00/00/0000' THEN NULL ELSE " . $this->mysql_date_format('submit_time') . ") END AS submit_time FROM assignments_and_users as a_u,assignments as a WHERE a_u.users_user_id = ? AND a_u.assignments_assignment_id = a.assignment_id AND a.classes_class_id = ? " . $this->limit_results($per_page, $curr_pagination_page);
 		$result_array = $this->db->query($sql_query, array( 'users_user_id' => $user_id, 'classes_class_id' => $class_id))->result_array();
 		for ($index = 0; $index < sizeof($result_array) ; $index++){
 			if (strlen($result_array[$index]['assignment_name']) > 25){
@@ -405,7 +440,7 @@ class User_model extends CI_Model{
 	}
 	
 	public function get_teacher_assignments($user_id, $class_id){	
-		$sql_query = "SELECT assignment_id, assignment_name, LOWER(DATE_FORMAT(assign_date, '%c/%e/%y at %l:%i%p')) as assign_date, LOWER(DATE_FORMAT(due_date, '%c/%e/%y at %l:%i%p')) as due_date, total_points, notes FROM assignments WHERE classes_class_id = ?";
+		$sql_query = "SELECT assignment_id, assignment_name, " . $this->mysql_date_format('assign_date') . ', ' . $this->mysql_date_format('due_date') . ", total_points, notes FROM assignments WHERE classes_class_id = ?";
 		$result_array = $this->db->query($sql_query, array('classes_class_id' => $class_id))->result_array();
 		for ($index = 0; $index < sizeof($result_array) ; $index++){
 			if (strlen($result_array[$index]['assignment_name']) > 25){

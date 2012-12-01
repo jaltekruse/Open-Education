@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<jnlp 
+	spec="6.0+" 
+	codebase="http://open-math.com/OpenNotebook/"
+	href="OpenNotebook.jnlp">
+       <information>
+               <title>OpenNotebook</title>
+               <vendor>Open Education</vendor>
+               <description>A document preparation system for math teachers.</description>
+               <offline-allowed />
+       </information>
+       <security>
+               <all-permissions />
+               <j2ee-application-client-permissions />
+       </security>
+       <resources>
+               <j2se version="1.6+" />
+               <jar href="OpenNotebook.jar" main="true"
+download="eager" />
+       </resources>
+       <application-desc main-class="doc_gui.OpenNotebook" />
+</jnlp>

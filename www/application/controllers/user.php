@@ -1,6 +1,8 @@
 <?php
 class User extends CI_Controller{
 
+	public $results_per_page = 2;
+
 	public function __construct(){
 		parent::__construct();
 		$this->load->library('session');
@@ -140,48 +142,48 @@ class User extends CI_Controller{
 	}
 	
 	public function class_admin($class_id = -1){
-			$this->load->helper('form');
-			$this->load->library('form_validation');
-			$this->form_validation->set_error_delimiters('<div class="errormsg">', '</div>');
-			if ($class_id == -1){
-				if ($this->session->userdata('class_id') != FALSE)
-					redirect('/user/class_admin/'.$this->session->userdata('class_id'));
-				else
-					redirect('/user/classes/');
-			}
-			$this->session->set_userdata('class_id', $class_id);
-			$data = $this->authenticate();
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		$this->form_validation->set_error_delimiters('<div class="errormsg">', '</div>');
+		if ($class_id == -1){
+			if ($this->session->userdata('class_id') != FALSE)
+				redirect('/user/class_admin/'.$this->session->userdata('class_id'));
+			else
+				redirect('/user/classes/');
+		}
+		$this->session->set_userdata('class_id', $class_id);
+		$data = $this->authenticate();
 
-			// check to see if the current user is authorized to view this class, and is a teacher of the class
-			if ( ! $this->user_model->is_teacher($data['user_id'], $class_id)){
-				redirect('/user/classes');
-			}
-			if ( ! $this->user_model->enrollment_is_open($data['class_id']))
-			{//enrollment is currently closed, below is form validation for setting new password to open enrollment
-				$this->form_validation->set_rules('password','Password','required|xss_clean|max_length[30]|min_length[8]');
-				$this->form_validation->set_rules('password2','Confirm Password','required|xss_clean|max_length[30]|min_length[8]|matches[password]');
-			
-				if ($this->form_validation->run()){
-					// password passes validation check
-					$this->user_model->open_enrollment($class_id, $this->input->post('password'));
-					$data['enrollment_open'] = TRUE;
-					$data['messages'][] = array( 'type' =>'success', 'msg' => 'You have opened enrollment for class'.$class_id.'.');
-				}
-			}
-			else{// enrollment is open
+		// check to see if the current user is authorized to view this class, and is a teacher of the class
+		if ( ! $this->user_model->is_teacher($data['user_id'], $class_id)){
+			redirect('/user/classes');
+		}
+		if ( ! $this->user_model->enrollment_is_open($data['class_id']))
+		{//enrollment is currently closed, below is form validation for setting new password to open enrollment
+			$this->form_validation->set_rules('password','Password','required|xss_clean|max_length[30]|min_length[8]');
+			$this->form_validation->set_rules('password2','Confirm Password','required|xss_clean|max_length[30]|min_length[8]|matches[password]');
+		
+			if ($this->form_validation->run()){
+				// password passes validation check
+				$this->user_model->open_enrollment($class_id, $this->input->post('password'));
 				$data['enrollment_open'] = TRUE;
-				if ( $this->input->post('close_enrollment') == 1){// action was sent to close enrollment
-					$this->user_model->close_enrollment($data['class_id']);
-					$data['enrollment_open'] = FALSE;
-					$data['messages'] = array();
-					$data['messages'][] = array('type' =>'success', 'msg' =>'You have successfully closed enrollment.');
-				}
+				$data['messages'][] = array( 'type' =>'success', 'msg' => 'You have opened enrollment for class'.$class_id.'.');
 			}
-			$data['title'] = 'Admin : '.$data['class_name'];
-			
-			$this->load->view('templates/header', $data);
-			$this->load->view('user/class_admin', $data);
-			$this->load->view('templates/footer');
+		}
+		else{// enrollment is open
+			$data['enrollment_open'] = TRUE;
+			if ( $this->input->post('close_enrollment') == 1){// action was sent to close enrollment
+				$this->user_model->close_enrollment($data['class_id']);
+				$data['enrollment_open'] = FALSE;
+				$data['messages'] = array();
+				$data['messages'][] = array('type' =>'success', 'msg' =>'You have successfully closed enrollment.');
+			}
+		}
+		$data['title'] = 'Admin : '.$data['class_name'];
+		
+		$this->load->view('templates/header', $data);
+		$this->load->view('user/class_admin', $data);
+		$this->load->view('templates/footer');
 	}
 	
 	public function view_class($class_id = -1){
@@ -212,39 +214,39 @@ class User extends CI_Controller{
 	}
 	
 	public function join_class(){
-			$this->load->helper('form');
-			$this->load->library('form_validation');
-			
-			$data = $this->authenticate();
-			
-			$this->form_validation->set_rules('password','Password','required|xss_clean|max_length[60]|min_length[8]');
-			$this->form_validation->set_rules('class_id','Class ID','is_natural|max_length[20]|xss_clean');
-			
-			$data['messsages'] = array();
-			if ($this->form_validation->run() === FALSE ){
-				//view loaded below, nothing to do
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		
+		$data = $this->authenticate();
+		
+		$this->form_validation->set_rules('password','Password','required|xss_clean|max_length[60]|min_length[8]');
+		$this->form_validation->set_rules('class_id','Class ID','is_natural|max_length[20]|xss_clean');
+		
+		$data['messsages'] = array();
+		if ($this->form_validation->run() === FALSE ){
+			//view loaded below, nothing to do
+		}
+		else{
+			if ($this->user_model->is_class_member($data['user_id'], $this->input->post('class_id'))){
+				// user is already a member
+				$data['messages'][] = array( 'type' =>'warning', 'msg' => 'You are already a member of class '.$this->input->post('class_id'));
 			}
-			else{
-				if ($this->user_model->is_class_member($data['user_id'], $this->input->post('class_id'))){
-					// user is already a member
-					$data['messages'][] = array( 'type' =>'warning', 'msg' => 'You are already a member of class '.$this->input->post('class_id'));
-				}
-				else if ( ! $this->user_model->join_class($this->input->post('class_id'), $data['user_id'], $this->input->post('password'))){
-					// joining class failed, need to create callbacks, so form is re-populated
-					$data['messages'][] = array( 'type' =>'error', 'msg' => 'Error joining class '.$this->input->post('class_id'));
-				}
-				else{// successful class sign-up
-					//refreshes class data for header	
-					$data[] = $this->authenticate();
-					$data['messages'][] = array( 'type' =>'success', 'msg' => 'You have joined class '.$this->input->post('class_id'));
-
-				}
+			else if ( ! $this->user_model->join_class($this->input->post('class_id'), $data['user_id'], $this->input->post('password'))){
+				// joining class failed, need to create callbacks, so form is re-populated
+				$data['messages'][] = array( 'type' =>'error', 'msg' => 'Error joining class '.$this->input->post('class_id'));
+			}
+			else{// successful class sign-up
+				//refreshes class data for header	
+				$data[] = $this->authenticate();
+				$data['messages'][] = array( 'type' =>'success', 'msg' => 'You have joined class '.$this->input->post('class_id'));
 
 			}
-			$data['title'] = 'Join Class';
-			$this->load->view('templates/header', $data);
-			$this->load->view('user/join_class', $data);
-			$this->load->view('templates/footer');
+
+		}
+		$data['title'] = 'Join Class';
+		$this->load->view('templates/header', $data);
+		$this->load->view('user/join_class', $data);
+		$this->load->view('templates/footer');
 	}
 	
 	public function current_assignments(){
@@ -272,7 +274,7 @@ class User extends CI_Controller{
 		}
 		// the user is uploading a submission
 		//check they have permissions to do so
-		$config['upload_path'] = '/var/www/uploads/';
+		$config['upload_path'] = './uploads/';
 		$config['allowed_types'] = '*';
 		$config['max_size'] = '50000';
 		$config['max_width']  = '2500';
@@ -331,7 +333,7 @@ class User extends CI_Controller{
 		}
 		// the user is uploading a submission
 		//check they have permissions to do so
-		$config['upload_path'] = '/var/www/uploads/';
+		$config['upload_path'] = './uploads/';
 		$config['allowed_types'] = '*';
 		$config['max_size'] = '50000';
 		$config['max_width']  = '2500';
@@ -425,7 +427,7 @@ class User extends CI_Controller{
 		}
 		$data['assignment'] = $this->user_model->get_teacher_assignment($assignment_id);
 		$data['assignments'] = $this->user_model->get_student_submissions($assignment_id);
-		$data['title'] = 'Student Submissions - '.$data['assignment']['assignment_name'].' '.$data['assignment']['total_points'];
+		$data['title'] = 'Student Submissions - '.$data['assignment']['assignment_name'] . ' - Points: ' . $data['assignment']['total_points'];
 		$this->load->view('templates/header', $data);
 		$this->load->view('teacher/student_submissions', $data);
 		$this->load->view('templates/footer');
@@ -497,7 +499,11 @@ class User extends CI_Controller{
 	}
 		
 	public function assign(){
-		require('/var/www/application/libraries/Java.inc');
+		//require('/var/www/application/libraries/Java.inc');
+		if ($this->session->userdata('class_id') == FALSE){// no class is stored in session, send back to class list
+			redirect('/user/classes/');
+		}
+
 		$this->load->helper('form');
 		$this->load->library('form_validation');
 		$this->form_validation->set_error_delimiters('<div class="message errormsg">', '</div>');
@@ -518,6 +524,8 @@ class User extends CI_Controller{
 		
 		
 		if ($this->form_validation->run()){
+			if (false) ;
+			/*
 			if ($doc['doc_type'] == '.mdoc'){
 				$doc_reader = new java('doc.xml.DocReader');
 				//echo $doc_reader->getRandomMessage();
@@ -532,6 +540,7 @@ class User extends CI_Controller{
 					$student_doc = $doc['file'];
 				}
 			}
+			*/
 			else{
 				$teacher_doc = $doc['file'];
 				$student_doc = $doc['file'];
@@ -585,13 +594,35 @@ class User extends CI_Controller{
 		if ( $this->user_model->is_doc_owner($user_id, $doc_id))
 			return TRUE;
 		// this method can be called as form validation, or outside of it, so the form validation library might not be present
-		if ( ! $this->form_validation == NULL)
+		if ( isset($this->form_validation) && $this->form_validation != NULL)
 			$this->form_validation->set_message('check_doc_id', 'You are not authorized to assign this document.');
 		return FALSE;
+	}
+
+
+	public function setup_pagination( $url, $total_rows, $uri_segment, &$data){
+	
+		$this->load->library('pagination');
+		$this->load->library('uri');
+		$pagination_config = array();
+		$pagination_config['base_url'] = base_url() . index_page() . $url; 
+		$pagination_config['total_rows'] = $total_rows;
+		$pagination_config['per_page'] = $this->results_per_page;
+		$pagination_config['uri_segment'] = 3;
+		$pagination_config['use_page_numbers'] = true;
+		
+		$this->pagination->initialize($pagination_config);
+		
+		$pagination_page = $this->uri->segment($uri_segment) ? $this->uri->segment($uri_segment) : 1;
+		if ( ! is_int(intval($pagination_page))) $pagination_page = 1;
+
+		$data['pagination_links'] = $this->pagination->create_links();
+		$data['pagination_page'] = $pagination_page;
 	}
 	
 	public function documents($download_doc_id = -1){
 		$data = $this->authenticate();
+		$this->setup_pagination('/user/documents',  $this->user_model->get_doc_count($data['user_id']), 3, $data);
 		$this->load->helper('download');
 		if ( ! ($download_doc_id == -1)){
 			if ( $this->user_model->is_doc_owner($data['user_id'], $download_doc_id))
@@ -600,7 +631,7 @@ class User extends CI_Controller{
 				force_download($doc['docname'], $doc['file']); 
 			}
 		}
-		$data['docs'] = $this->user_model->get_docs($data['user_id']);
+		$data['docs'] = $this->user_model->get_docs($data['user_id'], $this->results_per_page, $data['pagination_page']);
 		$data['title'] = 'View Docs';
 		
 		//echo json_encode($data['docs']);
@@ -611,9 +642,16 @@ class User extends CI_Controller{
 	
 	public function doc_details($doc_id){
 		$data = $this->authenticate();
+		
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		$this->form_validation->set_error_delimiters('<div class="message errormsg">', '</div>');
+
 		if ( ! $this->check_doc_id($doc_id, $data['user_id'])){
 			redirect('/user/documents');
 		}
+		$colleagues_to_share = $this->input->post('colleagues_sharing');
+
 		$data['colleagues'] = $this->user_model->get_colleagues($data['user_id']);
 		$data['doc'] = $this->user_model->get_doc($doc_id);
 		$data['title'] = $data['doc']['docname'];
@@ -676,7 +714,7 @@ class User extends CI_Controller{
 	}
 	
 	public function upload_doc(){
-        $config['upload_path'] = '/var/www/uploads/';
+        $config['upload_path'] = './uploads/';
 		$config['allowed_types'] = '*';
 		$config['max_size'] = '50000';
 		$config['max_width']  = '2500';

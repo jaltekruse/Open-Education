@@ -5,11 +5,12 @@ if (sizeof($docs) == 0){ ?>
 	</h2>
 <?php
 } else{ ?>
+<form action="" method="post">
 		<h2><label for="doc_search">Search Documents:</label>
 		<input type="text" name="doc_search" value="" id="doc_search" onKeyPress="search_docs(event)" maxlength="60" minlength="0" size="30"  />
+</form>
 		&nbsp;&nbsp; <a href="/index.php/user/upload_doc">Upload Doc</a> &nbsp; &nbsp; <a href="/OpenNotebook.jnlp">Create Doc</a>
 		</h2>
-<form action="" method="post">
 <table cellpadding="0" cellspacing="0" width="100%" class="sortable" id="doc_list">
     <thead>
       <tr>
@@ -41,35 +42,16 @@ if (sizeof($docs) == 0){ ?>
 <?php endforeach ?>
 <tbody>
 </table>
-</form>
+<?php echo $pagination_links; ?>
 <?php } ?>
 
 <script type="text/javascript">
 function search_docs(e)
 {
 	if (e.keyCode == 13){
-		try{xhr = new XMLHttpRequest();}
-        catch (e)
-        {xhr = new ActiveXObject("Microsoft.XMLHTTP");}
-        // handle old browsers
-        if (xhr == null)
-        {alert("Ajax not supported by your browser!");return;}
-        // construct URL
-        var url = "/index.php/user/search_docs/" + escape(document.getElementById("doc_search").value);
-        // get list of docs
-        xhr.onreadystatechange = function () {
-            // only handle loaded requests
-            if (xhr.readyState == 4)
-            {
-                // display response if possible
-                if (xhr.status == 200)
-                   $("#doc_list").html(xhr.responseText);
-                else
-                    alert("Error with Ajax call! " + xhr.status);
-           }
-        };
-        xhr.open("GET", url, true);
-        xhr.send(null);
+		$.get("/index.php/user/search_docs/" + escape(document.getElementById("doc_search").value), function(data){
+			$("#doc_list").html(data);
+		});
 	}
 }
 

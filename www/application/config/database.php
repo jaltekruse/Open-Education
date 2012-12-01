@@ -49,9 +49,9 @@ $active_group = 'default';
 $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'open_math_site';
-$db['default']['password'] = "2Dkj'rE;$'m^!)!xj@F%?j#!>:n\$j5(<m?df%6$";
-$db['default']['database'] = 'openmath';
+$db['default']['username'] = 'openmath_site';
+$db['default']['password'] = "8r@Df0rd";
+$db['default']['database'] = 'openmath_test';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
