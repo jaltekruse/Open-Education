@@ -18,8 +18,8 @@ foreach($colleagues as $colleague):?>
 	<tr> 
 		<td><?php echo isset($colleague['first_name'] ) ? $colleague['first_name'] : "-";?> </td>
 		<td><?php echo isset($colleague['last_name'] ) ? $colleague['last_name'] : "-";?> </td>
-		<td><a href="/index.php/user/confirm_colleague/<?php echo $colleague['user_id'] ?>">Confirm Colleague</a> </td>
-		<td><a href="/index.php/user/remove_colleague_request/<?php echo $colleague['user_id'] ?>">Remove Request</a> </td>
+		<td><a href="/index.php?/user/confirm_colleague/<?php echo $colleague['user_id'] ?>">Confirm Colleague</a> </td>
+		<td><a href="/index.php?/user/remove_colleague_request/<?php echo $colleague['user_id'] ?>">Remove Request</a> </td>
 	</tr>
 <?php
 endforeach; ?>
@@ -41,7 +41,7 @@ function search_colleague(e)
         if (xhr == null)
         {alert("Ajax not supported by your browser!");return;}
         // construct URL
-        var url = "/index.php/user/search_docs/" + escape(document.getElementById("colleague_search").value);
+        var url = "/index.php?/user/search_docs/" + escape(document.getElementById("colleague_search").value);
         // get list of docs
         xhr.onreadystatechange = function () {
             // only handle loaded requests

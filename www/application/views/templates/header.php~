@@ -62,10 +62,10 @@
   <ul id="nav">
 <!-- navigation menus for top bar -->
 <?php if (isset($class_list)): ?>
-	<li> <a href="/index.php/user/classes">Classes</a>
+	<li> <a href="/index.php?/user/classes">Classes</a>
 		<ul>
 		<?php foreach($class_list as $class): ?>
-		<li><a href="/index.php/user/view_class/<?php echo $class['class_id'] ?>">
+		<li><a href="/index.php?/user/view_class/<?php echo $class['class_id'] ?>">
 			<?php echo $class['subject'].' - Hr '.$class['class_hour']?></a>
 		</li>
 		<?php endforeach; ?>
@@ -74,45 +74,45 @@
  
  <?php endif; ?>
  <?php if (isset($user_id)): ?>
-	<li><a href="/index.php/user/documents">Docs</a>
+	<li><a href="/index.php?/user/documents">Docs</a>
 		<ul>
-		<li><a href="/index.php/user/documents">My Docs</a></li>
- 		<li><a href="/index.php/user/doc_search">Find Documents</a></li>
+		<li><a href="/index.php?/user/documents">My Docs</a></li>
+ 		<li><a href="/index.php?/user/doc_search">Find Documents</a></li>
  		</ul>
 	</li>
-		<li> <a href="/index.php/user/colleagues">Connect</a>
+		<li> <a href="/index.php?/user/colleagues">Connect</a>
 			<ul>
 			<!-- add a list of all groups here? if they are used how I expect people shouldn't be members of too many -->
-			<li><a href="/index.php/user/colleagues">Colleagues</a></li>
-			<li><a href="/index.php/user/add_colleague">Add Colleague</a></li>
-			<li><a href="/index.php/user/pending_colleagues">Pending</a></li>
-			<!-- will implement this later <li> <a href="/index.php/user/groups">Groups</a></li> -->
+			<li><a href="/index.php?/user/colleagues">Colleagues</a></li>
+			<li><a href="/index.php?/user/add_colleague">Add Colleague</a></li>
+			<li><a href="/index.php?/user/pending_colleagues">Pending</a></li>
+			<!-- will implement this later <li> <a href="/index.php?/user/groups">Groups</a></li> -->
 			</ul>
 		</li>
 	<?php endif; ?>
 	<?php if (isset($class_id)): ?>
- 	<li><a href="/index.php/user/current_assignments">Assignments</a>
+ 	<li><a href="/index.php?/user/current_assignments">Assignments</a>
  		<ul>
- 		<li><a href="/index.php/user/current_assignments">Current Assignments</a></li>
- 		<li><a href="/index.php/user/class_admin">Past Assignments</a></li>
+ 		<li><a href="/index.php?/user/current_assignments">Current Assignments</a></li>
+ 		<li><a href="/index.php?/user/class_admin">Past Assignments</a></li>
  		<?php if (isset($is_teacher) && $is_teacher): ?>
- 			<li><a href="/index.php/user/assign">New Assignment</a></li>
+ 			<li><a href="/index.php?/user/assign">New Assignment</a></li>
  		<?php endif; ?>
  		</ul>
  	</li>
  	<?php endif; ?>
  	<?php if (isset($is_teacher) && $is_teacher): ?>
-	<li><a href="/index.php/user/class_admin">Class Admin</a></li>
+	<li><a href="/index.php?/user/class_admin">Class Admin</a></li>
 	<?php endif; ?>
  </ul>
  <?php
  if (isset($user_id)) ?>
 <p class="user">
 <?php if (! isset($user_id)) { ?>
-  <a href="/index.php/auth/login">Log in</a> &nbsp;
-  <a href="/index.php/auth/register">Register</a>
+  <a href="/index.php?/auth/login">Log in</a> &nbsp;
+  <a href="/index.php?/auth/register">Register</a>
 <?php } else{ echo 'Hi, '.$first_name.'&nbsp;|&nbsp;'; ?>
-<a href="/index.php/auth/logout">Logout</a>
+<a href="/index.php?/auth/logout">Logout</a>
 <?php } ?>
 </p>
 </div>

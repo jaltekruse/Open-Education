@@ -46,18 +46,18 @@ if (sizeof($assignments) == 0){ ?>
     <tbody>
 <?php foreach($assignments as $assignment):?>
 	<tr>
-		<td><a href="/index.php/user/assignment/<?php echo $assignment['assignment_id']?>">
+		<td><a href="/index.php?/user/assignment/<?php echo $assignment['assignment_id']?>">
 			 <?php echo isset( $assignment['assignment_name'] ) ? $assignment['assignment_name'] : "-";?>
 			</a>
 		<!--View Assignment
 		<br />
-		<a href="/index.php/user/student_current_assignments/<?php echo $assignment['assignment_id']?>">Download</a>&nbsp;&nbsp;
-		<a href="/index.php/user/student_current_assignments/<?php echo $assignment['assignment_id']?>" title="View document originally assigned by your teacher">View Now</a> &nbsp;&nbsp;
+		<a href="/index.php?/user/student_current_assignments/<?php echo $assignment['assignment_id']?>">Download</a>&nbsp;&nbsp;
+		<a href="/index.php?/user/student_current_assignments/<?php echo $assignment['assignment_id']?>" title="View document originally assigned by your teacher">View Now</a> &nbsp;&nbsp;
 		<br /><br />
 		Start or Continue Working
 		<br />
-		<a href="/index.php/user/student_current_assignments/<?php echo $assignment['assignment_id']?>" title="Launch Open Notebook to work on your assignment">Work Now</a> &nbsp;&nbsp;
-		<a href="/index.php/user/student_current_assignments/<?php echo $assignment['assignment_id']?>">Download Assignment</a>
+		<a href="/index.php?/user/student_current_assignments/<?php echo $assignment['assignment_id']?>" title="Launch Open Notebook to work on your assignment">Work Now</a> &nbsp;&nbsp;
+		<a href="/index.php?/user/student_current_assignments/<?php echo $assignment['assignment_id']?>">Download Assignment</a>
 		<?php echo form_open_multipart('user/student_current_assignments/'.$assignment['assignment_id']);?>
 		<br /><br /> 
 		<?php echo form_upload($userfile); ?> <br />

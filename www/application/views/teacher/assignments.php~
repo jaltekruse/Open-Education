@@ -17,15 +17,15 @@ if (sizeof($assignments) == 0){ ?>
     <tbody>
 <?php foreach($assignments as $assignment):?>
 	<tr>
-		<td><a href="/index.php/user/view_doc/<?php echo $assignment['assignment_id']?>">
+		<td><a href="/index.php?/user/view_doc/<?php echo $assignment['assignment_id']?>">
 			 <?php echo isset( $assignment['assignment_name'] ) ? $assignment['assignment_name'] : "N/A";?>
 			</a>
 		</td>
 		<td> <?php echo isset($assignment['assign_date'] ) ?  $assignment['assign_date'] : "N/A"; ?></td>
 		<td> <?php echo isset($assignment['due_date'] ) ? $assignment['due_date'] : "N/A"; ?></td>
 		<td> <?php echo isset($assignment['total_points'] ) ? $assignment['total_points'] : "N/A"; ?></td>
-		<td> <a href="/index.php/user/documents/<?php echo $assignment['assignment_id']?>">Download</a></td>
-		<td> <a href="/index.php/user/delete_doc/<?php echo $assignment['assignment_id']?>">Upload Completed</a></td>
+		<td> <a href="/index.php?/user/documents/<?php echo $assignment['assignment_id']?>">Download</a></td>
+		<td> <a href="/index.php?/user/delete_doc/<?php echo $assignment['assignment_id']?>">Upload Completed</a></td>
 	</tr>
 <?php endforeach ?>
 <tbody>

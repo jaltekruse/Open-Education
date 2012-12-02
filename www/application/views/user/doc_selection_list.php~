@@ -21,7 +21,7 @@
 	<?php foreach($docs as $doc):?>
 		<tr>
 			<td><input type="radio" name="doc_id" value="<?php echo $doc['doc_id'] ?>" ></td>
-			<td><a href="/index.php/user/doc_details/<?php echo $doc['doc_id']?>">
+			<td><a href="/index.php?/user/doc_details/<?php echo $doc['doc_id']?>">
 				 <?php echo isset( $doc['docname'] ) ? $doc['docname'] : "N/A";?>
 				</a></br>
 				<p style="font-size:12px">Tags: <?php foreach($doc['tags'] as $tag) echo $tag.', '; ?>  </p>

@@ -27,7 +27,7 @@ class User_model extends CI_Model{
 
 	public function get_colleagues($user_id){
 		$query = 'SELECT ' . $this->user_info_fields . 
-				'FROM user_profiles,colleagues WHERE colleague.sender_user_id = ? AND
+				'FROM user_profiles,colleagues WHERE colleagues.sender_user_id = ? AND
 				colleagues.receiver_user_id = user_profiles.user_id';
 		$result = $this->db->query($query, array( 'sender_user_id' => $user_id))->result_array();
 		$query = 'SELECT user_profiles.first_name, user_profiles.last_name, user_profiles.user_id FROM user_profiles,colleagues

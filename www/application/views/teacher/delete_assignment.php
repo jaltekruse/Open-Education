@@ -3,13 +3,13 @@ Are you sure you want to remove <?php echo $assignment_name ?>? <br />
 <table>
 <tr>
 <td>
-<form method="post" action="/index.php/user/delete_assignment/<?php echo $assignment_id ?>">
+<form method="post" action="/index.php?/user/delete_assignment/<?php echo $assignment_id ?>">
 	<input type="hidden" name="delete_assignment" value="1">
 	<input type="submit" name="submit" class="submit long" value="Delete Assignment">
 </form>
 </td>
 <td>
-<form method="post" action="/index.php/user/current_assignments">
+<form method="post" action="/index.php?/user/current_assignments">
 	<input type="submit" name="submit" class="submit mid" value="Cancel">
 </form>
 </td>

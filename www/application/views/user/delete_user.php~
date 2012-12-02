@@ -2,12 +2,12 @@ Are you sure you want to remove <?php echo $student_name ?>?
 <table>
 <tr>
 <td>
-<form method="post" action="/index.php/user/delete_student">
+<form method="post" action="/index.php?/user/delete_student">
 <input type="submit" name="submit" class="submit long" value="Yes, Delete Student">
 </form>
 </td>
 <td>
-<form method="get" action="/index.php/user/join_class">
+<form method="get" action="/index.php?/user/join_class">
 <input type="submit" name="submit" class="submit mid" value="Join Class">
 </form>
 </td>

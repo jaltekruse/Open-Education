@@ -1,4 +1,4 @@
-<form method="post" action="/index.php/user/assign">
+<form method="post" action="/index.php?/user/assign">
 <div style="float:left;width:70%">
 		<?php if (sizeof($docs) > 0){ ?>
 			<label for="doc_search">Search Documents:</label>
@@ -27,7 +27,7 @@
 			<tr>
 				<td><input type="radio" name="doc_id" value="<?php echo $doc['doc_id'] ?>"
 				<?php if (set_value('doc_id') == $doc['doc_id']) { ?> selected="selected" <?php } ?>></td>
-				<td><a href="/index.php/user/view_doc/<?php echo $doc['doc_id']?>">
+				<td><a href="/index.php?/user/view_doc/<?php echo $doc['doc_id']?>">
 					 <?php echo isset( $doc['docname'] ) ? $doc['docname'] : "N/A";?>
 					</a></br>
 					<p style="font-size:12px">Tags: algebra, stuff, another tag, I'm not going to be very creative with this</p>
@@ -46,7 +46,7 @@
 	<div style="float:left;width=20%">
 	 <h2>Class: </br> <?php echo $class_name ?> </h2>
 		<p>
-		Return to the <a href="/index.php/user/classes">class list</a> to work with a different class.
+		Return to the <a href="/index.php?/user/classes">class list</a> to work with a different class.
 		</p>
 		<p>
 		Date Format: (mm/dd/yy)

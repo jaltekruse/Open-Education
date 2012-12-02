@@ -20,7 +20,7 @@ if (sizeof($classes) == 0){ ?>
 	foreach($classes as $class):?>
 		<tr>
 			<td>
-				<a href="/index.php/user/view_class/<?php echo $class['class_id']?>">
+				<a href="/index.php?/user/view_class/<?php echo $class['class_id']?>">
 				<?php echo isset($class['subject'] ) ? $class['subject'] : "N/A";?> 
 				</a>
 			</td>
@@ -39,12 +39,12 @@ if (sizeof($classes) == 0){ ?>
 <table>
 <tr>
 <td>
-<form method="get" action="/index.php/user/create_class">
+<form method="get" action="/index.php?/user/create_class">
 <input type="submit" name="submit" class="submit mid" value="Create Class">
 </form>
 </td>
 <td>
-<form method="get" action="/index.php/user/join_class">
+<form method="get" action="/index.php?/user/join_class">
 <input type="submit" name="submit" class="submit mid" value="Join Class">
 </form>
 </td>

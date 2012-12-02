@@ -17,7 +17,7 @@ if (sizeof($assignments) == 0){ ?>
     <tbody>
 <?php foreach($assignments as $assignment):?>
 	<tr>
-		<td><a href="/index.php/user/assignment/<?php echo $assignment['assignment_id']?>">
+		<td><a href="/index.php?/user/assignment/<?php echo $assignment['assignment_id']?>">
 			 <?php echo isset( $assignment['assignment_name'] ) ? $assignment['assignment_name'] : "N/A";?>
 			</a>
 		</td>
@@ -27,7 +27,7 @@ if (sizeof($assignments) == 0){ ?>
 		<td>
 		<a href="index.php/user/assignment_doc/<?php echo $assignment['assignment_id']?>">View</a>
 		<a href="index.php/user/assignment_doc/<?php echo $assignment['assignment_id']?>">Download</a>
-		<a href="/index.php/user/delete_assignment/<?php echo $assignment['assignment_id']?>">Delete</a>
+		<a href="/index.php?/user/delete_assignment/<?php echo $assignment['assignment_id']?>">Delete</a>
 		</td>
 	</tr>
 <?php endforeach ?>

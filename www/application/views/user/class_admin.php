@@ -25,7 +25,7 @@ if ( isset($enrollment_open) && $enrollment_open){
 	echo ' - Currently Open'; ?>
 	</h3>
 	<p> Enrollment is currently open, students can join your class using the class ID listed above and the password you set. If you have forgotten the password, simply close enrollment and open it again with a new password. </p>
-	<form method="post" action="/index.php/user/class_admin/<?php echo $class_id ?>">
+	<form method="post" action="/index.php?/user/class_admin/<?php echo $class_id ?>">
 	<input type="submit" name="submit" class="submit long" value="Close Enrollment">
 	<input type="hidden" name="close_enrollment" value="1">
 	</form>

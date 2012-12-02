@@ -18,7 +18,7 @@ foreach($students as $student):?>
 		<td><?php echo isset($student['last_name'] ) ? $student['last_name'] : "-";?> </td>
 		<td><?php echo isset($student['grade'] ) ? $student['grade'] : "-";?>
 		<td><?php echo isset($student['user_id']) ? $student['user_id'] : "-";?> </td>
-		<td><a href="/index.php/user/remove_student/<?php echo $student['user_id'] ?>">Remove</a> </td>
+		<td><a href="/index.php?/user/remove_student/<?php echo $student['user_id'] ?>">Remove</a> </td>
 	</tr>
 <?php
 endforeach; ?>

@@ -35,7 +35,7 @@ Teacher Notes: <?php echo $assignment['notes'] ?>
  <br />
 <h2 style="float:left">
 <?php 
-$download_assignment_url = "/index.php/user/student_assignment/" . $assignment['assignment_id'] . "/1";
+$download_assignment_url = "/index.php?/user/student_assignment/" . $assignment['assignment_id'] . "/1";
 if (isset($assignment['submit_time'])){ 
 // if the assignment has been submitted ?>
 	<div style="float:left">

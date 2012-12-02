@@ -737,17 +737,17 @@ class User extends CI_Controller{
 			}
 			else
 			{
-				$data['userfile'] = $this->upload->data();
+				$file_info = $this->upload->data();
 				//DEFINE POSTED FILE INTO VARIABLE
-				$name = $data['userfile']['orig_name'];
-				$tmpname = $data['userfile']['full_path'];
+				$name = $file_info['orig_name'];
+				$tmpname = $file_info['full_path'];
 				if ( ! strpos($name, '.') ){
 					$doc_type = NULL;
 				}
 				else{
-					$doc_type = $data['userfile']['file_ext'];
+					$doc_type = $file_info['file_ext'];
 				}
-				$size = $data['userfile']['file_size'];
+				$size = $file_info['file_size'];
 				$date = date('Y-m-d H:i:');
 
 				//OPEN FILE AND EXTRACT DATA /CONTENT FROM IT
@@ -757,15 +757,26 @@ class User extends CI_Controller{
 				// php should be automatically adding slashes, using line below will double escape
 				//$file = addslashes($file);
 				fclose($fp);
+				
 				$this->load->database();
+				$this->db->insert('comments', array('user_id' => $data['user_id']));
 				$file_data=array('docname'=>$name,'doc_type'=>$doc_type,
-						'size'=>$size,'file'=>$file, 'owner_user_id' => $data['user_id'],
+						'size'=>$size,'file_path' => '', 'owner_user_id' => $data['user_id'],
 						'upload_date' => $date, 'material_type' =>
 						$this->user_model->material_type_code($this->input->post('material_type')),
-						'public' => $this->input->post('public') 
+						'public' => $this->input->post('public'), 'file_mime' => $file_info['file_type']
 				);
 				$ret = $this->db->insert('documents', $file_data);
 				$doc_id = $this->db->insert_id();
+				
+				$file_path =  "../../user_files/documents/" . $doc_id;
+				// the filename is just the document id from the database, to insure unique names
+				// the files name will be saved in the database for later retrieval
+				$fp = fopen($file_path, 'w');	
+				fwrite($fp, $file);
+				
+				$this->db->query('update documents set file_path = ' . $file_path . ' where doc_id = ? ', array('doc_id' => $doc_id));
+
 				$doc_tags = str_replace(',', ' ', $this->input->post('doc_tags'));
 				$doc_tags = trim(preg_replace('/\s+/',' ',$doc_tags));
 				$doc_tags = explode(' ', $doc_tags);

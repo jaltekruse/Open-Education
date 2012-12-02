@@ -20,8 +20,8 @@ foreach($assignments as $assignment):?>
 		<td><?php echo isset($assignment['last_name'] ) ? $assignment['last_name'] : "-";?> </td>
 		<?php if (isset($assignment['student_doc'] ) && $assignment['student_doc'] != NULL ){ ?>
 			<td>yes</td>
-			<td><a href="/index.php/user/view_submission/<?php echo $assignment['assignments_assignment_id'].'/'.$assignment['users_user_id']?>">View</a>
-			<td><a href="/index.php/user/teacher_assignment/<?php echo $assignment['assignments_assignment_id'].'/'.$assignment['users_user_id']?>">Download</a>
+			<td><a href="/index.php?/user/view_submission/<?php echo $assignment['assignments_assignment_id'].'/'.$assignment['users_user_id']?>">View</a>
+			<td><a href="/index.php?/user/teacher_assignment/<?php echo $assignment['assignments_assignment_id'].'/'.$assignment['users_user_id']?>">Download</a>
 		<?php } else {?>
 			<td>-</td>
 			<td>-</td>
