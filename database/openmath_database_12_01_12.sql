@@ -281,7 +281,7 @@ DROP TABLE IF EXISTS `openmath`.`tag_radix_nodes` ;
 
 CREATE  TABLE IF NOT EXISTS `openmath`.`tag_radix_nodes` (
   `node_id` INT NOT NULL AUTO_INCREMENT ,
-  `character` CHAR(1) NULL ,
+  `node_char` CHAR(1) NULL ,
   `depth` INT UNSIGNED NULL ,
   PRIMARY KEY (`node_id`) )
 ENGINE = InnoDB;
