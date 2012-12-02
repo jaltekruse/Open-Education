@@ -9,7 +9,7 @@ class User_model extends CI_Model{
 		$this->load->library('tank_auth');
 
 		$this->doc_description_fields = "docname,material_type, " .
-			 $this->mysql_date_format("upload_date") . ", doc_id,size,doc_type ";
+		 $this->mysql_date_format("upload_date") . ", doc_id,size,doc_type ";
 		$this->user_info_fields = "user_profiles.first_name, user_profiles.last_name, user_profiles.user_id ";
 		define('TEACHER', 1);
 		define('STUDENT', 2);
@@ -27,25 +27,25 @@ class User_model extends CI_Model{
 
 	public function get_colleagues($user_id){
 		$query = 'SELECT ' . $this->user_info_fields . 
-				'FROM user_profiles,colleagues WHERE colleagues.users_user_id1 = ? AND
-				colleagues.users_user_id2 = user_profiles.user_id';
-		$result = $this->db->query($query, array( 'users_user_id1' => $user_id))->result_array();
+				'FROM user_profiles,colleagues WHERE colleague.sender_user_id = ? AND
+				colleagues.receiver_user_id = user_profiles.user_id';
+		$result = $this->db->query($query, array( 'sender_user_id' => $user_id))->result_array();
 		$query = 'SELECT user_profiles.first_name, user_profiles.last_name, user_profiles.user_id FROM user_profiles,colleagues
-				WHERE colleagues.users_user_id2 = ? AND colleagues.users_user_id1 = user_profiles.user_id';
-		return array_merge($result, $this->db->query($query, array( 'users_user_id1' => $user_id))->result_array());
+				WHERE colleagues.receiver_user_id = ? AND colleagues.sender_user_id = user_profiles.user_id';
+		return array_merge($result, $this->db->query($query, array( 'sender_user_id' => $user_id))->result_array());
 	}
 	
 	public function get_pending_colleagues($user_id){
 		$query = 'SELECT ' . $this->user_info_fields .
-			'FROM user_profiles,pending_colleagues WHERE
-			pending_colleagues.receiver_user_id = ? AND pending_colleagues.sender_user_id = user_profiles.user_id';
+			'FROM user_profiles,colleagues WHERE
+			colleagues.receiver_user_id = ? AND colleagues.sender_user_id = user_profiles.user_id';
 		return $this->db->query($query, array( 'receiver_user_id' => $user_id))->result_array();
 	}
 	
 	public function confirm_colleague($pending_user_id, $user_id){
-		$sql_query = "DELETE FROM pending_colleagues WHERE sender_user_id = ? AND receiver_user_id = ?";
+		$sql_query = "DELETE FROM colleagues WHERE sender_user_id = ? AND receiver_user_id = ?";
 		$query = $this->db->query($sql_query, array( 'sender_user_id' => $pending_user_id, 'receiver_user_id' => $user_id));
-		$this->db->insert('colleagues', array('users_user_id1' => $pending_user_id, 'users_user_id2' => $user_id));
+		$this->db->insert('colleagues', array('sender_user_id' => $pending_user_id, 'receiver_user_id' => $user_id));
 	}
 	
 	public function get_id_from_email($email){
@@ -71,7 +71,7 @@ class User_model extends CI_Model{
 	}
 	
 	public function request_already_sent($sender_id, $receiver_id){
-		$sql_query = "SELECT sender_user_id FROM pending_colleagues WHERE sender_user_id = ? AND receiver_user_id = ?";
+		$sql_query = "SELECT sender_user_id FROM colleagues WHERE sender_user_id = ? AND receiver_user_id = ?";
 		$query = $this->db->query($sql_query, array( 'sender_user_id' => $sender_id, 'receiver_user_id' => $receiver_id));
 		if ($query->num_rows > 0)
 			return TRUE;
@@ -79,7 +79,7 @@ class User_model extends CI_Model{
 	}
 	
 	public function is_pending_colleague($new_colleague_id, $user_id){
-		$sql_query = "SELECT sender_user_id FROM pending_colleagues WHERE receiver_user_id = ? AND sender_user_id = ?";
+		$sql_query = "SELECT sender_user_id FROM colleagues WHERE receiver_user_id = ? AND sender_user_id = ?";
 		$query = $this->db->query($sql_query, array( 'receiver_user_id' => $user_id, 'sender_user_id' => $new_colleague_id));
 		if ($query->num_rows > 0)
 			return TRUE;
@@ -87,21 +87,21 @@ class User_model extends CI_Model{
 	}
 	
 	public function is_current_colleague($new_colleague_id, $user_id){
-		$sql_query = "SELECT colleagues.users_user_id1 FROM colleagues WHERE colleagues.users_user_id1 = ?
-				AND colleagues.users_user_id2 = ?";
-		$query = $this->db->query($sql_query, array( 'users_user_id1' => $user_id, 'users_user_id2' => $new_colleague_id));
+		$sql_query = "SELECT colleagues.sender_user_id FROM colleagues WHERE colleagues.sender_user_id = ?
+				AND colleagues.receiver_user_id = ?";
+		$query = $this->db->query($sql_query, array( 'sender_user_id' => $user_id, 'receiver_user_id' => $new_colleague_id));
 		if ($query->num_rows > 0)
 			return TRUE;
-		$sql_query = "SELECT colleagues.users_user_id1 FROM colleagues WHERE colleagues.users_user_id1 = ?
-				AND colleagues.users_user_id2 = ?";
-		$query = $this->db->query($sql_query, array( 'users_user_id1' => $new_colleague_id, 'users_user_id2' => $user_id));
+		$sql_query = "SELECT colleagues.sender_user_id FROM colleagues WHERE colleagues.sender_user_id = ?
+				AND colleagues.receiver_user_id = ?";
+		$query = $this->db->query($sql_query, array( 'sender_user_id' => $new_colleague_id, 'receiver_user_id' => $user_id));
 		if ($query->num_rows > 0)
 			return TRUE;
 		return FALSE;
 	}
 	
 	public function add_colleague_request($sender_id, $receiver_id){
-		$this->db->insert('pending_colleagues', array('sender_user_id' => $sender_id, 'receiver_user_id' => $receiver_id));
+		$this->db->insert('colleagues', array('sender_user_id' => $sender_id, 'receiver_user_id' => $receiver_id));
 	}
 
 	/*
@@ -163,7 +163,7 @@ class User_model extends CI_Model{
 		}
 		unset($sql_row);
 		$sql_row = array(	'classes_class_id' => $class_id,
-						 	'users_user_id' => $user_id,
+						 	'user_id' => $user_id,
 						 	'role' => STUDENT,
 		);
 		$this->db->insert('class_members', $sql_row);
@@ -200,8 +200,8 @@ class User_model extends CI_Model{
 	}
 	
 	public function get_student_submission($assignment_id, $user_id){
-		$sql_query = "SELECT assignments_and_users.student_doc, users_user_id FROM assignments_and_users WHERE	assignments_assignment_id = ? AND users_user_id = ?";
-		return $this->db->query($sql_query, array( 'assignments_assignment_id' => $assignment_id, 'users_user_id' => $user_id))->row_array();
+		$sql_query = "SELECT assignments_and_users.student_doc, user_id FROM assignments_and_users WHERE	assignment_id = ? AND user_id = ?";
+		return $this->db->query($sql_query, array( 'assignment_id' => $assignment_id, 'user_id' => $user_id))->row_array();
 	}
 	
 	public function get_orignial_assignment($assignment_id){
@@ -220,32 +220,32 @@ class User_model extends CI_Model{
 	}
 
 	public function get_student_assignment($assignment_id, $user_id){
-		$sql_query = "SELECT assignment_name, assignment_id, users_user_id, notes, LOWER(DATE_FORMAT(assign_date, '%c/%e/%y at %l:%i%p')) AS assign_date, ".
+		$sql_query = "SELECT assignment_name, assignment_id, user_id, notes, LOWER(DATE_FORMAT(assign_date, '%c/%e/%y at %l:%i%p')) AS assign_date, ".
 			"LOWER(DATE_FORMAT(due_date, '%c/%e/%y at %l:%i%p')) AS due_date, assignments_and_users.student_doc, assignments.student_doc AS original_assignment, total_points, ".
 			"CASE WHEN submit_time = '00/00/0000' THEN NULL ELSE LOWER(DATE_FORMAT(submit_time, '%c/%e/%y at %l:%i%p')) END AS submit_time ".
 			"FROM assignments, assignments_and_users WHERE assignments.assignment_id = ? ". 
-			"AND assignments.assignment_id = assignments_and_users.assignments_assignment_id ".
-			"AND assignments_and_users.users_user_id = ?";
+			"AND assignments.assignment_id = assignments_and_users.assignment_id ".
+			"AND assignments_and_users.user_id = ?";
 		return $this->db->query($sql_query, array( 'assignment_id' => $assignment_id, 'user_id' => $user_id))->row_array();
 	}
 
 	public function delete_doc($doc_id){
-		$this->db->delete('document_tags', array('documents_doc_id' => $doc_id));
+		$this->db->delete('document_tags', array('doc_id' => $doc_id));
 		$this->db->delete('documents', array('doc_id' => $doc_id));
 		return TRUE;
 	}
 	
 	public function delete_assignment($assignment_id){
-		$this->db->delete('assignments_and_users', array('assignments_assignment_id' => $assignment_id));
+		$this->db->delete('assignments_and_users', array('assignment_id' => $assignment_id));
 		$this->db->delete('assignments', array('assignment_id' => $assignment_id));
 		return TRUE;
 	}
 	
 	public function is_students_assignment($user_id, $assignment_id){
-		$sql_query = "SELECT * FROM assignments_and_users WHERE assignments_and_users.users_user_id = ? AND
-				assignments_and_users.assignments_assignment_id = ?";
+		$sql_query = "SELECT * FROM assignments_and_users WHERE and_users.user_id = ? AND
+				assignments_and_users.assignment_id = ?";
 		
-		$query = $this->db->query($sql_query, array( 'user_id' => $user_id, 'assignments_assignment_id' => $assignment_id));
+		$query = $this->db->query($sql_query, array( 'user_id' => $user_id, 'assignment_id' => $assignment_id));
 		if ($query->num_rows == 0){
 			return FALSE;
 		}
@@ -254,14 +254,14 @@ class User_model extends CI_Model{
 	
 	public function remove_student($user_id, $class_id){
 		$sql_row = array(	'classes_class_id' => $class_id,
-			 	'users_user_id' => $user_id,
+			 	'user_id' => $user_id,
 		);
 		$this->db->delete('class_members', $sql_row);
 		return TRUE;
 	}
 	
 	public function is_class_member($user_id, $class_id){
-		$sql_query = "SELECT * FROM class_members WHERE class_members.users_user_id = ? AND
+		$sql_query = "SELECT * FROM class_members WHERE class_members.user_id = ? AND
 				class_members.classes_class_id = ?";
 		
 		$query = $this->db->query($sql_query, array( 'user_id' => $user_id, 'class_id' => $class_id));
@@ -272,7 +272,7 @@ class User_model extends CI_Model{
 	}
 	
 	public function is_teacher($user_id, $class_id){
-		$sql_query = "SELECT * FROM class_members WHERE class_members.users_user_id = ? AND
+		$sql_query = "SELECT * FROM class_members WHERE class_members.user_id = ? AND
 				class_members.classes_class_id = ?";
 		
 		$query = $this->db->query($sql_query, array( 'user_id' => $user_id, 'class_id' => $class_id))->row();
@@ -283,7 +283,7 @@ class User_model extends CI_Model{
 	}
 	
 	public function is_student($user_id, $class_id){
-		$sql_query = "SELECT * FROM class_members WHERE class_members.users_user_id = ? AND
+		$sql_query = "SELECT * FROM class_members WHERE class_members.user_id = ? AND
 				class_members.classes_class_id = ?";
 		
 		$query = $this->db->query($sql_query, array( 'user_id' => $user_id, 'class_id' => $class_id))->row();
@@ -294,11 +294,11 @@ class User_model extends CI_Model{
 	}
 
 	public function get_classes($user_id){
-		$sql_query = "SELECT role, class_id, subject, class_hour, LOWER(DATE_FORMAT(create_date, '%c/%e/%y at %l:%i%p')) AS create_date, ".
+		$sql_query = "SELECT role, classes.class_id, subject, class_hour, LOWER(DATE_FORMAT(create_date, '%c/%e/%y at %l:%i%p')) AS create_date, ".
 			"CASE WHEN close_date = '000/00/00' THEN NULL ELSE LOWER(DATE_FORMAT(close_date, '%c/%e/%y at %l:%i:%p')) END AS close_date,  ".
-		"class_enrollments.classes_class_id AS enrollment ".
-		"FROM class_members, classes LEFT OUTER JOIN class_enrollments ON class_enrollments.classes_class_id = classes.class_id ".
-		"WHERE class_members.users_user_id = ? AND class_members.classes_class_id = classes.class_id";
+		"class_enrollments.class_id AS enrollment ".
+		"FROM class_members, classes LEFT OUTER JOIN class_enrollments ON class_enrollments.class_id = classes.class_id ".
+		"WHERE class_members.user_id = ? AND class_members.class_id = classes.class_id";
 		$result_array = $this->db->query($sql_query, $user_id)->result_array();
 		for ($index = 0; $index < sizeof($result_array) ; $index++){
 			$result_array[$index]['role'] = $this->role_num_to_string($result_array[$index]['role']);
@@ -311,7 +311,7 @@ class User_model extends CI_Model{
 	}
 	
 	public function get_students($class_id){
-			$sql_query = "SELECT user_profiles.first_name,user_profiles.last_name,user_profiles.user_id FROM user_profiles, class_members WHERE class_members.classes_class_id = ? AND class_members.role = ? AND class_members.users_user_id = user_profiles.user_id";
+			$sql_query = "SELECT user_profiles.first_name,user_profiles.last_name,user_profiles.user_id FROM user_profiles, class_members WHERE class_members.classes_class_id = ? AND class_members.role = ? AND class_members.user_id = user_profiles.user_id";
 		
 		$sql_row = array(	'classes_class_id' => $class_id,
 							'role' => STUDENT
@@ -423,14 +423,14 @@ class User_model extends CI_Model{
 	}
 
 	public function get_sudent_assignment_count($user_id, $class_id){
-		$result_array = $this->db->query('select count(*) as assignment_count from assignments as a, assignments_and_users as a_u where a_u.users_user_id = ? AND a_u.assignments_assignment_id = a.assignment_id AND a.classes_class_id = ?')->result_array();
+		$result_array = $this->db->query('select count(*) as assignment_count from assignments as a, assignments_and_users as a_u where a_u.user_id = ? AND a_u.assignment_id = a.assignment_id AND a.classes_class_id = ?')->result_array();
 		return $result_array[0]['assignment_count'];	
 	}
 	
 	public function get_student_assignments($user_id, $class_id, $per_page, $curr_pagination_page){
 		// TODO - remove *'s  
-		$sql_query = "SELECT a.assignment_name, a.assignment_id, a.total_points, " . $this->mysql_date_format('assign_date') . ", " . $this->mysql_date_format('due_date') . ", CASE WHEN a_u.submit_time = '00/00/0000' THEN NULL ELSE " . $this->mysql_date_format('submit_time') . ") END AS submit_time FROM assignments_and_users as a_u,assignments as a WHERE a_u.users_user_id = ? AND a_u.assignments_assignment_id = a.assignment_id AND a.classes_class_id = ? " . $this->limit_results($per_page, $curr_pagination_page);
-		$result_array = $this->db->query($sql_query, array( 'users_user_id' => $user_id, 'classes_class_id' => $class_id))->result_array();
+		$sql_query = "SELECT a.assignment_name, a.assignment_id, a.total_points, " . $this->mysql_date_format('assign_date') . ", " . $this->mysql_date_format('due_date') . ", CASE WHEN a_u.submit_time = '00/00/0000' THEN NULL ELSE " . $this->mysql_date_format('submit_time') . ") END AS submit_time FROM assignments_and_users as a_u,assignments as a WHERE a_u.user_id = ? AND a_u.assignment_id = a.assignment_id AND a.classes_class_id = ? " . $this->limit_results($per_page, $curr_pagination_page);
+		$result_array = $this->db->query($sql_query, array( 'user_id' => $user_id, 'classes_class_id' => $class_id))->result_array();
 		for ($index = 0; $index < sizeof($result_array) ; $index++){
 			if (strlen($result_array[$index]['assignment_name']) > 25){
 				$result_array[$index]['assignment_name'] = substr( $result_array[$index]['assignment_name'], 0, 24).'...';
@@ -451,9 +451,9 @@ class User_model extends CI_Model{
 	}
 	
 	public function teacher_has_assignment($user_id, $assignment_id){
-		$sql_query = 'SELECT class_members.users_user_id from assignments, class_members WHERE assignments.classes_class_id =
-				class_members.classes_class_id AND class_members.role = ? AND class_members.users_user_id = ? AND assignments.assignment_id = ?';
-		$query = $this->db->query($sql_query, array( 'role' => TEACHER, 'users_user_id' => $user_id, 'assignment_id' => $assignment_id));
+		$sql_query = 'SELECT class_members.user_id from assignments, class_members WHERE assignments.classes_class_id =
+				class_members.classes_class_id AND class_members.role = ? AND class_members.user_id = ? AND assignments.assignment_id = ?';
+		$query = $this->db->query($sql_query, array( 'role' => TEACHER, 'user_id' => $user_id, 'assignment_id' => $assignment_id));
 		if ($query->num_rows == 0){
 			return FALSE;
 		}
@@ -463,7 +463,7 @@ class User_model extends CI_Model{
 	public function get_student_submissions($assignment_id){
 		// should remove the * here
 		$query = 'SELECT a_u.*, u_p.first_name,u_p.last_name FROM assignments_and_users as a_u,
-				user_profiles as u_p WHERE a_u.assignments_assignment_id = ? AND a_u.users_user_id = u_p.user_id';
+				user_profiles as u_p WHERE a_u.assignment_id = ? AND a_u.user_id = u_p.user_id';
 		return $this->db->query($query, $assignment_id)->result_array();
 	}
 	
@@ -472,7 +472,7 @@ class User_model extends CI_Model{
 		$used_already = FALSE;
 		foreach ($tags as $tag){
 			$sql_query = 'SELECT documents.* FROM documents,document_tags,tags WHERE documents.owner_user_id = ? AND
-				documents.doc_id = document_tags.documents_doc_id AND tags.tag = ? AND tags.tag_id = document_tags.tags_tag_id';
+				documents.doc_id = document_tags.doc_id AND tags.tag = ? AND tags.tag_id = document_tags.tag_id';
 			$result_array = $this->db->query($sql_query, array('owner_user_id' => $user_id, 'tag' => $tag))->result_array();
 			foreach($result_array as $result){
 				$used_already = FALSE;
@@ -493,7 +493,7 @@ class User_model extends CI_Model{
 	
 	public function get_doc_tags($doc_id){
 		$sql_query = 'SELECT tags.tag FROM tags, document_tags
-				WHERE tags.tag_id = document_tags.tags_tag_id AND document_tags.documents_doc_id = ?';
+				WHERE tags.tag_id = document_tags.tag_id AND document_tags.doc_id = ?';
 		$result_array = $this->db->query($sql_query, array('document_doc_id' => $doc_id))->result_array();
 		$tags = array();
 		foreach ($result_array as $tag){
@@ -509,7 +509,7 @@ class User_model extends CI_Model{
 		$this->db->insert('classes', $sql_row);
 		unset($sql_row);
 		$sql_row = array(	'classes_class_id' => $this->db->insert_id(),
-						 	'users_user_id' => $user_id,
+						 	'user_id' => $user_id,
 						 	'role' => TEACHER,
 		);
 		$this->db->insert('class_members', $sql_row);
@@ -518,10 +518,10 @@ class User_model extends CI_Model{
 	public function user_has_assignment($user_id, $assignment_id){
 		//check to see if the user has access to downloading/submitting the assignment
 		// this can be done in the controller
-		$sql_query = "SELECT * FROM assignments_and_users WHERE assignments_and_users.users_user_id = ? AND
-				assignments_and_users.assignments_assignment_id = ?";
+		$sql_query = "SELECT * FROM assignments_and_users WHERE assignments_and_users.user_id = ? AND
+				assignments_and_users.assignment_id = ?";
 		
-		$query = $this->db->query($sql_query, array( 'users_user_id' => $user_id, 'assignment_id' => $assignment_id));
+		$query = $this->db->query($sql_query, array( 'user_id' => $user_id, 'assignment_id' => $assignment_id));
 		if ($query->num_rows == 0){
 			return FALSE;
 		}
@@ -532,7 +532,7 @@ class User_model extends CI_Model{
 		$this->db->insert('assignments', $assignment_data);
 		$assignment_id = $this->db->insert_id();
 		foreach ($this->get_students($assignment_data['classes_class_id']) as $student){
-			$this->db->insert('assignments_and_users', array('assignments_assignment_id' => $assignment_id, 'users_user_id' => $student['user_id']));
+			$this->db->insert('assignments_and_users', array('assignment_id' => $assignment_id, 'user_id' => $student['user_id']));
 		}
 	}
 }

@@ -114,7 +114,7 @@
   <a href="/index.php/auth/login">Log in</a> &nbsp;
   <a href="/index.php/auth/register">Register</a>
 <?php } else{ echo 'Hi, '.$first_name.'&nbsp;|&nbsp;'; ?>
-<a href="/index.php/auth/logout">Logout</a>
+<a href="/index.php?/auth/logout">Logout</a>
 <?php } ?>
 </p>
 </div>

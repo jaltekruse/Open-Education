@@ -48,10 +48,10 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'openmath_site';
-$db['default']['password'] = "8r@Df0rd";
-$db['default']['database'] = 'openmath_test';
+$db['default']['hostname'] = 'open-math.ck7xah3imw9l.us-east-1.rds.amazonaws.com';
+$db['default']['username'] = 'admin';
+$db['default']['password'] = 'v_MWd5LHCESlTXO';
+$db['default']['database'] = 'openmath';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;

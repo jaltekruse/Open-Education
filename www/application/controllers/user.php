@@ -12,7 +12,7 @@ class User extends CI_Controller{
 	}
 	
 	public function index(){
-		redirect('/user/classes');
+		redirect('/user/documents');
 	}
 
 	public function classes(){

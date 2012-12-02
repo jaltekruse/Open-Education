@@ -48,6 +48,7 @@
  *  Load the global functions
  * ------------------------------------------------------
  */
+	
 	require(BASEPATH.'core/Common.php');
 
 /*
@@ -163,6 +164,7 @@
  * ------------------------------------------------------
  */
 	$URI =& load_class('URI', 'core');
+	if ( strstr($URI->uri_string(), 'user'))throw new Exception('asdfasdf');
 
 /*
  * ------------------------------------------------------
@@ -170,6 +172,7 @@
  * ------------------------------------------------------
  */
 	$RTR =& load_class('Router', 'core');
+	
 	$RTR->_set_routing();
 
 	// Set any routing overrides that may exist in the main index file
@@ -246,7 +249,7 @@
 	{
 		show_error('Unable to load your default controller. Please make sure the controller specified in your Routes.php file is valid.');
 	}
-
+	
 	include(APPPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_class().'.php');
 
 	// Set a mark point for benchmarking
@@ -306,7 +309,7 @@
 	$BM->mark('controller_execution_time_( '.$class.' / '.$method.' )_start');
 
 	$CI = new $class();
-
+	
 /*
  * ------------------------------------------------------
  *  Is there a "post_controller_constructor" hook?
@@ -326,6 +329,7 @@
 	}
 	else
 	{
+	
 		// is_callable() returns TRUE on some versions of PHP 5 for private and protected
 		// methods, so we'll use this workaround for consistent behavior
 		if ( ! in_array(strtolower($method), array_map('strtolower', get_class_methods($CI))))
