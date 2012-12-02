@@ -769,7 +769,7 @@ class User extends CI_Controller{
 				$ret = $this->db->insert('documents', $file_data);
 				$doc_id = $this->db->insert_id();
 				
-				$file_path =  "../../user_files/documents/" . $doc_id;
+				$file_path =  "../../../user_files/documents/" . $doc_id;
 				// the filename is just the document id from the database, to insure unique names
 				// the files name will be saved in the database for later retrieval
 				$fp = fopen($file_path, 'w');	
