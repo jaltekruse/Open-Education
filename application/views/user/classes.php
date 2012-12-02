@@ -34,18 +34,8 @@ if (sizeof($classes) == 0){ ?>
 	</table>
 <?php
 } ?>
-<table>
-<tr>
-<td>
-<form method="get" action="/index.php?/user/create_class">
-<input type="submit" name="submit" class="submit mid" value="Create Class">
-</form>
-</td>
-<td>
-<form method="get" action="/index.php?/user/join_class">
-<input type="submit" name="submit" class="submit mid" value="Join Class">
-</form>
-</td>
-</tr>
-</table>
+<h2>
+<a href="/index.php?/user/create_class">Create Class</a> &nbsp; &nbsp;
+<a href="/index.php?/user/join_class">Join Class</a>
+</h2>
 

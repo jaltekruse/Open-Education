@@ -38,14 +38,13 @@ class User_model extends CI_Model{
 	public function get_pending_colleagues($user_id){
 		$query = 'SELECT ' . $this->user_info_fields .
 			'FROM user_profiles,colleagues WHERE
-			colleagues.receiver_user_id = ? AND colleagues.sender_user_id = user_profiles.user_id';
+			colleagues.receiver_user_id = ? AND colleagues.sender_user_id = user_profiles.user_id AND accepted = 0';
 		return $this->db->query($query, array( 'receiver_user_id' => $user_id))->result_array();
 	}
 	
 	public function confirm_colleague($pending_user_id, $user_id){
-		$sql_query = "DELETE FROM colleagues WHERE sender_user_id = ? AND receiver_user_id = ?";
+		$sql_query = "UPDATE colleagues set accepted = 1 WHERE sender_user_id = ? AND receiver_user_id = ?";
 		$query = $this->db->query($sql_query, array( 'sender_user_id' => $pending_user_id, 'receiver_user_id' => $user_id));
-		$this->db->insert('colleagues', array('sender_user_id' => $pending_user_id, 'receiver_user_id' => $user_id));
 	}
 	
 	public function get_id_from_email($email){
@@ -123,7 +122,7 @@ class User_model extends CI_Model{
 	
 	public function open_enrollment($class_id, $password){
 		$salt = md5(rand().microtime());
-		$sql_row = array(	'classes_class_id' => $class_id,
+		$sql_row = array(	'class_id' => $class_id,
 				'password' => md5(''.$salt.$salt.$password.$salt.$salt.''),
 				'salt' => $salt);
 		$this->db->insert('class_enrollments', $sql_row);
@@ -135,7 +134,7 @@ class User_model extends CI_Model{
 		if ( ! $this->enrollment_is_open($class_id)){
 			return FALSE;
 		}
-		$sql_query = "DELETE FROM class_enrollments WHERE class_enrollments.classes_class_id = ?";
+		$sql_query = "DELETE FROM class_enrollments WHERE class_enrollments.class_id = ?";
 		$query = $this->db->query($sql_query, array('class_id' => $class_id));
 		return TRUE;
 	}
@@ -148,13 +147,13 @@ class User_model extends CI_Model{
 			//already a member
 			return FALSE;
 		}
-		$sql_query = "SELECT * FROM class_enrollments WHERE class_enrollments.classes_class_id = ?";
+		$sql_query = "SELECT * FROM class_enrollments WHERE class_enrollments.class_id = ?";
 		$query = $this->db->query($sql_query, array('class_id' => $class_id))->row();
 		$salt = $query->salt;
 		
-		$sql_query = "SELECT * FROM class_enrollments WHERE class_enrollments.classes_class_id = ? AND
+		$sql_query = "SELECT * FROM class_enrollments WHERE class_enrollments.class_id = ? AND
 				password = ?";
-		$sql_row = array(	'classes_class_id' => $class_id,
+		$sql_row = array(	'class_id' => $class_id,
 							'password' => md5($salt.$salt.$password.$salt.$salt.''),
 		);
 		$query = $this->db->query($sql_query, $sql_row);
@@ -162,7 +161,7 @@ class User_model extends CI_Model{
 			return FALSE;
 		}
 		unset($sql_row);
-		$sql_row = array(	'classes_class_id' => $class_id,
+		$sql_row = array(	'class_id' => $class_id,
 						 	'user_id' => $user_id,
 						 	'role' => STUDENT,
 		);
@@ -171,7 +170,7 @@ class User_model extends CI_Model{
 	}
 	
 	public function enrollment_is_open($class_id){
-		$sql_query = "SELECT * FROM class_enrollments WHERE class_enrollments.classes_class_id = ?";
+		$sql_query = "SELECT * FROM class_enrollments WHERE class_enrollments.class_id = ?";
 		$query = $this->db->query($sql_query, array('class_id' => $class_id));
 		if ($query->num_rows == 0){
 			return FALSE;
@@ -253,7 +252,7 @@ class User_model extends CI_Model{
 	}
 	
 	public function remove_student($user_id, $class_id){
-		$sql_row = array(	'classes_class_id' => $class_id,
+		$sql_row = array(	'class_id' => $class_id,
 			 	'user_id' => $user_id,
 		);
 		$this->db->delete('class_members', $sql_row);
@@ -262,7 +261,7 @@ class User_model extends CI_Model{
 	
 	public function is_class_member($user_id, $class_id){
 		$sql_query = "SELECT * FROM class_members WHERE class_members.user_id = ? AND
-				class_members.classes_class_id = ?";
+				class_members.class_id = ?";
 		
 		$query = $this->db->query($sql_query, array( 'user_id' => $user_id, 'class_id' => $class_id));
 		if ($query->num_rows == 0){
@@ -273,7 +272,7 @@ class User_model extends CI_Model{
 	
 	public function is_teacher($user_id, $class_id){
 		$sql_query = "SELECT * FROM class_members WHERE class_members.user_id = ? AND
-				class_members.classes_class_id = ?";
+				class_members.class_id = ?";
 		
 		$query = $this->db->query($sql_query, array( 'user_id' => $user_id, 'class_id' => $class_id))->row();
 		if ( ! $query || $query->role != TEACHER){
@@ -284,7 +283,7 @@ class User_model extends CI_Model{
 	
 	public function is_student($user_id, $class_id){
 		$sql_query = "SELECT * FROM class_members WHERE class_members.user_id = ? AND
-				class_members.classes_class_id = ?";
+				class_members.class_id = ?";
 		
 		$query = $this->db->query($sql_query, array( 'user_id' => $user_id, 'class_id' => $class_id))->row();
 		if ( ! $query || $query->role != STUDENT){
@@ -311,9 +310,9 @@ class User_model extends CI_Model{
 	}
 	
 	public function get_students($class_id){
-			$sql_query = "SELECT user_profiles.first_name,user_profiles.last_name,user_profiles.user_id FROM user_profiles, class_members WHERE class_members.classes_class_id = ? AND class_members.role = ? AND class_members.user_id = user_profiles.user_id";
+			$sql_query = "SELECT user_profiles.first_name,user_profiles.last_name,user_profiles.user_id FROM user_profiles, class_members WHERE class_members.class_id = ? AND class_members.role = ? AND class_members.user_id = user_profiles.user_id";
 		
-		$sql_row = array(	'classes_class_id' => $class_id,
+		$sql_row = array(	'class_id' => $class_id,
 							'role' => STUDENT
 		);
 		$result_array = $this->db->query($sql_query, $sql_row)->result_array();
@@ -423,14 +422,14 @@ class User_model extends CI_Model{
 	}
 
 	public function get_sudent_assignment_count($user_id, $class_id){
-		$result_array = $this->db->query('select count(*) as assignment_count from assignments as a, assignments_and_users as a_u where a_u.user_id = ? AND a_u.assignment_id = a.assignment_id AND a.classes_class_id = ?')->result_array();
+		$result_array = $this->db->query('select count(*) as assignment_count from assignments as a, assignments_and_users as a_u where a_u.user_id = ? AND a_u.assignment_id = a.assignment_id AND a.class_id = ?')->result_array();
 		return $result_array[0]['assignment_count'];	
 	}
 	
 	public function get_student_assignments($user_id, $class_id, $per_page, $curr_pagination_page){
 		// TODO - remove *'s  
-		$sql_query = "SELECT a.assignment_name, a.assignment_id, a.total_points, " . $this->mysql_date_format('assign_date') . ", " . $this->mysql_date_format('due_date') . ", CASE WHEN a_u.submit_time = '00/00/0000' THEN NULL ELSE " . $this->mysql_date_format('submit_time') . ") END AS submit_time FROM assignments_and_users as a_u,assignments as a WHERE a_u.user_id = ? AND a_u.assignment_id = a.assignment_id AND a.classes_class_id = ? " . $this->limit_results($per_page, $curr_pagination_page);
-		$result_array = $this->db->query($sql_query, array( 'user_id' => $user_id, 'classes_class_id' => $class_id))->result_array();
+		$sql_query = "SELECT a.assignment_name, a.assignment_id, a.total_points, " . $this->mysql_date_format('assign_date') . ", " . $this->mysql_date_format('due_date') . ", CASE WHEN a_u.submit_time = '00/00/0000' THEN NULL ELSE " . $this->mysql_date_format('submit_time') . ") END AS submit_time FROM assignments_and_users as a_u,assignments as a WHERE a_u.user_id = ? AND a_u.assignment_id = a.assignment_id AND a.class_id = ? " . $this->limit_results($per_page, $curr_pagination_page);
+		$result_array = $this->db->query($sql_query, array( 'user_id' => $user_id, 'class_id' => $class_id))->result_array();
 		for ($index = 0; $index < sizeof($result_array) ; $index++){
 			if (strlen($result_array[$index]['assignment_name']) > 25){
 				$result_array[$index]['assignment_name'] = substr( $result_array[$index]['assignment_name'], 0, 24).'...';
@@ -440,8 +439,8 @@ class User_model extends CI_Model{
 	}
 	
 	public function get_teacher_assignments($user_id, $class_id){	
-		$sql_query = "SELECT assignment_id, assignment_name, " . $this->mysql_date_format('assign_date') . ', ' . $this->mysql_date_format('due_date') . ", total_points, notes FROM assignments WHERE classes_class_id = ?";
-		$result_array = $this->db->query($sql_query, array('classes_class_id' => $class_id))->result_array();
+		$sql_query = "SELECT assignment_id, assignment_name, " . $this->mysql_date_format('assign_date') . ', ' . $this->mysql_date_format('due_date') . ", total_points, notes FROM assignments WHERE class_id = ?";
+		$result_array = $this->db->query($sql_query, array('class_id' => $class_id))->result_array();
 		for ($index = 0; $index < sizeof($result_array) ; $index++){
 			if (strlen($result_array[$index]['assignment_name']) > 25){
 				$result_array[$index]['assignment_name'] = substr( $result_array[$index]['assignment_name'], 0, 24).'...';
@@ -451,8 +450,8 @@ class User_model extends CI_Model{
 	}
 	
 	public function teacher_has_assignment($user_id, $assignment_id){
-		$sql_query = 'SELECT class_members.user_id from assignments, class_members WHERE assignments.classes_class_id =
-				class_members.classes_class_id AND class_members.role = ? AND class_members.user_id = ? AND assignments.assignment_id = ?';
+		$sql_query = 'SELECT class_members.user_id from assignments, class_members WHERE assignments.class_id =
+				class_members.class_id AND class_members.role = ? AND class_members.user_id = ? AND assignments.assignment_id = ?';
 		$query = $this->db->query($sql_query, array( 'role' => TEACHER, 'user_id' => $user_id, 'assignment_id' => $assignment_id));
 		if ($query->num_rows == 0){
 			return FALSE;
@@ -508,7 +507,7 @@ class User_model extends CI_Model{
 							'create_date' => date('Y-m-d H:i'));
 		$this->db->insert('classes', $sql_row);
 		unset($sql_row);
-		$sql_row = array(	'classes_class_id' => $this->db->insert_id(),
+		$sql_row = array(	'class_id' => $this->db->insert_id(),
 						 	'user_id' => $user_id,
 						 	'role' => TEACHER,
 		);
@@ -531,7 +530,7 @@ class User_model extends CI_Model{
 	public function add_assignment($assignment_data){
 		$this->db->insert('assignments', $assignment_data);
 		$assignment_id = $this->db->insert_id();
-		foreach ($this->get_students($assignment_data['classes_class_id']) as $student){
+		foreach ($this->get_students($assignment_data['class_id']) as $student){
 			$this->db->insert('assignments_and_users', array('assignment_id' => $assignment_id, 'user_id' => $student['user_id']));
 		}
 	}

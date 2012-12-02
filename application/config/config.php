@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://open-math.tenthcircle.net/';
+$config['base_url']	= 'http://open-math.com/';
 
 /*
 |--------------------------------------------------------------------------

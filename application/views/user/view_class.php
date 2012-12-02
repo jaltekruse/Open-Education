@@ -29,7 +29,8 @@ endforeach; ?>
  ?>
  	<h2>Use the bar above to access your assignments.</h2>
  	<?php else: ?>
-	<h2>No students are enrolled in this class.</h2>
+	<h2>No students are enrolled in this class. <br><br>
+	Enrollment is currently <u><?php echo $class_open?></u> to manage class enrollment visit the <a href="/index.php?/user/class_admin">Class Admin</a> page.</h2>
 <?php 
 	endif;
 endif; ?>

@@ -1,7 +1,7 @@
 <?php
 class User extends CI_Controller{
 
-	public $results_per_page = 2;
+	public $results_per_page = 25;
 
 	public function __construct(){
 		parent::__construct();
@@ -204,6 +204,7 @@ class User extends CI_Controller{
 			redirect('/user/student_current_assignments');
 		}
 		$data['title'] = $data['class_name'];
+		$data['class_open'] = $this->user_model->enrollment_is_open($class_id) ? 'open' : 'closed';	
 		
 		if ( $this->user_model->is_teacher($data['user_id'], $data['class_id'])){
 			$data['students'] = $this->user_model->get_students($data['class_id']);
@@ -274,7 +275,7 @@ class User extends CI_Controller{
 		}
 		// the user is uploading a submission
 		//check they have permissions to do so
-		$config['upload_path'] = './uploads/';
+		$config['upload_path'] = '../uploads/';
 		$config['allowed_types'] = '*';
 		$config['max_size'] = '50000';
 		$config['max_width']  = '2500';
@@ -333,7 +334,7 @@ class User extends CI_Controller{
 		}
 		// the user is uploading a submission
 		//check they have permissions to do so
-		$config['upload_path'] = './uploads/';
+		$config['upload_path'] = '../uploads/';
 		$config['allowed_types'] = '*';
 		$config['max_size'] = '50000';
 		$config['max_width']  = '2500';
@@ -714,7 +715,7 @@ class User extends CI_Controller{
 	}
 	
 	public function upload_doc(){
-        $config['upload_path'] = './uploads/';
+        	$config['upload_path'] = '../uploads/';
 		$config['allowed_types'] = '*';
 		$config['max_size'] = '50000';
 		$config['max_width']  = '2500';
@@ -764,32 +765,34 @@ class User extends CI_Controller{
 						'size'=>$size,'file_path' => '', 'owner_user_id' => $data['user_id'],
 						'upload_date' => $date, 'material_type' =>
 						$this->user_model->material_type_code($this->input->post('material_type')),
-						'public' => $this->input->post('public'), 'file_mime' => $file_info['file_type']
+						'public' => $this->input->post('public'), 'file_mime' => $file_info['file_type'],
+						'root_comment_id' => $this->db->insert_id()
 				);
 				$ret = $this->db->insert('documents', $file_data);
 				$doc_id = $this->db->insert_id();
 				
-				$file_path =  "../../../user_files/documents/" . $doc_id;
+				$file_path =  "../user_files/documents/" . $doc_id ;
 				// the filename is just the document id from the database, to insure unique names
 				// the files name will be saved in the database for later retrieval
 				$fp = fopen($file_path, 'w');	
 				fwrite($fp, $file);
 				
-				$this->db->query('update documents set file_path = ' . $file_path . ' where doc_id = ? ', array('doc_id' => $doc_id));
+				$this->db->query('update documents set file_path = \'' . $file_path . '\' where doc_id = ? ', array('doc_id' => $doc_id));
 
 				$doc_tags = str_replace(',', ' ', $this->input->post('doc_tags'));
 				$doc_tags = trim(preg_replace('/\s+/',' ',$doc_tags));
 				$doc_tags = explode(' ', $doc_tags);
-				$query = "INSERT IGNORE INTO tags SET `tag` = ?";
+				$query = "INSERT INTO tags SET `tag` = ?,`node_id` = ?";
 				$lookup_query = "SELECT tag_id FROM tags WHERE tag = ?";
 				$tag_id = 0;
 				foreach($doc_tags as $doc_tag){
-					$this->db->query($query, array( 'tag' => strtolower($doc_tag)));
+					$this->db->query($query, array( 'tag' => strtolower($doc_tag),'node_id' => '1'));
 					// can get id from database if just added, but do not know how to get id without another
 					// query if tags is shared with a previous document and not added to dastabase
 					$tag_id = $this->db->query($lookup_query, array('tag' => $doc_tag))->row()->tag_id;
-					$this->db->insert('document_tags', array( 'tags_tag_id' => $tag_id,
-								'documents_doc_id' => $doc_id ));
+					// DID NOT SET UP RADIX TREE YET, NEED TO DO THIS AND POINT EACH TAG TO PROPER LOCATION
+					$this->db->insert('document_tags', array( 'tag_id' => $tag_id, 
+								'doc_id' => $doc_id ));
 				}
 				unlink($tmpname);
 				redirect('/user/documents');

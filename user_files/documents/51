@@ -1,0 +1,59 @@
+battery from terminal:
+	acpi -b
+
+Don’t Refresh Unity in Terminal:
+Use Alt+F2 to run:
+	unity --replace
+
+To find the files that contain a string use:
+find . -exec grep -l "" {} \;
+
+GUI to terminal:
+	Ctrl Alt F1 (f2-f6)
+
+switch between consoles:
+	Alt F1 (F2-F6)
+
+back to GUI:
+	Alt F7
+
+reset compiz from terminal:
+	gconftool-2 --recursive-unset /apps/compiz
+
+change close, min/max bottons:
+	alt+f2 (run command)
+	$gconf-editor
+	apps -> metacity -> general
+	 
+sign a jar:
+jarsigner -keystore .keystore PaigeInvaders.jar mykey
+
+turn off host key checking in ssh:
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no 
+
+Get rid of actions(pasting!!!) while scrolling:
+synclient RTCornerButton=0
+synclient RBCornerButton=0
+
+get menu bar back in firefox:
+alt+f
+
+add the the PATH (use executables in other folders by name
+	change out the path below with the intended path)
+PATH=/data/myscripts:$PATH
+
+fix broken package management, removed local packge metadata:
+sudo rm /var/lib/apt/lists/* -vf
+sudo apt-get update
+
+enable mouse keys:
+ctrl-shift-numlock
+
+vnc not showing window decoration:
+modify ~/.vnc/xstartup, at end add 2 lines
+gnome-session&
+metacity&
+
+boot from flash drive with virtual box:
+sudo VBoxManage internalcommands createrawvmdk -filename ~/chrome.vmdk -rawdisk /dev/sdb
+- then add the created vmdk to the vm
