@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://ballancer2.open-math.com/';
+$config['base_url']	= 'http://open-math.com/';
 
 /*
 |--------------------------------------------------------------------------

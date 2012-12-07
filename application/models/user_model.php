@@ -9,7 +9,7 @@ class User_model extends CI_Model{
 		$this->load->library('tank_auth');
 
 		$this->doc_description_fields = "docname,material_type, " .
-		 $this->mysql_date_format("upload_date") . ", doc_id,size,doc_type ";
+			$this->mysql_date_format("upload_date") . ", doc_id,size,doc_type ";
 		$this->user_info_fields = "user_profiles.first_name, user_profiles.last_name, user_profiles.user_id ";
 		define('TEACHER', 1);
 		define('STUDENT', 2);
@@ -25,7 +25,11 @@ class User_model extends CI_Model{
 		define('OTHER', 30);
 	}
 
-	public function get_colleagues($user_id){
+	public function get_colleague_count($user_id){
+		return $this->db->query('select count(*) as colleague_count from colleagues where sender_user_id = ? OR receiver_user_id = ?', array($user_id, $user_id))->row()->colleague_count;
+	}
+
+	public function get_colleagues($user_id, $curr_page, $results_per_page){
 		$query = 'SELECT ' . $this->user_info_fields . 
 				'FROM user_profiles,colleagues WHERE colleagues.sender_user_id = ? AND
 				colleagues.receiver_user_id = user_profiles.user_id';
@@ -292,12 +296,16 @@ class User_model extends CI_Model{
 		return TRUE;
 	}
 
-	public function get_classes($user_id){
+	public function get_class_count($user_id){
+		return $this->db->query('select count(*) as class_count from class_members where user_id = ?',array($user_id))->row()->class_count;
+	}
+
+	public function get_classes($user_id, $per_page, $curr_pagination_page){
 		$sql_query = "SELECT role, classes.class_id, subject, class_hour, LOWER(DATE_FORMAT(create_date, '%c/%e/%y at %l:%i%p')) AS create_date, ".
 			"CASE WHEN close_date = '000/00/00' THEN NULL ELSE LOWER(DATE_FORMAT(close_date, '%c/%e/%y at %l:%i:%p')) END AS close_date,  ".
 		"class_enrollments.class_id AS enrollment ".
 		"FROM class_members, classes LEFT OUTER JOIN class_enrollments ON class_enrollments.class_id = classes.class_id ".
-		"WHERE class_members.user_id = ? AND class_members.class_id = classes.class_id";
+		"WHERE class_members.user_id = ? AND class_members.class_id = classes.class_id " . $this->limit_results($per_page, $curr_pagination_page);
 		$result_array = $this->db->query($sql_query, $user_id)->result_array();
 		for ($index = 0; $index < sizeof($result_array) ; $index++){
 			$result_array[$index]['role'] = $this->role_num_to_string($result_array[$index]['role']);

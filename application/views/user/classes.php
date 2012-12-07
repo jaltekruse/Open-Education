@@ -1,7 +1,10 @@
-
+<h2>
+<a href="/index.php?/user/create_class">Create Class</a> &nbsp; &nbsp;
+<a href="/index.php?/user/join_class">Join Class</a>
+</h2>
 <?php
 if (sizeof($classes) == 0){ ?>
-	<h2>You are not in any classes yet, create or join one below.</h2>
+	<h2>You are not in any classes yet, create or join one using the links above.</h2>
 <?php
 }else{ ?>
 <table cellpadding="0" cellspacing="0" width="100%" class="sortable">
@@ -32,10 +35,7 @@ if (sizeof($classes) == 0){ ?>
 	<?php
 	endforeach; ?>
 	</table>
+	<?php echo $pagination_links ?>
 <?php
 } ?>
-<h2>
-<a href="/index.php?/user/create_class">Create Class</a> &nbsp; &nbsp;
-<a href="/index.php?/user/join_class">Join Class</a>
-</h2>
 

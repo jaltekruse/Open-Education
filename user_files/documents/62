@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=GeoGebra 4
+GenericName=Java Web Start Application
+Comment=Dynamic Mathematics for Everyone
+Type=Application
+Icon=/home/jason/.icedtea/cache/114/http/www.geogebra.org/static/images/ggb-logo-64x64-white.png
+Vendor=International GeoGebra Institute
+Exec=javaws "/home/jason/.icedtea/cache/102/http/www.geogebra.org/webstart/geogebra.jnlp"

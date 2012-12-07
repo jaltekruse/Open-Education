@@ -1,7 +1,7 @@
 <?php
 class User extends CI_Controller{
 
-	public $results_per_page = 25;
+	public $results_per_page = 1;
 
 	public function __construct(){
 		parent::__construct();
@@ -12,14 +12,37 @@ class User extends CI_Controller{
 	}
 	
 	public function index(){
-		redirect('/user/documents');
+		redirect('/user/classes');
+	}
+
+	public function setup_pagination( $url, $total_rows, $uri_segment, &$data){
+	
+		$this->load->library('pagination');
+		$this->load->library('uri');
+		$pagination_config = array();
+		$pagination_config['base_url'] = base_url() . index_page() . '?' . $url; 
+		$pagination_config['total_rows'] = $total_rows;
+		$pagination_config['per_page'] = $this->results_per_page;
+		$pagination_config['uri_segment'] = 3;
+		$pagination_config['use_page_numbers'] = true;
+		$pagination_config['page_query_string'] = TRUE;
+		
+		$this->pagination->initialize($pagination_config);
+
+		$pagination_page = $this->input->get('per_page') ? $this->input->get('per_page') : 1;
+		if ( ! is_int(intval($pagination_page))) $pagination_page = 1;
+
+		$data['pagination_links'] = $this->pagination->create_links();
+		$data['pagination_page'] = $pagination_page;
 	}
 
 	public function classes(){
 		$this->session->unset_userdata('class_id');
 		$data = $this->authenticate();
+		
+		$this->setup_pagination('/user/classes/',$this->user_model->get_class_count($data['user_id']), 3,$data); 
 		$data['title'] =  'Classes';
-		$data['classes'] = $this->user_model->get_classes($data['user_id']);
+		$data['classes'] = $this->user_model->get_classes($data['user_id'], $this->results_per_page, $data['pagination_page']);
 		$this->load->view('templates/header', $data);
 		$this->load->view('user/classes', $data);
 		$this->load->view('templates/footer', $data);
@@ -35,6 +58,8 @@ class User extends CI_Controller{
 
 	public function colleagues(){
 		$data = $this->authenticate();
+
+		$this->setup_pagination('/user/colleagues/',$this->user_model->get_colleague_count($data['user_id']), 3,$data); 
 		$data['title'] =  'Colleagues';
 		$data['colleagues'] = $this->user_model->get_colleagues($data['user_id']);
 		$this->load->view('templates/header', $data);
@@ -601,29 +626,11 @@ class User extends CI_Controller{
 	}
 
 
-	public function setup_pagination( $url, $total_rows, $uri_segment, &$data){
 	
-		$this->load->library('pagination');
-		$this->load->library('uri');
-		$pagination_config = array();
-		$pagination_config['base_url'] = base_url() . index_page() . $url; 
-		$pagination_config['total_rows'] = $total_rows;
-		$pagination_config['per_page'] = $this->results_per_page;
-		$pagination_config['uri_segment'] = 3;
-		$pagination_config['use_page_numbers'] = true;
-		
-		$this->pagination->initialize($pagination_config);
-		
-		$pagination_page = $this->uri->segment($uri_segment) ? $this->uri->segment($uri_segment) : 1;
-		if ( ! is_int(intval($pagination_page))) $pagination_page = 1;
-
-		$data['pagination_links'] = $this->pagination->create_links();
-		$data['pagination_page'] = $pagination_page;
-	}
 	
 	public function documents($download_doc_id = -1){
 		$data = $this->authenticate();
-		$this->setup_pagination('/user/documents',  $this->user_model->get_doc_count($data['user_id']), 3, $data);
+		$this->setup_pagination('/user/documents/',  $this->user_model->get_doc_count($data['user_id']), 3, $data);
 		$this->load->helper('download');
 		if ( ! ($download_doc_id == -1)){
 			if ( $this->user_model->is_doc_owner($data['user_id'], $download_doc_id))
@@ -841,7 +848,7 @@ class User extends CI_Controller{
 			$sql_query = 'SELECT first_name FROM user_profiles where id = ?';
 			$result = $this->db->query($sql_query, $this->tank_auth->get_user_id())->row();
 			$data['first_name'] = $result->first_name;
-			$data['class_list'] = $this->user_model->get_classes($data['user_id']);
+			$data['class_list'] = $this->user_model->get_classes($data['user_id'], 100, 2);
 			if ($this->session->userdata('class_id') &&
 					$this->user_model->is_class_member($data['user_id'], $this->session->userdata('class_id'))){
 				$data['class_id'] = $this->session->userdata('class_id');
