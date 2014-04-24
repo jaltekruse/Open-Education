@@ -200,7 +200,6 @@
 			exit;
 		}
 	}
-
 /*
  * -----------------------------------------------------
  * Load the security class for xss and csrf support
@@ -298,6 +297,7 @@
  *  Is there a "pre_controller" hook?
  * ------------------------------------------------------
  */
+
 	$EXT->_call_hook('pre_controller');
 
 /*

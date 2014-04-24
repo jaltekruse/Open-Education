@@ -597,6 +597,7 @@ class Tank_auth
 	 */
 	function is_max_login_attempts_exceeded($login)
 	{
+		return FALSE;
 		if ($this->ci->config->item('login_count_attempts', 'tank_auth')) {
 			$this->ci->load->model('tank_auth/login_attempts');
 			return $this->ci->login_attempts->get_attempts_num($this->ci->input->ip_address(), $login)

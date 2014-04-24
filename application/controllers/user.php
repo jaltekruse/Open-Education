@@ -1,7 +1,7 @@
 <?php
 class User extends CI_Controller{
 
-	public $results_per_page = 1;
+	public $results_per_page = 20;
 
 	public function __construct(){
 		parent::__construct();

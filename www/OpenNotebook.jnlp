@@ -2,7 +2,7 @@
 
 <!DOCTYPE jnlp PUBLIC "-//Sun Microsystems, Inc//DTD JNLP
 Descriptor 6.0//EN" "http://java.sun.com/dtd/JNLP-6.0.dtd">
-<jnlp spec="6.0+" codebase="http://localhost">
+<jnlp spec="6.0+" codebase="http://open-math.com">
        <information>
                <title>OpenNotebook</title>
                <vendor>Open Education</vendor>

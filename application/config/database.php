@@ -48,7 +48,7 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = 'open-math.ck7xah3imw9l.us-east-1.rds.amazonaws.com';
+$db['default']['hostname'] = 'launch-3ds.ck7xah3imw9l.us-east-1.rds.amazonaws.com';
 $db['default']['username'] = 'admin';
 $db['default']['password'] = 'v_MWd5LHCESlTXO';
 $db['default']['database'] = 'openmath';
