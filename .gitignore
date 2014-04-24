@@ -20,6 +20,11 @@
 *.tar
 *.zip
 
+*.swp
+
+# ignore ctags files
+tags
+
 # Logs and databases #
 ######################
 *.log

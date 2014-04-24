@@ -136,7 +136,6 @@ class CI_Session {
 	{
 		// Fetch the cookie
 		$session = $this->CI->input->cookie($this->sess_cookie_name);
-
 		// No cookie?  Goodbye cruel world!...
 		if ($session === FALSE)
 		{
@@ -208,11 +207,12 @@ class CI_Session {
 			{
 				$this->CI->db->where('ip_address', $session['ip_address']);
 			}
-
+			/*
 			if ($this->sess_match_useragent == TRUE)
 			{
 				$this->CI->db->where('user_agent', $session['user_agent']);
 			}
+			*/
 
 			$query = $this->CI->db->get($this->sess_table_name);
 

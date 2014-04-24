@@ -761,7 +761,7 @@ class User extends CI_Controller{
 				//OPEN FILE AND EXTRACT DATA /CONTENT FROM IT
 				$fp   = fopen($tmpname, 'r');
 				// had trouble with end of files being clipped, this method should stop at EOF regardless
-				$file = fread($fp, $size * 1024 + 200);
+				$file = fread($fp, $size * 1024 + 500);
 				// php should be automatically adding slashes, using line below will double escape
 				//$file = addslashes($file);
 				fclose($fp);

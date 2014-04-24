@@ -194,11 +194,12 @@ class User_model extends CI_Model{
 	}
 	
 	public function get_doc($doc_id){
-		$sql_query = "SELECT * FROM documents WHERE	documents.doc_id = ?";
+		$sql_query = "SELECT * FROM documents WHERE documents.doc_id = ?";
 		$result = $this->db->query($sql_query, array( 'doc_id' => $doc_id))->row_array();
 		if (isset($result['material_type'])){
 			$result['material_type'] = $this->material_type_string($result['material_type']);
 		}
+		$result['file'] = file_get_contents($result['file_path']);
 		return $result;
 	}
 	
