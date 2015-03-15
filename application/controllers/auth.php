@@ -11,6 +11,7 @@ class Auth extends CI_Controller
 		$this->load->library('security');
 		$this->load->library('tank_auth');
 		$this->lang->load('tank_auth');
+
 	}
 
 	function index()
@@ -32,7 +33,7 @@ class Auth extends CI_Controller
 	 */
 	function login()
 	{
-		if ($this->tank_auth->is_logged_in()) {								// logged in
+		if ($this->tank_auth->is_logged_in()) {								// logged ink
 			redirect('');
 		} elseif ($this->tank_auth->is_logged_in(FALSE)) {						// logged in, not activated
 			redirect('/auth/send_again/');
@@ -119,6 +120,7 @@ class Auth extends CI_Controller
 	 */
 	function register()
 	{
+		//exit;
 		if ($this->tank_auth->is_logged_in()) {									// logged in
 			redirect('');
 

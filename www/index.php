@@ -1,4 +1,5 @@
 <?php
+
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT
@@ -198,6 +199,8 @@ if (defined('ENVIRONMENT'))
  * And away we go...
  *
  */
+
+echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 require_once BASEPATH.'core/CodeIgniter.php';
 
 /* End of file index.php */

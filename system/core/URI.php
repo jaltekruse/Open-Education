@@ -199,7 +199,7 @@ class CI_URI {
 			$uri = substr($uri, 2);
 		}
 		$parts = preg_split('#\?#i', $uri, 2);
-		$uri = $parts[0];
+		$uri = $parts[1];
 		if (isset($parts[1]))
 		{
 			$_SERVER['QUERY_STRING'] = $parts[1];

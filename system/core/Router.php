@@ -157,6 +157,7 @@ class CI_Router {
 		// Is there a URI string? If not, the default controller specified in the "routes" file will be shown.
 		if ($this->uri->uri_string == '')
 		{
+			echo "empty URI string <br>\n";
 			return $this->_set_default_controller();
 		}
 

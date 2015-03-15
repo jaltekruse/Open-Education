@@ -134,7 +134,7 @@
 /*
  * ------------------------------------------------------
  *  Instantiate the config class
- * ------------------------------------------------------
+ * --/----------------------------------------------------
  */
 	$CFG =& load_class('Config', 'core');
 
@@ -164,7 +164,9 @@
  * ------------------------------------------------------
  */
 	$URI =& load_class('URI', 'core');
-	if ( strstr($URI->uri_string(), 'user'))throw new Exception('asdfasdf');
+	//if ( strstr($URI->uri_string(), 'user'))throw new Exception('asdfasdf');
+	
+	print_r($URI->rsegments);
 
 /*
  * ------------------------------------------------------
@@ -174,7 +176,9 @@
 	$RTR =& load_class('Router', 'core');
 	
 	$RTR->_set_routing();
+	//print_r($RTR);
 
+	//print_r($URI->rsegments);
 	// Set any routing overrides that may exist in the main index file
 	if (isset($routing))
 	{
@@ -322,6 +326,7 @@
  *  Call the requested method
  * ------------------------------------------------------
  */
+
 	// Is there a "remap" function? If so, we call it instead
 	if (method_exists($CI, '_remap'))
 	{
@@ -360,6 +365,9 @@
 
 		// Call the requested method.
 		// Any URI segments present (besides the class/function) will be passed to the method for convenience
+		print_r($URI->rsegments);
+
+		echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 		call_user_func_array(array(&$CI, $method), array_slice($URI->rsegments, 2));
 	}
 
