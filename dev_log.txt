@@ -1,0 +1,83 @@
+Open Education dev log
+
+Running bug list
+----------------
+- when using the menu option to change page alignment (left, center, right) the selected
+  object overlay (such as when editing an expresison) is not redrawn until the object is de-selected
+  and re-selected
+- on mac
+    - resizing window does not trigger a re-layout/redraw event, looks quite broken until you scroll
+- auto-cetner on maxize if the screen is large enough
+    - alight right default was mostly because I developed this on a small screen
+    - the align center happens too aggressively (I think the popup menu might be wider on mac)
+    - also the menu option at the top still says align right after the automatic swithc to center
+- check for unsved changes seems to be broken
+    - INVESTINGATE THIS SOON
+
+Running cleanup/TODO
+--------------------
+- convert expresion parsing to ANTLR
+- move various tree traversals to visitor pattern
+- UNIT TESTS
+    - most important tests all of the backend
+        - where it is dependent on some front-end replace direct interface
+          with a wrapper that can be mocked
+            - Example : measuring text currently requires the GUI
+                - I think I got around this by creating an image and
+                  opening up a drawing context for it, can use this
+                  same strategy for setting up the unit tests
+                - can even check expression layout wiht this method
+                - would be worth have an automated exact pixel check
+                - as well as writing a basic interface to view
+                  the expected layouts against the current generated
+                  ones visually to approve major refactorings
+- 
+
+-------------
+3/14/2015
+-------------
+- spent a few hours fighting with Codeigniter
+    - could not get sign in working on site again
+- get the datbase set up
+- debugged through the router, found a fix to the issue
+  that it was re-routing to user/classes -> auth/login
+    - then there was a redirect loop
+    - rage quit
+        - best thing to do in the future is probably 
+          start with a fresh CodeIgnighter (I have played
+          around in the path to get rid of the index.php in
+          the URL among other things)
+        - from there I can try to re-apply the application
+          files into a clean installation
+        - could look into upgrading to version 3.0
+
+-------------
+3/15/2015
+-------------
+- working on OpenNotebook today
+- overall project roadmap
+    - try to get the pivot I worked on last year at 3ds put together
+    - focus on student interface, as well as teacher grading/overview
+    - de-emphasize or completely remove classroom content generation
+- goals
+    - test out interface for a while, taking notes about biggest
+      annoyances in regards to the interface for solving problems
+        - cannot use expression modifications keyboard shortcuts after
+          clicking on solve tab
+        - substituting multiple variables is a pain
+        - need to have one poup to substitue multiple at once
+            - can use the list interface (once I can put objects in a 
+              menu-ediatable list)
+            - to make it mouse free
+                - tab always brings you to the next thing
+                    -  | var input | = | val input |
+                    - tab brings you to the next input box
+                        - or if you are in th last val input adds another
+                    - enter submits
+                    - make users type x= into a single box with val?
+                        - would this be simpler or more complicated
+                        - code both, have people try it out
+                - 
+    - replace the parser with ANTLR
+    - get the cursor integrated with the backend expression representation
+    - serialize 
