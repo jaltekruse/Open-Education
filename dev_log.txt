@@ -11,8 +11,11 @@ Running bug list
     - alight right default was mostly because I developed this on a small screen
     - the align center happens too aggressively (I think the popup menu might be wider on mac)
     - also the menu option at the top still says align right after the automatic swithc to center
-- check for unsved changes seems to be broken
+- check for unsved changes seems to be broken (on mac at least)
     - INVESTINGATE THIS SOON
+    - might have something to do with the half-application half applet design
+- when a new line is added upon modifying an expression if the expresison is in a group,
+  the boundry of the group is not updated
 
 Running cleanup/TODO
 --------------------
@@ -31,7 +34,36 @@ Running cleanup/TODO
                 - as well as writing a basic interface to view
                   the expected layouts against the current generated
                   ones visually to approve major refactorings
-- 
+- every time I adjust somehting with zoomLevel
+    - is the rounding consistent when going back to pixels?
+    - see DocViewerPanel.docPt2PanelPt
+- clarify paste behavior
+    - dont require page selection
+- consider removing page selection all together
+    - make it only happen when a user wants to add or delete a page
+    - it just confuses people when the whole page turns blue
+    - word processors do not ahve a delete page feature
+- shove everything down command
+    - allows for adding a new section to a large document
+    - or moving content in general
+- consider doing autmatic layout
+    - absolute layout for diagrams in special drawing/diagram areas
+        - like MS office text boxes
+    - otherwise UI could be simplified and streaqmlined, just waitch between text and
+      math modes
+    - almost like a GUI latex editor
+        - make smart choicese
+            - allow expressions to appear in a sentence
+            - if a user createa a multi-line expression separate it from the text
+              and center it
+                - as is done in Latex docs often
+- ObjectProertiesFrame
+    - get rid of all the hacks
+    - keyboard shortcurts
+        - currently have custom code in ObjectPropertyFrame creation
+          to add teh keyboard listener to the relevant panel to allow
+          keyboard shortcuts to be used immediately after switching
+          to the solve tab (without clicking on the document again)
 
 -------------
 3/14/2015
@@ -64,6 +96,9 @@ Running cleanup/TODO
       annoyances in regards to the interface for solving problems
         - cannot use expression modifications keyboard shortcuts after
           clicking on solve tab
+            - fixed - added a NotebookKeyboardListener to the second pane
+              if the ObjectPropertiesFrame is being made for an
+              ExpressioObject
         - substituting multiple variables is a pain
         - need to have one poup to substitue multiple at once
             - can use the list interface (once I can put objects in a 
@@ -77,7 +112,7 @@ Running cleanup/TODO
                     - make users type x= into a single box with val?
                         - would this be simpler or more complicated
                         - code both, have people try it out
-                - 
+        -
     - replace the parser with ANTLR
     - get the cursor integrated with the backend expression representation
     - serialize 
