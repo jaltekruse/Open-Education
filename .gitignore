@@ -7,6 +7,7 @@
 *.o
 *.so
 
+/OpenNotebook/.idea
 workspace.xml
 
 # Packages #
