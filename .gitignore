@@ -28,6 +28,7 @@ tags
 #ignore intellij files
 /OpenNotebook/.idea/
 /OpenNotebook/out
+/OpenNotebook/OpenNotebook.iml
 
 # Logs and databases #
 ######################
