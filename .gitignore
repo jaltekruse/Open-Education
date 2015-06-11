@@ -26,7 +26,8 @@
 tags
 
 #ignore intellij files
-OpenNotebook/.idea/*
+/OpenNotebook/.idea/
+/OpenNotebook/out
 
 # Logs and databases #
 ######################
@@ -44,11 +45,8 @@ OpenNotebook/.idea/*
 .DS_Store?
 ehthumbs.db
 Icon?
-<<<<<<< HEAD
 Thumbs.db
 
-=======
 Thumbs.db
->>>>>>> killian/expression
 /nbproject/private/
 /build/
