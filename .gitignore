@@ -9,6 +9,7 @@
 
 /OpenNotebook/.idea
 /OpenNotebook/bin/.idea/
+/OpenNotebook/out/
 workspace.xml
 
 # Packages #
