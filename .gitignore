@@ -25,6 +25,9 @@
 # ignore ctags files
 tags
 
+#ignore intellij files
+OpenNotebook/.idea/*
+
 # Logs and databases #
 ######################
 *.log
