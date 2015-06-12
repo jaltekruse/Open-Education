@@ -42,7 +42,7 @@ Running cleanup/TODO
 - consider removing page selection all together
     - make it only happen when a user wants to add or delete a page
     - it just confuses people when the whole page turns blue
-    - word processors do not ahve a delete page feature
+    - word processors do not have a delete page feature
 - shove everything down command
     - allows for adding a new section to a large document
     - or moving content in general
@@ -116,3 +116,14 @@ Running cleanup/TODO
     - replace the parser with ANTLR
     - get the cursor integrated with the backend expression representation
     - serialize 
+
+---------------
+6/10/2015
+---------------
+- goals
+    - generate student version of worksheet with answers and problem formulas stripped out
+    - grade a directory full of documents using an answer key
+        - assume everything is det up properly
+        - later worry about error cases
+            - wrong docs, not related to answer key
+
