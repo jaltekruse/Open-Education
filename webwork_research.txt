@@ -300,105 +300,186 @@ Taking a look at the UI using the virtual machine installation
     - at the bottom of the list, two buttons
         - email instructor
         - Download PDF or Tex hardcopy for Current Set
-    - download PDF screen
-        - "Select the homework sets for which to generate hardcopy versions. 
-           You may also select multiple users from the users list. 
-           You will receive hardcopy for each (set, user) pair."
-        - two columns for options relating to sets and users
-            - users
-                - choose sort order, default last_name, first_name
-                    - other options, user_id, email, student_id
-                    - some look less useful: comment, status, section, recitation?
+
+- download PDF screen
+    - "Select the homework sets for which to generate hardcopy versions. 
+       You may also select multiple users from the users list. 
+       You will receive hardcopy for each (set, user) pair."
+    - two columns for options relating to sets and users
+        - users
+            - choose sort order, default last_name, first_name
+                - other options, user_id, email, student_id
+                - some look less useful: comment, status, section, recitation?
+            - format
+                - last_name, first_name (user_id)
+            - filer
+                - only option is "Display all possible records"
+                - looks like a multi-select box
+            - button for "Change Display Settings"
+                - all I can tell it does is refresh the page
+                    - changes to the fields are preserved, maybe it saves this subset of the form without
+                      submitting it to generate the PDF
+        - sets
+            - this is a little confusing because the button I pressed to get here said
+              "for the Current Set" explicitly
+            - is it talking about problems within the set, or is the button not filling in info in
+              the form that it should?
+            - looks like it did select the set name corresponding the the previous page I was on
+            - not super obvious as it uses the stock multi-select window no one is familiar with
+                - should replace this with the chosen.js or similar library
+            - this should remove the need to configure any of this stuff, as it applies to multiple sets
+            - should see if this can generate for multiple classes relatively painlessly
+                - seems much more useful than generating a hardcopy of wor across problem sets
+                    - maybe if the prof wanted to review the last few assignments, but here it
+                      looks like it makes them ask for all users explicitly
+                        - definitely should make it easy to get a whole class if anything
+                    - this would be way more useful if it could record students intermediate work
+            - fields it requests
+                - sort order
+                    - tons of options here, it looks like every property provided in the database
+                    - should see how this works on the server, hope they aren't taking input from
+                      the user and using it to generate a SQL query
+                        - even if it was escaped it is pretty messy
+                    - it even includes properties like: Field - hide word, Field - hide_score
+                        - I assume these are just booleans, pretty much worthless to "sort" on
                 - format
-                    - last_name, first_name (user_id)
-                - filer
-                    - only option is "Display all possible records"
-                    - looks like a multi-select box
-                - button for "Change Display Settings"
-                    - all I can tell it does is refresh the page
-                        - changes to the fields are preserved, maybe it saves this subset of the form without
-                          submitting it to generate the PDF
-            - sets
-                - this is a little confusing because the button I pressed to get here said
-                  "for the Current Set" explicitly
-                - is it talking about problems within the set, or is the button not filling in info in
-                  the form that it should?
-                - looks like it did select the set name corresponding the the previous page I was on
-                - not super obvious as it uses the stock multi-select window no one is familiar with
-                    - should replace this with the chosen.js or similar library
-                - this should remove the need to configure any of this stuff, as it applies to multiple sets
-                - should see if this can generate for multiple classes relatively painlessly
-                    - seems much more useful than generating a hardcopy of wor across problem sets
-                        - maybe if the prof wanted to review the last few assignments, but here it
-                          looks like it makes them ask for all users explicitly
-                            - definitely should make it easy to get a whole class if anything
-                        - this would be way more useful if it could record students intermediate work
-                - fields it requests
-                    - sort order
-                        - tons of options here, it looks like every property provided in the database
-                        - should see how this works on the server, hope they aren't taking input from
-                          the user and using it to generate a SQL query
-                            - even if it was escaped it is pretty messy
-                        - it even includes properties like: Field - hide word, Field - hide_score
-                            - I assume these are just booleans, pretty much worthless to "sort" on
-                    - format
-                        - default: set_id
-                    - Filter
-                        - again single value in multi-select: Display all possible records
-                    - change display settings button
-                        - again just looks to refresh the page
-                    - multi-select with problem set names
-                        - what about problem set reuse across semesters? Or between classes?
-                        - this might be localized to the current class/session
-                            - cross class output would probably be useful as mentioned above
-            - bottom of the form (outside of the users and sets columns)
-                - Show (check boxes)
-                    - Student answers, correct answers, hints, solutions
-                    - difference between correct answers and solutions?
-                        - for the example problem set I see "correct answers" listed for each problem
-                        - inconsistent: Answers(s) submitted, Correct Answers
-                            - even if there is only one correct answer
-                    
-            - results
-                - this was at the top, should see where this problem set description comes from, didn't notice
-                  it going through the web interface as a student answering questions
-                    - Welcome to the MAA short course on WeBWorK.
-                      Here is a synopsis of the tutorial examples presented in this set.
-                      They have been designed for learning the PG language, and are
-                      not necessarily the best questions to use for mathematics instruction.
-                - This was at the end of the summary of the problems, nice summary of the goals
-                  and limitations of the system
-                    - The primary purpose of WeBWorK is to let you know if you are 
-                      getting the right answer or to alert you if you get the wrong
-                      answer. Usually you can attempt a problem as many times as you
-                      want before the due date. However, if you are having trouble
-                      figuring out your error, you should consult the book, or ask a
-                      fellow student, one of the TA’s or your professor for help. Don’t
-                      spend a lot of time guessing – it’s not very efficient or effective.
-                      The computer has NO CLUE about WHY your answer is wrong. Computers
-                      are good at checking, but for help go to a human.
-                - they really need to watch using computer science/programming jargon
-                    - Give 4 or 5 significant digits for (floating point) numerical answers.
-                    - no one will understand this "clarification" without having learned to program
-                    - if this is universal throughout the system, it certainly should be configurable
-                    - the default should probably be less than 5 as well
-                - the problems
-                    - formatted pretty close to how they were on the web page
-                        - obviously not being rendered by the web browser engine, so there are some issues
-                          and formatting glitches
-                        - most of the content is there and readable
-                    - answers are given in plain text, problems show rendered equations
-                    - it even gets the graphs inserted into the document, pretty nice
-            - results - selecting more students
-                - took a while
-                    - wonder if it was time spent hitting the database
-                        - it is just a local mysql server, but I have an SSD, even going through a VM for a list
-                          of 8 or so students I don't think it should have taken so long
-                - generated 80 pages
-                - they were separated out by student
-                    - it didn't put all of the answers to problem 1 together
-                    - think this alternative arrangement would be better 
-                        - for grading objectively if they were manually re-grading a problem
-                        - also for getting an overview of what went wrong if a bunch of students
-                          got answers incorrect
-            - 
+                    - default: set_id
+                - Filter
+                    - again single value in multi-select: Display all possible records
+                - change display settings button
+                    - again just looks to refresh the page
+                - multi-select with problem set names
+                    - what about problem set reuse across semesters? Or between classes?
+                    - this might be localized to the current class/session
+                        - cross class output would probably be useful as mentioned above
+        - bottom of the form (outside of the users and sets columns)
+            - Show (check boxes)
+                - Student answers, correct answers, hints, solutions
+                - difference between correct answers and solutions?
+                    - for the example problem set I see "correct answers" listed for each problem
+                    - inconsistent: Answers(s) submitted, Correct Answers
+                        - even if there is only one correct answer
+                    - no mention of Solutions on the generated document
+        - results
+            - this was at the top, should see where this problem set description comes from, didn't notice
+              it going through the web interface as a student answering questions
+                - Welcome to the MAA short course on WeBWorK.
+                  Here is a synopsis of the tutorial examples presented in this set.
+                  They have been designed for learning the PG language, and are
+                  not necessarily the best questions to use for mathematics instruction.
+            - This was at the end of the summary of the problems, nice summary of the goals
+              and limitations of the system
+                - The primary purpose of WeBWorK is to let you know if you are 
+                  getting the right answer or to alert you if you get the wrong
+                  answer. Usually you can attempt a problem as many times as you
+                  want before the due date. However, if you are having trouble
+                  figuring out your error, you should consult the book, or ask a
+                  fellow student, one of the TA’s or your professor for help. Don’t
+                  spend a lot of time guessing – it’s not very efficient or effective.
+                  The computer has NO CLUE about WHY your answer is wrong. Computers
+                  are good at checking, but for help go to a human.
+            - they really need to watch using computer science/programming jargon
+                - Give 4 or 5 significant digits for (floating point) numerical answers.
+                - no one will understand this "clarification" without having learned to program
+                - if this is universal throughout the system, it certainly should be configurable
+                - the default should probably be less than 5 as well
+            - the problems
+                - formatted pretty close to how they were on the web page
+                    - obviously not being rendered by the web browser engine, so there are some issues
+                      and formatting glitches
+                    - most of the content is there and readable
+                - answers are given in plain text, problems show rendered equations
+                - it even gets the graphs inserted into the document, pretty nice
+        - results - selecting more students
+            - took a while
+                - wonder if it was time spent hitting the database
+                    - it is just a local mysql server, but I have an SSD, even going through a VM for a list
+                      of 8 or so students I don't think it should have taken so long
+                    - even generating fora  single user takes little bit, probably startup time for the 
+                      PDF rendering process, but 8 students took at least a few minutes
+                        - considering they aren't even getting a perfect doc out of it, maybe they should
+                          just generate a webpage and let client browsers render it
+                        - does printing from a webpage work well with mathjax and other UI elements?
+            - generated 80 pages
+            - they were separated out by student
+                - it didn't put all of the answers to problem 1 together
+                - think this alternative arrangement would be better 
+                    - for grading objectively if they were manually re-grading a problem
+                    - also for getting an overview of what went wrong if a bunch of students
+                      got answers incorrect
+            - seemed to be lacking an option to filter by just work that was incorrect
+                - printing everything seems like a waste
+
+- "Demo" problem set
+    - first problem
+        - asks for an order pair in two separate boxes for the x-coordinate and y-coordinate
+            - maybe there isn't a complete library of answer types that can be specified by
+              problem authors, if this is the demo they should be showing off features
+    - second problem
+        - evaluating limits
+        - answers are numbers
+        - there is a note
+            - Note: Enter 'DNE' if the limit does not exist or is not defined. 
+            - seems likely to be an indication that there are hacks in problem formulas
+              to check for special strings in cases like this
+            - should not force problem authors to be programmers
+                - can have a check box with a description
+                - either or answering methods (in this case a text box or the DNE solution)
+                - seems likely to be an issue where it would complain about case if the
+                  formula was written wrong
+                    - this really just isn't the right UI for this type of input
+    - third problem
+        - have to enter an expression in text
+        - give the option to see solution
+            - opening solution it seems to appear at the wrong part of the page
+              even though the "solution" button appeared before the second part of the problem
+              the solution box was shown after it
+        - second problem also can show solution, this box moves down after the first box has been opened
+            - saved some screenshots in dropbox
+    - forth problem
+        - integrals, entering more complex expressions in plain text
+        - "Give a specific function for F(x)."
+            - seems like they don't want + C
+        - didn't get it right on the first try, used wolfram alpha to get the answer
+            - it didn't like how I input it
+            - Wolfram alpha input : integrate (x^4) * sin(x^5)
+                - answer: -(1/5) cos(x^5) + C
+            - input given to Webwork
+                - -(1/5)cos(x^5)
+                - incorrect
+            - also asked to evaluate a bounded integral
+                - it said in the earlier problem set that I could put an expression in for a number
+                    - so I just plugged in my limits into the formula I had for the first part of the problem
+                      (it was the same integral)
+                    - seemed to evaluate it (althoug I guess the formula was wrong
+                     
+                    Entered:        -(1/5)*cos(x^5) 
+                    Answer Preview: -\frac{1}{5}\cos\!\left(x^{5}\right)
+                    Result:         incorrect
+
+                     Entered:        0.0186453659631881  
+                     Answer Preview: -\frac{1}{5}\cos\!\left(5^{5}\right)-\frac{1}{5}\cos\!\left(-1^{5}\right)
+                     Result:         incorrect
+                - I wonder which of these (the formula or evaluated number) it will show to the instructor
+                    - I assume it stores the plain text somewhere
+                    - this behavior definitely would not be desirable for some lower level math courses
+            - shows warnings (in a big red box) at the bottom of the page
+            - this output would not be useful to most instructors
+WeBWorK Warnings
+
+WeBWorK has encountered warnings while processing your request. If this occured when viewing a problem, it was likely caused by an error or ambiguity in that problem. Otherwise, it may indicate a problem with the WeBWorK system itself. If you are a student, report these warnings to your professor to have them corrected. If you are a professor, please consult the warning output below for more information.
+Warning messages
+
+    cd /opt/webwork/webwork2/tmp/ImageGenerator.AxYLQFYv && /usr/bin/latex equation > latex.out 2> latex.err returned non-zero status -1: Cannot allocate memory at /opt/webwork/pg/lib/WeBWorK/PG/ImageGenerator.pm line 387.
+    cd /opt/webwork/webwork2/tmp/ImageGenerator.AxYLQFYv failed at /opt/webwork/pg/lib/WeBWorK/PG/ImageGenerator.pm line 388.
+    Warning: something's wrong at /opt/webwork/pg/lib/WeBWorK/PG/ImageGenerator.pm line 392.
+    Unable to read logfile /opt/webwork/webwork2/tmp/ImageGenerator.AxYLQFYv/equation.log at /opt/webwork/pg/lib/WeBWorK/PG/ImageGenerator.pm line 398.
+    cd /opt/webwork/webwork2/tmp/ImageGenerator.AxYLQFYv && /usr/bin/latex equation > latex.out 2> latex.err failed to generate a DVI file at /opt/webwork/pg/lib/WeBWorK/PG/ImageGenerator.pm line 402.
+    cd /opt/webwork/webwork2/tmp/ImageGenerator.AxYLQFYv && /usr/bin//dvipng -bgTransparent -D120 -q -depth equation > dvipng.out 2> dvipng.err returned non-zero status -1: Cannot allocate memory at /opt/webwork/pg/lib/WeBWorK/PG/ImageGenerator.pm line 410.
+
+Request information
+Time    Fri Jun 12 02:08:45 2015
+Method  POST
+URI     /webwork2/myTestCourse/Demo/4/
+
+
