@@ -644,3 +644,8 @@ Looking at the problem library
                 - I think this is also right, but it does a hard function comparison against
                   the students answer
                     - I think this is just a bad question, need to watch out for these
+                    - it ended up taking my answer, I think it was calling something like
+                      func_compare
+                        - this might just do numeric probing to determine similarity
+                        - its a useful workaround to avoid needing a fully functional CAS
+                        - TODO - look into this
