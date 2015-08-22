@@ -10,16 +10,37 @@ Running bug list
 - auto-cetner on maxize if the screen is large enough
     - alight right default was mostly because I developed this on a small screen
     - the align center happens too aggressively (I think the popup menu might be wider on mac)
-    - also the menu option at the top still says align right after the automatic swithc to center
-- check for unsved changes seems to be broken (on mac at least)
-    - INVESTINGATE THIS SOON
+    - also the menu option at the top still says align right after the automatic switch to center
+- check for unsaved changes seems to be broken (on mac at least)
+    - INVESTIGATE THIS SOON
     - might have something to do with the half-application half applet design
-- when a new line is added upon modifying an expression if the expresison is in a group,
-  the boundry of the group is not updated
+- when a new line is added upon modifying an expression if the expression is in a group,
+  the boundary of the group is not updated
+- java.lang.RuntimeException: could not find an object GUI for the type, class doc.mathobjects.Grouping
+	at doc_gui.PageGUI.getGUIForObj(PageGUI.java:208)
+- when selecting an individual aobject that is within a persistent group
+	- resizing the object does not prompt a group resize
+	- however moving it does prompt a group resize
+		- feel like I've solved a few bugs like this
+		- and there is another outstanding one for adding a step onto an equation
+		  also does not prompt a resize
+	- should create a way to classify all actions that can change the size/position
+	  of an object and make sure that they prompt a common codepath to make the group resize
+	  itself
+- consider replacing rectangle collision for groups with a check for collision with any of the
+  contained objects
+- consider replacing rectangle collisions for non-rectanglular objects with better collision polygons
+	- related to also highlighting objects with non-rectangular blue lines when in groups
+		- might not want to always share polygons between draweing and collision
+		- need to look for circle collision, or do a n-gon collision while still drawing a circle/oval
+		  so it doesn't look weird
+		- otherwise for the most part I could just share the collision polygon with what is going
+		  to be drawn in a blue line
+		  	- examples triangle, trapezoid arrow, etc.
 
 Running cleanup/TODO
 --------------------
-- convert expresion parsing to ANTLR
+- convert expression parsing to ANTLR
 - move various tree traversals to visitor pattern
 - UNIT TESTS
     - most important tests all of the backend
@@ -29,48 +50,50 @@ Running cleanup/TODO
                 - I think I got around this by creating an image and
                   opening up a drawing context for it, can use this
                   same strategy for setting up the unit tests
-                - can even check expression layout wiht this method
+                - can even check expression layout with this method
                 - would be worth have an automated exact pixel check
                 - as well as writing a basic interface to view
                   the expected layouts against the current generated
                   ones visually to approve major refactorings
-- every time I adjust somehting with zoomLevel
+- every time I adjust something with zoomLevel
     - is the rounding consistent when going back to pixels?
     - see DocViewerPanel.docPt2PanelPt
 - clarify paste behavior
-    - dont require page selection
+    - don't require page selection
 - consider removing page selection all together
     - make it only happen when a user wants to add or delete a page
     - it just confuses people when the whole page turns blue
-    - word processors do not ahve a delete page feature
+    - word processors do not have a delete page feature
 - shove everything down command
     - allows for adding a new section to a large document
     - or moving content in general
-- consider doing autmatic layout
+- consider doing automatic layout
     - absolute layout for diagrams in special drawing/diagram areas
         - like MS office text boxes
-    - otherwise UI could be simplified and streaqmlined, just waitch between text and
+    - otherwise UI could be simplified and streamlined, just switch between text and
       math modes
     - almost like a GUI latex editor
-        - make smart choicese
+        - make smart defaults, don't make everything a manual process
             - allow expressions to appear in a sentence
-            - if a user createa a multi-line expression separate it from the text
+            - if a user creates a multi-line expression separate it from the text
               and center it
                 - as is done in Latex docs often
 - ObjectProertiesFrame
     - get rid of all the hacks
-    - keyboard shortcurts
+    - keyboard shortcuts
         - currently have custom code in ObjectPropertyFrame creation
-          to add teh keyboard listener to the relevant panel to allow
+          to add the keyboard listener to the relevant panel to allow
           keyboard shortcuts to be used immediately after switching
           to the solve tab (without clicking on the document again)
+		- this could possibly be refactored to put the keyboard shortcuts
+		  registered somewhere more global
 
 -------------
 3/14/2015
 -------------
 - spent a few hours fighting with Codeigniter
     - could not get sign in working on site again
-- get the datbase set up
+- get the database set up
 - debugged through the router, found a fix to the issue
   that it was re-routing to user/classes -> auth/login
     - then there was a redirect loop
@@ -112,7 +135,31 @@ Running cleanup/TODO
                     - make users type x= into a single box with val?
                         - would this be simpler or more complicated
                         - code both, have people try it out
-        -
     - replace the parser with ANTLR
     - get the cursor integrated with the backend expression representation
     - serialize 
+
+=======================
+work on 8/22/2015
+=======================
+- focus today
+	- don't think about the website at all
+	- how can I make the appliation useful on its own
+	- focus on making problem formulas more useful
+	- improve student algebra equation editor
+	- improve overall UX
+		- allow proper multiple object selection 
+		- remove page selection when clicking whitespace
+			- only enable after choosing to delete a page and prompt
+			  user to click on page to delete
+			- then prompt to confirm desire to delete
+		- don't paint the entire rectangle behind an expression and solution steps
+			- only fill in the rectangle behind particular expressions
+			- adjusting other objects' layering can help
+			- but when selecting the equation to edit it again it will cover whatever
+			  is on top of it when it is active
+		- disable x point selection (vertical yellow line) on graph
+			- or finish it to take mouse drag events and allow for range selection
+		- detecting recent changes to prompt saving on attempted shutdown is also broken on linux
+			- appears to only be on application close
+			- trying to close an unsaved tab still warns appropriately
