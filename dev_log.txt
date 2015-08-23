@@ -174,4 +174,92 @@ work on 8/22/2015
 			- *partial resolution*
 				- this only happens when running as an applet, when running as an application
 				  this works fine
+				- need to confirm this on mac, think it is likely the case that it also works there
 
+=========================
+Notes from Alyssa testing
+=========================
+- update teacher tutorial to talk about properties frame
+- update instructions for new 'fill color' interface on shapes
+- flip the content of the tutorial
+	- start out with math stuff first
+		- maybe a few problem formulas to show regeneration
+		- and asking them to step-by-step solve an algebra problem
+	- then move on to managing/arranging content on the docs
+- typos
+	- toolar
+	- open the xml in an editor for now to fix typos
+	- TODO - implement spell-check in the application
+- bringing object off screen and then back brings it to the front
+- groups selection, typo 'the several'
+- clarify - button with solid square around 3 objects
+- this tutorial takes a long time to read
+	- maybe just cover critical stuff
+	- make it interesting, cover all the math stuff
+	- make a few other tutorials, advanced document creation/layout
+	- make a clearer problem generation tutorial
+- arrangement (all to left/right/top) buttons that cause a
+  group to become overlapped are confusing
+- remove page selection (details covered elsewhere in the notes above)
+- student answer box should not turn green
+	- *fixed*
+- explain how to make answer box
+- explain how to make a graph
+- branded logo, not java
+- talk about math keyboard in tutorial
+	- cramped on OSX
+	- can it always be on top?
+- randomInt is confusing
+	- might want to make an advanced tab
+	- or wait and let the auto-complete feature fix this
+		- would allow for inline explanations of functions in dropdown
+		  search results
+- 'add new' button is confusing
+	- on graph it means new equations
+	- on expression there is an add new button for the list of correct answers
+		- each list should probably go in a new tab
+		- or at least visually separated with a box around the list
+- enhance answer box for different types of questions
+	- word or sentence
+	- math expression
+	- multiple choice
+	- matching
+	- true/false
+- Consistent capitalization on buttons
+- focus on object frame disables keyboard shortcuts
+	- *fixed* - just registering the keyboard listener on the properties frame
+	- may want to look for a better way to do this
+- add a note about the keyboard shortcuts on the properties frame
+- "it should tab"
+	- going from one problem to the next should be easier
+	- completely mouseless operation when possible
+- warn users to be careful about case sensitivity in equations
+- keyboard shortcuts for math symbols
+- (a*a)/a = 2a/a -> Combine like terms
+	- (aa1)/a = (2a1)/a
+- not as easy for students to guess an answer
+  as other systems
+- good limits on what comp does for them
+	- limiting combine like terms and other features for some users
+- determine paste page by current view or selected object
+	- related to removing page selection
+- group movement was broken by my fix for moving an object within a group
+	- I think this is fixed
+- fix the scrolling when adding a new element to a list in the props frame
+	- this also moved/resizes the window which is confusing
+- make the properties frame simpler by suing more tabs to sort things and
+  hide other functionality
+- the tall frame for a graph makes working with the keyboard hard
+- application creates really small buttons on screens with high pixel density
+	- like Alyssa's surface tablet
+	- make buttons bigger, even if for now that just means stretching the images and
+	  making them grainier
+	- can pixel density be detected from JAVA?
+- randomInt
+	- help text to say it takes two parameters
+- disable randomInt on graphs
+- non-stable graphs can change how they render when resizing the graph object
+	- resizing currently changes the sampling rate when drawing the graph
+	- this should be changed to be consistent so a graph will be the same regardless of
+	  the graph object size of document zoom level
+- 
