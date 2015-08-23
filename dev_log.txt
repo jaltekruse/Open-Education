@@ -7,7 +7,7 @@ Running bug list
   and re-selected
 - on mac
     - resizing window does not trigger a re-layout/redraw event, looks quite broken until you scroll
-- auto-cetner on maxize if the screen is large enough
+- auto-center on maximize if the screen is large enough
     - alight right default was mostly because I developed this on a small screen
     - the align center happens too aggressively (I think the popup menu might be wider on mac)
     - also the menu option at the top still says align right after the automatic switch to center
@@ -37,6 +37,14 @@ Running bug list
 		- otherwise for the most part I could just share the collision polygon with what is going
 		  to be drawn in a blue line
 		  	- examples triangle, trapezoid arrow, etc.
+- number line cannot be expanded to the left
+	- only can move
+- improve generating auto-resized grid
+	- for graphs as well as number line
+- fix keyboard shortcuts on mac
+- make the answer key button toggle a view mode, not generate a new doc
+	- make sure teachers can re-generate problems in this view if the questions have
+	  answers with unclean fractions, or other undesired properties
 
 Running cleanup/TODO
 --------------------
@@ -144,7 +152,7 @@ work on 8/22/2015
 =======================
 - focus today
 	- don't think about the website at all
-	- how can I make the appliation useful on its own
+	- how can I make the application useful on its own
 	- focus on making problem formulas more useful
 	- improve student algebra equation editor
 	- improve overall UX
@@ -163,3 +171,7 @@ work on 8/22/2015
 		- detecting recent changes to prompt saving on attempted shutdown is also broken on linux
 			- appears to only be on application close
 			- trying to close an unsaved tab still warns appropriately
+			- *partial resolution*
+				- this only happens when running as an applet, when running as an application
+				  this works fine
+
