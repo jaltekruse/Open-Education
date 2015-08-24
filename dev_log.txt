@@ -45,6 +45,10 @@ Running bug list
 - make the answer key button toggle a view mode, not generate a new doc
 	- make sure teachers can re-generate problems in this view if the questions have
 	  answers with unclean fractions, or other undesired properties
+- Expression rendering varies greatly based on zoom level
+	- can cause a lot of ugly overlaps or whitespace as the font measurements and other scaling
+	  changes dramatically depending on how it is scaled
+	- need to add tests to make sure that the rendering is verified at various scale sizes
 
 Running cleanup/TODO
 --------------------
