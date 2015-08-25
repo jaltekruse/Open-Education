@@ -49,6 +49,11 @@ Running bug list
 	- can cause a lot of ugly overlaps or whitespace as the font measurements and other scaling
 	  changes dramatically depending on how it is scaled
 	- need to add tests to make sure that the rendering is verified at various scale sizes
+- minor issue with zoom
+	- on a fresh doc (application instance?), zooming all the way in does not trigger a re-draw event on the last
+	  allowed zoom-in
+		- clicking on the doc causes a redraw event and the last level of zooming in is shown
+		- so the state change did actually apply, its just not being drawn
 
 Running cleanup/TODO
 --------------------
