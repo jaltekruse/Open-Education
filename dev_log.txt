@@ -185,6 +185,22 @@ work on 8/22/2015
 				  this works fine
 				- need to confirm this on mac, think it is likely the case that it also works there
 
+===============
+9/8/2015
+===============
+- looking at how to write unit tests in CodeIgniter
+	- https://vimeo.com/28588831
+	- http://jensroland.com/projects/toast/
+	- http://taiar.github.io/php/2013/11/08/testing-codeigniter-applications-with-phpunit.html
+	- https://github.com/fmalk/codeigniter-phpunit
+	- http://www.codeigniter.com/user_guide/libraries/unit_testing.html
+- error running CodeIgnighter the first time
+	- Message: PHP Startup: Unable to load dynamic library '/usr/lib/php5/20090626/mcrypt.so' - /usr/lib/php5/20090626/mcrypt.so: cannot open shared object file: No such file or directory
+	- install missing stuff
+		- http://stackoverflow.com/questions/10565521/error-in-php5-unable-to-load-dynamic-library
+- 
+
+
 =========================
 Notes from Alyssa testing
 =========================
