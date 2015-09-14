@@ -200,6 +200,56 @@ work on 8/22/2015
 		- http://stackoverflow.com/questions/10565521/error-in-php5-unable-to-load-dynamic-library
 - 
 
+=================
+9/9/2015
+=================
+- the php frameworks look a bit verbose
+	- although if I choose to go with PHP, Laravel is considered the best current framework
+- Want to take a closer look at some of the technologies
+	- even if I don't use another language, it would be good to learn more about framework
+	  structures in general
+	- django
+		- https://docs.djangoproject.com/en/1.8/intro/tutorial01/
+		- http://stackoverflow.com/questions/1499543/good-open-source-django-project-for-learning
+		- https://github.com/rosarior/awesome-django
+		- https://github.com/pinax/pinax-blog/tree/master/pinax/blog
+- new idea
+	- maintaining a web site will be hard
+	- promoting it will also be difficult
+		- can promote the application using other file sharing services like Teachers pay Teachers
+		- before I start putting files out in the public I want to make sure the app is solid
+			- no reason to start off with backwards-compatibility debt
+
+=================
+9/9/2015
+=================
+- cleaning up technical debt
+	- make serialization/deserialization consistent
+		- make document and page share serialization/deserialization with MathObject
+		- may not make sense to have them actually extend from MathObject
+			- as MathObjects have default attributes and the actions list and handling system
+			- should document-wide actions, like regenerating all problems or adding
+			  new problems to the end of a doc be modeled the same way?
+- learning about design patterns to try to clean up the project
+	- is there a better way to manage the parallel trees in the back-end and front-end systems?
+- https://sourcemaking.com/design_patterns
+	- would be good to do some isolated work to solidify some of these concepts
+		- but a lot of these ideas seem like patterns I have seen or thought about already
+		  so I don't think studying them intensely will improve my software dramatically
+		- might be good to try reading Effective Java though
+	- flyweight pattern
+		- will be useful for including external resources
+		- have one repository of images, create cheap pointers to the repository that will
+		  live in the document tree
+			- image name to look up, position, size
+	- bridge
+		- separate interface from implementation
+	- spaghetti code
+		- the "spaghetti code" phenomenon (trying to scoop a single serving results in an "all or nothing clump"). 
+		- I have heard this complaint many times, never understood it like this
+	- Paul Graham- Revenge of the Nerds
+		- http://www.paulgraham.com/icad.html
+
 
 =========================
 Notes from Alyssa testing
