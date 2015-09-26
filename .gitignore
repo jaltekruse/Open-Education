@@ -28,6 +28,11 @@ www2/
 # ignore ctags files
 tags
 
+#ignore intellij files
+/OpenNotebook/.idea/
+/OpenNotebook/out
+/OpenNotebook/OpenNotebook.iml
+
 # Logs and databases #
 ######################
 *.log
@@ -44,11 +49,8 @@ tags
 .DS_Store?
 ehthumbs.db
 Icon?
-<<<<<<< HEAD
 Thumbs.db
 
-=======
 Thumbs.db
->>>>>>> killian/expression
 /nbproject/private/
 /build/
