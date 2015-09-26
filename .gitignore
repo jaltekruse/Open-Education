@@ -1,3 +1,6 @@
+# Putting site in a separate repository, ignore the directory
+www2/
+
 # Compiled source #
 ###################
 *.com
