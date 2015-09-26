@@ -1,3 +1,6 @@
+# Ignore new website code now in a separate repo
+www2/
+
 # Compiled source #
 ###################
 *.com

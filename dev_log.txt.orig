@@ -156,88 +156,7 @@ Running cleanup/TODO
     - get the cursor integrated with the backend expression representation
     - serialize 
 
----------------
-6/10/2015
----------------
-- goals
-    - generate student version of worksheet with answers and problem formulas stripped out
-    - grade a directory full of documents using an answer key
-        - assume everything is set up properly
-        - later worry about error cases
-            - wrong docs, not related to answer key
-
----------------
-6/21/15
----------------
-- tring to learn more about other projects in the space
-    - spent some time with WebWork
-        - Perl based course management
-        - server side expression rendering and answer checks
-        - pretty large feature set, has been around since 1995
-        - might have missed it but did not see a lot of tests in the source
-        - think there are a few system refactorings that would be helpful
-        - hard to do without more tests
-        - 3.0 version claims to be a pretty complete re-write
-            - did not get this running, played around wtih something like the 2.7 UI
-            - not bad, but I wrote a lot of notes about little usability problems
-            - too much flexibility for problem writers seems to introduce inconsistencies
-              from a strudent perspective
-            - feedback all requires a trip to the server, some docs and code made it seem like
-              they were looking at the new JS based client side projects for equation rendering
-        - Might be a decent project to get invovled with eventually
-        - right now it looks like the development is pretty hard to follow
-            - not an active commuity
-            - code seems relatively messy and tested mostly by brute force
-            - case in point: https://github.com/openwebwork/webwork2/wiki/Testing-Webwork3
-- Going back to Khan and Desmos projects
-    - shared project: Mathquill
-    - JS based GUI for editing math equations
-        - loosely connected to latex, lots of functionality that doesn't require knowing it
-            - still some aspects that require some knowledge of TeX
-        - used by a lot of orgaizations
-            - Khan Acdemy
-            - Desmos
-            - Lernosity
-        - Many of them have UIs with buttons to create common symbols
-            - some have pretty substatntial forks to get additional functionality like matrices
-                - https://github.com/mathquill/mathquill/issues/332
-                - sometimes the maintainer seems to be a bit of a purist
-                - this is definitely a patch that should have been merged in some form last fall when
-                  it was bought up
-                - From Han the maintainer:
-                    - my thoughts are that your code looks like a great, well-written, useful hack,
-                      but one big aim I have on the dev branch is to reduce divergence from
-                      "canonical" LaTeX (to the extent that exists...), and adding \matrix,
-                      \pmatrix etc commands would be moving in the opposite direction.
-                    - I understand his desire to make the output of the library compatible with
-                      other tools, but I feel like that is driving the UX in some cases
-                    - considering the majority of the consumers of the library, it would seem like
-                      making the UX intuitive should be the primary goal, if there is demand from
-                      a relatively silent part of the community that they want it to work well
-                      for latex commands then this should probably be turned on as an option
-    - Contribution ideas
-        - a few open issues that would be intersting to take a stab at
-            - Undo / Redo support
-        - implement the feature I wanted to add when I was taking a look at Desmos
-            - allow for searching form complex symbols through their natural language names
-                - using drop-down auto-complete
-                - allows for resolving the ambiguity of symbols, not sure if MathQuill tracks this
-                    - the MathML community claims this as a major benefit over 
-                      latex last time I looked at it
-
-----------------------------------------------
-Searching for a better digital math experience
-----------------------------------------------
-- tried this earilier
-    - think I messed this up pretty badly, didn't notive the master branch was a year out of date
-- Library used for the dropdown UI
-    - ddslick
-    - others to look at
-        - chosen : http://harvesthq.github.io/chosen/
-            - think I read somewhere this is really just for tet dropdowns
-        - http://www.sitepoint.com/16-jquery-selectboxdrop-down-plugins/
-        - selet2: https://github.com/select2/select2
-
+<<<<<<< HEAD
 =======================
 work on 8/22/2015
 =======================
@@ -419,5 +338,87 @@ Notes from Alyssa testing
 	- resizing currently changes the sampling rate when drawing the graph
 	- this should be changed to be consistent so a graph will be the same regardless of
 	  the graph object size of document zoom level
+=======
+---------------
+6/10/2015
+---------------
+- goals
+    - generate student version of worksheet with answers and problem formulas stripped out
+    - grade a directory full of documents using an answer key
+        - assume everything is set up properly
+        - later worry about error cases
+            - wrong docs, not related to answer key
 
+---------------
+6/21/15
+---------------
+- tring to learn more about other projects in the space
+    - spent some time with WebWork
+        - Perl based course management
+        - server side expression rendering and answer checks
+        - pretty large feature set, has been around since 1995
+        - might have missed it but did not see a lot of tests in the source
+        - think there are a few system refactorings that would be helpful
+        - hard to do without more tests
+        - 3.0 version claims to be a pretty complete re-write
+            - did not get this running, played around wtih something like the 2.7 UI
+            - not bad, but I wrote a lot of notes about little usability problems
+            - too much flexibility for problem writers seems to introduce inconsistencies
+              from a strudent perspective
+            - feedback all requires a trip to the server, some docs and code made it seem like
+              they were looking at the new JS based client side projects for equation rendering
+        - Might be a decent project to get invovled with eventually
+        - right now it looks like the development is pretty hard to follow
+            - not an active commuity
+            - code seems relatively messy and tested mostly by brute force
+            - case in point: https://github.com/openwebwork/webwork2/wiki/Testing-Webwork3
+- Going back to Khan and Desmos projects
+    - shared project: Mathquill
+    - JS based GUI for editing math equations
+        - loosely connected to latex, lots of functionality that doesn't require knowing it
+            - still some aspects that require some knowledge of TeX
+        - used by a lot of orgaizations
+            - Khan Acdemy
+            - Desmos
+            - Lernosity
+        - Many of them have UIs with buttons to create common symbols
+            - some have pretty substatntial forks to get additional functionality like matrices
+                - https://github.com/mathquill/mathquill/issues/332
+                - sometimes the maintainer seems to be a bit of a purist
+                - this is definitely a patch that should have been merged in some form last fall when
+                  it was bought up
+                - From Han the maintainer:
+                    - my thoughts are that your code looks like a great, well-written, useful hack,
+                      but one big aim I have on the dev branch is to reduce divergence from
+                      "canonical" LaTeX (to the extent that exists...), and adding \matrix,
+                      \pmatrix etc commands would be moving in the opposite direction.
+                    - I understand his desire to make the output of the library compatible with
+                      other tools, but I feel like that is driving the UX in some cases
+                    - considering the majority of the consumers of the library, it would seem like
+                      making the UX intuitive should be the primary goal, if there is demand from
+                      a relatively silent part of the community that they want it to work well
+                      for latex commands then this should probably be turned on as an option
+    - Contribution ideas
+        - a few open issues that would be intersting to take a stab at
+            - Undo / Redo support
+        - implement the feature I wanted to add when I was taking a look at Desmos
+            - allow for searching form complex symbols through their natural language names
+                - using drop-down auto-complete
+                - allows for resolving the ambiguity of symbols, not sure if MathQuill tracks this
+                    - the MathML community claims this as a major benefit over 
+                      latex last time I looked at it
+
+----------------------------------------------
+Searching for a better digital math experience
+----------------------------------------------
+- tried this earilier
+    - think I messed this up pretty badly, didn't notive the master branch was a year out of date
+- Library used for the dropdown UI
+    - ddslick
+    - others to look at
+        - chosen : http://harvesthq.github.io/chosen/
+            - think I read somewhere this is really just for tet dropdowns
+        - http://www.sitepoint.com/16-jquery-selectboxdrop-down-plugins/
+        - selet2: https://github.com/select2/select2
+>>>>>>> 3ds_pivot
 - 

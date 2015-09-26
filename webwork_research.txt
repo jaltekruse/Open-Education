@@ -1,0 +1,651 @@
+Goals:
+    - many of the objectives of Open Education were similar to the Webwork project
+        - emphasises open source technology
+        - teacher created problem formulas
+        - shared problem database
+        - web frontend for classroom management
+    - I want to better familiarize myself with:
+        - the history of the project
+        - current feature set
+        - difficulty of hosting
+        - do some performance benchmarks with simulated workloads
+        - get an idea of the code quality and community acivity level
+        - could this be a viable option for the web portion of my efforts?
+        - is my frontend a good candidate for integration with Webwork?
+            - I think dragmath has been integrated with this or a similar project
+    - Key differences to learn more about
+        - focus on univerity courses
+        - can/are high schools also adopting it?
+        - how can it be made more approachable for high schools?
+
+Ideas:
+    - There is a large database of problems that appears to be a bit of a pain to access
+        - need to find out how easy it is to navigate this "database"
+        - is there a simple service that could leverage this database?
+        - maybe just a worksheet generator?
+            - no need for web setup
+
+Project history:
+    - mail lists
+        - http://webwork.maa.org/wiki/Mailing_Lists#.VXo27abfg7x
+        - dev - http://webwork.maa.org/pipermail/webwork-devel/
+        - 
+
+--------------------------------------------------------------
+Taking a look at the UI using the virtual machine installation
+- http://webwork.maa.org/wiki/Installing_from_WW2.9_Ubuntu14.04_Vanilla_Virtual_Machine_Image#.VXosLKbfg7w
+--------------------------------------------------------------
+- forgotten package in the distro
+    - sudo apt-get install texlive-latex-extra
+    - what does this package do?
+        - live tex? Is it a gui tex editor?
+- signing into the site at: localhost/webwork2
+    - could not really find a Wiki page as a getting started with the site
+    - the URL auto-completed upon typing localhost into the browser address bar
+- didn't know the password to sign in, might be hidden in the wiki somewhere
+    - admin/admin
+- trying out the first problem set
+    - at the top there is a set of nav buttons
+        - Prev, Up, Next
+            - what does up do?
+            - gets you back to the list of problems
+            - not sure users would get this
+    - entered a word into a text box, clicked "check answers"
+        - there was only one answer box
+    - this showed me in a grid:
+        - the text I entered
+        - a "rendered" version
+            - it wasn't an expression so it wasn't really needed here
+                - although writing a word or sentence as an answer in math is rare
+                - maybe this shouldn't be the case, but that is for another day
+        - result : correct
+    - overall a little clunky of a UI, but the info would generally be useful
+        - might look better just in a Web 2.0 approved set of divs
+        - current web dev shuns unneeded grids
+    - confusing bit was this in red at the top
+        - "ANSWERS ONLY CHECKED -- ANSWERS NOT RECORDED"
+            - I did not see a record answer button
+            - this also should not be possible, if I am checking my answer it should require
+              a trip to the server, and then it should just send the answer
+        - found this down further in the page, I guess this is why I can't submit
+            - "You have attempted this problem 0 times. This homework set is closed."
+        - It seems like check answers might actually submit to the server, but as the
+          problem set was closed it didn't save the answer
+            - not the craziest behavior, but it did make me think they should have a greyed out
+              "submit answer" button, which seem unceccesary as it should just be a single step
+            - this made it seem like it was supposed to be two steps but the second was missing
+            - could just be fixed with a different mesage:
+                - As the problem set has been closed, your answer was not recorded.
+    - second problem has three parts
+        - same word as before (it asks the user to fill in  ______________ world!)
+        - basic addition
+        - and a basic derivative
+    - if I want to make this approchable to high schools I'll need a simpler intro exam
+    - multipart answer overview in the grid looks a little more reasonable with more answers
+        - still might look better outside of a grid
+    - next is multiple choice
+        - requires typing the letter in a box rather than just using a radio button?
+            - take this back a little as the next question has a radio button
+                - why have the other option at all?
+                - confirmed it was not asking for several options or anything weird
+                - "Enter the letter corresponding to the correct answer:" ______________
+        - just a little nitpick, but could be easily improved a little
+        - checkboxes could even support intuitive "choose all that are correct" questions
+            - I assume this must be done with a comma separated bit of text if this is how
+              single answer multiple choice is done
+    - matching
+        - based on numbers/letters and text boxes
+            - "optimiation" possible with some jquery drag and drop
+        - original problem
+            Place the letter of the derivative next to each function listed below:  
+            ___ 1. 5x^4
+            ___ 2. \sin(3x)
+            ___ 3. 4x^4
+            ___ 4. \tan(x)
+
+            A. \sec^2(x)
+            B. 3\cos(3x)
+            C. 20x^{3}
+            D. 16x^{3}
+
+        - this was a little confusing it said:
+            - print the questions again, but insist that the first two questions 
+              (about sin and cos) always be included. Here is a second way to format this question, using tables: 
+            - neither the list of derivatives nor the functions has both sine and cosine
+                - little nitpicky, they could just say the ones with the trig funtions instead
+                - should look at the problem formula to see how to specify this
+            - the tables thing seems unnecessary, might want to see if there are problems making good use
+              of features like this or if they could be hidden away or removed entirely to make it simpler
+        - There was a useful note at the bottom
+            - "Note: You can earn partial credit on this problem."
+            - as there are multiple independent questions I think this should be expected
+        - the last example showed a similar problem in a grid again but with a
+          "The derivative is not provided" option
+        - grading
+            - nitpick again showed my plain text (this time just individual characters) as rendered "Answer Preview"s
+    - True/false
+        - must enter t or f
+            - just make it a radio button (or drop down?)
+                - next one is just a drop down, no reason to have the first one
+            - works for both mouse and keyboard
+            - take a look at accessiblity guidlines, I'm guessing it would be easier for the visually
+              impared using screen readers to have the correct UI elements
+    - embedded "On-the-fly" grpahics
+        - this is a bit confusing, to enable text answer input there is a good amount of indirection
+            - the graph is tiny and can be enlarged in a second window b clicking on it
+                - how well does this work with mobile?
+                - if opened multiple times the windows appear to replace each other
+                    - but they actually overlap and are staying around
+            - the colors are given letter for providing answers
+                - simple matching UI could help here as well
+                    - hope these problems are written in such a way that this UI could be
+                      leveraged by a lot of problems if it was written properly
+                - particularly annoying that blue is not represented by B at least
+        - graph with 3 functions on it
+        - Identify the graphs A (blue), B( red) and C (green) as the graphs of a function 
+           and its derivatives (click on the graph to see an enlarged image):
+            ____ is the graph of the function
+            _____ is the graph of the function's first derivative
+            _____ is the graph of the function's second derivative 
+    - more on the fly graphics
+        - more matching, each matching answer has a graph to open
+        - thought I couldn't open several popup windows to look at the big graphs side by side
+            - I was using the new "web" behavior of clicking off the popup windows
+                - as is often the case with page internal popus these days where the screen greys-out
+                  to emphasize a popup on the page
+                - really the window manager was just putting the popup window behind my main browser window
+                - maybe to be more consistent with other site this could close the windows, but that clashes
+                  with traditional window managers
+                    - in this case the "big" images are small enough that they should just be shown
+                      full size on the problem answering screen
+                        - responsive UI and possibly allowing users to move these image around could help here
+                        - in this case I am comparing the graphs but they are separated on the page
+    - more on the fly graphics
+        - talks about how these were generated using extensions you can install
+        - We have developed other ways to specify graphs which are to be created 
+          'on the fly'. All of these new methods consist of adding macro packages
+          to WeBWorK. Since they do not require the core of WeBWorK to be changed,
+          these enhancements can be added by anyone using WeBWorK. 
+        - should find out how these macro packages work
+        - first question
+            - asks for an expression fragment
+                - a bit of an ugly text box inside of an expression is shown, the expression they need
+                  is simple, but this could easily become a pain to enter larger expressions
+                - seems like even taking a trip to the server out of the equation for "previwing answers"
+                  and instead rendering locally would be useful
+                    - this should be possible with mathjax or mathquill
+            - next asks for points
+                - "List the internal local minimum points in increasing order: :"
+                - doesn't give an expected format (althought the standard easily fits into ASCII)
+                - could be enahced with some javascript with grayed out text (x, y)
+                - local minima do not appear to be on integer values, or even close to factors of halves
+                    - the grid provided is static and only shows at integer steps
+                - tried to grade my order pair, it complained:
+                    - Your answer isn't a number (it looks like a list of numbers)
+                    - there should be a well designed list of answer types
+                        - seems like the grading system knowns about this
+                        - the student UI should be enahanced to tell them what type
+                          of answer is expected before htting grade
+                        - using the "preview answers" feature will redner the math, but not give these
+                          contextual messages
+                            - it will only report syntax errors
+    - linking to external resources
+        - both links catured in the problem text are no longer valid
+            - The requested page "/mathland/mathtrek_5_15_00.html" could not be found. 
+            - The requested URL /webwork2_course_files/myTestCourse/calc.html was not found on this server.
+                - this may require some additional setup on my part
+                - but this should probably be done automatically especailly on the demo image
+        - talks about resources stored in the same directory as the problem
+            - shows a graph
+            - shwos 3 graphs formatting in a grid
+            - they really like their grids
+            - I assume these are static?
+                - should figure out how the dynamic graphs are generated, where they sit on the server
+            - noticed a bunch of data in the URL bar
+                - including user, effectiveUser and something called key
+                - I should check for security issues here
+                - I doubt that there are any, but if nothing else the URLs could be cleaned up
+                    - after taking a look at the db schema it might be useful to see how these could be minimized
+                    - could there be a link to problem # 10 on a particular quiz that would work for anyone
+                      with access?
+                    - looks like this is kind of already the case
+                        - myTestCourse/MAAtutorial/12/
+                    - although they mix this with key/value URL value encoding which could probably be simplified
+                        - ?user=admin&effectiveUser=admin&
+                        key=W2bFZuS9s7H2iKtmr6oP9dbkcrc7Bujb
+                        &theme=&displayMode=images&showOldAnswers=1
+    - timed out an was redirected to login
+        - it sent me back to where I was
+        - expected, but nice to see it is correct
+    - JavaScript Example 1
+        - broken link to calculator again
+            - not sure what they expect students to do with a general purpose calculator to help them with this problem
+                - maybe try out different brute force formulas for the function
+        - problem features a pre-baked "calculator" that will give a output of an unknwn f(x) given a value of x
+        - interesting idea but I noticed a few issues
+            - it does not let me put math in the input box, 3+5 fails and gives NaN
+                - this could be improved to be a string that would be clearer for most people
+            - if you hit enter when you are in the box it will go to the "preview answer" screen
+                - This might make sense, but in this case I hadn't actually put in an answer
+                  and the box I was in was not for inputting an answer
+                - it requires I click the button to make the answer appear in the result box
+                    - the behavior upon pressing enter is really non-intuitive, at least doing
+                      nothing would make me click the button rather than wonder why the page refreshed
+                        - it is clear that it isn't just a refresh as the grid with the "answer preview" is
+                          added at the top, but this is confusing as it is just tow empty boxes in the grid
+                - might want to separate these forms
+                    - don't know if this is possible without JS as the one form is embedded in what I assume
+                      is a problem wide form for the case where there are multiple answer boxes
+                    - although at this point JS is nearly a requirement for much of the web
+                    - should see if the project lists graceful degradation in the case of no JS or other
+                      limited environments as a goal
+                        - cutting out support for old browsers could allow for more interesting features sooner
+        - problem text:
+        - Find the derivative of the function f(x). 
+          The windows below will tell you the value of f for any input x.
+          (I call this an "oracle function", since if you ask, it will tell.) 
+        - possible bug in the problem
+            - asks for the derivative
+            - the input box is labelled - f'(2) = _______________________
+            - not sure if it wants a formula or a number?
+        - solving the problem - this seems really hard, I can't figure out the pattern
+            - f(1) = 1.2
+            - f(5) = 66
+            - f(10) = 282
+            - f(15) = 648
+    - next js example
+        - again the oracle function
+            - as it talks about JS I assume this is all evaluated client side
+                - it is in the page as un-obfuscated JS, not a real issue as I think if anything
+                  the system could use more client side processing
+                - some may see this as a cheating risk, but I still believe paper exams should
+                  represent the bulk of the grade awarded in any math class
+    - next one just had matching and embedded graphs
+    - problem 16 - conditional questions example
+        - nothing too interesting, seems like you are able to generate a formula and
+          a related prompt for an answer, in this case a derivative evaluated at a point
+        - tried to submit my answer, did not realize from the layout that there was a part 2
+            - said I got part 1 right and showed me part 2
+            - went back to the original problem to see why I missed part 2
+                - it wasn't there!
+            - it wanted me to submit part 1
+                - they re-used the generic interface for grading a multi-part problem, but did
+                  not exclude the second part, which I had not seen or been given the opportunity
+                  to answer
+                - it said it was incorrect
+                - but below it there was a message: "1 of the questions remains unanswered."
+                - only after it shows the first part with my previous answer filled in does it say
+                - "Right! Now try the second part of the problem: "
+                - might seem nitpicky, but it should not say it was wrong at all
+                    - seems like it should be able to grade part of a problem
+                    - might just be an outdated tutorial, should see if a problem can be set up
+                      like this without the confusing behavior
+        If f(x) = 18 x + 15, find f'( -5 ). 
+        _______________
+    - problem 17 - embedded java
+        - link to "mathbean applet" is broken
+            - http://math.hws.edu/mathbeans/applets/index.html
+        - file a request to have the link updated to this, seems to be the right project
+            - http://math.hws.edu/~mitchell/mathbeans/
+        - need to install Java inside the VM to make this work
+            - couldn't get it to install, don't feel like messing around with it for now
+
+- problem set screen
+    - list of problems with the following properties
+        - name
+        - attempts (number)
+        - remaining (attempts I guess? Example problem set lists unlimited for each question)
+        - worth (number)
+        - status (shown as percent)
+    - at the bottom of the list, two buttons
+        - email instructor
+        - Download PDF or Tex hardcopy for Current Set
+
+- download PDF screen
+    - "Select the homework sets for which to generate hardcopy versions. 
+       You may also select multiple users from the users list. 
+       You will receive hardcopy for each (set, user) pair."
+    - two columns for options relating to sets and users
+        - users
+            - choose sort order, default last_name, first_name
+                - other options, user_id, email, student_id
+                - some look less useful: comment, status, section, recitation?
+            - format
+                - last_name, first_name (user_id)
+            - filer
+                - only option is "Display all possible records"
+                - looks like a multi-select box
+            - button for "Change Display Settings"
+                - all I can tell it does is refresh the page
+                    - changes to the fields are preserved, maybe it saves this subset of the form without
+                      submitting it to generate the PDF
+        - sets
+            - this is a little confusing because the button I pressed to get here said
+              "for the Current Set" explicitly
+            - is it talking about problems within the set, or is the button not filling in info in
+              the form that it should?
+            - looks like it did select the set name corresponding the the previous page I was on
+            - not super obvious as it uses the stock multi-select window no one is familiar with
+                - should replace this with the chosen.js or similar library
+            - this should remove the need to configure any of this stuff, as it applies to multiple sets
+            - should see if this can generate for multiple classes relatively painlessly
+                - seems much more useful than generating a hardcopy of wor across problem sets
+                    - maybe if the prof wanted to review the last few assignments, but here it
+                      looks like it makes them ask for all users explicitly
+                        - definitely should make it easy to get a whole class if anything
+                    - this would be way more useful if it could record students intermediate work
+            - fields it requests
+                - sort order
+                    - tons of options here, it looks like every property provided in the database
+                    - should see how this works on the server, hope they aren't taking input from
+                      the user and using it to generate a SQL query
+                        - even if it was escaped it is pretty messy
+                    - it even includes properties like: Field - hide word, Field - hide_score
+                        - I assume these are just booleans, pretty much worthless to "sort" on
+                - format
+                    - default: set_id
+                - Filter
+                    - again single value in multi-select: Display all possible records
+                - change display settings button
+                    - again just looks to refresh the page
+                - multi-select with problem set names
+                    - what about problem set reuse across semesters? Or between classes?
+                    - this might be localized to the current class/session
+                        - cross class output would probably be useful as mentioned above
+        - bottom of the form (outside of the users and sets columns)
+            - Show (check boxes)
+                - Student answers, correct answers, hints, solutions
+                - difference between correct answers and solutions?
+                    - for the example problem set I see "correct answers" listed for each problem
+                    - inconsistent: Answers(s) submitted, Correct Answers
+                        - even if there is only one correct answer
+                    - no mention of Solutions on the generated document
+        - results
+            - this was at the top, should see where this problem set description comes from, didn't notice
+              it going through the web interface as a student answering questions
+                - Welcome to the MAA short course on WeBWorK.
+                  Here is a synopsis of the tutorial examples presented in this set.
+                  They have been designed for learning the PG language, and are
+                  not necessarily the best questions to use for mathematics instruction.
+            - This was at the end of the summary of the problems, nice summary of the goals
+              and limitations of the system
+                - The primary purpose of WeBWorK is to let you know if you are 
+                  getting the right answer or to alert you if you get the wrong
+                  answer. Usually you can attempt a problem as many times as you
+                  want before the due date. However, if you are having trouble
+                  figuring out your error, you should consult the book, or ask a
+                  fellow student, one of the TA’s or your professor for help. Don’t
+                  spend a lot of time guessing – it’s not very efficient or effective.
+                  The computer has NO CLUE about WHY your answer is wrong. Computers
+                  are good at checking, but for help go to a human.
+            - they really need to watch using computer science/programming jargon
+                - Give 4 or 5 significant digits for (floating point) numerical answers.
+                - no one will understand this "clarification" without having learned to program
+                - if this is universal throughout the system, it certainly should be configurable
+                - the default should probably be less than 5 as well
+            - the problems
+                - formatted pretty close to how they were on the web page
+                    - obviously not being rendered by the web browser engine, so there are some issues
+                      and formatting glitches
+                    - most of the content is there and readable
+                - answers are given in plain text, problems show rendered equations
+                - it even gets the graphs inserted into the document, pretty nice
+        - results - selecting more students
+            - took a while
+                - wonder if it was time spent hitting the database
+                    - it is just a local mysql server, but I have an SSD, even going through a VM for a list
+                      of 8 or so students I don't think it should have taken so long
+                    - even generating fora  single user takes little bit, probably startup time for the 
+                      PDF rendering process, but 8 students took at least a few minutes
+                        - considering they aren't even getting a perfect doc out of it, maybe they should
+                          just generate a webpage and let client browsers render it
+                        - does printing from a webpage work well with mathjax and other UI elements?
+            - generated 80 pages
+            - they were separated out by student
+                - it didn't put all of the answers to problem 1 together
+                - think this alternative arrangement would be better 
+                    - for grading objectively if they were manually re-grading a problem
+                    - also for getting an overview of what went wrong if a bunch of students
+                      got answers incorrect
+            - seemed to be lacking an option to filter by just work that was incorrect
+                - printing everything seems like a waste
+
+- "Demo" problem set
+    - first problem
+        - asks for an order pair in two separate boxes for the x-coordinate and y-coordinate
+            - maybe there isn't a complete library of answer types that can be specified by
+              problem authors, if this is the demo they should be showing off features
+    - second problem
+        - evaluating limits
+        - answers are numbers
+        - there is a note
+            - Note: Enter 'DNE' if the limit does not exist or is not defined. 
+            - seems likely to be an indication that there are hacks in problem formulas
+              to check for special strings in cases like this
+            - should not force problem authors to be programmers
+                - can have a check box with a description
+                - either or answering methods (in this case a text box or the DNE solution)
+                - seems likely to be an issue where it would complain about case if the
+                  formula was written wrong
+                    - this really just isn't the right UI for this type of input
+    - third problem
+        - have to enter an expression in text
+        - give the option to see solution
+            - opening solution it seems to appear at the wrong part of the page
+              even though the "solution" button appeared before the second part of the problem
+              the solution box was shown after it
+        - second problem also can show solution, this box moves down after the first box has been opened
+            - saved some screenshots in dropbox
+    - forth problem
+        - integrals, entering more complex expressions in plain text
+        - "Give a specific function for F(x)."
+            - seems like they don't want + C
+        - didn't get it right on the first try, used wolfram alpha to get the answer
+            - it didn't like how I input it
+            - Wolfram alpha input : integrate (x^4) * sin(x^5)
+                - answer: -(1/5) cos(x^5) + C
+            - input given to Webwork
+                - -(1/5)cos(x^5)
+                - incorrect
+            - also asked to evaluate a bounded integral
+                - it said in the earlier problem set that I could put an expression in for a number
+                    - so I just plugged in my limits into the formula I had for the first part of the problem
+                      (it was the same integral)
+                    - seemed to evaluate it (althoug I guess the formula was wrong
+                     
+                    Entered:        -(1/5)*cos(x^5) 
+                    Answer Preview: -\frac{1}{5}\cos\!\left(x^{5}\right)
+                    Result:         incorrect
+
+                     Entered:        0.0186453659631881  
+                     Answer Preview: -\frac{1}{5}\cos\!\left(5^{5}\right)-\frac{1}{5}\cos\!\left(-1^{5}\right)
+                     Result:         incorrect
+                - I wonder which of these (the formula or evaluated number) it will show to the instructor
+                    - I assume it stores the plain text somewhere
+                    - this behavior definitely would not be desirable for some lower level math courses
+            - shows warnings (in a big red box) at the bottom of the page
+            - this output would not be useful to most instructors
+WeBWorK Warnings
+
+WeBWorK has encountered warnings while processing your request. If this occured when viewing a problem, it was likely caused by an error or ambiguity in that problem. Otherwise, it may indicate a problem with the WeBWorK system itself. If you are a student, report these warnings to your professor to have them corrected. If you are a professor, please consult the warning output below for more information.
+Warning messages
+
+    cd /opt/webwork/webwork2/tmp/ImageGenerator.AxYLQFYv && /usr/bin/latex equation > latex.out 2> latex.err returned non-zero status -1: Cannot allocate memory at /opt/webwork/pg/lib/WeBWorK/PG/ImageGenerator.pm line 387.
+    cd /opt/webwork/webwork2/tmp/ImageGenerator.AxYLQFYv failed at /opt/webwork/pg/lib/WeBWorK/PG/ImageGenerator.pm line 388.
+    Warning: something's wrong at /opt/webwork/pg/lib/WeBWorK/PG/ImageGenerator.pm line 392.
+    Unable to read logfile /opt/webwork/webwork2/tmp/ImageGenerator.AxYLQFYv/equation.log at /opt/webwork/pg/lib/WeBWorK/PG/ImageGenerator.pm line 398.
+    cd /opt/webwork/webwork2/tmp/ImageGenerator.AxYLQFYv && /usr/bin/latex equation > latex.out 2> latex.err failed to generate a DVI file at /opt/webwork/pg/lib/WeBWorK/PG/ImageGenerator.pm line 402.
+    cd /opt/webwork/webwork2/tmp/ImageGenerator.AxYLQFYv && /usr/bin//dvipng -bgTransparent -D120 -q -depth equation > dvipng.out 2> dvipng.err returned non-zero status -1: Cannot allocate memory at /opt/webwork/pg/lib/WeBWorK/PG/ImageGenerator.pm line 410.
+
+Request information
+Time    Fri Jun 12 02:08:45 2015
+Method  POST
+URI     /webwork2/myTestCourse/Demo/4/
+    
+    - fifth problem
+        - seems to actually not have enough information to answer the question:
+        - its just a demo problem for instuctors, but it still should be accurate
+        - Two perpendicular sides of a triangle are 3.2 m and 5.4 m long respectively.
+          What is the length of the third side of the triangle? 
+            - doesn't say right triangle, even if it assumed it, perpendicular doesn't mean they are the two
+              legs of the right triangle
+                - it could be the hypotenuse and one leg
+        - it gives a hint to say use the pathagrean theorem
+            - (Instructor hint preview: show the student hint after 0 attempts.
+               The current number of attempts is 0. )
+               Remembering the Pythagorean theorem A^2 +B^2 = C^2,
+               you can enter sqrt(3.2^2 + 5.4^2) m or 6.28 m or 627.69 cm or ... 
+        - This is just trying to demonstrate features but the question should be updated for accuracy
+        - checking correct answer
+            - "Your answer doesn't look like a number with units"
+    - 6th problem
+        - embedded image
+        - projectile problem, throwing a basketball
+        - small text alignment issue, screenshot in dropbox folder
+    - 7th problem
+        - determining which graph is a function, its derivative and second derivative
+            - again with the slightly annoying indirection of the popup window to actually see the graph
+            - also answering just uses text boxes where you have to give a letter which corresponds to a
+              color on the graph
+    - 8th problem
+        - oracle funtion again, looks like these two demo's share a lot, they should probably just
+          be combined
+        - one new observation, probably was in the other version of this problem as well
+        - "WeBWorK can use existing JavaScript and Java code to augment its capabilities."
+            - should look into this
+            - how is this done?
+                - most of the project is in perl
+            - how is it being used today?
+            - should look at how I could use this in combination with JCM or the CAS in 
+              geogebra for additional functionality
+    - Few more problems
+        - java applet
+        - custom answer checking, palendrome checker example
+
+Problem set 0:
+    - first problem has a nice overview of how to enter numeric answers
+    - first answer box restricts use of functions
+        - students must just enter an answer
+        - will be useful for Algebra classes, where teachers want students to learn to manually
+          plug in numbers to get a final answer
+    - supported conviniences normally available
+        - Webwork supports functions like sin and sqrt
+        - exponents with caret or **
+        - multiplication by juxtaposition 
+
+Creating a problem set:
+    - the submit form button says "Take Action!"
+        - this was confusing
+    - first step, enter a name
+        - get back a pretty cryptic error, it looks like just a system failure is being used to report
+          input validation errors
+            - I just put a space in the problem set name and it didn't like that
+        - with simple "errors" like this instructing users to contact a webmaster this would
+          be a real pain to manage an installation of
+            - should investigate further
+                - fuzz all forms
+                - think of anything that could break upon invalid user input or non-typical navigation
+        - it says
+            - WeBWorK error
+
+            An error occured while processing your request.
+            For help, please send mail to this site's webmaster (webmaster@localhost),
+            including all of the following information as well as what what you were doing when the error occured.
+
+            Sun Jun 14 23:08:41 2015
+            Warning messages
+
+            Error messages
+                argument 1 contains invalid characters in 'set_id' field: 'testing set creation' 
+                (valid characters are [-a-zA-Z0-9_.])
+                at /opt/webwork/webwork2/lib/WeBWorK/ContentGenerator/Instructor/ProblemSetList2.pm line 1207.
+                at /opt/webwork/webwork2/lib/WeBWorK/ContentGenerator/Instructor/ProblemSetList2.pm line 1207.
+
+        - message from server done, back to notes
+        - after set creation, it just brings me back to the list of all of the problem sets
+            - should instead open the editing interface, why would a user create a problem set and not
+              want to add anything to it?
+        - looks like "Take Action" might be a ppor attempt to have a generalize form button that is more
+          "descriptive" than just saying submit
+            - this would probably just be clearer anyway, but the code reuse isn't worth it regardless
+            - the forms should just have their own messages
+        - the edit interface just allows adjusting properies visible, eanble EC, open/due/answer dates
+        - hidden on the left is a hyperlink to "edit" the set
+            - I just clicked a link that was supposed to make me edit it...
+            - this just took me to a longer form for set properties
+                - new options privided here
+                - reduced credit enabled
+                    - assume this decreases credit with each wrong answer
+                - "Restrict release by set(s)"
+                    - don't understand what this does, no subtext and the input is
+                      just a bare textfield
+                - Score required for release - default 100%
+                    - not sure what this means
+                - Hide Hints from Students
+                    - not sure why you would even write hints
+                    - might be to supress them if you use someone elses sets
+                - assignment type
+                    - should look into how these classifications can be used in
+                      conjunction with the gradebook and composite score calculation
+                    - is it flexible for what instructors want?
+                - set description
+                - set headers
+                    - allows for setting different headers for the "Set" and hardcopy
+                    - there is an "edit" button that brings user to a text box with latex in it
+                        - need to find all of these and hide them if I want this usable by teachers
+                            - can leave in the option to edit some parts of the source latex
+                            - but it should be clear what is needed, here a line for the text of
+                              the header would be fine
+                    - there is also a view button that just brings the user to the make a hardcopy
+                      screen
+                        - where is the "set header" used if it is different from the hardopy one
+                        - I was a little wrong
+                            - the view page for the hardcopy one brought me to the page to configure
+                            - the view for the other one was actually bringing me to the page to view
+                              all of the problems in a list on the webpage
+                                - it was a little confusing because the set was empty and all I could
+                                  see was the "generate hardcopy" button, which would have brought
+                                  me to the same place the other "view header" link did
+                                - it did show the text "This homework set contains no problems."
+                                    - as a substitute for where problems should have been
+            - how do I add problems to the set?
+                - at the bottom of the form is a small form element to add problems to the set
+                - [ x ] "Add _____ blank problem template(s) to end of homework set"
+                    - on the left that is a checkbox
+                - hiting save on the whole form applies this action
+                    - this doesn't seem very intuitive
+                    - also I don't see an easy way to add problems from the library
+                        - do people just copy and paste the latex?
+                        - maybe after adding blank problems I'll be able to swap them out for one
+                          from the library
+                        - TODO - add info about the interface provided once a blank problem has
+                          been added
+                            - can generate several problems
+                            - TODO - add more here
+                        - editing a problem
+                            - "demo" blank problem for entering pi
+                            - lots of extra jargon in the basic problem
+                            - commented out code
+                - bit of a confusing interface, this definitly should be more interactive
+        - figured out why I was confused
+            - the path I took the first time allows for bulk editing multiple sets
+            - editing a single set should defintely be the default easy path
+            - bulk edit ca be useful, but it wasn't even clear that was what it was letting me do
+            - there are checkboxes, but if I select only one it should just bring me to the single
+              set form, as it has more complete options
+            
+Looking at the problem library
+- Algebra
+    - 
+        - Library/ma117DB/set1b/srw1_6_1.pg
+            - Express the sum of 4 consecutive integers in terms of the first integer n of them. 
+            - answer: $ans1 = "$a*n+($a*($a-1))/2";
+            - I guessed: n+(n+1)+(n+2)+(n+3)
+                - I think this is also right, but it does a hard function comparison against
+                  the students answer
+                    - I think this is just a bad question, need to watch out for these
+                    - it ended up taking my answer, I think it was calling something like
+                      func_compare
+                        - this might just do numeric probing to determine similarity
+                        - its a useful workaround to avoid needing a fully functional CAS
+                        - TODO - look into this
