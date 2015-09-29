@@ -1,0 +1,423 @@
+Open Education dev log
+
+Running bug list
+----------------
+- when using the menu option to change page alignment (left, center, right) the selected
+  object overlay (such as when editing an expresison) is not redrawn until the object is de-selected
+  and re-selected
+- on mac
+    - resizing window does not trigger a re-layout/redraw event, looks quite broken until you scroll
+- auto-center on maximize if the screen is large enough
+    - alight right default was mostly because I developed this on a small screen
+    - the align center happens too aggressively (I think the popup menu might be wider on mac)
+    - also the menu option at the top still says align right after the automatic switch to center
+- check for unsaved changes seems to be broken (on mac at least)
+    - INVESTIGATE THIS SOON
+    - might have something to do with the half-application half applet design
+- when a new line is added upon modifying an expression if the expression is in a group,
+  the boundary of the group is not updated
+- java.lang.RuntimeException: could not find an object GUI for the type, class doc.mathobjects.Grouping
+	at doc_gui.PageGUI.getGUIForObj(PageGUI.java:208)
+- when selecting an individual aobject that is within a persistent group
+	- resizing the object does not prompt a group resize
+	- however moving it does prompt a group resize
+		- feel like I've solved a few bugs like this
+		- and there is another outstanding one for adding a step onto an equation
+		  also does not prompt a resize
+	- should create a way to classify all actions that can change the size/position
+	  of an object and make sure that they prompt a common codepath to make the group resize
+	  itself
+- consider replacing rectangle collision for groups with a check for collision with any of the
+  contained objects
+- consider replacing rectangle collisions for non-rectanglular objects with better collision polygons
+	- related to also highlighting objects with non-rectangular blue lines when in groups
+		- might not want to always share polygons between draweing and collision
+		- need to look for circle collision, or do a n-gon collision while still drawing a circle/oval
+		  so it doesn't look weird
+		- otherwise for the most part I could just share the collision polygon with what is going
+		  to be drawn in a blue line
+		  	- examples triangle, trapezoid arrow, etc.
+- number line cannot be expanded to the left
+	- only can move
+- improve generating auto-resized grid
+	- for graphs as well as number line
+- fix keyboard shortcuts on mac
+- make the answer key button toggle a view mode, not generate a new doc
+	- make sure teachers can re-generate problems in this view if the questions have
+	  answers with unclean fractions, or other undesired properties
+- Expression rendering varies greatly based on zoom level
+	- can cause a lot of ugly overlaps or whitespace as the font measurements and other scaling
+	  changes dramatically depending on how it is scaled
+	- need to add tests to make sure that the rendering is verified at various scale sizes
+- minor issue with zoom
+	- on a fresh doc (application instance?), zooming all the way in does not trigger a re-draw event on the last
+	  allowed zoom-in
+		- clicking on the doc causes a redraw event and the last level of zooming in is shown
+		- so the state change did actually apply, its just not being drawn
+
+Running cleanup/TODO
+--------------------
+- convert expression parsing to ANTLR
+- move various tree traversals to visitor pattern
+- UNIT TESTS
+    - most important tests all of the backend
+        - where it is dependent on some front-end replace direct interface
+          with a wrapper that can be mocked
+            - Example : measuring text currently requires the GUI
+                - I think I got around this by creating an image and
+                  opening up a drawing context for it, can use this
+                  same strategy for setting up the unit tests
+                - can even check expression layout with this method
+                - would be worth have an automated exact pixel check
+                - as well as writing a basic interface to view
+                  the expected layouts against the current generated
+                  ones visually to approve major refactorings
+- every time I adjust something with zoomLevel
+    - is the rounding consistent when going back to pixels?
+    - see DocViewerPanel.docPt2PanelPt
+- clarify paste behavior
+    - don't require page selection
+- consider removing page selection all together
+    - make it only happen when a user wants to add or delete a page
+    - it just confuses people when the whole page turns blue
+    - word processors do not have a delete page feature
+- shove everything down command
+    - allows for adding a new section to a large document
+    - or moving content in general
+- consider doing automatic layout
+    - absolute layout for diagrams in special drawing/diagram areas
+        - like MS office text boxes
+    - otherwise UI could be simplified and streamlined, just switch between text and
+      math modes
+    - almost like a GUI latex editor
+        - make smart defaults, don't make everything a manual process
+            - allow expressions to appear in a sentence
+            - if a user creates a multi-line expression separate it from the text
+              and center it
+                - as is done in Latex docs often
+- ObjectProertiesFrame
+    - get rid of all the hacks
+    - keyboard shortcuts
+        - currently have custom code in ObjectPropertyFrame creation
+          to add the keyboard listener to the relevant panel to allow
+          keyboard shortcuts to be used immediately after switching
+          to the solve tab (without clicking on the document again)
+		- this could possibly be refactored to put the keyboard shortcuts
+		  registered somewhere more global
+
+-------------
+3/14/2015
+-------------
+- spent a few hours fighting with Codeigniter
+    - could not get sign in working on site again
+- get the database set up
+- debugged through the router, found a fix to the issue
+  that it was re-routing to user/classes -> auth/login
+    - then there was a redirect loop
+    - rage quit
+        - best thing to do in the future is probably 
+          start with a fresh CodeIgnighter (I have played
+          around in the path to get rid of the index.php in
+          the URL among other things)
+        - from there I can try to re-apply the application
+          files into a clean installation
+        - could look into upgrading to version 3.0
+
+-------------
+3/15/2015
+-------------
+- working on OpenNotebook today
+- overall project roadmap
+    - try to get the pivot I worked on last year at 3ds put together
+    - focus on student interface, as well as teacher grading/overview
+    - de-emphasize or completely remove classroom content generation
+- goals
+    - test out interface for a while, taking notes about biggest
+      annoyances in regards to the interface for solving problems
+        - cannot use expression modifications keyboard shortcuts after
+          clicking on solve tab
+            - fixed - added a NotebookKeyboardListener to the second pane
+              if the ObjectPropertiesFrame is being made for an
+              ExpressioObject
+        - substituting multiple variables is a pain
+        - need to have one poup to substitue multiple at once
+            - can use the list interface (once I can put objects in a 
+              menu-ediatable list)
+            - to make it mouse free
+                - tab always brings you to the next thing
+                    -  | var input | = | val input |
+                    - tab brings you to the next input box
+                        - or if you are in th last val input adds another
+                    - enter submits
+                    - make users type x= into a single box with val?
+                        - would this be simpler or more complicated
+                        - code both, have people try it out
+    - replace the parser with ANTLR
+    - get the cursor integrated with the backend expression representation
+    - serialize 
+
+---------------
+6/10/2015
+---------------
+- goals
+    - generate student version of worksheet with answers and problem formulas stripped out
+    - grade a directory full of documents using an answer key
+        - assume everything is set up properly
+        - later worry about error cases
+            - wrong docs, not related to answer key
+
+---------------
+6/21/15
+---------------
+- tring to learn more about other projects in the space
+    - spent some time with WebWork
+        - Perl based course management
+        - server side expression rendering and answer checks
+        - pretty large feature set, has been around since 1995
+        - might have missed it but did not see a lot of tests in the source
+        - think there are a few system refactorings that would be helpful
+        - hard to do without more tests
+        - 3.0 version claims to be a pretty complete re-write
+            - did not get this running, played around wtih something like the 2.7 UI
+            - not bad, but I wrote a lot of notes about little usability problems
+            - too much flexibility for problem writers seems to introduce inconsistencies
+              from a strudent perspective
+            - feedback all requires a trip to the server, some docs and code made it seem like
+              they were looking at the new JS based client side projects for equation rendering
+        - Might be a decent project to get invovled with eventually
+        - right now it looks like the development is pretty hard to follow
+            - not an active commuity
+            - code seems relatively messy and tested mostly by brute force
+            - case in point: https://github.com/openwebwork/webwork2/wiki/Testing-Webwork3
+- Going back to Khan and Desmos projects
+    - shared project: Mathquill
+    - JS based GUI for editing math equations
+        - loosely connected to latex, lots of functionality that doesn't require knowing it
+            - still some aspects that require some knowledge of TeX
+        - used by a lot of orgaizations
+            - Khan Acdemy
+            - Desmos
+            - Lernosity
+        - Many of them have UIs with buttons to create common symbols
+            - some have pretty substatntial forks to get additional functionality like matrices
+                - https://github.com/mathquill/mathquill/issues/332
+                - sometimes the maintainer seems to be a bit of a purist
+                - this is definitely a patch that should have been merged in some form last fall when
+                  it was bought up
+                - From Han the maintainer:
+                    - my thoughts are that your code looks like a great, well-written, useful hack,
+                      but one big aim I have on the dev branch is to reduce divergence from
+                      "canonical" LaTeX (to the extent that exists...), and adding \matrix,
+                      \pmatrix etc commands would be moving in the opposite direction.
+                    - I understand his desire to make the output of the library compatible with
+                      other tools, but I feel like that is driving the UX in some cases
+                    - considering the majority of the consumers of the library, it would seem like
+                      making the UX intuitive should be the primary goal, if there is demand from
+                      a relatively silent part of the community that they want it to work well
+                      for latex commands then this should probably be turned on as an option
+    - Contribution ideas
+        - a few open issues that would be intersting to take a stab at
+            - Undo / Redo support
+        - implement the feature I wanted to add when I was taking a look at Desmos
+            - allow for searching form complex symbols through their natural language names
+                - using drop-down auto-complete
+                - allows for resolving the ambiguity of symbols, not sure if MathQuill tracks this
+                    - the MathML community claims this as a major benefit over 
+                      latex last time I looked at it
+
+----------------------------------------------
+Searching for a better digital math experience
+----------------------------------------------
+- tried this earilier
+    - think I messed this up pretty badly, didn't notive the master branch was a year out of date
+- Library used for the dropdown UI
+    - ddslick
+    - others to look at
+        - chosen : http://harvesthq.github.io/chosen/
+            - think I read somewhere this is really just for tet dropdowns
+        - http://www.sitepoint.com/16-jquery-selectboxdrop-down-plugins/
+        - selet2: https://github.com/select2/select2
+
+=======================
+work on 8/22/2015
+=======================
+- focus today
+	- don't think about the website at all
+	- how can I make the application useful on its own
+	- focus on making problem formulas more useful
+	- improve student algebra equation editor
+	- improve overall UX
+		- allow proper multiple object selection 
+		- remove page selection when clicking whitespace
+			- only enable after choosing to delete a page and prompt
+			  user to click on page to delete
+			- then prompt to confirm desire to delete
+		- don't paint the entire rectangle behind an expression and solution steps
+			- only fill in the rectangle behind particular expressions
+			- adjusting other objects' layering can help
+			- but when selecting the equation to edit it again it will cover whatever
+			  is on top of it when it is active
+		- disable x point selection (vertical yellow line) on graph
+			- or finish it to take mouse drag events and allow for range selection
+		- detecting recent changes to prompt saving on attempted shutdown is also broken on linux
+			- appears to only be on application close
+			- trying to close an unsaved tab still warns appropriately
+			- *partial resolution*
+				- this only happens when running as an applet, when running as an application
+				  this works fine
+				- need to confirm this on mac, think it is likely the case that it also works there
+
+===============
+9/8/2015
+===============
+- looking at how to write unit tests in CodeIgniter
+	- https://vimeo.com/28588831
+	- http://jensroland.com/projects/toast/
+	- http://taiar.github.io/php/2013/11/08/testing-codeigniter-applications-with-phpunit.html
+	- https://github.com/fmalk/codeigniter-phpunit
+	- http://www.codeigniter.com/user_guide/libraries/unit_testing.html
+- error running CodeIgnighter the first time
+	- Message: PHP Startup: Unable to load dynamic library '/usr/lib/php5/20090626/mcrypt.so' - /usr/lib/php5/20090626/mcrypt.so: cannot open shared object file: No such file or directory
+	- install missing stuff
+		- http://stackoverflow.com/questions/10565521/error-in-php5-unable-to-load-dynamic-library
+- 
+
+=================
+9/9/2015
+=================
+- the php frameworks look a bit verbose
+	- although if I choose to go with PHP, Laravel is considered the best current framework
+- Want to take a closer look at some of the technologies
+	- even if I don't use another language, it would be good to learn more about framework
+	  structures in general
+	- django
+		- https://docs.djangoproject.com/en/1.8/intro/tutorial01/
+		- http://stackoverflow.com/questions/1499543/good-open-source-django-project-for-learning
+		- https://github.com/rosarior/awesome-django
+		- https://github.com/pinax/pinax-blog/tree/master/pinax/blog
+- new idea
+	- maintaining a web site will be hard
+	- promoting it will also be difficult
+		- can promote the application using other file sharing services like Teachers pay Teachers
+		- before I start putting files out in the public I want to make sure the app is solid
+			- no reason to start off with backwards-compatibility debt
+
+=================
+9/9/2015
+=================
+- cleaning up technical debt
+	- make serialization/deserialization consistent
+		- make document and page share serialization/deserialization with MathObject
+		- may not make sense to have them actually extend from MathObject
+			- as MathObjects have default attributes and the actions list and handling system
+			- should document-wide actions, like regenerating all problems or adding
+			  new problems to the end of a doc be modeled the same way?
+- learning about design patterns to try to clean up the project
+	- is there a better way to manage the parallel trees in the back-end and front-end systems?
+- https://sourcemaking.com/design_patterns
+	- would be good to do some isolated work to solidify some of these concepts
+		- but a lot of these ideas seem like patterns I have seen or thought about already
+		  so I don't think studying them intensely will improve my software dramatically
+		- might be good to try reading Effective Java though
+	- flyweight pattern
+		- will be useful for including external resources
+		- have one repository of images, create cheap pointers to the repository that will
+		  live in the document tree
+			- image name to look up, position, size
+	- bridge
+		- separate interface from implementation
+	- spaghetti code
+		- the "spaghetti code" phenomenon (trying to scoop a single serving results in an "all or nothing clump"). 
+		- I have heard this complaint many times, never understood it like this
+	- Paul Graham- Revenge of the Nerds
+		- http://www.paulgraham.com/icad.html
+
+
+=========================
+Notes from Alyssa testing
+=========================
+- update teacher tutorial to talk about properties frame
+- update instructions for new 'fill color' interface on shapes
+- flip the content of the tutorial
+	- start out with math stuff first
+		- maybe a few problem formulas to show regeneration
+		- and asking them to step-by-step solve an algebra problem
+	- then move on to managing/arranging content on the docs
+- typos
+	- toolar
+	- open the xml in an editor for now to fix typos
+	- TODO - implement spell-check in the application
+- bringing object off screen and then back brings it to the front
+- groups selection, typo 'the several'
+- clarify - button with solid square around 3 objects
+- this tutorial takes a long time to read
+	- maybe just cover critical stuff
+	- make it interesting, cover all the math stuff
+	- make a few other tutorials, advanced document creation/layout
+	- make a clearer problem generation tutorial
+- arrangement (all to left/right/top) buttons that cause a
+  group to become overlapped are confusing
+- remove page selection (details covered elsewhere in the notes above)
+- student answer box should not turn green
+	- *fixed*
+- explain how to make answer box
+- explain how to make a graph
+- branded logo, not java
+- talk about math keyboard in tutorial
+	- cramped on OSX
+	- can it always be on top?
+- randomInt is confusing
+	- might want to make an advanced tab
+	- or wait and let the auto-complete feature fix this
+		- would allow for inline explanations of functions in dropdown
+		  search results
+- 'add new' button is confusing
+	- on graph it means new equations
+	- on expression there is an add new button for the list of correct answers
+		- each list should probably go in a new tab
+		- or at least visually separated with a box around the list
+- enhance answer box for different types of questions
+	- word or sentence
+	- math expression
+	- multiple choice
+	- matching
+	- true/false
+- Consistent capitalization on buttons
+- focus on object frame disables keyboard shortcuts
+	- *fixed* - just registering the keyboard listener on the properties frame
+	- may want to look for a better way to do this
+- add a note about the keyboard shortcuts on the properties frame
+- "it should tab"
+	- going from one problem to the next should be easier
+	- completely mouseless operation when possible
+- warn users to be careful about case sensitivity in equations
+- keyboard shortcuts for math symbols
+- (a*a)/a = 2a/a -> Combine like terms
+	- (aa1)/a = (2a1)/a
+- not as easy for students to guess an answer
+  as other systems
+- good limits on what comp does for them
+	- limiting combine like terms and other features for some users
+- determine paste page by current view or selected object
+	- related to removing page selection
+- group movement was broken by my fix for moving an object within a group
+	- I think this is fixed
+- fix the scrolling when adding a new element to a list in the props frame
+	- this also moved/resizes the window which is confusing
+- make the properties frame simpler by suing more tabs to sort things and
+  hide other functionality
+- the tall frame for a graph makes working with the keyboard hard
+- application creates really small buttons on screens with high pixel density
+	- like Alyssa's surface tablet
+	- make buttons bigger, even if for now that just means stretching the images and
+	  making them grainier
+	- can pixel density be detected from JAVA?
+- randomInt
+	- help text to say it takes two parameters
+- disable randomInt on graphs
+- non-stable graphs can change how they render when resizing the graph object
+	- resizing currently changes the sampling rate when drawing the graph
+	- this should be changed to be consistent so a graph will be the same regardless of
+	  the graph object size of document zoom level
+
+- 

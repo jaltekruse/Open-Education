@@ -1,4 +1,4 @@
-# Putting site in a separate repository, ignore the directory
+# Ignore new website code now in a separate repo
 www2/
 
 # Compiled source #
@@ -9,6 +9,11 @@ www2/
 *.exe
 *.o
 *.so
+
+/OpenNotebook/.idea
+/OpenNotebook/bin/.idea/
+/OpenNotebook/out/
+workspace.xml
 
 # Packages #
 ############
@@ -51,6 +56,9 @@ ehthumbs.db
 Icon?
 Thumbs.db
 
+<<<<<<< HEAD
 Thumbs.db
+=======
+>>>>>>> dev_work
 /nbproject/private/
 /build/
