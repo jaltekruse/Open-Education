@@ -10,9 +10,9 @@ www2/
 *.o
 *.so
 
-/OpenNotebook/.idea
-/OpenNotebook/bin/.idea/
-/OpenNotebook/out/
+OpenNotebook/.idea/
+OpenNotebook/bin/.idea/
+OpenNotebook/out/
 workspace.xml
 
 # Packages #
@@ -56,9 +56,6 @@ ehthumbs.db
 Icon?
 Thumbs.db
 
-<<<<<<< HEAD
 Thumbs.db
-=======
->>>>>>> dev_work
 /nbproject/private/
 /build/
