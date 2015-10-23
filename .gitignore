@@ -11,6 +11,7 @@ www2/
 *.so
 
 OpenNotebook/.idea/
+OpenNotebook/*.iml
 OpenNotebook/bin/.idea/
 OpenNotebook/out/
 workspace.xml
